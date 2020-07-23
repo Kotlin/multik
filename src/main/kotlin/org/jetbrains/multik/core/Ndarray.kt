@@ -1,429 +1,67 @@
 package org.jetbrains.multik.core
 
-import org.jetbrains.multik.api.mk
-import org.jetbrains.multik.api.ndarray
-import org.jetbrains.multik.api.toNdarray
-import org.jetbrains.multik.jni.Basic
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.LinkedHashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
-/**
- * Dimension class.
- */
-open class DN(val d: Int) {
-    companion object : DN(5) {
-        @Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
-        inline fun <D : DN> of(dim: Int): D = when (dim) {
-            1 -> D1
-            2 -> D2
-            3 -> D3
-            4 -> D4
-            else -> DN(dim)
-        } as D
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as DN
-        if (d != other.d) return false
-        return true
-    }
-
-    override fun hashCode(): Int = d
-
-    override fun toString(): String {
-        return "dimension: $d"
-    }
-}
-
-sealed class D4(d: Int = 4) : DN(d) {
-    companion object : D4()
-}
-
-sealed class D3(d: Int = 3) : D4(d) {
-    companion object : D3()
-}
-
-sealed class D2(d: Int = 2) : D3(d) {
-    companion object : D2()
-}
-
-sealed class D1(d: Int = 1) : D2(d) {
-    companion object : D1()
-}
 
 /**
- * Multidimensional array. Stores a pointer ([handle]) to a native class and a [MemoryView] object.
+ * Multidimensional array. Stores a [MemoryView] object.
  */
-class Ndarray<T : Number, D : DN>(
-    val handle: Long,
+open class Ndarray<T : Number, D : DN> constructor(
     val data: MemoryView<T>,
-    var shape: IntArray,
-    var size: Int = shape.reduce { acc, i -> acc + i },
+    val offset: Int = 0,
+    val shape: IntArray,
+    val strides: IntArray,
     val dtype: DataType,
     val dim: D
-) : Iterable<T> {
+) {
 
-    val strides: IntArray = shape.clone().apply {
-        this[this.lastIndex] = 1
-        for (i in this.lastIndex - 1 downTo 0) {
-            this[i] = this[i + 1] * shape[i + 1]
-        }
-    }
+    val size: Int = shape.reduce { acc, i -> acc * i }
 
     val indices: IntRange
-        get() = 0..size - 1
-
-    fun getData(): List<T> {
-        data.rewind()
-//        val list = ArrayList<T>()
-        val list = ArrayList<T>(data.getData().remaining())
-        for (i in 0 until data.getData().remaining()) {
-            list.add(data[i])
+        get() {
+            if (dim.d != 1) throw IllegalStateException("Ndarray of dimension ${dim.d}, use multiIndex.")
+            return 0..size - 1
         }
-        return list
+
+    val multiIndices: MultiIndexProgression get() = IntArray(dim.d)..shape
+
+
+    val V: View<T, D> by lazy(LazyThreadSafetyMode.PUBLICATION) { View(this) }
+
+    fun getData(): Array<T> = data.getData()
+
+    public fun isEmpty() = size == 0
+
+    public fun isNotEmpty() = !isEmpty()
+
+    @JvmName("getVararg")
+    public operator fun get(vararg index: Int): T = get(index)
+
+    @JvmName("getIntArray")
+    public operator fun get(index: IntArray): T {
+        check(index.size == dim.d) { "number of indices doesn't match dimension: ${index.size} != ${dim.d}" }
+        return data[strides.foldIndexed(offset) { i, acc, stride -> acc + index[i] * stride }]
     }
 
-    public operator fun get(index: Int): T {
-        return data[index]
+    @JvmName("setVararg")
+    public operator fun set(vararg index: Int, value: T): Unit {
+        set(index, value)
+    }
+
+    @JvmName("setIntArray")
+    public operator fun set(index: IntArray, value: T): Unit {
+        check(index.size == dim.d) { "number of indices doesn't match dimension: ${index.size} != ${dim.d}" }
+        data[strides.foldIndexed(offset) { i, acc, stride -> acc + index[i] * stride }] = value
     }
 
     public operator fun set(index: Int, value: T): Unit {
-        data.put(index, value)
+        data[offset + strides.first() * index] = value
     }
 
-    /**
-     * Returns a new array containing only distinct elements from the given array.
-     */
-    public fun distinct(): Ndarray<T, D1> {
-        return this.toMutableSet().toNdarray()
-    }
 
-    /**
-     * Returns a new array containing only elements from the given array
-     * having distinct keys returned by the given [selector] function.
-     */
-    public inline fun <K> distinctBy(selector: (T) -> K): Ndarray<T, D1> {
-        val set = HashSet<K>()
-        val list = ArrayList<T>()
-        for (e in this) {
-            val key = selector(e)
-            if (set.add(key))
-                list.add(e)
-        }
-        return list.toNdarray()
-    }
-
-    /**
-     * Drop first n elements.
-     */
-    public fun drop(n: Int): Ndarray<T, D1> {
-        require(n >= 0) { "Requested element count $n is less than zero." }
-        val resultSize = size - n
-        val d = initMemoryView<T>(resultSize, dtype).apply {
-            for (index in n until size)
-                put(this@Ndarray[index])
-            rewind()
-        }
-        val handle = Basic.allocate(d.getData())
-        return Ndarray(handle, d, intArrayOf(resultSize), resultSize, dtype, D1)
-    }
-
-    /**
-     *
-     */
-    public inline fun dropWhile(predicate: (T) -> Boolean): Ndarray<T, D1> {
-        var yielding = false
-        val list = ArrayList<T>()
-        for (item in this)
-            if (yielding)
-                list.add(item)
-            else if (!predicate(item)) {
-                list.add(item)
-                yielding = true
-            }
-        return mk.ndarray(list, intArrayOf(list.size), D1)
-    }
-
-    /**
-     * Return a new array contains elements matching filter.
-     */
-    public inline fun filter(predicate: (T) -> Boolean): Ndarray<T, D1> {
-        val tmpData = initMemoryView<T>(size, dtype)
-        val handle = Basic.allocate(tmpData.getData())
-        return filterTo(Ndarray<T, D1>(handle, tmpData, intArrayOf(size), size, dtype, D1), predicate)
-    }
-
-    /**
-     * Return a new array contains elements matching filter.
-     */
-    public inline fun filterIndexed(predicate: (index: Int, T) -> Boolean): Ndarray<T, D1> {
-        val tmpData = initMemoryView<T>(size, dtype)
-        val handle = Basic.allocate(tmpData.getData())
-        return filterIndexedTo(Ndarray<T, D1>(handle, tmpData, intArrayOf(size), size, dtype, D1), predicate)
-    }
-
-    /**
-     * Appends elements matching filter to [destination].
-     */
-    public inline fun <C : Ndarray<in T, D1>> filterIndexedTo(
-        destination: C,
-        predicate: (index: Int, T) -> Boolean
-    ): C {
-        var count = 0
-        forEachIndexed { index, element ->
-            if (predicate(index, element)) {
-                destination.data.put(element)
-                count++
-            }
-        }
-        destination.data.rewind()
-        destination.size = count
-        destination.shape = intArrayOf(count)
-        destination.data.sliceInPlace(0, destination.size)
-        return destination
-    }
-
-    /**
-     * Return a new array contains elements matching filter.
-     */
-    public inline fun filterNot(predicate: (T) -> Boolean): Ndarray<T, D1> {
-        val tmpData = initMemoryView<T>(size, dtype)
-        val handle = Basic.allocate(tmpData.getData())
-        return filterNotTo(Ndarray<T, D1>(handle, tmpData, intArrayOf(size), size, dtype, D1), predicate)
-    }
-
-    /**
-     * Appends elements matching filter to [destination].
-     */
-    public inline fun <C : Ndarray<in T, D1>> filterNotTo(destination: C, predicate: (T) -> Boolean): C {
-        var count = 0
-        for (element in this) if (!predicate(element)) {
-            destination.data.put(element)
-            count++
-        }
-        destination.data.rewind()
-        destination.size = count
-        destination.shape = intArrayOf(count)
-        destination.data.sliceInPlace(0, destination.size)
-        return destination
-    }
-
-    /**
-     * Appends elements matching filter to [destination].
-     */
-    public inline fun <C : Ndarray<in T, D1>> filterTo(destination: C, predicate: (T) -> Boolean): C {
-        var count = 0
-        for (element in this) {
-            if (predicate(element)) {
-                destination.data.put(element)
-                count++
-            }
-        }
-        destination.data.rewind()
-        destination.size = count
-        destination.shape = intArrayOf(count)
-        destination.data.sliceInPlace(0, destination.size)
-        return destination
-    }
-
-     //TODO(size!)
-//    public inline fun <reified R : Number> flatMap(transform: (T) -> Iterable<R>): Ndarray<R, D> {
-//        val d = initMemoryView<R>(size, DataType.of(R::class))
-//        val handle = Basic.allocate(d.getData())
-//        return flatMapTo(Ndarray(handle, d, shape, size, dtype, dim), transform)
-//    }
-//
-//    public inline fun <R : Number, C : Ndarray<in R, D>> flatMapTo(destination: C, transform: (T) -> Iterable<R>): C {
-//        for (element in this) {
-//            val list = transform(element)
-//            destination.data.put(list)
-//        }
-//        return destination
-//    }
-
-    /**
-     *
-     */
-    public inline fun <K> groupNdarrayBy(keySelector: (T) -> K): Map<K, Ndarray<T, D1>> {
-        return groupNdarrayByTo(LinkedHashMap<K, Ndarray<T, D1>>(), keySelector)
-    }
-
-    public inline fun <K, V : Number> groupNdarrayBy(
-        keySelector: (T) -> K,
-        valueTransform: (T) -> V
-    ): Map<K, Ndarray<V, D1>> {
-        return groupNdarrayByTo(LinkedHashMap<K, Ndarray<V, D1>>(), keySelector, valueTransform)
-    }
-
-    //todo(add?)
-    public inline fun <K, M : MutableMap<in K, Ndarray<T, D1>>> groupNdarrayByTo(
-        destination: M,
-        keySelector: (T) -> K
-    ): M {
-        val map = LinkedHashMap<K, MutableList<T>>()
-        for (element in this) {
-            val key = keySelector(element)
-            val list = map.getOrPut(key) { ArrayList<T>() }
-            list.add(element)
-        }
-        for (item in map)
-            destination.put(item.key, item.value.toNdarray())
-        return destination
-    }
-
-    //todo(add?)
-    public inline fun <K, V : Number, M : MutableMap<in K, Ndarray<V, D1>>> groupNdarrayByTo(
-        destination: M, keySelector: (T) -> K, valueTransform: (T) -> V
-    ): M {
-        val map = LinkedHashMap<K, MutableList<V>>()
-        for (element in this) {
-            val key = keySelector(element)
-            val list = map.getOrPut(key) { ArrayList<V>() }
-            list.add(valueTransform(element))
-        }
-        for (item in map)
-            destination.put(item.key, item.value.toNdarray())
-        return destination
-    }
-
-    public inline fun <K> groupingNdarrayBy(crossinline keySelector: (T) -> K): Grouping<T, K> {
-        return object : Grouping<T, K> {
-            override fun sourceIterator(): Iterator<T> = this@Ndarray.iterator()
-            override fun keyOf(element: T): K = keySelector(element)
-        }
-    }
-
-    /**
-     * Return a new array contains elements after applying [transform].
-     */
-    public inline fun <reified R : Number> map(transform: (T) -> R): Ndarray<R, D> {
-        val newDtype = DataType.of(R::class)
-        val d = initMemoryView<R>(size, newDtype)
-        val handle = Basic.allocate(d.getData())
-        return mapTo(Ndarray(handle, d, shape, size, newDtype, dim), transform)
-    }
-
-    /**
-     * Return a new array contains elements after applying [transform].
-     */
-    public inline fun <reified R : Number> mapIndexed(transform: (index: Int, T) -> R): Ndarray<R, D> {
-        val newDtype = DataType.of(R::class)
-        val d = initMemoryView<R>(size, newDtype)
-        val handle = Basic.allocate(d.getData())
-        return mapIndexedTo(Ndarray(handle, d, shape, size, newDtype, dim), transform)
-    }
-
-    /**
-     * Return a new array contains elements after applying [transform].
-     */
-    public inline fun <reified R : Number> mapIndexedNotNull(transform: (index: Int, T) -> R?): Ndarray<R, D> {
-        val newDtype = DataType.of(R::class)
-        val d = initMemoryView<R>(size, newDtype)
-        val handle = Basic.allocate(d.getData())
-        return mapIndexedNotNullTo(Ndarray(handle, d, shape, size, newDtype, dim), transform)
-    }
-
-    /**
-     * Appends elements after applying [transform] to [destination].
-     */
-    public inline fun <R : Any, C : Ndarray<in R, D>> mapIndexedNotNullTo(
-        destination: C,
-        transform: (index: Int, T) -> R?
-    ): C {
-        forEachIndexed { index, element ->
-            transform(index, element)?.let {
-                destination.data.put(it)
-            }
-        }
-        destination.data.rewind()
-        return destination
-    }
-
-    /**
-     * Appends elements after applying [transform] to [destination].
-     */
-    public inline fun <R, C : Ndarray<in R, D>> mapIndexedTo(destination: C, transform: (index: Int, T) -> R): C {
-        var index = 0
-        for (item in this)
-            destination.data.put(transform(index++, item))
-        destination.data.rewind()
-        return destination
-    }
-
-    /**
-     * Return a new array contains elements after applying [transform].
-     */
-    public inline fun <reified R : Number> mapNotNull(transform: (T) -> R?): Ndarray<R, D> {
-        val newDtype = DataType.of(R::class)
-        val d = initMemoryView<R>(size, newDtype)
-        val handle = Basic.allocate(d.getData())
-        return mapNotNullTo(Ndarray(handle, d, shape, size, newDtype, dim), transform)
-    }
-
-    /**
-     * Appends elements after applying [transform] to [destination].
-     */
-    public inline fun <R : Any, C : Ndarray<in R, D>> mapNotNullTo(destination: C, transform: (T) -> R?): C {
-        forEach { element -> transform(element)?.let { destination.data.put(it) } }
-        destination.data.rewind()
-        return destination
-    }
-
-    /**
-     * Appends elements after applying [transform] to [destination].
-     */
-    public inline fun <R, C : Ndarray<in R, D>> mapTo(destination: C, transform: (T) -> R): C {
-        for (item in this)
-            destination.data.put(transform(item))
-        destination.data.rewind()
-        return destination
-    }
-
-    //todo(remove element or minus?)
-    public inline fun <T : Number, D : DN> Ndarray<T, D>.minusElement(element: T): Ndarray<T, D> {
-        minusAssign(element)
-        return this
-    }
-
-    public inline fun <T : Number, D : DN> Ndarray<T, D>.partitionNdarray(predicate: (T) -> Boolean): Pair<Ndarray<T, D1>, Ndarray<T, D1>> {
-        val tmpFirstData = initMemoryView<T>(size, dtype)
-        val tmpSecondData = initMemoryView<T>(size, dtype)
-        var firstCount = 0
-        var secondCount = 0
-        for (element in this) {
-            if (predicate(element)) {
-                tmpFirstData.put(element)
-                firstCount++
-            } else {
-                tmpSecondData.put(element)
-                secondCount++
-            }
-        }
-        val firstData = tmpFirstData.duplicate(limit = firstCount)
-        val secondData = tmpFirstData.duplicate(limit = secondCount)
-        return Pair<Ndarray<T, D1>, Ndarray<T, D1>>(
-            Ndarray(Basic.allocate(firstData.getData()), firstData, intArrayOf(firstCount), firstCount, dtype, D1),
-            Ndarray(Basic.allocate(secondData.getData()), secondData, intArrayOf(secondCount), secondCount, dtype, D1)
-        )
-    }
-
-    //todo(add element or plus?)
-    public inline fun <T : Number, D : DN> Ndarray<T, D>.plusElement(element: T): Ndarray<T, D> {
-        plusAssign(element)
-        return this
-    }
-
-    //TODO (create view: swap position and limit)
-    //public fun <T: Number, D: DN> Ndarray<T, D>.reversed(): Ndarray<T, D> {}
-
-    override fun iterator(): Iterator<T> =
-        NdarrayIterator(data, 0, strides, shape)
+    operator fun iterator(): Iterator<T> =
+        NdarrayIterator(data, offset, strides, shape)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -431,30 +69,335 @@ class Ndarray<T : Number, D : DN>(
 
         other as Ndarray<*, *>
 
-        if (handle == other.handle) return true
-        if (data != other.data) return false
         if (!shape.contentEquals(other.shape)) return false
         if (dtype != other.dtype) return false
         if (dim != other.dim) return false
-        if (!strides.contentEquals(other.strides)) return false
+
+
+        for (index in multiIndices) {
+            if (this[index] != other.get(*index)) {
+                return false
+            }
+        }
 
         return true
     }
 
     override fun hashCode(): Int {
-        var result = handle.hashCode()
-        result = 31 * result + data.hashCode()
-        result = 31 * result + shape.contentHashCode()
-        result = 31 * result + dtype.hashCode()
-        result = 31 * result + dim.hashCode()
-        result = 31 * result + strides.contentHashCode()
+        var result = 1
+        for (el in this) {
+            result = 31 * result + el.hashCode()
+        }
         return result
     }
 
+    fun view(index: Int, axis: Int = 0): Ndarray<T, DN> {
+        return initNdarray(
+            data, offset + strides[axis] * index,
+            shape.remove(axis), strides.remove(axis), this.dtype, DN.of(this.dim.d - 1)
+        )
+    }
+
+    fun view(index: IntArray, axes: IntArray): Ndarray<T, DN> {
+        val newShape = shape.filterIndexed { i, _ -> !axes.contains(i) }.toIntArray()
+        val newStrides = strides.filterIndexed { i, _ -> !axes.contains(i) }.toIntArray()
+        var newOffset = offset
+        for (i in axes.indices)
+            newOffset += strides[axes[i]] * index[i]
+        return initNdarray(data, newOffset, newShape, newStrides, this.dtype, DN.of(this.dim.d - axes.size))
+    }
+
+    inline fun <reified E : Number> asType(): Ndarray<E, D> {
+        val dataType = DataType.of(E::class)
+        val newData = initMemoryView<E>(this.data.size, dataType) { this.data[it].toPrimitiveType() }
+        return initNdarray(newData, this.offset, this.shape, this.strides, dataType, this.dim)
+    }
+
+    fun <E : Number> asType(dataType: DataType): Ndarray<E, D> {
+        val newData = initMemoryView<E>(this.data.size, dataType) { this.data[it] as E }
+        return initNdarray(newData, this.offset, this.shape, this.strides, dataType, this.dim)
+    }
+
+    inline fun <reified M : DN> reshape(vararg dims: Int): Ndarray<T, M> {
+        // todo negative shape?
+        dims.forEach { require(it > 0) { "Shape must be positive but was $it" } }
+        check(dims.fold(1, Int::times) == size) {
+            "Cannot reshape array of size $size into a new shape ${dims.joinToString(prefix = "(", postfix = ")")}"
+        }
+        val newDim = DN.of<M>()
+        requireDimension(newDim, dims.size)
+        return if (shape.contentEquals(dims)) {
+            this as Ndarray<T, M>
+        } else {
+            initNdarray(this.data, this.offset, dims, dtype = this.dtype, dim = newDim)
+        }
+
+    }
+
+    //todo strides?
+    fun toD1Array(): D1Array<T> {
+        if (this is D1Array) return this
+        return D1Array(this.data, this.offset, intArrayOf(this.size), dtype = this.dtype)
+    }
+
+    fun asD2Array(): D2Array<T> {
+        if (this is D2Array) return this
+        else throw Exception("Cannot cast Ndarray to D2Array.")
+    }
+
+    fun asD3Array(): D3Array<T> {
+        if (this is D3Array) return this
+        else throw Exception("Cannot cast Ndarray to D3Array.")
+    }
+
+    fun asD4Array(): D4Array<T> {
+        if (this is D4Array) return this
+        else throw Exception("Cannot cast Ndarray to D4Array.")
+    }
+
     override fun toString(): String {
-        return this.joinToString(prefix = "[", postfix = "]")
+        val sb = StringBuilder()
+        sb.append('[')
+        if (this.dim.d == 1) {
+            for (pos in 0 until shape.first()) {
+                sb.append(this[pos])
+                if (pos < shape.first() - 1) {
+                    sb.append(", ")
+                }
+            }
+            sb.append(']')
+            return sb.toString()
+        }
+
+        for (ind in 0 until shape.first()) {
+            sb.append(V[ind].toString())
+            if (ind < shape.first() - 1) {
+                val newLine = "\n".repeat(dim.d - 1)
+                sb.append(",$newLine")
+            }
+        }
+
+        sb.append(']')
+        return sb.toString()
     }
 }
+
+internal fun IntArray.remove(pos: Int) = when (pos) {
+    0 -> sliceArray(1..lastIndex)
+    lastIndex -> sliceArray(0 until lastIndex)
+    else -> sliceArray(0 until pos) + sliceArray(pos + 1..lastIndex)
+}
+
+public class View<T : Number, D : DN>(private val base: Ndarray<T, D>) /*: BaseNdarray by base */ {
+    operator fun get(vararg indices: Int): Ndarray<T, DN> {
+        return indices.fold(this.base) { m, pos -> m.view(pos) as Ndarray<T, D> } as Ndarray<T, DN>
+    }
+}
+
+public class D1Array<T : Number>(
+    data: MemoryView<T>,
+    offset: Int = 0,
+    shape: IntArray,
+    strides: IntArray = computeStrides(shape),
+    dtype: DataType
+) : Ndarray<T, D1>(data, offset, shape, strides, dtype, D1) {
+
+    operator fun get(index: Int): T = data[offset + strides.first() * index]
+
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        javaClass != other?.javaClass -> false
+        other !is Ndarray<*, *> -> false
+        dtype != other.dtype -> false
+        dim != other.dim -> false
+        !shape.contentEquals(other.shape) -> false
+        else -> (0 until size).all { this[it] == other[it] }
+    }
+
+    override fun toString(): String = buildString {
+        append('[')
+        for (i in 0 until shape.first()) {
+            append(this@D1Array[i])
+            if (i < shape.first() - 1)
+                append(", ")
+        }
+        append(']')
+    }
+
+}
+
+public class D2Array<T : Number>(
+    data: MemoryView<T>,
+    offset: Int = 0,
+    shape: IntArray,
+    strides: IntArray = computeStrides(shape),
+    dtype: DataType
+) : Ndarray<T, D2>(data, offset, shape, strides, dtype, D2) {
+
+    operator fun get(index: Int): D1Array<T> = view(index, 0) as D1Array<T>
+
+    operator fun get(ind1: Int, ind2: Int): T = data[offset + strides[0] * ind1 + strides[1] * ind2]
+
+    override fun equals(other: Any?): Boolean {
+        when {
+            this === other -> return true
+            javaClass != other?.javaClass -> return false
+            other !is Ndarray<*, *> -> return false
+            dtype != other.dtype -> return false
+            dim != other.dim -> return false
+            !shape.contentEquals(other.shape) -> return false
+            else -> {
+                for (ax0 in 0 until shape[0])
+                    for (ax1 in 0 until shape[1])
+                        if (this[ax0, ax1] != other[ax0, ax1])
+                            return false
+                return true
+            }
+        }
+    }
+
+    override fun toString(): String = buildString {
+        append('[')
+        for (ax0 in 0 until shape[0]) {
+            append('[')
+            for (ax1 in 0 until shape[1]) {
+                append(this@D2Array[ax0, ax1])
+                if (ax1 < shape[1] - 1)
+                    append(", ")
+            }
+            append(']')
+            if (ax0 < shape[0] - 1)
+                append(",\n")
+        }
+        append(']')
+    }
+}
+
+public class D3Array<T : Number>(
+    data: MemoryView<T>,
+    offset: Int = 0,
+    shape: IntArray,
+    strides: IntArray = computeStrides(shape),
+    dtype: DataType
+) : Ndarray<T, D3>(data, offset, shape, strides, dtype, D3) {
+
+    operator fun get(index: Int): D2Array<T> = view(index, 0) as D2Array<T>
+
+    operator fun get(ind1: Int, ind2: Int): D1Array<T> = view(intArrayOf(ind1, ind2), intArrayOf(0, 1)) as D1Array<T>
+
+    operator fun get(ind1: Int, ind2: Int, ind3: Int): T =
+        data[offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3]
+
+    override fun equals(other: Any?): Boolean {
+        when {
+            this === other -> return true
+            javaClass != other?.javaClass -> return false
+            other !is Ndarray<*, *> -> return false
+            dtype != other.dtype -> return false
+            dim != other.dim -> return false
+            !shape.contentEquals(other.shape) -> return false
+            else -> {
+                for (ax0 in 0 until shape[0])
+                    for (ax1 in 0 until shape[1])
+                        for (ax2 in 0 until shape[2])
+                            if (this[ax0, ax1, ax2] != other[ax0, ax1, ax2])
+                                return false
+                return true
+            }
+        }
+    }
+
+    override fun toString(): String = buildString {
+        append('[')
+        for (ax0 in 0 until shape[0]) {
+            append('[')
+            for (ax1 in 0 until shape[1]) {
+                append('[')
+                for (ax2 in 0 until shape[2]) {
+                    append(this@D3Array[ax0, ax1, ax2])
+                    if (ax2 < shape[2] - 1)
+                        append(", ")
+                }
+                append(']')
+                if (ax1 < shape[1] - 1)
+                    append(",\n")
+            }
+            append(']')
+            if (ax0 < shape[0] - 1)
+                append(",\n\n")
+        }
+        append(']')
+    }
+}
+
+public class D4Array<T : Number>(
+    data: MemoryView<T>,
+    offset: Int = 0,
+    shape: IntArray,
+    strides: IntArray = computeStrides(shape),
+    dtype: DataType
+) : Ndarray<T, D4>(data, offset, shape, strides, dtype, D4) {
+
+    operator fun get(index: Int): D3Array<T> = view(index, 0) as D3Array<T>
+
+    operator fun get(ind1: Int, ind2: Int): D2Array<T> =
+        view(intArrayOf(ind1, ind2), intArrayOf(0, 1)) as D2Array<T>
+
+    operator fun get(ind1: Int, ind2: Int, ind3: Int): D1Array<T> =
+        view(intArrayOf(ind1, ind2, ind3), intArrayOf(0, 1, 2)) as D1Array<T>
+
+    operator fun get(ind1: Int, ind2: Int, ind3: Int, ind4: Int): T =
+        data[offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3 + strides[3] * ind4]
+
+    override fun equals(other: Any?): Boolean {
+        when {
+            this === other -> return true
+            javaClass != other?.javaClass -> return false
+            other !is Ndarray<*, *> -> return false
+            dtype != other.dtype -> return false
+            dim != other.dim -> return false
+            !shape.contentEquals(other.shape) -> return false
+            else -> {
+                for (ax0 in 0 until shape[0])
+                    for (ax1 in 0 until shape[1])
+                        for (ax2 in 0 until shape[2])
+                            for (ax3 in 0 until shape[3])
+                                if (this[ax0, ax1, ax2, ax3] != other[ax0, ax1, ax2, ax3])
+                                    return false
+                return true
+            }
+        }
+    }
+
+    override fun toString(): String = buildString {
+        append('[')
+        for (ax0 in 0 until shape[0]) {
+            append('[')
+            for (ax1 in 0 until shape[1]) {
+                append('[')
+                for (ax2 in 0 until shape[2]) {
+                    append('[')
+                    for (ax3 in 0 until shape[3]) {
+                        append(this@D4Array[ax0, ax1, ax2, ax3])
+                        if (ax3 < shape[3] - 1)
+                            append(", ")
+                    }
+                    append(']')
+                    if (ax2 < shape[2] - 1)
+                        append(",\n")
+                }
+                append(']')
+                if (ax1 < shape[1] - 1)
+                    append(",\n\n")
+            }
+            append(']')
+            if (ax0 < shape[0] - 1)
+                append(",\n\n\n")
+        }
+        append(']')
+    }
+}
+
 
 enum class DataType(val nativeCode: Int, val itemSize: Int, val clazz: KClass<out Number>) {
     ByteDataType(1, 1, Byte::class),
@@ -538,4 +481,88 @@ class NdarrayIterator<T : Number>(
 
         return data[p]
     }
+}
+
+class MultiIndexProgression(public val first: IntArray, public val last: IntArray, public val step: Int = 1) {
+
+    init {
+        if (step == 0) throw IllegalArgumentException("Step must be non-zero.")
+        if (step == Int.MIN_VALUE) throw IllegalArgumentException("Step must be greater than Int.MIN_VALUE to avoid overflow on negation.")
+        if (first.size != last.size) throw IllegalArgumentException("Sizes first and last must be identical.")
+    }
+
+    operator fun iterator(): Iterator<IntArray> = MultiIndexIterator(first, last, step)
+
+    override fun equals(other: Any?): Boolean =
+        other is MultiIndexProgression && (first.contentEquals(other.first) && last.contentEquals(other.last))
+
+    override fun hashCode(): Int {
+        return (first + last).hashCode()
+    }
+
+    override fun toString(): String {
+        return "${first.joinToString(prefix = "(", postfix = ")")}..${last.joinToString(prefix = "(", postfix = ")")}"
+    }
+}
+
+internal class MultiIndexIterator(first: IntArray, last: IntArray, private val step: Int) : Iterator<IntArray> {
+    private val finalElement: IntArray = IntArray(last.size) { last[it] - 1 }
+    private var hasNext: Boolean = if (step > 0) {
+        var ret: Boolean = true
+        for (i in first.size - 1 downTo 0) {
+            if (first[i] > last[i]) {
+                ret = false
+                break
+            }
+        }
+        ret
+    } else {
+        var ret: Boolean = true
+        for (i in first.size - 1 downTo 0) {
+            if (first[i] < last[i]) {
+                ret = false
+                break
+            }
+        }
+        ret
+    }
+
+    //todo (-1???)
+    private val next = if (hasNext) first.apply { set(lastIndex, -1) } else finalElement
+
+    override fun hasNext(): Boolean = hasNext
+
+    override fun next(): IntArray {
+        next += step
+        if (next.contentEquals(finalElement)) {
+            if (!hasNext) throw NoSuchElementException()
+            hasNext = false
+        }
+        return next
+    }
+
+    private operator fun IntArray.plusAssign(value: Int) {
+        for (i in this.size - 1 downTo 0) {
+            val t = this[i] + value
+            if (t > finalElement[i] && i != 0) {
+                this[i] = 0
+            } else {
+                this[i] = t
+                break
+            }
+        }
+    }
+}
+
+public operator fun IntArray.rangeTo(other: IntArray): MultiIndexProgression {
+    return MultiIndexProgression(this, other)
+}
+
+public infix fun MultiIndexProgression.step(step: Int): MultiIndexProgression {
+    if (step <= 0) throw IllegalArgumentException("Step must be posotove, was: $step.")
+    return MultiIndexProgression(first, last, step)
+}
+
+public infix fun IntArray.downTo(to: IntArray): MultiIndexProgression {
+    return MultiIndexProgression(this, to, -1)
 }
