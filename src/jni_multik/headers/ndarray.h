@@ -11,10 +11,10 @@ extern "C" {
 /*
  * Class:     org_jetbrains_multik_jni_Basic
  * Method:    allocate
- * Signature: (Ljava/nio/Buffer;)J
+ * Signature: (Ljava/nio/Buffer;[II)J
  */
 JNIEXPORT jlong JNICALL Java_org_jetbrains_multik_jni_Basic_allocate
-    (JNIEnv *, jobject, jobject);
+    (JNIEnv *, jobject, jobject, jintArray, jint);
 
 /*
  * Class:     org_jetbrains_multik_jni_Basic
@@ -22,7 +22,15 @@ JNIEXPORT jlong JNICALL Java_org_jetbrains_multik_jni_Basic_allocate
  * Signature: (J)V
  */
 JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_Basic_delete
-(JNIEnv *, jobject, jlong);
+    (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     org_jetbrains_multik_jni_Basic
+ * Method:    delete
+ * Signature: (JJ)V
+ */
+JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_Basic_dot
+    (JNIEnv *, jobject, jlong, jlong);
 
 #ifdef __cplusplus
 }
