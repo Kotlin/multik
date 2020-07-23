@@ -5,10 +5,17 @@ import org.jetbrains.multik.api.mk
 import org.jetbrains.multik.api.ndarray
 import org.jetbrains.multik.core.D2
 import org.jetbrains.multik.core.Ndarray
+import org.jetbrains.multik.core.toList
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CreateArray2DTest {
+
+    @BeforeTest
+    fun loadLibrary() {
+        System.load("/Users/pavel.gorgulov/Projects/main_project/multik/src/jni_multik/cmake-build-debug/libjni_multik.dylib")
+    }
 
     private val shape = intArrayOf(2, 5)
     private val dim = 2
@@ -16,71 +23,71 @@ class CreateArray2DTest {
     @Test
     fun createByteArray2DTest() {
         val inputArray = ByteArray(10) { it.toByte() }
-        val a = mk.ndarray<D2>(inputArray, shape)
+        val a = mk.ndarray<D2>(inputArray, *shape)
 
         assertEquals(dim, a.dim.d)
 
-        assertEquals(inputArray.asList(), a.getData())
+        assertEquals(inputArray.asList(), a.toList())
     }
 
     @Test
     fun createShortArray2DTest() {
         val inputArray = ShortArray(10) { it.toShort() }
-        val a = mk.ndarray<D2>(inputArray, shape)
+        val a = mk.ndarray<D2>(inputArray, *shape)
 
         assertEquals(dim, a.dim.d)
 
-        assertEquals(inputArray.asList(), a.getData())
+        assertEquals(inputArray.asList(), a.toList())
     }
 
     @Test
     fun createIntArray2DTest() {
         val inputArray = IntArray(10) { it }
-        val a = mk.ndarray<D2>(inputArray, shape)
+        val a = mk.ndarray<D2>(inputArray, *shape)
 
         assertEquals(dim, a.dim.d)
 
-        assertEquals(inputArray.asList(), a.getData())
+        assertEquals(inputArray.asList(), a.toList())
     }
 
     @Test
     fun createLongArray2DTest() {
         val inputArray = LongArray(10) { it.toLong() }
-        val a = mk.ndarray<D2>(inputArray, shape)
+        val a = mk.ndarray<D2>(inputArray, *shape)
 
         assertEquals(dim, a.dim.d)
 
-        assertEquals(inputArray.asList(), a.getData())
+        assertEquals(inputArray.asList(), a.toList())
     }
 
     @Test
     fun createFloatArray2DTest() {
         val inputArray = FloatArray(10) { it.toFloat() }
-        val a = mk.ndarray<D2>(inputArray, shape)
+        val a = mk.ndarray<D2>(inputArray, *shape)
 
         assertEquals(dim, a.dim.d)
 
-        assertEquals(inputArray.asList(), a.getData())
+        assertEquals(inputArray.asList(), a.toList())
     }
 
     @Test
     fun createDoubleArray2DTest() {
         val inputArray = DoubleArray(10) { it.toDouble() }
-        val a = mk.ndarray<D2>(inputArray, shape)
+        val a = mk.ndarray<D2>(inputArray, *shape)
 
         assertEquals(dim, a.dim.d)
 
-        assertEquals(inputArray.asList(), a.getData())
+        assertEquals(inputArray.asList(), a.toList())
     }
 
     @Test
     fun createDslArrayTest() {
         val inputArr = IntArray(10) { it }
         val a = mk.d2array(dim, 5) { it }
-        assertEquals(mk.ndarray(inputArr, shape), a)
+        assertEquals(mk.ndarray<D2>(inputArr, *shape), a)
 
         val b = mk.d2array(2, 5) { it * it }
-        assertEquals(mk.ndarray(inputArr.map { it * it }.toIntArray(), shape), b)
+        assertEquals(mk.ndarray<D2>(inputArr.map { it * it }.toIntArray(), *shape), b)
     }
 
     @Test
