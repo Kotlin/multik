@@ -4,7 +4,7 @@ import org.jetbrains.multik.core.*
 import kotlin.math.pow
 
 object JvmLinAlg : LinAlg {
-    override fun <T : Number> pow(mat: Ndarray<T, D2>, n: Int): Ndarray<T, D2> {
+    override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): Ndarray<T, D2> {
         if (n == 0) return mk.identity<T>(mat.shape[0], mat.dtype)
 
         return if (n % 2 == 0) {
@@ -19,7 +19,7 @@ object JvmLinAlg : LinAlg {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number> norm(mat: Ndarray<T, D2>, p: Int): Double {
+    override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
         var n = 0.0
         for (element in mat) {
             n += element.toDouble().pow(p)
@@ -47,7 +47,7 @@ object JvmLinAlg : LinAlg {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number, D : D2> dot(a: Ndarray<T, D2>, b: Ndarray<T, D>): Ndarray<T, D> {
+    override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): Ndarray<T, D> {
         if (a.shape[1] != b.shape[0])
             throw IllegalArgumentException(
                 "Shapes mismatch: shapes "
@@ -62,11 +62,11 @@ object JvmLinAlg : LinAlg {
         }
     }
 
-    private fun <T : Number> dotMatrix(a: Ndarray<T, D2>, b: Ndarray<T, D2>): Ndarray<T, D2> {
+    private fun <T : Number> dotMatrix(a: MultiArray<T, D2>, b: MultiArray<T, D2>): Ndarray<T, D2> {
         val newShape = intArrayOf(a.shape[0], b.shape[1])
         val ret = D2Array<T>(
             initMemoryView<T>(newShape[0] * newShape[1], a.dtype),
-            shape = newShape, dtype = a.dtype
+            shape = newShape, dtype = a.dtype, dim = D2
         )
         for (row in 0 until newShape[0]) {
             for (col in 0 until newShape[1]) {
@@ -80,20 +80,18 @@ object JvmLinAlg : LinAlg {
         return ret
     }
 
-    private fun <T : Number> dotVector(a: Ndarray<T, D2>, b: Ndarray<T, D1>): Ndarray<T, D1> {
+    private fun <T : Number> dotVector(a: MultiArray<T, D2>, b: MultiArray<T, D1>): D1Array<T> {
         val newShape = intArrayOf(a.shape[0])
-        val ret = D1Array<T>(initMemoryView<T>(newShape[0], a.dtype), shape = newShape, dtype = a.dtype)
+        val ret = D1Array<T>(initMemoryView<T>(newShape[0], a.dtype), shape = newShape, dtype = a.dtype, dim = D1)
         for (i in 0 until newShape[0]) {
             for (j in 0 until b.shape[0]) {
-                ret[i] = ret[i] + a[i, j] * b[j]
-                //todo (org.jetbrains.kotlin.codegen.CompilationException: Back-end (JVM) Internal error: wrong bytecode generated)
-//                ret[i] += a[i, j] * b[j]
+                ret[i] += a[i, j] * b[j]
             }
         }
         return ret
     }
 
-    override fun <T : Number> dot(a: Ndarray<T, D1>, b: Ndarray<T, D1>): T {
+    override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
         var ret: Number = zeroNumber(a.dtype)
         for (i in a.indices) {
             ret += a[i] * b[1]

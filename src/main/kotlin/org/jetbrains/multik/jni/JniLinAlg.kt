@@ -8,7 +8,7 @@ import org.jetbrains.multik.core.*
 
 object NativeLinAlg : LinAlg {
     //todo
-    override fun <T : Number> pow(mat: Ndarray<T, D2>, n: Int): Ndarray<T, D2> {
+    override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): Ndarray<T, D2> {
         if (n == 0) return mk.identity<T>(mat.shape[0], mat.dtype)
 
         return if (n % 2 == 0) {
@@ -23,7 +23,7 @@ object NativeLinAlg : LinAlg {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number> norm(mat: Ndarray<T, D2>, p: Int): Double {
+    override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
         TODO("Not yet implemented")
     }
 
@@ -48,7 +48,7 @@ object NativeLinAlg : LinAlg {
     }
 
     //TODO (Double and Number type)
-    override fun <T : Number, D : D2> dot(a: Ndarray<T, D2>, b: Ndarray<T, D>): Ndarray<T, D> {
+    override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): Ndarray<T, D> {
         if (a.shape[1] != b.shape[0])
             throw IllegalArgumentException(
                 "Shapes mismatch: shapes "
@@ -66,7 +66,7 @@ object NativeLinAlg : LinAlg {
                 (b.data as MemoryViewDoubleArray).data,
                 c
             )
-            D1Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype) as Ndarray<T, D>
+            D1Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D1) as Ndarray<T, D>
         } else {
             val shape = intArrayOf(a.shape[0], b.shape[1])
             //            val c = initMemoryView<T>(shape[0] * shape[1], a.dtype)
@@ -79,11 +79,11 @@ object NativeLinAlg : LinAlg {
                 b.shape[1],
                 c
             )
-            D2Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype) as Ndarray<T, D>
+            D2Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D2) as Ndarray<T, D>
         }
     }
 
-    override fun <T : Number> dot(a: Ndarray<T, D1>, b: Ndarray<T, D1>): T {
+    override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
         TODO("Not yet implemented")
     }
 }

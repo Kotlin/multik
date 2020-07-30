@@ -12,36 +12,36 @@ typealias mk = Multik
 
 interface Math {
 
-    public fun <T : Number, D : DN> argMax(a: Ndarray<T, D>): Int
+    public fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int
 
-    public fun <T : Number, D : DN> argMin(a: Ndarray<T, D>): Int
+    public fun <T : Number, D : Dimension> argMin(a: MultiArray<T, D>): Int
 
-    public fun <T : Number, D : DN> exp(a: Ndarray<T, D>): Ndarray<Double, D>
+    public fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): Ndarray<Double, D>
 
-    public fun <T : Number, D : DN> log(a: Ndarray<T, D>): Ndarray<Double, D>
+    public fun <T : Number, D : Dimension> log(a: MultiArray<T, D>): Ndarray<Double, D>
 
-    public fun <T : Number, D : DN> sin(a: Ndarray<T, D>): Ndarray<Double, D>
+    public fun <T : Number, D : Dimension> sin(a: MultiArray<T, D>): Ndarray<Double, D>
 
-    public fun <T : Number, D : DN> cos(a: Ndarray<T, D>): Ndarray<Double, D>
+    public fun <T : Number, D : Dimension> cos(a: MultiArray<T, D>): Ndarray<Double, D>
 
-    public fun <T : Number, D : DN> max(a: Ndarray<T, D>): T
+    public fun <T : Number, D : Dimension> max(a: MultiArray<T, D>): T
 
-    public fun <T : Number, D : DN> min(a: Ndarray<T, D>): T
+    public fun <T : Number, D : Dimension> min(a: MultiArray<T, D>): T
 
-    public fun <T : Number, D : DN> sum(a: Ndarray<T, D>): T
+    public fun <T : Number, D : Dimension> sum(a: MultiArray<T, D>): T
 
-    public fun <T : Number, D : DN> cumSum(a: Ndarray<T, D>): D1Array<T>
+    public fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>): D1Array<T>
 
-    public fun <T : Number, D : DN> cumSum(a: Ndarray<T, D>, axis: Int): Ndarray<T, D>
+    public fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>, axis: Int): Ndarray<T, D>
 }
 
 interface LinAlg {
 
-    public fun <T : Number> pow(mat: Ndarray<T, D2>, n: Int): Ndarray<T, D2>
+    public fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): Ndarray<T, D2>
 
     public fun svd()
 
-    public fun <T : Number> norm(mat: Ndarray<T, D2>, p: Int = 2): Double
+    public fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int = 2): Double
 
     public fun cond()
 
@@ -53,9 +53,9 @@ interface LinAlg {
 
     public fun inv()
 
-    public fun <T : Number, D : D2> dot(a: Ndarray<T, D2>, b: Ndarray<T, D>): Ndarray<T, D>
+    public fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): Ndarray<T, D>
 
-    public fun <T : Number> dot(a: Ndarray<T, D1>, b: Ndarray<T, D1>): T
+    public fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T
 }
 
 /**
@@ -64,7 +64,9 @@ interface LinAlg {
 object Multik {
     private val loader: Loader = Loader("jni_multik")
     var nativeLibraryLoaded: Boolean = loader.load()
-        private set(value) { field = if (value) loader.load() else false }
+        private set(value) {
+            field = if (value) loader.load() else false
+        }
 
     var useNative: Boolean = false
         set(value) {

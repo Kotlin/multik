@@ -1,5 +1,6 @@
 package org.jetbrains.multik.core
 
+//todo (private set)
 sealed class MemoryView<T : Number> : Iterable<T> {
     internal abstract val data: Any
 
@@ -16,15 +17,6 @@ sealed class MemoryView<T : Number> : Iterable<T> {
     public abstract fun getData(): Array<T>
 
     public abstract override fun iterator(): Iterator<T>
-
-    //todo
-    override fun equals(other: Any?): Boolean {
-        return super.equals(other)
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
 }
 
 @PublishedApi
@@ -44,6 +36,21 @@ internal class MemoryViewByteArray(override val data: ByteArray) : MemoryView<By
     override fun getData(): Array<Byte> = data.toTypedArray()
 
     override fun iterator(): Iterator<Byte> = data.iterator()
+
+    override fun equals(other: Any?): Boolean {
+        return when {
+            this === other -> true
+            javaClass != other?.javaClass -> false
+            other !is MemoryViewByteArray -> false
+            size != other.size -> false
+            else -> (0 until size).all { this.data[it] == other.data[it] }
+        }
+    }
+
+    override fun hashCode(): Int =
+        (0 until size).fold(1) { acc, r ->
+            31 * acc + data[r].hashCode()
+        }
 }
 
 @PublishedApi
@@ -63,6 +70,21 @@ internal class MemoryViewShortArray(override val data: ShortArray) : MemoryView<
     override fun getData(): Array<Short> = data.toTypedArray()
 
     override fun iterator(): Iterator<Short> = data.iterator()
+
+    override fun equals(other: Any?): Boolean {
+        return when {
+            this === other -> true
+            javaClass != other?.javaClass -> false
+            other !is MemoryViewShortArray -> false
+            size != other.size -> false
+            else -> (0 until size).all { this.data[it] == other.data[it] }
+        }
+    }
+
+    override fun hashCode(): Int =
+        (0 until size).fold(1) { acc, r ->
+            31 * acc + data[r].hashCode()
+        }
 }
 
 @PublishedApi
@@ -82,6 +104,21 @@ internal class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>
     override fun getData(): Array<Int> = data.toTypedArray()
 
     override fun iterator(): Iterator<Int> = data.iterator()
+
+    override fun equals(other: Any?): Boolean {
+        return when {
+            this === other -> true
+            javaClass != other?.javaClass -> false
+            other !is MemoryViewIntArray -> false
+            size != other.size -> false
+            else -> (0 until size).all { this.data[it] == other.data[it] }
+        }
+    }
+
+    override fun hashCode(): Int =
+        (0 until size).fold(1) { acc, r ->
+            31 * acc + data[r].hashCode()
+        }
 }
 
 @PublishedApi
@@ -101,6 +138,21 @@ internal class MemoryViewLongArray(override val data: LongArray) : MemoryView<Lo
     override fun getData(): Array<Long> = data.toTypedArray()
 
     override fun iterator(): Iterator<Long> = data.iterator()
+
+    override fun equals(other: Any?): Boolean {
+        return when {
+            this === other -> true
+            javaClass != other?.javaClass -> false
+            other !is MemoryViewLongArray -> false
+            size != other.size -> false
+            else -> (0 until size).all { this.data[it] == other.data[it] }
+        }
+    }
+
+    override fun hashCode(): Int =
+        (0 until size).fold(1) { acc, r ->
+            31 * acc + data[r].hashCode()
+        }
 }
 
 @PublishedApi
@@ -120,6 +172,21 @@ internal class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<
     override fun getData(): Array<Float> = data.toTypedArray()
 
     override fun iterator(): Iterator<Float> = data.iterator()
+
+    override fun equals(other: Any?): Boolean {
+        return when {
+            this === other -> true
+            javaClass != other?.javaClass -> false
+            other !is MemoryViewFloatArray -> false
+            size != other.size -> false
+            else -> (0 until size).all { this.data[it] == other.data[it] }
+        }
+    }
+
+    override fun hashCode(): Int =
+        (0 until size).fold(1) { acc, r ->
+            31 * acc + data[r].hashCode()
+        }
 }
 
 @PublishedApi
@@ -139,6 +206,21 @@ internal class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryVie
     override fun getData(): Array<Double> = data.toTypedArray()
 
     override fun iterator(): Iterator<Double> = data.iterator()
+
+    override fun equals(other: Any?): Boolean {
+        return when {
+            this === other -> true
+            javaClass != other?.javaClass -> false
+            other !is MemoryViewDoubleArray -> false
+            size != other.size -> false
+            else -> (0 until size).all { this.data[it] == other.data[it] }
+        }
+    }
+
+    override fun hashCode(): Int =
+        (0 until size).fold(1) { acc, r ->
+            31 * acc + data[r].hashCode()
+        }
 }
 
 fun <T : Number> initMemoryView(size: Int, dataType: DataType): MemoryView<T> {

@@ -1,31 +1,32 @@
 package org.jetbrains.multik.core
 
 @Suppress("NOTHING_TO_INLINE")
-inline fun requireDimension(dim: DN, shapeSize: Int) {
+inline fun requireDimension(dim: Dimension, shapeSize: Int) {
     require(dim.d == shapeSize) { "Dimension doesn't match the size of the shape: dimension (${dim.d}) != $shapeSize shape size." }
 }
 
+@PublishedApi
 @Suppress("NOTHING_TO_INLINE")
-inline fun requireShapeEmpty(shape: IntArray) {
+internal inline fun requireShapeEmpty(shape: IntArray) {
     require(shape.isNotEmpty()) { "Shape cannot be empty." }
 }
 
-@PublishedApi
-@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
-internal inline fun <T : Number, D : DN> initNdarray(
-    data: MemoryView<T>, offset: Int = 0,
-    shape: IntArray,
-    strides: IntArray = computeStrides(shape),
-    dtype: DataType, dim: D
-): Ndarray<T, D> = when (dim.d) {
-    1 -> D1Array<T>(data = data, offset = offset, shape = shape, strides = strides, dtype = dtype) as Ndarray<T, D>
-    2 -> D2Array<T>(data = data, offset = offset, shape = shape, strides = strides, dtype = dtype) as Ndarray<T, D>
-    3 -> D3Array<T>(data = data, offset = offset, shape = shape, strides = strides, dtype = dtype) as Ndarray<T, D>
-    4 -> D4Array<T>(data = data, offset = offset, shape = shape, strides = strides, dtype = dtype) as Ndarray<T, D>
-    else -> Ndarray<T, D>(data = data, offset = offset, shape = shape, strides = strides, dtype = dtype, dim = dim)
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun requireElementsWithShape(elementSize: Int, shapeSize: Int) {
+    require(elementSize == shapeSize) { "The number of elements doen't match the shape: $elementSize!=$shapeSize" }
 }
 
-fun computeStrides(shape: IntArray): IntArray = shape.clone().apply {
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun requireArraySizes(rightSize: Int, otherSize: Int) {
+    require(rightSize == otherSize) { "Array sizes don't match: (right operand size) ${rightSize}!= ${otherSize} (left operand size)" }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline fun requirePositiveShape(dim: Int) {
+    require(dim > 0) { "Shape must be positive but was $dim." }
+}
+
+internal fun computeStrides(shape: IntArray): IntArray = shape.clone().apply {
     this[this.lastIndex] = 1
     for (i in this.lastIndex - 1 downTo 0) {
         this[i] = this[i + 1] * shape[i + 1]
@@ -43,7 +44,6 @@ internal inline fun zeroNumber(dtype: DataType): Number = when (dtype.nativeCode
     else -> throw Exception("Type not defined.")
 }
 
-//todo (exception message)
 @Suppress("IMPLICIT_CAST_TO_ANY")
 inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::class) {
     Byte::class -> this.toByte()
@@ -66,4 +66,4 @@ inline fun <T : Number> Number.toPrimitiveType(dtype: DataType): T = when (dtype
     else -> throw Exception("Type not defined.")
 } as T
 
-public operator fun <T : Number> Number.compareTo(other: T): Int = (this - other).toInt()
+internal operator fun <T : Number> Number.compareTo(other: T): Int = (this - other).toInt()
