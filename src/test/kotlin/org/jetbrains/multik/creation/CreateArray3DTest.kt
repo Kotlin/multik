@@ -23,7 +23,7 @@ class CreateArray3DTest {
     @Test
     fun createByteArray3DTest() {
         val inputArray = ByteArray(30) { it.toByte() }
-        val a = mk.ndarray<D3>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3)
 
         assertEquals(dim, a.dim.d)
 
@@ -33,7 +33,7 @@ class CreateArray3DTest {
     @Test
     fun createShortArray3DTest() {
         val inputArray = ShortArray(30) { it.toShort() }
-        val a = mk.ndarray<D3>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3)
 
         assertEquals(dim, a.dim.d)
 
@@ -43,7 +43,7 @@ class CreateArray3DTest {
     @Test
     fun createIntArray3DTest() {
         val inputArray = IntArray(30) { it }
-        val a = mk.ndarray<D3>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3)
 
         assertEquals(dim, a.dim.d)
 
@@ -53,7 +53,7 @@ class CreateArray3DTest {
     @Test
     fun createLongArray3DTest() {
         val inputArray = LongArray(30) { it.toLong() }
-        val a = mk.ndarray<D3>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3)
 
         assertEquals(dim, a.dim.d)
 
@@ -63,7 +63,7 @@ class CreateArray3DTest {
     @Test
     fun createFloatArray3DTest() {
         val inputArray = FloatArray(30) { it.toFloat() }
-        val a = mk.ndarray<D3>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3)
 
         assertEquals(dim, a.dim.d)
 
@@ -73,7 +73,7 @@ class CreateArray3DTest {
     @Test
     fun createDoubleArray3DTest() {
         val inputArray = DoubleArray(30) { it.toDouble() }
-        val a = mk.ndarray<D3>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3)
 
         assertEquals(dim, a.dim.d)
 
@@ -84,10 +84,10 @@ class CreateArray3DTest {
     fun createDslArrayTest() {
         val inputArr = IntArray(30) { it }
         val a = mk.d3array(2, 5, 3) { it }
-        assertEquals(mk.ndarray<D3>(inputArr, *shape), a)
+        assertEquals(mk.ndarray(inputArr, 2, 5, 3), a)
 
-//        val b = mk.d3array(2, 5, 3) { it * it }
-//        assertEquals(mk.ndarray<Int, D3>(inputArr.map { it * it }, shape), b)
+        val b = mk.d3array(2, 5, 3) { it * it }
+        assertEquals(mk.ndarray<Int, D3>(inputArr.map { it * it }, shape), b)
     }
 
     @Test

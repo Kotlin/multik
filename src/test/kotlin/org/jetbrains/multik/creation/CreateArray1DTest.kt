@@ -19,7 +19,7 @@ class CreateArray1DTest {
     @Test
     fun createByteArrayTest() {
         val inputArr = ByteArray(10) { it.toByte() }
-        val a = mk.ndarray<D1>(inputArr, 10)
+        val a = mk.ndarray(inputArr)
 
         // check dimension
         assertEquals(1, a.dim.d)
@@ -31,7 +31,7 @@ class CreateArray1DTest {
     @Test
     fun createShortArrayTest() {
         val inputArr = ShortArray(10) { it.toShort() }
-        val a = mk.ndarray<D1>(inputArr, 10)
+        val a = mk.ndarray(inputArr)
 
         // check dimension
         assertEquals(1, a.dim.d)
@@ -43,7 +43,7 @@ class CreateArray1DTest {
     @Test
     fun createIntArrayTest() {
         val inputArr = IntArray(10) { it }
-        val a = mk.ndarray<D1>(inputArr, 10)
+        val a = mk.ndarray(inputArr)
 
         // check dimension
         assertEquals(1, a.dim.d)
@@ -55,7 +55,7 @@ class CreateArray1DTest {
     @Test
     fun createLongArrayTest() {
         val inputArr = LongArray(10) { it.toLong() }
-        val a = mk.ndarray<D1>(inputArr, 10)
+        val a = mk.ndarray(inputArr)
 
         // check dimension
         assertEquals(1, a.dim.d)
@@ -67,7 +67,7 @@ class CreateArray1DTest {
     @Test
     fun createFloatArrayTest() {
         val inputArr = FloatArray(10) { it.toFloat() }
-        val a = mk.ndarray<D1>(inputArr, 10)
+        val a = mk.ndarray(inputArr)
 
         // check dimension
         assertEquals(1, a.dim.d)
@@ -79,7 +79,7 @@ class CreateArray1DTest {
     @Test
     fun createDoubleArrayTest() {
         val inputArr = DoubleArray(10) { it.toDouble() }
-        val a = mk.ndarray<D1>(inputArr, 10)
+        val a = mk.ndarray(inputArr)
 
         // check dimension
         assertEquals(1, a.dim.d)
@@ -92,10 +92,10 @@ class CreateArray1DTest {
     fun createDslArrayTest() {
         val inputArr = IntArray(10) { it }
         val a = mk.d1array(10) { it }
-        assertEquals(mk.ndarray<D1>(inputArr, 10), a)
+        assertEquals(mk.ndarray(inputArr), a)
 
         val b = mk.d1array(10) { it * it }
-        assertEquals(mk.ndarray<D1>(inputArr.map { it * it }.toIntArray(), 10), b)
+        assertEquals(mk.ndarray(inputArr.map { it * it }.toIntArray()), b)
     }
 
     @Test
@@ -103,7 +103,7 @@ class CreateArray1DTest {
         val inputArr = FloatArray(7) { it.toFloat() }
         inputArr[inputArr.lastIndex] = 33f
         val a = mk.ndarrayOf(0f, 1f, 2f, 3f, 4f, 5f, 33f)
-        assertEquals(mk.ndarray<D1>(inputArr, 7), a)
+        assertEquals(mk.ndarray(inputArr), a)
     }
 
     @Test

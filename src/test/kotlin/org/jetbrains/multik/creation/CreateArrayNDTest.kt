@@ -1,5 +1,6 @@
 package org.jetbrains.multik.creation
 
+import org.jetbrains.multik.api.dnarray
 import org.jetbrains.multik.api.mk
 import org.jetbrains.multik.api.ndarray
 import org.jetbrains.multik.core.DN
@@ -22,7 +23,7 @@ class CreateArrayNDTest {
     @Test
     fun createByteArrayNDTest() {
         val inputArray = ByteArray(60) { it.toByte() }
-        val a = mk.ndarray<DN>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2, 1)
 
         assertEquals(dim, a.dim.d)
 
@@ -32,7 +33,7 @@ class CreateArrayNDTest {
     @Test
     fun createShortArrayNDTest() {
         val inputArray = ShortArray(60) { it.toShort() }
-        val a = mk.ndarray<DN>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2, 1)
 
         assertEquals(dim, a.dim.d)
 
@@ -42,7 +43,7 @@ class CreateArrayNDTest {
     @Test
     fun createIntArrayNDTest() {
         val inputArray = IntArray(60) { it }
-        val a = mk.ndarray<DN>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2, 1)
 
         assertEquals(dim, a.dim.d)
 
@@ -52,7 +53,7 @@ class CreateArrayNDTest {
     @Test
     fun createLongArrayNDTest() {
         val inputArray = LongArray(60) { it.toLong() }
-        val a = mk.ndarray<DN>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2, 1)
 
         assertEquals(dim, a.dim.d)
 
@@ -62,7 +63,7 @@ class CreateArrayNDTest {
     @Test
     fun createFloatArrayNDTest() {
         val inputArray = FloatArray(60) { it.toFloat() }
-        val a = mk.ndarray<DN>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2, 1)
 
         assertEquals(dim, a.dim.d)
 
@@ -72,7 +73,7 @@ class CreateArrayNDTest {
     @Test
     fun createDoubleArrayNDTest() {
         val inputArray = DoubleArray(60) { it.toDouble() }
-        val a = mk.ndarray<DN>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2, 1)
 
         assertEquals(dim, a.dim.d)
 
@@ -82,11 +83,11 @@ class CreateArrayNDTest {
     @Test
     fun createDslArrayTest() {
         val inputArr = IntArray(60) { it }
-        val a = mk.ndarray(2, 5, 3, 2, 1) { it }
-        val check = mk.ndarray<DN>(inputArr, *shape)
+        val a = mk.dnarray(2, 5, 3, 2, 1) { it }
+        val check = mk.ndarray(inputArr, 2, 5, 3, 2, 1)
         assertEquals(check, a)
 
-        val b = mk.ndarray(2, 5, 3, 2, 1) { it * it }
+        val b = mk.dnarray(2, 5, 3, 2, 1) { it * it }
         assertEquals(mk.ndarray(inputArr.map { it * it }, shape), b)
     }
 

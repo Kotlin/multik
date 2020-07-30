@@ -23,7 +23,7 @@ class CreateArray4DTest {
     @Test
     fun createByteArray4DTest() {
         val inputArray = ByteArray(60) { it.toByte() }
-        val a = mk.ndarray<D4>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2)
 
         assertEquals(dim, a.dim.d)
 
@@ -33,7 +33,7 @@ class CreateArray4DTest {
     @Test
     fun createShortArray4DTest() {
         val inputArray = ShortArray(60) { it.toShort() }
-        val a = mk.ndarray<D4>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2)
 
         assertEquals(dim, a.dim.d)
 
@@ -43,7 +43,7 @@ class CreateArray4DTest {
     @Test
     fun createIntArray4DTest() {
         val inputArray = IntArray(60) { it }
-        val a = mk.ndarray<D4>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2)
 
         assertEquals(dim, a.dim.d)
 
@@ -53,7 +53,7 @@ class CreateArray4DTest {
     @Test
     fun createLongArray4DTest() {
         val inputArray = LongArray(60) { it.toLong() }
-        val a = mk.ndarray<D4>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2)
 
         assertEquals(dim, a.dim.d)
 
@@ -63,7 +63,7 @@ class CreateArray4DTest {
     @Test
     fun createFloatArray4DTest() {
         val inputArray = FloatArray(60) { it.toFloat() }
-        val a = mk.ndarray<D4>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2)
 
         assertEquals(dim, a.dim.d)
 
@@ -73,7 +73,7 @@ class CreateArray4DTest {
     @Test
     fun createDoubleArray4DTest() {
         val inputArray = DoubleArray(60) { it.toDouble() }
-        val a = mk.ndarray<D4>(inputArray, *shape)
+        val a = mk.ndarray(inputArray, 2, 5, 3, 2)
 
         assertEquals(dim, a.dim.d)
 
@@ -84,7 +84,7 @@ class CreateArray4DTest {
     fun createDslArrayTest() {
         val inputArr = IntArray(60) { it }
         val a = mk.d4array(2, 5, 3, 2) { it }
-        assertEquals(mk.ndarray<D4>(inputArr, *shape), a)
+        assertEquals(mk.ndarray(inputArr, 2, 5, 3, 2), a)
 
         val b = mk.d4array(2, 5, 3, 2) { it * it }
         assertEquals(mk.ndarray<Int, D4>(inputArr.map { it * it }, shape), b)
