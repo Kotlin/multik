@@ -1,39 +1,24 @@
 package org.jetbrains.multik.core
 
-
-//TODO(arithmetic function of dimension)
 /**
  * Create a new array as the sum of [this] and [other].
  */
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: MultiArray<T, D>): Ndarray<T, D> {
     requireArraySizes(this.size, other.size)
     val data = initMemoryView<T>(size, dtype)
-    if (this.dim.d == 1) {
-        this as MultiArray<T, D1>
-        other as MultiArray<T, D1>
-        for (i in this.indices)
-            data[i] = this[i] + other[i]
-    } else {
-        val left = this.asDNArray()
-        val right = other.asDNArray()
-        var i = 0
-        for (index in this.multiIndices)
-            data[i++] = left[index] + right[index]
+    val iterLeft = this.iterator()
+    val iterRight = other.iterator()
+    for (i in this.indices) {
+        data[i] = iterLeft.next() + iterRight.next()
     }
     return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
 }
 
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: T): Ndarray<T, D> {
     val data = initMemoryView<T>(size, dtype)
-    if (this.dim.d == 1) {
-        this as MultiArray<T, D1>
-        for (i in this.indices)
-            data[i] = this[i] + other
-    } else {
-        val left = this.asDNArray()
-        var i = 0
-        for (index in this.multiIndices)
-            data[i++] = left[index] + other
+    val iterLeft = this.iterator()
+    for (i in this.indices) {
+        data[i] = iterLeft.next() + other
     }
     return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
 }
@@ -50,10 +35,11 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssi
             this[i] += other[i]
     } else {
         val left = this.asDNArray()
-        val right = other.asDNArray()
+        val iterRight = other.iterator()
         for (index in this.multiIndices)
-            left[index] += right[index]
+            left[index] += iterRight.next()
     }
+
 }
 
 
@@ -79,32 +65,19 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssi
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: MultiArray<T, D>): Ndarray<T, D> {
     requireArraySizes(this.size, other.size)
     val data = initMemoryView<T>(size, dtype)
-    if (this.dim.d == 1) {
-        this as MultiArray<T, D1>
-        other as MultiArray<T, D1>
-        for (i in this.indices)
-            data[i] = this[i] - other[i]
-    } else {
-        val left = this.asDNArray()
-        val right = other.asDNArray()
-        var i = 0
-        for (index in this.multiIndices)
-            data[i++] = left[index] - right[index]
+    val iterLeft = this.iterator()
+    val iterRight = other.iterator()
+    for (i in this.indices) {
+        data[i] = iterLeft.next() - iterRight.next()
     }
     return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
 }
 
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: T): Ndarray<T, D> {
     val data = initMemoryView<T>(size, dtype)
-    if (this.dim.d == 1) {
-        this as MultiArray<T, D1>
-        for (i in this.indices)
-            data[i] = this[i] - other
-    } else {
-        val left = this.asDNArray()
-        var i = 0
-        for (index in this.multiIndices)
-            data[i++] = left[index] - other
+    val iterLeft = this.iterator()
+    for (i in this.indices) {
+        data[i] = iterLeft.next() - other
     }
     return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
 }
@@ -121,9 +94,9 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAss
             this[i] -= other[i]
     } else {
         val left = this.asDNArray()
-        val right = other.asDNArray()
+        val iterRight = other.iterator()
         for (index in this.multiIndices)
-            left[index] -= right[index]
+            left[index] -= iterRight.next()
     }
 }
 
@@ -148,32 +121,19 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAss
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: MultiArray<T, D>): Ndarray<T, D> {
     requireArraySizes(this.size, other.size)
     val data = initMemoryView<T>(size, dtype)
-    if (this.dim.d == 1) {
-        this as MultiArray<T, D1>
-        other as MultiArray<T, D1>
-        for (i in this.indices)
-            data[i] = this[i] * other[i]
-    } else {
-        val left = this.asDNArray()
-        val right = other.asDNArray()
-        var i = 0
-        for (index in this.multiIndices)
-            data[i++] = left[index] * right[index]
+    val iterLeft = this.iterator()
+    val iterRight = other.iterator()
+    for (i in this.indices) {
+        data[i] = iterLeft.next() * iterRight.next()
     }
     return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
 }
 
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: T): Ndarray<T, D> {
     val data = initMemoryView<T>(size, dtype)
-    if (this.dim.d == 1) {
-        this as MultiArray<T, D1>
-        for (i in this.indices)
-            data[i] = this[i] * other
-    } else {
-        val left = this.asDNArray()
-        var i = 0
-        for (index in this.multiIndices)
-            data[i++] = left[index] * other
+    val iterLeft = this.iterator()
+    for (i in this.indices) {
+        data[i] = iterLeft.next() * other
     }
     return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
 }
@@ -190,9 +150,9 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAss
             this[i] *= other[i]
     } else {
         val left = this.asDNArray()
-        val right = other.asDNArray()
+        val iterRight = other.iterator()
         for (index in this.multiIndices)
-            left[index] *= right[index]
+            left[index] *= iterRight.next()
     }
 }
 
@@ -217,32 +177,19 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAss
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: MultiArray<T, D>): Ndarray<T, D> {
     requireArraySizes(this.size, other.size)
     val data = initMemoryView<T>(size, dtype)
-    if (this.dim.d == 1) {
-        this as MultiArray<T, D1>
-        other as MultiArray<T, D1>
-        for (i in this.indices)
-            data[i] = this[i] / other[i]
-    } else {
-        val left = this.asDNArray()
-        val right = other.asDNArray()
-        var i = 0
-        for (index in this.multiIndices)
-            data[i++] = left[index] / right[index]
+    val iterLeft = this.iterator()
+    val iterRight = other.iterator()
+    for (i in this.indices) {
+        data[i] = iterLeft.next() / iterRight.next()
     }
     return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
 }
 
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: T): Ndarray<T, D> {
     val data = initMemoryView<T>(size, dtype)
-    if (this.dim.d == 1) {
-        this as MultiArray<T, D1>
-        for (i in this.indices)
-            data[i] = this[i] / other
-    } else {
-        val left = this.asDNArray()
-        var i = 0
-        for (index in this.multiIndices)
-            data[i++] = left[index] / other
+    val iterLeft = this.iterator()
+    for (i in this.indices) {
+        data[i] = iterLeft.next() / other
     }
     return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
 }
@@ -259,9 +206,9 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssig
             this[i] /= other[i]
     } else {
         val left = this.asDNArray()
-        val right = other.asDNArray()
+        val iterRight = other.iterator()
         for (index in this.multiIndices)
-            left[index] /= right[index]
+            left[index] /= iterRight.next()
     }
 }
 
