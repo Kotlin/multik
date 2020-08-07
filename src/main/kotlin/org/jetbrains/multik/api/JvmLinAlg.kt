@@ -3,7 +3,7 @@ package org.jetbrains.multik.api
 import org.jetbrains.multik.core.*
 import kotlin.math.pow
 
-object JvmLinAlg : LinAlg {
+public object JvmLinAlg : LinAlg {
     override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): Ndarray<T, D2> {
         if (n == 0) return mk.identity<T>(mat.shape[0], mat.dtype)
 

@@ -2,7 +2,7 @@ package org.jetbrains.multik.api
 
 import org.jetbrains.multik.core.*
 
-object JvmMath : Math {
+public object JvmMath : Math {
     override fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int {
         var arg = 0
         var count = 0

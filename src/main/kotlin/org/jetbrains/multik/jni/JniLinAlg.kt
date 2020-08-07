@@ -6,7 +6,7 @@ import org.jetbrains.multik.api.identity
 import org.jetbrains.multik.api.mk
 import org.jetbrains.multik.core.*
 
-object NativeLinAlg : LinAlg {
+public object NativeLinAlg : LinAlg {
     //todo
     override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): Ndarray<T, D2> {
         if (n == 0) return mk.identity<T>(mat.shape[0], mat.dtype)
@@ -88,7 +88,7 @@ object NativeLinAlg : LinAlg {
     }
 }
 
-object JniLinAlg {
+private object JniLinAlg {
     external fun <T : Number> pow(mat: Ndarray<T, D2>, n: Int): Ndarray<T, D2>
     external fun <T : Number> norm(mat: Ndarray<T, D2>, p: Int): Double
     external fun dot(a: DoubleArray, n: Int, m: Int, b: DoubleArray, k: Int, c: DoubleArray): Unit

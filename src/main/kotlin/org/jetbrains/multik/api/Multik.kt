@@ -7,10 +7,10 @@ import org.jetbrains.multik.jni.NativeMath
 /**
  * Alternative names.
  */
-typealias mk = Multik
+public typealias mk = Multik
 
 
-interface Math {
+public interface Math {
 
     public fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int
 
@@ -35,7 +35,7 @@ interface Math {
     public fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>, axis: Int): Ndarray<T, D>
 }
 
-interface LinAlg {
+public interface LinAlg {
 
     public fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): Ndarray<T, D2>
 
@@ -61,14 +61,14 @@ interface LinAlg {
 /**
  * The basic object through which calls all ndarray functions.
  */
-object Multik {
+public object Multik {
     private val loader: Loader = Loader("jni_multik")
-    var nativeLibraryLoaded: Boolean = loader.load()
+    public var nativeLibraryLoaded: Boolean = loader.load()
         private set(value) {
             field = if (value) loader.load() else false
         }
 
-    var useNative: Boolean = false
+    public var useNative: Boolean = false
         set(value) {
             if (value) nativeLibraryLoaded = value
             if (nativeLibraryLoaded && value) {
@@ -78,8 +78,8 @@ object Multik {
             }
         }
 
-    val math get() = if (useNative) NativeMath else JvmMath
-    val linalg get() = if (useNative) NativeLinAlg else JvmLinAlg
+    public val math: Math get() = if (useNative) NativeMath else JvmMath
+    public val linalg: LinAlg get() = if (useNative) NativeLinAlg else JvmLinAlg
 
     public operator fun <T> get(vararg elements: T): List<T> = elements.toList()
 }

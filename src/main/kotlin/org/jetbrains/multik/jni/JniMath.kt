@@ -3,7 +3,7 @@ package org.jetbrains.multik.jni
 import org.jetbrains.multik.api.Math
 import org.jetbrains.multik.core.*
 
-object NativeMath : Math {
+public object NativeMath : Math {
     override fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int {
         return JniMath.argMax(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)
     }

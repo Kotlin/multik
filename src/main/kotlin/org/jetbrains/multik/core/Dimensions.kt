@@ -3,19 +3,19 @@ package org.jetbrains.multik.core
 /**
  * Dimension class.
  */
-interface Dimension {
-    val d: Int
+public interface Dimension {
+    public val d: Int
 }
 
 
-interface DimN : Dimension
-interface Dim4 : DimN
-interface Dim3 : Dim4
-interface Dim2 : Dim3
-interface Dim1 : Dim2
+public interface DimN : Dimension
+public interface Dim4 : DimN
+public interface Dim3 : Dim4
+public interface Dim2 : Dim3
+public interface Dim1 : Dim2
 
 @Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
-inline fun <D : Dimension> dimensionOf(dim: Int): D = when (dim) {
+public inline fun <D : Dimension> dimensionOf(dim: Int): D = when (dim) {
     1 -> D1
     2 -> D2
     3 -> D3
@@ -23,7 +23,7 @@ inline fun <D : Dimension> dimensionOf(dim: Int): D = when (dim) {
     else -> DN(dim)
 } as D
 
-inline fun <reified D : Dimension> dimensionClassOf(dim: Int = -1): D = when (D::class) {
+public inline fun <reified D : Dimension> dimensionClassOf(dim: Int = -1): D = when (D::class) {
     D1::class -> D1
     D2::class -> D2
     D3::class -> D3
@@ -31,7 +31,7 @@ inline fun <reified D : Dimension> dimensionClassOf(dim: Int = -1): D = when (D:
     else -> DN(dim)
 } as D
 
-class DN(override val d: Int) : Dimension, DimN {
+public class DN(override val d: Int) : Dimension, DimN {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -48,7 +48,7 @@ class DN(override val d: Int) : Dimension, DimN {
     }
 }
 
-sealed class D4(override val d: Int = 4) : Dimension, Dim4 {
+public sealed class D4(override val d: Int = 4) : Dimension, Dim4 {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -64,10 +64,10 @@ sealed class D4(override val d: Int = 4) : Dimension, Dim4 {
         return "dimension: $d"
     }
 
-    companion object : D4()
+    public companion object : D4()
 }
 
-sealed class D3(override val d: Int = 3) : Dimension, Dim3 {
+public sealed class D3(override val d: Int = 3) : Dimension, Dim3 {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -83,10 +83,10 @@ sealed class D3(override val d: Int = 3) : Dimension, Dim3 {
         return "dimension: $d"
     }
 
-    companion object : D3()
+    public companion object : D3()
 }
 
-sealed class D2(override val d: Int = 2) : Dimension, Dim2 {
+public sealed class D2(override val d: Int = 2) : Dimension, Dim2 {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -102,10 +102,10 @@ sealed class D2(override val d: Int = 2) : Dimension, Dim2 {
         return "dimension: $d"
     }
 
-    companion object : D2()
+    public companion object : D2()
 }
 
-sealed class D1(override val d: Int = 1) : Dimension, Dim1 {
+public sealed class D1(override val d: Int = 1) : Dimension, Dim1 {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -121,5 +121,5 @@ sealed class D1(override val d: Int = 1) : Dimension, Dim1 {
         return "dimension: $d"
     }
 
-    companion object : D1()
+    public companion object : D1()
 }

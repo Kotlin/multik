@@ -1,7 +1,8 @@
 package org.jetbrains.multik.core
 
+@PublishedApi
 @Suppress("NOTHING_TO_INLINE")
-inline fun requireDimension(dim: Dimension, shapeSize: Int) {
+internal inline fun requireDimension(dim: Dimension, shapeSize: Int) {
     require(dim.d == shapeSize) { "Dimension doesn't match the size of the shape: dimension (${dim.d}) != $shapeSize shape size." }
 }
 
@@ -44,8 +45,9 @@ internal inline fun zeroNumber(dtype: DataType): Number = when (dtype.nativeCode
     else -> throw Exception("Type not defined.")
 }
 
+@PublishedApi
 @Suppress("IMPLICIT_CAST_TO_ANY")
-inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::class) {
+internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::class) {
     Byte::class -> this.toByte()
     Short::class -> this.toShort()
     Int::class -> this.toInt()
@@ -56,7 +58,7 @@ inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::class) {
 } as T
 
 @Suppress("IMPLICIT_CAST_TO_ANY", "NOTHING_TO_INLINE", "UNCHECKED_CAST")
-inline fun <T : Number> Number.toPrimitiveType(dtype: DataType): T = when (dtype.nativeCode) {
+internal inline fun <T : Number> Number.toPrimitiveType(dtype: DataType): T = when (dtype.nativeCode) {
     1 -> this.toByte()
     2 -> this.toShort()
     3 -> this.toInt()

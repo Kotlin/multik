@@ -1,6 +1,6 @@
 package org.jetbrains.multik.core
 
-interface MutableMultiArray<T : Number, D : Dimension> : MultiArray<T, D>
+public interface MutableMultiArray<T : Number, D : Dimension> : MultiArray<T, D>
 
 //___________________________________________________WritableView_______________________________________________________
 
@@ -10,7 +10,7 @@ public class WritableView<T : Number>(private val base: MutableMultiArray<T, DN>
         return indices.fold(this.base) { m, pos -> m.mutableView(pos) }
     }
 
-    companion object
+    public companion object
 }
 
 public fun <T : Number, D : Dimension, M : Dimension> MutableMultiArray<T, D>.mutableView(
@@ -63,29 +63,29 @@ public val <T : Number> MutableMultiArray<T, DN>.W: WritableView<T>
 //____________________________________________________Get_______________________________________________________________
 
 @JvmName("get1")
-operator fun <T : Number> MutableMultiArray<T, D2>.get(write: WritableView.Companion, index: Int): MultiArray<T, D1> =
+public operator fun <T : Number> MutableMultiArray<T, D2>.get(write: WritableView.Companion, index: Int): MultiArray<T, D1> =
     mutableView(index, 0)
 
 @JvmName("get3")
-operator fun <T : Number> MutableMultiArray<T, D3>.get(write: WritableView.Companion, index: Int): MultiArray<T, D2> =
+public operator fun <T : Number> MutableMultiArray<T, D3>.get(write: WritableView.Companion, index: Int): MultiArray<T, D2> =
     mutableView(index, 0)
 
 @JvmName("get4")
-operator fun <T : Number> MutableMultiArray<T, D3>.get(
+public operator fun <T : Number> MutableMultiArray<T, D3>.get(
     write: WritableView.Companion, ind1: Int, ind2: Int
 ): MultiArray<T, D1> = mutableView(ind1, ind2, 0, 1)
 
 @JvmName("get6")
-operator fun <T : Number> MutableMultiArray<T, D4>.get(write: WritableView.Companion, index: Int): MultiArray<T, D3> =
+public operator fun <T : Number> MutableMultiArray<T, D4>.get(write: WritableView.Companion, index: Int): MultiArray<T, D3> =
     mutableView(index, 0)
 
 @JvmName("get7")
-operator fun <T : Number> MutableMultiArray<T, D4>.get(
+public operator fun <T : Number> MutableMultiArray<T, D4>.get(
     write: WritableView.Companion, ind1: Int, ind2: Int
 ): MultiArray<T, D2> = mutableView(ind1, ind2, 0, 1)
 
 @JvmName("get8")
-operator fun <T : Number> MutableMultiArray<T, D4>.get(
+public operator fun <T : Number> MutableMultiArray<T, D4>.get(
     write: WritableView.Companion, ind1: Int, ind2: Int, ind3: Int
 ): MultiArray<T, D1> = mutableView(ind1, ind2, ind3, 0, 1, 2)
 

@@ -3,24 +3,24 @@ package org.jetbrains.multik.core
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
-typealias D1Array<T> = Ndarray<T, D1>
-typealias D2Array<T> = Ndarray<T, D2>
-typealias D3Array<T> = Ndarray<T, D3>
-typealias D4Array<T> = Ndarray<T, D4>
+public typealias D1Array<T> = Ndarray<T, D1>
+public typealias D2Array<T> = Ndarray<T, D2>
+public typealias D3Array<T> = Ndarray<T, D3>
+public typealias D4Array<T> = Ndarray<T, D4>
 
 /**
  * Multidimensional array. Stores a [MemoryView] object.
  */
-class Ndarray<T : Number, D : Dimension> @PublishedApi internal constructor(
-    val data: MemoryView<T>,
-    val offset: Int = 0,
-    val shape: IntArray,
-    val strides: IntArray = computeStrides(shape),
-    val dtype: DataType,
-    val dim: D
+public class Ndarray<T : Number, D : Dimension> @PublishedApi internal constructor(
+    public val data: MemoryView<T>,
+    public val offset: Int = 0,
+    public val shape: IntArray,
+    public val strides: IntArray = computeStrides(shape),
+    public val dtype: DataType,
+    public val dim: D
 ) : MutableMultiArray<T, D> {
 
-    val size: Int = shape.fold(1, Int::times)
+    public val size: Int = shape.fold(1, Int::times)
 
     override val indices: IntRange
         get() {
@@ -30,7 +30,7 @@ class Ndarray<T : Number, D : Dimension> @PublishedApi internal constructor(
 
     override val multiIndices: MultiIndexProgression get() = IntArray(dim.d)..shape
 
-    fun getData(): Array<T> = data.getData()
+    public fun getData(): Array<T> = data.getData()
 
     public override fun isEmpty(): Boolean = size == 0
 
@@ -276,7 +276,7 @@ internal fun IntArray.remove(pos: Int) = when (pos) {
 }
 
 
-enum class DataType(val nativeCode: Int, val itemSize: Int, val clazz: KClass<out Number>) {
+public enum class DataType(public val nativeCode: Int, public val itemSize: Int, public val clazz: KClass<out Number>) {
     ByteDataType(1, 1, Byte::class),
     ShortDataType(2, 2, Short::class),
     IntDataType(3, 4, Int::class),
@@ -284,8 +284,8 @@ enum class DataType(val nativeCode: Int, val itemSize: Int, val clazz: KClass<ou
     FloatDataType(5, 4, Float::class),
     DoubleDataType(6, 8, Double::class);
 
-    companion object {
-        fun of(i: Int): DataType {
+    public companion object {
+        public fun of(i: Int): DataType {
             return when (i) {
                 1 -> ByteDataType
                 2 -> ShortDataType
@@ -297,7 +297,7 @@ enum class DataType(val nativeCode: Int, val itemSize: Int, val clazz: KClass<ou
             }
         }
 
-        fun <T : Number> of(element: T): DataType {
+        public fun <T : Number> of(element: T): DataType {
             return when (element) {
                 is Byte -> ByteDataType
                 is Short -> ShortDataType
@@ -309,7 +309,7 @@ enum class DataType(val nativeCode: Int, val itemSize: Int, val clazz: KClass<ou
             }
         }
 
-        inline fun <reified T : Number> of(type: KClass<out T>) = when (type) {
+        public inline fun <reified T : Number> of(type: KClass<out T>): DataType = when (type) {
             Byte::class -> ByteDataType
             Short::class -> ShortDataType
             Int::class -> IntDataType
@@ -324,7 +324,7 @@ enum class DataType(val nativeCode: Int, val itemSize: Int, val clazz: KClass<ou
 /**
  *
  */
-class NdarrayIterator<T : Number>(
+public class NdarrayIterator<T : Number>(
     private val data: MemoryView<T>,
     private val offset: Int = 0,
     private val strides: IntArray,
@@ -360,7 +360,7 @@ class NdarrayIterator<T : Number>(
     }
 }
 
-class MultiIndexProgression(public val first: IntArray, public val last: IntArray, public val step: Int = 1) {
+public class MultiIndexProgression(public val first: IntArray, public val last: IntArray, public val step: Int = 1) {
 
     init {
         if (step == 0) throw IllegalArgumentException("Step must be non-zero.")
@@ -368,7 +368,7 @@ class MultiIndexProgression(public val first: IntArray, public val last: IntArra
         if (first.size != last.size) throw IllegalArgumentException("Sizes first and last must be identical.")
     }
 
-    operator fun iterator(): Iterator<IntArray> = MultiIndexIterator(first, last, step)
+    public operator fun iterator(): Iterator<IntArray> = MultiIndexIterator(first, last, step)
 
     override fun equals(other: Any?): Boolean =
         other is MultiIndexProgression && (first.contentEquals(other.first) && last.contentEquals(other.last))

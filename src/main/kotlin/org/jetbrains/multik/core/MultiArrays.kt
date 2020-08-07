@@ -1,8 +1,8 @@
 package org.jetbrains.multik.core
 
-interface MultiArray<out T : Number, out D : Dimension> {
-    val indices: IntRange
-    val multiIndices: MultiIndexProgression
+public interface MultiArray<out T : Number, out D : Dimension> {
+    public val indices: IntRange
+    public val multiIndices: MultiIndexProgression
 
     public fun isEmpty(): Boolean
     public fun isNotEmpty(): Boolean
@@ -42,7 +42,7 @@ internal val <T : Number, D : Dimension> MultiArray<T, D>.dim: D
 //___________________________________________________ReadableView_______________________________________________________
 
 public class ReadableView<T : Number>(private val base: MultiArray<T, DN>) /*: BaseNdarray by base */ {
-    operator fun get(vararg indices: Int): MultiArray<T, DN> {
+    public operator fun get(vararg indices: Int): MultiArray<T, DN> {
         return indices.fold(this.base) { m, pos -> m.view(pos) }
     }
 }
@@ -108,46 +108,46 @@ public val <T : Number> MultiArray<T, DN>.V: ReadableView<T>
 //____________________________________________________Get_______________________________________________________________
 
 @JvmName("get0")
-operator fun <T : Number> MultiArray<T, D1>.get(index: Int): T = data[offset + strides.first() * index]
+public operator fun <T : Number> MultiArray<T, D1>.get(index: Int): T = data[offset + strides.first() * index]
 
 @JvmName("get1")
-operator fun <T : Number> MultiArray<T, D2>.get(index: Int): MultiArray<T, D1> = view(index, 0)
+public operator fun <T : Number> MultiArray<T, D2>.get(index: Int): MultiArray<T, D1> = view(index, 0)
 
 @JvmName("get2")
-operator fun <T : Number> MultiArray<T, D2>.get(ind1: Int, ind2: Int): T =
+public operator fun <T : Number> MultiArray<T, D2>.get(ind1: Int, ind2: Int): T =
     data[offset + strides[0] * ind1 + strides[1] * ind2]
 
 @JvmName("get3")
-operator fun <T : Number> MultiArray<T, D3>.get(index: Int): MultiArray<T, D2> = view(index, 0)
+public operator fun <T : Number> MultiArray<T, D3>.get(index: Int): MultiArray<T, D2> = view(index, 0)
 
 @JvmName("get4")
-operator fun <T : Number> MultiArray<T, D3>.get(ind1: Int, ind2: Int): MultiArray<T, D1> =
+public operator fun <T : Number> MultiArray<T, D3>.get(ind1: Int, ind2: Int): MultiArray<T, D1> =
     view(ind1, ind2, 0, 1)
 
 @JvmName("get5")
-operator fun <T : Number> MultiArray<T, D3>.get(ind1: Int, ind2: Int, ind3: Int): T =
+public operator fun <T : Number> MultiArray<T, D3>.get(ind1: Int, ind2: Int, ind3: Int): T =
     data[offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3]
 
 @JvmName("get6")
-operator fun <T : Number> MultiArray<T, D4>.get(index: Int): MultiArray<T, D3> = view(index, 0)
+public operator fun <T : Number> MultiArray<T, D4>.get(index: Int): MultiArray<T, D3> = view(index, 0)
 
 @JvmName("get7")
-operator fun <T : Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int): MultiArray<T, D2> =
+public operator fun <T : Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int): MultiArray<T, D2> =
     view(ind1, ind2, 0, 1)
 
 @JvmName("get8")
-operator fun <T : Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int): MultiArray<T, D1> =
+public operator fun <T : Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int): MultiArray<T, D1> =
     view(ind1, ind2, ind3, 0, 1, 2)
 
 @JvmName("get9")
-operator fun <T : Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int): T =
+public operator fun <T : Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int): T =
     data[offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3 + strides[3] * ind4]
 
 @JvmName("get10")
-operator fun <T : Number> MultiArray<T, DN>.get(vararg index: Int): T = this[index]
+public operator fun <T : Number> MultiArray<T, DN>.get(vararg index: Int): T = this[index]
 
 @JvmName("get11")
-operator fun <T : Number> MultiArray<T, DN>.get(index: IntArray): T {
+public operator fun <T : Number> MultiArray<T, DN>.get(index: IntArray): T {
     check(index.size == dim.d) { "number of indices doesn't match dimension: ${index.size} != ${dim.d}" }
     return data[strides.foldIndexed(offset) { i, acc, stride -> acc + index[i] * stride }]
 }

@@ -1,7 +1,7 @@
 package org.jetbrains.multik.core
 
 //todo (private set)
-sealed class MemoryView<T : Number> : Iterable<T> {
+public sealed class MemoryView<T : Number> : Iterable<T> {
     internal abstract val data: Any
 
     public abstract var size: Int
@@ -223,7 +223,7 @@ internal class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryVie
         }
 }
 
-fun <T : Number> initMemoryView(size: Int, dataType: DataType): MemoryView<T> {
+public fun <T : Number> initMemoryView(size: Int, dataType: DataType): MemoryView<T> {
     val t = when (dataType.nativeCode) {
         1 -> MemoryViewByteArray(ByteArray(size))
         2 -> MemoryViewShortArray(ShortArray(size))
@@ -238,7 +238,7 @@ fun <T : Number> initMemoryView(size: Int, dataType: DataType): MemoryView<T> {
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Number> initMemoryView(size: Int, dataType: DataType, init: (Int) -> T): MemoryView<T> {
+public fun <T : Number> initMemoryView(size: Int, dataType: DataType, init: (Int) -> T): MemoryView<T> {
     val t = when (dataType.nativeCode) {
         1 -> MemoryViewByteArray(ByteArray(size, init as (Int) -> Byte))
         2 -> MemoryViewShortArray(ShortArray(size, init as (Int) -> Short))
@@ -252,7 +252,7 @@ fun <T : Number> initMemoryView(size: Int, dataType: DataType, init: (Int) -> T)
 }
 
 @Suppress("UNCHECKED_CAST")
-fun <T : Number> List<T>.toViewPrimitiveArray(dataType: DataType): MemoryView<T> {
+public fun <T : Number> List<T>.toViewPrimitiveArray(dataType: DataType): MemoryView<T> {
     val t = when (dataType.nativeCode) {
         1 -> MemoryViewByteArray((this as List<Byte>).toByteArray())
         2 -> MemoryViewShortArray((this as List<Short>).toShortArray())
