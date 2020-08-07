@@ -2,11 +2,13 @@ import org.gradle.internal.jvm.Jvm
 
 buildscript {
     ext {
-        kotlin_version = '1.3.72'
+        kotlin_version = '1.4.0-rc'
         dokka_version = '0.10.1'
     }
     repositories {
-        jcenter()
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
     }
 
     dependencies {
@@ -33,6 +35,10 @@ plugins {
 
     // Documentation
     id 'org.jetbrains.dokka' version '0.10.1'
+}
+
+kotlin {
+    explicitApi = 'strict'
 }
 
 compileKotlin {
@@ -225,6 +231,7 @@ task createJniHeaders(dependsOn: compileKotlin) {
 
 repositories {
     jcenter()
+    maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
 }
 
 dependencies {
