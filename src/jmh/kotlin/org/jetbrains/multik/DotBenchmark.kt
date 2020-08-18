@@ -30,7 +30,6 @@ open class DotBenchmark {
 
     @Setup
     fun generate() {
-        System.load("/Users/pavel.gorgulov/Projects/main_project/multik/src/jni_multik/cmake-build-debug/libjni_multik.dylib")
         ran = Random(1)
         arg1 = mk.d2array(size, size) { ran.nextDouble() }
         arg2 = mk.d2array(size, size) { ran.nextDouble() }

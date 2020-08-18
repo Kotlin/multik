@@ -6,6 +6,7 @@ import org.jetbrains.multik.api.mk
 import org.jetbrains.multik.core.D2
 import org.jetbrains.multik.core.D2Array
 import org.jetbrains.multik.core.Ndarray
+import org.jetbrains.multik.core.get
 import org.jetbrains.multik.jni.NativeMath
 import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
@@ -29,7 +30,6 @@ open class ExpBenchmark {
 
     @Setup
     fun generate() {
-        System.load("/Users/pavel.gorgulov/Projects/main_project/multik/src/jni_multik/cmake-build-debug/libjni_multik.dylib")
         ran = Random(1)
         arg = mk.d2array(size, size) { ran.nextDouble() }
     }

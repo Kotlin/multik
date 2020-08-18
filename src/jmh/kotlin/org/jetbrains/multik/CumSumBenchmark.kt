@@ -26,7 +26,6 @@ open class CumSumBenchmark {
 
     @Setup
     fun generate() {
-        System.load("/Users/pavel.gorgulov/Projects/main_project/multik/src/jni_multik/cmake-build-debug/libjni_multik.dylib")
         ran = Random(1)
         arg = mk.d2array(size, size) { ran.nextDouble() }
     }
