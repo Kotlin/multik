@@ -1,5 +1,5 @@
-#include "headers/org_jetbrains_multik_jni_JniMath.h"
-#include "headers/mk_math.h"
+#include "org_jetbrains_multik_jni_JniMath.h"
+#include "mk_math.h"
 
 /*
  * Class:     org_jetbrains_multik_jni_JniMath

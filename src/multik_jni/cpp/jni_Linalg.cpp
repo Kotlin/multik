@@ -1,6 +1,5 @@
-#include "headers/org_jetbrains_multik_jni_JniLinAlg.h"
-#include "headers/mk_linalg.h"
-#include <iostream>
+#include "org_jetbrains_multik_jni_JniLinAlg.h"
+#include "mk_linalg.h"
 
 /*
  * Class:     org_jetbrains_multik_jni_JniLinAlg
