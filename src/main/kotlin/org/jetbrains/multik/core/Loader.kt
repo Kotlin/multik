@@ -28,9 +28,10 @@ internal class Loader(private val name: String) {
 
 
     private val nativeNameLib = buildString {
-        append("$name.")
-        append("$os.")
-        append(arch)
+        append(name)
+        //TODO (Delete os, add arch)
+//        append("$os.")
+//        append(arch)
     }
 
     fun load(): Boolean {

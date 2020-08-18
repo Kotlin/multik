@@ -62,7 +62,7 @@ public interface LinAlg {
  * The basic object through which calls all ndarray functions.
  */
 public object Multik {
-    private val loader: Loader = Loader("jni_multik")
+    private val loader: Loader = Loader("multik_jni")
     public var nativeLibraryLoaded: Boolean = loader.load()
         private set(value) {
             field = if (value) loader.load() else false
