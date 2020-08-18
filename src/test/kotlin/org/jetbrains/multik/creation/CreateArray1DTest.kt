@@ -5,16 +5,10 @@ import org.jetbrains.multik.core.D1
 import org.jetbrains.multik.core.DataType
 import org.jetbrains.multik.core.Ndarray
 import org.jetbrains.multik.core.toList
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CreateArray1DTest {
-
-    @BeforeTest
-    fun loadLibrary() {
-        System.load("/Users/pavel.gorgulov/Projects/main_project/multik/src/jni_multik/cmake-build-debug/libjni_multik.dylib")
-    }
 
     @Test
     fun createByteArrayTest() {

@@ -2,16 +2,10 @@ package org.jetbrains.multik.iterable
 
 import org.jetbrains.multik.api.*
 import org.jetbrains.multik.core.*
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class NdarrayKtTest {
-
-    @BeforeTest
-    fun loadLibrary() {
-        System.load("/Users/pavel.gorgulov/Projects/main_project/multik/src/jni_multik/cmake-build-debug/libjni_multik.dylib")
-    }
 
     @Test
     fun distinctTest() {

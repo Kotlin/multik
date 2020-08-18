@@ -6,16 +6,10 @@ import org.jetbrains.multik.api.ndarray
 import org.jetbrains.multik.core.D4
 import org.jetbrains.multik.core.Ndarray
 import org.jetbrains.multik.core.toList
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class CreateArray4DTest {
-
-    @BeforeTest
-    fun loadLibrary() {
-        System.load("/Users/pavel.gorgulov/Projects/main_project/multik/src/jni_multik/cmake-build-debug/libjni_multik.dylib")
-    }
 
     private val shape = intArrayOf(2, 5, 3, 2)
     private val dim = 4
