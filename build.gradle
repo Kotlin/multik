@@ -2,18 +2,16 @@ import org.gradle.internal.jvm.Jvm
 
 buildscript {
     ext {
-        kotlin_version = '1.4.0-rc'
-        dokka_version = '0.10.1'
+        kotlin_version = '1.4.0'
     }
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
+//        classpath "org.jetbrains.dokka:dokka-gradle-plugin:$dokka_version"
     }
 }
 
@@ -21,7 +19,7 @@ plugins {
     // JMH
     id "me.champeau.gradle.jmh" version "0.5.0"
 
-    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
 
     // Native build
     id 'cpp'
@@ -34,8 +32,10 @@ plugins {
     id 'maven-publish'
 
     // Documentation
-    id 'org.jetbrains.dokka' version '0.10.1'
+//    id 'org.jetbrains.dokka' version '1.4.0-rc'
 }
+
+apply from: "$rootDir/gradle/openblas.gradle"
 
 kotlin {
     explicitApi = 'strict'
@@ -54,184 +54,101 @@ compileTestKotlin {
 }
 
 jar {
-    dependsOn shadowJar
-    enabled = false
+//    dependsOn shadowJar
+//    enabled = false
+    dependsOn 'buildCpp'
+    from "$buildDir/libs"
+    exclude '*.jar'
 }
 
-shadowJar {
-    configurations = [project.configurations.compile]
-
-    manifest.attributes(
-            'Implementation-Title': project.name,
-            'Implementation-Version': archiveVersion
-    )
-
-    metaInf {
-        from "$buildDir/libs/libjni_multik.dylib"
-    }
-}
+//shadowJar {
+//    configurations = [project.configurations.compile]
+//
+//    manifest.attributes(
+//            'Implementation-Title': project.name,
+//            'Implementation-Version': archiveVersion
+//    )
+//
+//    metaInf {
+//        from "$buildDir/libs/multik_jni.dylib"
+//    }
+//}
 
 model {
+    platforms {
+        linux { operatingSystem 'linux' }
+        osx { operatingSystem 'osx' }
+        windows { operatingSystem 'windows' }
+    }
+
+    toolChains {
+        visualCpp(VisualCpp)
+        gcc(Gcc)
+        clang(Clang)
+    }
+
     components {
-        jni_multik(NativeLibrarySpec) {
-//            sources {
-//                cpp.lib library: 'jni_multik', linkage: 'api'
-//            }
+        multik_jni(NativeLibrarySpec) {
+
+            targetPlatform 'linux'
+            targetPlatform 'windows'
+            targetPlatform 'osx'
+
+            binaries.withType(SharedLibraryBinarySpec) {
+                def javaHome = Jvm.current().javaHome
+                def os = targetPlatform.operatingSystem
+                if (os.linux) {
+                    cppCompiler.args("-I$javaHome/include", "-I$javaHome/include/linux")
+                    cppCompiler.args("-I$buildDir/openblas/include/")
+                    linker.args("-L$buildDir/openblas/lib/", "-lopenblas")
+                } else if (os.macOsX) {
+                    cppCompiler.args("-I$javaHome/include", "-I$javaHome/include/darwin")
+                    cppCompiler.args("-I$buildDir/openblas/include/")
+                    linker.args("-L$buildDir/openblas/lib/", "-lopenblas")
+//                    linker.args("$buildDir/openblas/lib/libopenblas.a")
+                } else if (os.windows) {
+                    cppCompiler.args("/I$javaHome/include", "/I$javaHome/include/win32")
+                    cppCompiler.args("/I$buildDir/openblas/include/")
+                    linker.args("/L$buildDir/openblas/lib/", "-lopenblas")
+                }
+
+                def libraryName = System.mapLibraryName("multik_jni")
+                sharedLibraryFile = file("$buildDir/libs/$libraryName")
+            }
+            binaries.withType(StaticLibraryBinarySpec) {
+                buildable = false
+            }
+        }
+    }
+
+    components {
+        all {
+            binaries.all {
+                if (toolChain in Gcc) {
+                    cppCompiler.args('-std=c++14', '-O3', '-fno-exceptions', '-ffast-math')
+                }
+                if (toolChain in Clang) {
+//                TODO("Which flags?")
+                    cppCompiler.args('-std=c++14', '-O3', '-fno-exceptions', '-ffast-math')
+                }
+            }
+        }
+    }
+
+    tasks {
+        buildCpp(Task) {
+            dependsOn $.binaries.findAll { it.buildable }
+            doLast { file("$buildDir/libs/multik_jni").deleteDir() }
         }
     }
 }
 
-//model {
-//    platforms {
-//        linux {
-//            operatingSystem 'linux'
-//        }
-//        osx {
-//            operatingSystem 'osx'
-//        }
-//        windows {
-//            operatingSystem 'windows'
-//        }
-//    }
-//
-//    toolChains {
-//        visualCpp(VisualCpp)
-//
-//        gcc(Gcc)
-//
-//        clang(Clang)
-//    }
-//
-//    components {
-//        jni_multik(NativeLibrarySpec) {
-//            sources {
-//                cpp.lib library: 'jni_multik'
-//            }
-////            sources {
-////                cpp.lib library: 'jni_multik', 'static'
-////                cpp.lib library: 'jniHeaders', linkage: 'api'
-////                cpp {
-////                    source {
-////                        srcDir 'src/main/jni_multik/cpp'
-////                    }
-////                    exportedHeaders {
-////                        srcDirs "src/main/jni_multik/headers"
-////                    }
-////                }
-////            }
-//
-//            targetPlatform 'linux'
-//            targetPlatform 'windows'
-//            targetPlatform 'osx'
-//
-//            binaries.withType(SharedLibraryBinarySpec) {
-//                def libraryName = System.mapLibraryName("jni_multik.$targetPlatform.operatingSystem")
-//                sharedLibraryFile = file("$buildDir/libs/$libraryName")
-//            }
-//        }
-//
-////        simd(NativeLibrarySpec) {
-////            sources {
-////                cpp.lib library: 'boostSimd', linkage: 'api'
-////                cpp.lib library: 'jniHeaders', linkage: 'api'
-////            }
-////
-////            flavors {
-////                sse2
-////                avx
-////            }
-////
-////            targetPlatform 'linux'
-////            targetPlatform 'windows'
-////            targetPlatform 'osx'
-////            targetFlavors 'sse2', 'avx'
-////
-////            binaries.withType(SharedLibraryBinarySpec) {
-////                switch (flavor) {
-////                    case flavors.sse2: if (targetPlatform == 'windows') {
-////                        cppCompiler.args '/arch:SSE2'
-////                    } else {
-////                        cppCompiler.args '-msse2'
-////                    }; break
-////                    case flavors.avx: if (targetPlatform == 'windows') {
-////                        cppCompiler.args '/arch:AVX'
-////                    } else {
-////                        cppCompiler.args '-mavx'
-////                    }; break
-////                }
-////
-////                def libraryName = System.mapLibraryName("simd.${flavor.name}.x86_64")
-////                sharedLibraryFile = file("$buildDir/libs/$libraryName")
-////            }
-////        }
-//    }
-//
-//    components {
-//        all {
-//            binaries.all {
-//                def javaHome = org.gradle.internal.jvm.Jvm.current().javaHome
-//                def os = targetPlatform.operatingSystem
-//                if (os.linux) {
-//                    cppCompiler.args "-I$javaHome/include"
-//                    cppCompiler.args "-I$javaHome/include/linux"
-//                } else if (os.macOsX) {
-//                    cppCompiler.args "-I$javaHome/include"
-//                    cppCompiler.args "-I$javaHome/include/darwin"
-//                } else if (os.windows) {
-//                    cppCompiler.args "/I$javaHome/include"
-//                    cppCompiler.args "/I$javaHome/include/win32"
-//                }
-////                cppCompiler.define 'BOOST_DISABLE_ASSERTS'
-////                cppCompiler.define 'NDEBUG'
-//
-//                if (toolChain in Gcc) {
-//                    cppCompiler.args('-std=c++11', '-fno-rtti', '-fno-exceptions',
-//                            '-O3', '-Wno-narrowing')
-//                }
-//                if (toolChain in VisualCpp) {
-//                    cppCompiler.args('/GR-', '/O2')
-//                }
-//                if (toolChain in Clang) {
-//                    cppCompiler.args('-stdlib=libc++', '-std=c++1y')
-//                }
-//            }
-//        }
-//    }
-//
-//    tasks {
-//        buildAllVariants(Task) {
-//            dependsOn $.binaries.findAll { it.buildable }
-//        }
-//    }
-//}
-
-task createJniHeaders(dependsOn: compileKotlin) {
-    def outputDir = file("$buildDir/include")
-    def jniClasses = [
-            'org.jetbrains.multik.jni.Basic',
-            'org.jetbrains.multik.jni.JniMath',
-            'org.jetbrains.multik.jni.JniLinAlg'
-    ]
-    def jniHeaders = jniClasses.collect {
-        new File(outputDir, it.replace('.', '_') + '.hpp')
-    }
-
-    inputs.files sourceSets.main.output
-    outputs.files jniHeaders
-
-    doLast {
-        outputDir.mkdirs()
-//        [jniClasses, jniHeaders].transpose().each(javah)
-    }
+tasks.withType(CppCompile) {
+    dependsOn 'installOpenBlas'
 }
-
-//tasks.withType(CppCompile) {
-//    dependsOn 'createJniHeaders'
-//}
 
 repositories {
     jcenter()
-    maven { url "https://dl.bintray.com/kotlin/kotlin-eap" }
 }
 
 dependencies {
@@ -242,47 +159,30 @@ dependencies {
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit"
 
     jmhImplementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-//    jmhImplementation "org.openjdk.jmh:jmh-generator-annprocess:1.21"
-//    jmh 'commons-io:commons-io:2.4'
     jmhImplementation "pl.project13.scala:sbt-jmh-extras:0.3.3"
 }
 
 test {
-//    dependsOn 'buildAllVariants'
+    dependsOn 'buildCpp'
     systemProperty 'java.library.path', "$buildDir/libs"
 }
 
-jmh {
-    jmhVersion = "1.21"
+task benchmarkJar(type: Jar, dependsOn: jmhJar) {
+    manifest {
+        attributes 'Main-Class': 'org.openjdk.jmh.Main'
+    }
+    archiveName 'multik-benchmark.jar'
+    from {
+        (jmhJar.outputs.files + configurations.jmh + configurations.jmhRuntime)
+                .collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    dependsOn 'buildCpp'
+    from "$buildDir/libs"
+    exclude '*.jar'
 }
 
-//plugins {
-//    // Apply the Kotlin JVM plugin to add support for Kotlin.
-//    id 'org.jetbrains.kotlin.jvm' version '1.3.72'
-//
-//    // Apply the java-library plugin for API and implementation separation.
-//    id 'java-library'
-//}
-//
-//group 'org.jetbrains'
-//version '1.0-SNAPSHOT'
-//
-//repositories {
-//    mavenCentral()
-//}
-//
-//dependencies {
-//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-//    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
-//    compile 'io.github.microutils:kotlin-logging:1.7.9'
-//
-//    // Use the Kotlin JUnit integration.
-//    testImplementation "org.jetbrains.kotlin:kotlin-test-junit"
-//}
-//
-//compileKotlin {
-//    kotlinOptions.jvmTarget = "1.8"
-//}
-//compileTestKotlin {
-//    kotlinOptions.jvmTarget = "1.8"
-//}
+jmh {
+    includeTests = false
+    jmhVersion = "1.21"
+    duplicateClassesStrategy = 'exclude'
+}
