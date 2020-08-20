@@ -35,6 +35,9 @@ plugins {
 //    id 'org.jetbrains.dokka' version '1.4.0-rc'
 }
 
+group 'org.jetbrains'
+version project.findProperty('version')
+
 apply from: "$rootDir/gradle/openblas.gradle"
 
 kotlin {
@@ -185,4 +188,24 @@ jmh {
     includeTests = false
     jmhVersion = "1.21"
     duplicateClassesStrategy = 'exclude'
+}
+
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        mavenProject(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId project.name
+            version project.version
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
 }
