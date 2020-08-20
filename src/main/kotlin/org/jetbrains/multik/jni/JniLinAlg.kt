@@ -60,11 +60,8 @@ public object NativeLinAlg : LinAlg {
             val shape = intArrayOf(a.shape[0])
             val c = DoubleArray(shape[0])
             JniLinAlg.dot(
-                (a.data as MemoryViewDoubleArray).data,
-                a.shape[0],
-                a.shape[1],
-                (b.data as MemoryViewDoubleArray).data,
-                c
+                (a.data as MemoryViewDoubleArray).data, a.shape[0], a.shape[1],
+                (b.data as MemoryViewDoubleArray).data, c
             )
             D1Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D1) as Ndarray<T, D>
         } else {
@@ -72,12 +69,8 @@ public object NativeLinAlg : LinAlg {
             //            val c = initMemoryView<T>(shape[0] * shape[1], a.dtype)
             val c = DoubleArray(shape[0] * shape[1])
             JniLinAlg.dot(
-                (a.data as MemoryViewDoubleArray).data,
-                a.shape[0],
-                a.shape[1],
-                (b.data as MemoryViewDoubleArray).data,
-                b.shape[1],
-                c
+                (a.data as MemoryViewDoubleArray).data, a.shape[0], a.shape[1],
+                (b.data as MemoryViewDoubleArray).data, b.shape[1], c
             )
             D2Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D2) as Ndarray<T, D>
         }

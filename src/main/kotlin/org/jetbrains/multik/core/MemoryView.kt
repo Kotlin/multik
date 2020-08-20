@@ -17,6 +17,18 @@ public sealed class MemoryView<T : Number> : Iterable<T> {
     public abstract fun getData(): Array<T>
 
     public abstract override fun iterator(): Iterator<T>
+
+    internal open fun getByteArray(): ByteArray = throw UnsupportedOperationException()
+
+    internal open fun getShortArray(): ShortArray = throw UnsupportedOperationException()
+
+    internal open fun getIntArray(): IntArray = throw UnsupportedOperationException()
+
+    internal open fun getLongArray(): LongArray = throw UnsupportedOperationException()
+
+    internal open fun getFloatArray(): FloatArray = throw UnsupportedOperationException()
+
+    internal open fun getDoubleArray(): DoubleArray = throw UnsupportedOperationException()
 }
 
 @PublishedApi
@@ -34,6 +46,8 @@ internal class MemoryViewByteArray(override val data: ByteArray) : MemoryView<By
     }
 
     override fun getData(): Array<Byte> = data.toTypedArray()
+
+    override fun getByteArray(): ByteArray = data
 
     override fun iterator(): Iterator<Byte> = data.iterator()
 
@@ -69,6 +83,8 @@ internal class MemoryViewShortArray(override val data: ShortArray) : MemoryView<
 
     override fun getData(): Array<Short> = data.toTypedArray()
 
+    override fun getShortArray(): ShortArray = data
+
     override fun iterator(): Iterator<Short> = data.iterator()
 
     override fun equals(other: Any?): Boolean {
@@ -102,6 +118,8 @@ internal class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>
     }
 
     override fun getData(): Array<Int> = data.toTypedArray()
+
+    override fun getIntArray(): IntArray = data
 
     override fun iterator(): Iterator<Int> = data.iterator()
 
@@ -137,6 +155,8 @@ internal class MemoryViewLongArray(override val data: LongArray) : MemoryView<Lo
 
     override fun getData(): Array<Long> = data.toTypedArray()
 
+    override fun getLongArray(): LongArray = data
+
     override fun iterator(): Iterator<Long> = data.iterator()
 
     override fun equals(other: Any?): Boolean {
@@ -171,6 +191,8 @@ internal class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<
 
     override fun getData(): Array<Float> = data.toTypedArray()
 
+    override fun getFloatArray(): FloatArray = data
+
     override fun iterator(): Iterator<Float> = data.iterator()
 
     override fun equals(other: Any?): Boolean {
@@ -204,6 +226,8 @@ internal class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryVie
     }
 
     override fun getData(): Array<Double> = data.toTypedArray()
+
+    override fun getDoubleArray(): DoubleArray = data
 
     override fun iterator(): Iterator<Double> = data.iterator()
 

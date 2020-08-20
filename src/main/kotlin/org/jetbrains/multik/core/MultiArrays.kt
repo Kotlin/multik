@@ -1,6 +1,6 @@
 package org.jetbrains.multik.core
 
-public interface MultiArray<out T : Number, out D : Dimension> {
+public interface MultiArray<T : Number, out D : Dimension> {
     public val indices: IntRange
     public val multiIndices: MultiIndexProgression
 
