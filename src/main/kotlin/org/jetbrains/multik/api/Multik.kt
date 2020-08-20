@@ -70,11 +70,14 @@ public object Multik {
 
     public var useNative: Boolean = false
         set(value) {
+            if (value == field) return
             if (value) nativeLibraryLoaded = value
             if (nativeLibraryLoaded && value) {
                 field = value
             } else if (!nativeLibraryLoaded && value) {
                 System.err.println("Multik: Native library not found, use JVM implementation.")
+            } else {
+                field = false
             }
         }
 
