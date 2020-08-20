@@ -49,31 +49,58 @@ public object NativeLinAlg : LinAlg {
 
     //TODO (Double and Number type)
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): Ndarray<T, D> {
-        if (a.shape[1] != b.shape[0])
-            throw IllegalArgumentException(
-                "Shapes mismatch: shapes "
-                        + "${a.shape.joinToString(prefix = "(", postfix = ")")} and "
-                        + "${b.shape.joinToString(prefix = "(", postfix = ")")} not aligned:"
-                        + "${a.shape[1]} (dim 1) != ${b.shape[0]} (dim 0)"
-            )
-        return if (b.dim.d == 1) {
-            val shape = intArrayOf(a.shape[0])
-            val c = DoubleArray(shape[0])
-            JniLinAlg.dot(
-                (a.data as MemoryViewDoubleArray).data, a.shape[0], a.shape[1],
-                (b.data as MemoryViewDoubleArray).data, c
-            )
-            D1Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D1) as Ndarray<T, D>
-        } else {
+        require(a.shape[1] == b.shape[0]) { "Shapes mismatch: shapes " +
+                "${a.shape.joinToString(prefix = "(", postfix = ")")} and " +
+                "${b.shape.joinToString(prefix = "(", postfix = ")")} not aligned: " +
+                "${a.shape[1]} (dim 1) != ${b.shape[0]} (dim 0)"}
+
+        return if(b.dim.d == 2) {
             val shape = intArrayOf(a.shape[0], b.shape[1])
-            //            val c = initMemoryView<T>(shape[0] * shape[1], a.dtype)
-            val c = DoubleArray(shape[0] * shape[1])
-            JniLinAlg.dot(
-                (a.data as MemoryViewDoubleArray).data, a.shape[0], a.shape[1],
-                (b.data as MemoryViewDoubleArray).data, b.shape[1], c
-            )
-            D2Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D2) as Ndarray<T, D>
+            when (a.dtype) {
+                DataType.FloatDataType -> {
+                    val c = FloatArray(shape[0] * shape[1])
+                    JniLinAlg.dot(a.data.getFloatArray(), shape[0], shape[1], b.data.getFloatArray(), a.shape[1], c)
+                    D2Array<Float>(MemoryViewFloatArray(c), 0, shape, dtype = DataType.FloatDataType, dim = D2)
+                }
+                DataType.DoubleDataType -> {
+                    val c = DoubleArray(shape[0] * shape[1])
+                    JniLinAlg.dot(a.data.getDoubleArray(), shape[0], shape[1], b.data.getDoubleArray(), a.shape[1], c)
+                    D2Array<Double>(MemoryViewDoubleArray(c), 0, shape, dtype = DataType.DoubleDataType, dim = D2)
+                }
+                else -> throw UnsupportedOperationException()
+            } as Ndarray<T, D>
+        } else {
+            val shape = intArrayOf(a.shape[0])
+            when (a.dtype) {
+                DataType.FloatDataType -> {
+                    val c = FloatArray(shape[0])
+                    JniLinAlg.dot(a.data.getFloatArray(), a.shape[0], a.shape[1], b.data.getFloatArray(), c)
+                    D1Array<Float>(MemoryViewFloatArray(c), 0, shape, dtype = a.dtype, dim = D1)
+                }
+                DataType.DoubleDataType -> {
+                    val c = DoubleArray(shape[0])
+                    JniLinAlg.dot(a.data.getDoubleArray(), a.shape[0], a.shape[1], b.data.getDoubleArray(), c)
+                    D1Array<Double>(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D1)
+                }
+                else -> throw UnsupportedOperationException()
+            } as Ndarray<T, D>
         }
+
+//        return if (b.dim.d == 1) {
+//            val shape = intArrayOf(a.shape[0])
+//            val c = DoubleArray(shape[0])
+//            JniLinAlg.dot(
+//                (a.data as MemoryViewDoubleArray).data, a.shape[0], a.shape[1],
+//                (b.data as MemoryViewDoubleArray).data, c
+//            )
+//            D1Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D1) as Ndarray<T, D>
+//        } else {
+//            val shape = intArrayOf(a.shape[0], b.shape[1])
+//            //            val c = initMemoryView<T>(shape[0] * shape[1], a.dtype)
+//            val c = DoubleArray(shape[0] * shape[1])
+//            JniLinAlg.dot(a.data.getDoubleArray(), shape[0], shape[1], b.data.getDoubleArray(), a.shape[1], c)
+//            D2Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D2) as Ndarray<T, D>
+//        }
     }
 
     override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
@@ -84,6 +111,8 @@ public object NativeLinAlg : LinAlg {
 private object JniLinAlg {
     external fun <T : Number> pow(mat: Ndarray<T, D2>, n: Int): Ndarray<T, D2>
     external fun <T : Number> norm(mat: Ndarray<T, D2>, p: Int): Double
-    external fun dot(a: DoubleArray, n: Int, m: Int, b: DoubleArray, k: Int, c: DoubleArray): Unit
-    external fun dot(a: DoubleArray, n: Int, m: Int, b: DoubleArray, c: DoubleArray)
+    external fun dot(a: FloatArray, m: Int, n: Int, b: FloatArray, k: Int, c: FloatArray): Unit
+    external fun dot(a: DoubleArray, m: Int, n: Int, b: DoubleArray, k: Int, c: DoubleArray): Unit
+    external fun dot(a: FloatArray, m: Int, n: Int, b: FloatArray, c: FloatArray): Unit
+    external fun dot(a: DoubleArray, m: Int, n: Int, b: DoubleArray, c: DoubleArray): Unit
 }

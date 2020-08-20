@@ -17,14 +17,6 @@ JNIEXPORT jobject JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_pow
 
 /*
  * Class:     org_jetbrains_multik_jni_JniLinAlg
- * Method:    svd
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_svd
-    (JNIEnv *, jobject);
-
-/*
- * Class:     org_jetbrains_multik_jni_JniLinAlg
  * Method:    norm
  * Signature: (Lorg/jetbrains/multik/core/Ndarray;I)D
  */
@@ -33,43 +25,11 @@ JNIEXPORT jdouble JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_norm
 
 /*
  * Class:     org_jetbrains_multik_jni_JniLinAlg
- * Method:    cond
- * Signature: ()V
+ * Method:    dot
+ * Signature: ([FII[FI[F)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_cond
-    (JNIEnv *, jobject);
-
-/*
- * Class:     org_jetbrains_multik_jni_JniLinAlg
- * Method:    det
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_det
-    (JNIEnv *, jobject);
-
-/*
- * Class:     org_jetbrains_multik_jni_JniLinAlg
- * Method:    matRank
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_matRank
-    (JNIEnv *, jobject);
-
-/*
- * Class:     org_jetbrains_multik_jni_JniLinAlg
- * Method:    solve
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_solve
-    (JNIEnv *, jobject);
-
-/*
- * Class:     org_jetbrains_multik_jni_JniLinAlg
- * Method:    inv
- * Signature: ()V
- */
-JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_inv
-    (JNIEnv *, jobject);
+JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_dot___3FII_3FI_3F
+    (JNIEnv *, jobject, jfloatArray, jint, jint, jfloatArray, jint, jfloatArray);
 
 /*
  * Class:     org_jetbrains_multik_jni_JniLinAlg
@@ -78,6 +38,14 @@ JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_inv
  */
 JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_dot___3DII_3DI_3D
     (JNIEnv *, jobject, jdoubleArray, jint, jint, jdoubleArray, jint, jdoubleArray);
+
+/*
+ * Class:     org_jetbrains_multik_jni_JniLinAlg
+ * Method:    dot
+ * Signature: ([FII[F[F)V
+ */
+JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_dot___3FII_3F_3F
+    (JNIEnv *, jobject, jfloatArray, jint, jint, jfloatArray, jfloatArray);
 
 /*
  * Class:     org_jetbrains_multik_jni_JniLinAlg
