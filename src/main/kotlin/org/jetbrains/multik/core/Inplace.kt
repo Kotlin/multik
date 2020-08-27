@@ -1,7 +1,6 @@
 package org.jetbrains.multik.core
 
 import kotlin.math.*
-import org.jetbrains.multik.core.Dimension as Dimension
 
 private fun unsupported(): Nothing = throw UnsupportedOperationException("Not supported for local property reference.")
 
@@ -209,7 +208,7 @@ public sealed class Exp<T : Number> {
 
 public interface Arith
 
-public class Sum<T : Number>(private val right: MultiArray<T, Dimension>) : Exp<T>(), Arith {
+public class Sum<T : Number, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
     override fun invoke(left: T, ind1: Int): T = left + (right as MultiArray<T, D1>)[ind1]
     override fun invoke(left: T, ind1: Int, ind2: Int): T = left + (right as MultiArray<T, D2>)[ind1, ind2]
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int): T =
@@ -221,7 +220,7 @@ public class Sum<T : Number>(private val right: MultiArray<T, Dimension>) : Exp<
     override fun invoke(left: T, index: IntArray): T = left + (right as MultiArray<T, DN>)[index]
 }
 
-public class Sub<T : Number>(private val right: MultiArray<T, Dimension>) : Exp<T>(), Arith {
+public class Sub<T : Number, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
     override fun invoke(left: T, ind1: Int): T = left - (right as MultiArray<T, D1>)[ind1]
     override fun invoke(left: T, ind1: Int, ind2: Int): T = left - (right as MultiArray<T, D2>)[ind1, ind2]
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int): T =
@@ -233,7 +232,7 @@ public class Sub<T : Number>(private val right: MultiArray<T, Dimension>) : Exp<
     override fun invoke(left: T, index: IntArray): T = left - (right as MultiArray<T, DN>)[index]
 }
 
-public class Prod<T : Number>(private val right: MultiArray<T, Dimension>) : Exp<T>(), Arith {
+public class Prod<T : Number, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
     override fun invoke(left: T, ind1: Int): T = left * (right as MultiArray<T, D1>)[ind1]
     override fun invoke(left: T, ind1: Int, ind2: Int): T = left * (right as MultiArray<T, D2>)[ind1, ind2]
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int): T =
@@ -245,7 +244,7 @@ public class Prod<T : Number>(private val right: MultiArray<T, Dimension>) : Exp
     override fun invoke(left: T, index: IntArray): T = left * (right as MultiArray<T, DN>)[index]
 }
 
-public class Div<T : Number>(private val right: MultiArray<T, Dimension>) : Exp<T>(), Arith {
+public class Div<T : Number, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
     override fun invoke(left: T, ind1: Int): T = left / (right as MultiArray<T, D1>)[ind1]
     override fun invoke(left: T, ind1: Int, ind2: Int): T = left / (right as MultiArray<T, D2>)[ind1, ind2]
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int): T =

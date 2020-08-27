@@ -69,3 +69,15 @@ internal inline fun <T : Number> Number.toPrimitiveType(dtype: DataType): T = wh
 } as T
 
 internal operator fun <T : Number> Number.compareTo(other: T): Int = (this - other).toInt()
+
+internal fun IntArray.remove(pos: Int): IntArray = when (pos) {
+    0 -> sliceArray(1..lastIndex)
+    lastIndex -> sliceArray(0 until lastIndex)
+    else -> sliceArray(0 until pos) + sliceArray(pos + 1..lastIndex)
+}
+
+internal fun IntArray.removeAll(indices: List<Int>): IntArray = when {
+    indices.isEmpty() -> this
+    indices.size == 1 -> remove(indices.first())
+    else -> this.filterIndexed { index, _ -> index !in indices }.toIntArray()
+}

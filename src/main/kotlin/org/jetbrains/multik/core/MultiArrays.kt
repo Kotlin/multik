@@ -1,13 +1,42 @@
 package org.jetbrains.multik.core
 
-public interface MultiArray<T : Number, out D : Dimension> {
+public interface MultiArray<T : Number, D : Dimension> {
     public val indices: IntRange
     public val multiIndices: MultiIndexProgression
+
+    public fun isScalar(): Boolean
 
     public fun isEmpty(): Boolean
     public fun isNotEmpty(): Boolean
 
+    public fun clone(): MultiArray<T, D>
+
+    public fun deepCope(): MultiArray<T, D>
+
     public operator fun iterator(): Iterator<T>
+
+
+    // Reshape
+
+    public fun reshape(dim1: Int): MultiArray<T, D1>
+
+    public fun reshape(dim1: Int, dim2: Int): MultiArray<T, D2>
+
+    public fun reshape(dim1: Int, dim2: Int, dim3: Int): MultiArray<T, D3>
+
+    public fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int): MultiArray<T, D4>
+
+    public fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int): MultiArray<T, DN>
+
+    public fun transpose(vararg axes: Int): MultiArray<T, D>
+
+    // TODO(maybe be done on one axis? like pytorch)
+    public fun squeeze(vararg axes: Int): MultiArray<T, DN>
+
+    // TODO(maybe be done on one axis? like pytorch)
+    public fun unsqueeze(vararg axes: Int): MultiArray<T, DN>
+
+    public fun cat(other: MultiArray<T, D>, axis: Int = 0): MultiArray<T, DN>
 }
 
 
@@ -50,6 +79,8 @@ public class ReadableView<T : Number>(private val base: MultiArray<T, DN>) /*: B
 public fun <T : Number, D : Dimension, M : Dimension> MultiArray<T, D>.view(
     index: Int, axis: Int = 0
 ): MultiArray<T, M> {
+    //todo negative?
+    if (index >= shape[axis]) throw ArrayIndexOutOfBoundsException("Index $index out of bounds shape dimension ${shape[axis]}")
     return Ndarray<T, M>(
         data, offset + strides[axis] * index, shape.remove(axis),
         strides.remove(axis), this.dtype, dimensionOf(this.dim.d - 1)
@@ -152,47 +183,256 @@ public operator fun <T : Number> MultiArray<T, DN>.get(index: IntArray): T {
     return data[strides.foldIndexed(offset) { i, acc, stride -> acc + index[i] * stride }]
 }
 
+//_______________________________________________GetWithSlice___________________________________________________________
 
-//__________________________________________________Reshape_____________________________________________________________
+public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(slice: Slice, axis: Int = 0): Ndarray<T, O> {
+    //TODO (require)
+//    require(range.step > 0) { "slicing step must be positive, but was ${range.step}" }
+//    require(axis in 0 until this.dim.d) { "axis out of bounds: $axis" }
+//    require(range.first >= 0) { "slicing start index must be positive, but was ${range.first}" }
+    //TODO (negative indexing)
+    val actualTo = if (slice.stop != -1) {
+        //TODO (require)
+        require(slice.stop > slice.start) { "slicing end index ${slice.stop} must be greater than start index ${slice.start}" }
+        check(slice.stop <= shape[axis]) { "slicing end index out of bounds: ${slice.stop} > ${shape[axis]}" }
+        slice.stop
+    } else {
+        check(shape[axis] > slice.start) { "slicing start index out of bounds: ${slice.start} >= ${shape[axis]}" }
+        shape[axis]
+    }
 
-public fun <T : Number, D : Dimension> MultiArray<T, D>.reshape(dim1: Int): MultiArray<T, D1> {
-    if (this is Ndarray<T, D>)
-        return this.reshape(dim1)
-    else throw Exception("Cannot reshape.")
+    val sliceStrides = strides.clone().apply { this[axis] *= slice.step }
+    val sliceShape = shape.clone().apply {
+        this[axis] = (actualTo - slice.start + slice.step - 1) / slice.step
+    }
+    return Ndarray<T, O>(data, offset + slice.start * strides[axis], sliceShape, sliceStrides, this.dtype, dimensionOf(sliceShape.size))
 }
 
-public fun <T : Number, D : Dimension> MultiArray<T, D>.reshape(dim1: Int, dim2: Int): MultiArray<T, D2> {
-    if (this is Ndarray<T, D>)
-        return this.reshape(dim1, dim2)
-    else throw Exception("Cannot reshape.")
+
+public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(indexing: Map<Int, Indexing>): Ndarray<T, O> {
+    var newOffset = offset
+    var newShape: IntArray = shape.clone()
+    var newStrides: IntArray = strides.clone()
+    val removeAxes = mutableListOf<Int>()
+    for (ind in indexing) {
+        when (ind.value) {
+            is RInt -> {
+                //todo check
+                val index = (ind.value as RInt).data
+                newOffset += newStrides[ind.key] * index
+                removeAxes.add(ind.key)
+//                newShape = newShape.remove(ind.key)
+//                newStrides = newStrides.remove(ind.key)
+            }
+            is Slice -> {
+                val index = ind.value as Slice
+//                require(index.step > 0) { "slicing step must be positive, but was ${index.step}" }
+//                require(ind.key in 0 until this.dim.d) { "axis out of bounds: ${ind.key}" }
+//                require(index.start >= 0) { "slicing start index must be positive, but was ${index.start}" }
+                val actualTo = if (index.start != -1) {
+                    require(index.stop > index.start) { "slicing end index ${index.stop} must be greater than start index ${index.start}" }
+                    check(index.stop <= shape[ind.key]) { "slicing end index out of bounds: ${index.stop} > ${shape[ind.key]}" }
+                    index.stop
+                } else {
+                    check(shape[ind.key] > index.start) { "slicing start index out of bounds: ${index.start} >= ${shape[ind.key]}" }
+                    shape[ind.key]
+                }
+
+                newOffset += index.start * newStrides[ind.key]
+                newShape[ind.key] = (actualTo - index.start + index.step - 1) / index.step
+                newStrides[ind.key] *= index.step
+            }
+        }
+    }
+
+    newShape = newShape.removeAll(removeAxes)
+    newStrides = newStrides.removeAll(removeAxes)
+    return Ndarray<T, O>(this.data, newOffset, newShape, newStrides, this.dtype, dimensionOf(newShape.size))
 }
 
-public fun <T : Number, D : Dimension> MultiArray<T, D>.reshape(dim1: Int, dim2: Int, dim3: Int): MultiArray<T, D3> {
-    if (this is Ndarray<T, D>)
-        return this.reshape(dim1, dim2, dim3)
-    else throw Exception("Cannot reshape.")
-}
+@JvmName("get12")
+public operator fun <T: Number> MultiArray<T, D1>.get(index: Slice): MultiArray<T, D1> = slice(index)
 
-public fun <T : Number, D : Dimension> MultiArray<T, D>.reshape(
-    dim1: Int, dim2: Int, dim3: Int, dim4: Int
-): MultiArray<T, D4> {
-    if (this is Ndarray<T, D>)
-        return this.reshape(dim1, dim2, dim3, dim4)
-    else throw Exception("Cannot reshape.")
-}
+@JvmName("get13")
+public operator fun <T: Number> MultiArray<T, D2>.get(index: Slice): MultiArray<T, D2> = slice(index)
 
-public fun <T : Number, D : Dimension> MultiArray<T, D>.reshape(
-    dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
-): MultiArray<T, DN> {
-    if (this is Ndarray<T, D>)
-        return this.reshape(dim1, dim2, dim3, dim4, *dims)
-    else throw Exception("Cannot reshape.")
-}
+@JvmName("get14")
+public operator fun <T: Number> MultiArray<T, D2>.get(ind1: Slice, ind2: Slice): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1, 1 to ind2))
+
+@JvmName("get15")
+public operator fun <T: Number> MultiArray<T, D2>.get(ind1: Int, ind2: Slice): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2))
+
+@JvmName("get16")
+public operator fun <T: Number> MultiArray<T, D2>.get(ind1: Slice, ind2: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1, 1 to ind2.r))
+
+@JvmName("get17")
+public operator fun <T: Number> MultiArray<T, D3>.get(index: Slice): MultiArray<T, D3> = slice(index)
+
+@JvmName("get18")
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Slice): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1, 1 to ind2))
+
+@JvmName("get19")
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: Slice): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2))
+
+@JvmName("get20")
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1, 1 to ind2.r))
+
+@JvmName("get21")
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Slice, ind3: Slice): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3))
+
+@JvmName("get22")
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: Int, ind3: Slice): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3))
+
+@JvmName("get23")
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: Slice, ind3: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3.r))
+
+@JvmName("get24")
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Int, ind3: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3.r))
+
+@JvmName("get25")
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: Slice, ind3: Slice): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3))
+
+@JvmName("get26")
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Slice, ind3: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3.r))
+
+@JvmName("get27")
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Int, ind3: Slice): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3))
+
+@JvmName("get28")
+public operator fun <T: Number> MultiArray<T, D4>.get(index: Slice): MultiArray<T, D4> =
+    slice(index)
+
+@JvmName("get29")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice): MultiArray<T, D4> =
+    slice(mapOf(0 to ind1, 1 to ind2))
+
+
+@JvmName("get30")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.r, 1 to ind2))
+
+@JvmName("get31")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1, 1 to ind2.r))
+
+@JvmName("get32")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Slice): MultiArray<T, D4> =
+    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3))
+
+@JvmName("get33")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Slice): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3))
+
+@JvmName("get34")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3.r))
+
+@JvmName("get35")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3.r))
+
+@JvmName("get36")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Slice): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3))
+
+@JvmName("get37")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Int): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3.r))
+
+@JvmName("get38")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Slice): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3))
+
+@JvmName("get39")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Slice, ind4: Slice): MultiArray<T, D4> =
+    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3, 3 to ind4))
+
+@JvmName("get39")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Slice): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3.r, 3 to ind4))
+
+@JvmName("get40")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Slice, ind4: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3, 3 to ind4.r))
+
+@JvmName("get41")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Int, ind4: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3.r, 3 to ind4.r))
+
+@JvmName("get42")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Int, ind4: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3.r, 3 to ind4.r))
+
+@JvmName("get43")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Slice, ind4: Slice): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3, 3 to ind4))
+
+@JvmName("get44")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Slice, ind4: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3, 3 to ind4.r))
+
+@JvmName("get45")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Int, ind4: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3.r, 3 to ind4.r))
+
+@JvmName("get46")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Int, ind4: Slice): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3.r, 3 to ind4))
+
+@JvmName("get47")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Int, ind4: Slice): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3.r, 3 to ind4))
+
+@JvmName("get48")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Slice, ind4: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3, 3 to ind4.r))
+
+@JvmName("get49")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Slice, ind4: Slice): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3, 3 to ind4))
+
+@JvmName("get50")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Slice, ind4: Slice): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3, 3 to ind4))
+
+@JvmName("get51")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Int, ind4: Slice): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3.r, 3 to ind4))
+
+@JvmName("get52")
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Slice, ind4: Int): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3, 3 to ind4.r))
+
+public fun <T: Number> MultiArray<T, DN>.slice(map: Map<Int, Indexing>): MultiArray<T, DN> =
+    slice<T, DN, DN>(map)
 
 //________________________________________________asDimension___________________________________________________________
 
 public fun <T : Number, D : Dimension> MultiArray<T, D>.asDNArray(): Ndarray<T, DN> {
     if (this is Ndarray<T, D>)
         return this.asDNArray()
-    else throw Exception("Cannot cast MultiArray to Ndarray of dimension n.")
+    else throw ClassCastException("Cannot cast MultiArray to Ndarray of dimension n.")
+}
+
+//_________________________________________________Transform____________________________________________________________
+
+public fun <T : Number, D : Dimension> MultiArray<T, D>.cat(other: MultiArray<T, D>, axis: Int = 0): MultiArray<T, DN> {
+    if (this is Ndarray<T, D>)
+        return this.cat(other, axis)
+//    if (this is Ndarray<T, D>)
+//        return this.cat(other, axis)
+    else throw ClassCastException("Cannot cast MultiArray to Ndarray of dimension n.")
 }

@@ -1,6 +1,30 @@
 package org.jetbrains.multik.core
 
-public interface MutableMultiArray<T : Number, D : Dimension> : MultiArray<T, D>
+public interface MutableMultiArray<T : Number, D : Dimension> : MultiArray<T, D> {
+    override fun clone(): MutableMultiArray<T, D>
+
+    override fun deepCope(): MutableMultiArray<T, D>
+
+    // Reshape
+
+    override fun reshape(dim1: Int): MutableMultiArray<T, D1>
+
+    override fun reshape(dim1: Int, dim2: Int): MutableMultiArray<T, D2>
+
+    override fun reshape(dim1: Int, dim2: Int, dim3: Int): MutableMultiArray<T, D3>
+
+    override fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int): MutableMultiArray<T, D4>
+
+    override fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int): MutableMultiArray<T, DN>
+
+    override fun transpose(vararg axes: Int): MutableMultiArray<T, D>
+
+    override fun squeeze(vararg axes: Int): MutableMultiArray<T, DN>
+
+    override fun unsqueeze(vararg axes: Int): MutableMultiArray<T, DN>
+
+    override fun cat(other: MultiArray<T, D>, axis: Int): MutableMultiArray<T, DN>
+}
 
 //___________________________________________________WritableView_______________________________________________________
 
@@ -168,4 +192,14 @@ public operator fun <T : Number> MutableMultiArray<T, DN>.set(vararg index: Int,
 public operator fun <T : Number> MutableMultiArray<T, DN>.set(index: IntArray, value: T): Unit {
     check(index.size == dim.d) { "number of indices doesn't match dimension: ${index.size} != ${dim.d}" }
     data[strides.foldIndexed(offset) { i, acc, stride -> acc + index[i] * stride }] = value
+}
+
+//_________________________________________________Transform____________________________________________________________
+
+public fun <T : Number, D : Dimension> MutableMultiArray<T, D>.cat(
+    other: MutableMultiArray<T, D>, axis: Int = 0
+): MutableMultiArray<T, DN> {
+    if (this is Ndarray<T, D>)
+        return this.cat(other, axis)
+    else throw ClassCastException("Cannot cast MultiArray to Ndarray of dimension n.")
 }

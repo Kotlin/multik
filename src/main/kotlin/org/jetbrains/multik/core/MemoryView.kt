@@ -18,6 +18,8 @@ public sealed class MemoryView<T : Number> : Iterable<T> {
 
     public abstract override fun iterator(): Iterator<T>
 
+    public abstract fun copyOf(): MemoryView<T>
+
     internal open fun getByteArray(): ByteArray = throw UnsupportedOperationException()
 
     internal open fun getShortArray(): ShortArray = throw UnsupportedOperationException()
@@ -50,6 +52,8 @@ internal class MemoryViewByteArray(override val data: ByteArray) : MemoryView<By
     override fun getByteArray(): ByteArray = data
 
     override fun iterator(): Iterator<Byte> = data.iterator()
+
+    override fun copyOf(): MemoryView<Byte> = MemoryViewByteArray(data.copyOf())
 
     override fun equals(other: Any?): Boolean {
         return when {
@@ -87,6 +91,8 @@ internal class MemoryViewShortArray(override val data: ShortArray) : MemoryView<
 
     override fun iterator(): Iterator<Short> = data.iterator()
 
+    override fun copyOf(): MemoryView<Short> = MemoryViewShortArray(data.copyOf())
+
     override fun equals(other: Any?): Boolean {
         return when {
             this === other -> true
@@ -122,6 +128,8 @@ internal class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>
     override fun getIntArray(): IntArray = data
 
     override fun iterator(): Iterator<Int> = data.iterator()
+
+    override fun copyOf(): MemoryView<Int> = MemoryViewIntArray(data.copyOf())
 
     override fun equals(other: Any?): Boolean {
         return when {
@@ -159,6 +167,8 @@ internal class MemoryViewLongArray(override val data: LongArray) : MemoryView<Lo
 
     override fun iterator(): Iterator<Long> = data.iterator()
 
+    override fun copyOf(): MemoryView<Long> = MemoryViewLongArray(data.copyOf())
+
     override fun equals(other: Any?): Boolean {
         return when {
             this === other -> true
@@ -195,6 +205,8 @@ internal class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<
 
     override fun iterator(): Iterator<Float> = data.iterator()
 
+    override fun copyOf(): MemoryView<Float> = MemoryViewFloatArray(data.copyOf())
+
     override fun equals(other: Any?): Boolean {
         return when {
             this === other -> true
@@ -230,6 +242,8 @@ internal class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryVie
     override fun getDoubleArray(): DoubleArray = data
 
     override fun iterator(): Iterator<Double> = data.iterator()
+
+    override fun copyOf(): MemoryView<Double> = MemoryViewDoubleArray(data.copyOf())
 
     override fun equals(other: Any?): Boolean {
         return when {
