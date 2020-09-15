@@ -22,7 +22,8 @@ public class Ndarray<T : Number, D : Dimension> @PublishedApi internal construct
 
     override val indices: IntRange
         get() {
-            if (dim.d != 1) throw IllegalStateException("Ndarray of dimension ${dim.d}, use multiIndex.")
+            // todo?
+//            if (dim.d != 1) throw IllegalStateException("Ndarray of dimension ${dim.d}, use multiIndex.")
             return 0..size - 1
         }
 

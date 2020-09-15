@@ -66,7 +66,7 @@ public inline fun <reified T : Number> Multik.ndarray(arg: List<List<T>>): D2Arr
     size[1] = arg.first().size
     val res = ArrayList<T>()
     for (ax0 in arg) {
-        check(size[1] == ax0.size) { "The size of the incoming array $ax0 does not match the rest" }
+        require(size[1] == ax0.size) { "The size of the incoming array $ax0 does not match the rest" }
         res.addAll(ax0)
     }
     val data = res.toViewPrimitiveArray(dtype)
@@ -85,9 +85,9 @@ public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<T>>>):
     size[2] = arg.first().first().size
     val res = ArrayList<T>()
     for (ax0 in arg) {
-        check(size[1] == ax0.size) { "The size of the incoming array $ax0 does not match the rest" }
+        require(size[1] == ax0.size) { "The size of the incoming array $ax0 does not match the rest" }
         for (ax1 in ax0) {
-            check(size[2] == ax1.size) { "The size of the incoming array $ax1 does not match the rest" }
+            require(size[2] == ax1.size) { "The size of the incoming array $ax1 does not match the rest" }
             res.addAll(ax1)
         }
     }
@@ -110,9 +110,9 @@ public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<List<T
     for (ax0 in arg) {
         check(size[1] == ax0.size) { "The size of the incoming array $ax0 does not match the rest" }
         for (ax1 in ax0) {
-            check(size[2] == ax1.size) { "The size of the incoming array $ax1 does not match the rest" }
+            require(size[2] == ax1.size) { "The size of the incoming array $ax1 does not match the rest" }
             for (ax2 in ax1) {
-                check(size[3] == ax2.size) { "The size of the incoming array $ax2 does not match the rest" }
+                require(size[3] == ax2.size) { "The size of the incoming array $ax2 does not match the rest" }
                 res.addAll(ax2)
             }
         }
