@@ -1,8 +1,6 @@
 package org.jetbrains.multik.api
 
 import org.jetbrains.multik.core.*
-import org.jetbrains.multik.jni.NativeLinAlg
-import org.jetbrains.multik.jni.NativeMath
 
 /**
  * Alternative names.
@@ -63,6 +61,13 @@ public interface LinAlg {
  */
 public object Multik {
     private val loader: Loader = Loader("multik_jni")
+
+    public val engine: String? get() = Engine.getDefaultEngine()
+
+    public fun setEngine(type: EngineType) {
+        Engine.setDefaultEngine(type)
+    }
+
     public var nativeLibraryLoaded: Boolean = loader.load()
         private set(value) {
             field = if (value) loader.load() else false
@@ -81,8 +86,9 @@ public object Multik {
             }
         }
 
-    public val math: Math get() = if (useNative) NativeMath else JvmMath
-    public val linalg: LinAlg get() = if (useNative) NativeLinAlg else JvmLinAlg
+
+    public val math: Math get() = Engine.getMath()
+    public val linalg: LinAlg get() = Engine.getLinAlg()
 
     public operator fun <T> get(vararg elements: T): List<T> = elements.toList()
 }
