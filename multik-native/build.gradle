@@ -1,0 +1,96 @@
+import org.gradle.internal.jvm.Jvm
+
+plugins {
+    // Native build
+    id 'cpp'
+}
+
+apply from: "$rootDir/gradle/openblas.gradle"
+
+dependencies {
+    api project(":multik-api")
+}
+
+model {
+    platforms {
+        linux { operatingSystem 'linux' }
+        osx { operatingSystem 'osx' }
+        windows { operatingSystem 'windows' }
+    }
+
+    toolChains {
+        visualCpp(VisualCpp)
+        gcc(Gcc)
+        clang(Clang)
+    }
+
+    components {
+        multik_jni(NativeLibrarySpec) {
+
+            targetPlatform 'linux'
+            targetPlatform 'windows'
+            targetPlatform 'osx'
+
+            binaries.withType(SharedLibraryBinarySpec) {
+                def javaHome = Jvm.current().javaHome
+                def os = targetPlatform.operatingSystem
+                if (os.linux) {
+                    cppCompiler.args("-I$javaHome/include", "-I$javaHome/include/linux")
+                    cppCompiler.args("-I$buildDir/openblas/include/")
+                    linker.args("-L$buildDir/openblas/lib/", "-lopenblas")
+                } else if (os.macOsX) {
+                    cppCompiler.args("-I$javaHome/include", "-I$javaHome/include/darwin")
+                    cppCompiler.args("-I$buildDir/openblas/include/")
+                    linker.args("-L$buildDir/openblas/lib/", "-lopenblas")
+//                    linker.args("$buildDir/openblas/lib/libopenblas.a")
+                } else if (os.windows) {
+                    cppCompiler.args("/I$javaHome/include", "/I$javaHome/include/win32")
+                    cppCompiler.args("/I$buildDir/openblas/include/")
+                    linker.args("/L$buildDir/openblas/lib/", "-lopenblas")
+                }
+
+                def libraryName = System.mapLibraryName("multik_jni")
+                sharedLibraryFile = file("$buildDir/libs/$libraryName")
+            }
+            binaries.withType(StaticLibraryBinarySpec) {
+                buildable = false
+            }
+        }
+    }
+
+    components {
+        all {
+            binaries.all {
+                if (toolChain in Gcc) {
+                    cppCompiler.args('-std=c++14', '-O3', '-fno-exceptions', '-ffast-math')
+                }
+                if (toolChain in Clang) {
+//                TODO("Which flags?")
+                    cppCompiler.args('-std=c++14', '-O3', '-fno-exceptions', '-ffast-math')
+                }
+            }
+        }
+    }
+
+    tasks {
+        buildCpp(Task) {
+            dependsOn $.binaries.findAll { it.buildable }
+            doLast { file("$buildDir/libs/multik_jni").deleteDir() }
+        }
+    }
+}
+
+tasks.withType(CppCompile) {
+    dependsOn 'installOpenBlas'
+}
+
+jar {
+    dependsOn 'buildCpp'
+    from "$buildDir/libs"
+    exclude '*.jar'
+}
+
+test {
+    dependsOn 'buildCpp'
+    systemProperty 'java.library.path', "$buildDir/libs"
+}
