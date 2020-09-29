@@ -1,7 +1,7 @@
 package org.jetbrains.multik.ndarray.data
 
 public interface MultiArray<T : Number, D : Dimension> {
-    public val data: MemoryView<T>
+    public val data: ImmutableMemoryView<T>
     public val offset: Int
     public val shape: IntArray
     public val strides: IntArray

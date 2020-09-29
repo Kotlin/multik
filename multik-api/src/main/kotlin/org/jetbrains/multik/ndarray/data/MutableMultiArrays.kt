@@ -1,6 +1,8 @@
 package org.jetbrains.multik.ndarray.data
 
 public interface MutableMultiArray<T : Number, D : Dimension> : MultiArray<T, D> {
+    public override val data: MemoryView<T>
+
     override fun clone(): MutableMultiArray<T, D>
 
     override fun deepCope(): MutableMultiArray<T, D>
