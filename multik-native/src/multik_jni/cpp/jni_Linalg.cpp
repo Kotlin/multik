@@ -47,9 +47,9 @@ JNIEXPORT jdouble JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_norm___3DI
  */
 JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_dot___3FII_3FI_3F
 	(JNIEnv *env, jobject jobj, jfloatArray j_a, jint m, jint n, jfloatArray j_b, jint k, jfloatArray j_c) {
-  float *A = (float *)env->GetPrimitiveArrayCritical(j_a, 0);
-  float *B = (float *)env->GetPrimitiveArrayCritical(j_b, 0);
-  float *C = (float *)env->GetPrimitiveArrayCritical(j_c, 0);
+  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *B = (float *)env->GetPrimitiveArrayCritical(j_b, nullptr);
+  auto *C = (float *)env->GetPrimitiveArrayCritical(j_c, nullptr);
 
   matrix_dot_float(A, m, n, k, B, C);
 
@@ -65,9 +65,9 @@ JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_dot___3FII_3FI_3F
  */
 JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_dot___3DII_3DI_3D
 	(JNIEnv *env, jobject jobj, jdoubleArray j_a, jint m, jint n, jdoubleArray j_b, jint k, jdoubleArray j_c) {
-  double *A = (double *)env->GetPrimitiveArrayCritical(j_a, 0);
-  double *B = (double *)env->GetPrimitiveArrayCritical(j_b, 0);
-  double *C = (double *)env->GetPrimitiveArrayCritical(j_c, 0);
+  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *B = (double *)env->GetPrimitiveArrayCritical(j_b, nullptr);
+  auto *C = (double *)env->GetPrimitiveArrayCritical(j_c, nullptr);
 
   matrix_dot_double(A, m, n, k, B, C);
 
@@ -83,9 +83,9 @@ JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_dot___3DII_3DI_3D
  */
 JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_dot___3FII_3F_3F
 	(JNIEnv *env, jobject jobj, jfloatArray j_a, jint m, jint n, jfloatArray j_b, jfloatArray j_c) {
-  float *A = (float *)env->GetPrimitiveArrayCritical(j_a, 0);
-  float *B = (float *)env->GetPrimitiveArrayCritical(j_b, 0);
-  float *C = (float *)env->GetPrimitiveArrayCritical(j_c, 0);
+  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *B = (float *)env->GetPrimitiveArrayCritical(j_b, nullptr);
+  auto *C = (float *)env->GetPrimitiveArrayCritical(j_c, nullptr);
 
   matrix_dot_vector_float(A, m, n, B, C);
 
@@ -101,9 +101,9 @@ JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_dot___3FII_3F_3F
  */
 JNIEXPORT void JNICALL Java_org_jetbrains_multik_jni_JniLinAlg_dot___3DII_3D_3D
 	(JNIEnv *env, jobject jobj, jdoubleArray j_a, jint m, jint n, jdoubleArray j_b, jdoubleArray j_c) {
-  double *A = (double *)env->GetPrimitiveArrayCritical(j_a, 0);
-  double *B = (double *)env->GetPrimitiveArrayCritical(j_b, 0);
-  double *C = (double *)env->GetPrimitiveArrayCritical(j_c, 0);
+  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *B = (double *)env->GetPrimitiveArrayCritical(j_b, nullptr);
+  auto *C = (double *)env->GetPrimitiveArrayCritical(j_c, nullptr);
 
   matrix_dot_vector_double(A, m, n, B, C);
 

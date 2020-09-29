@@ -4,11 +4,11 @@
 #ifndef CPP_HEADERS_MK_MATH_H_
 #define CPP_HEADERS_MK_MATH_H_
 
-void index_increment(int *, int *, int);
-int array_ptr(int, int *, int *, int);
+void index_increment(int *, const int *, int);
+int array_ptr(int, int *, const int *, int);
 
 template<typename T>
-int array_argmax(T *arr, int offset, int size, int dim, int *shape, int *strides) {
+int array_argmax(T *arr, int offset, int size, int dim, const int *shape, const int *strides) {
   int ret = 0;
   T max = *(arr + offset);
   int *index = new int[dim];
@@ -26,7 +26,7 @@ int array_argmax(T *arr, int offset, int size, int dim, int *shape, int *strides
 }
 
 template<typename T>
-int array_argmin(T *arr, int offset, int size, int dim, int *shape, int *strides) {
+int array_argmin(T *arr, int offset, int size, int dim, const int *shape, const int *strides) {
   int ret = 0;
   T min = *(arr + offset);
   int *index = new int[dim];
@@ -44,7 +44,7 @@ int array_argmin(T *arr, int offset, int size, int dim, int *shape, int *strides
 }
 
 template<typename T>
-void array_exp(T *arr, double *out, int offset, int size, int dim, int *shape, int *strides) {
+void array_exp(T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
   int *index = new int[dim];
   std::memset(index, 0, dim * 4);
 
@@ -57,7 +57,7 @@ void array_exp(T *arr, double *out, int offset, int size, int dim, int *shape, i
 }
 
 template<typename T>
-void array_log(T *arr, double *out, int offset, int size, int dim, int *shape, int *strides) {
+void array_log(T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
   int *index = new int[dim];
   std::memset(index, 0, dim * 4);
 
@@ -70,7 +70,7 @@ void array_log(T *arr, double *out, int offset, int size, int dim, int *shape, i
 }
 
 template<typename T>
-void array_sin(T *arr, double *out, int offset, int size, int dim, int *shape, int *strides) {
+void array_sin(T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
   int *index = new int[dim];
   std::memset(index, 0, dim * 4);
 
@@ -83,7 +83,7 @@ void array_sin(T *arr, double *out, int offset, int size, int dim, int *shape, i
 }
 
 template<typename T>
-void array_cos(T *arr, double *out, int offset, int size, int dim, int *shape, int *strides) {
+void array_cos(T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
   int *index = new int[dim];
   std::memset(index, 0, dim * 4);
 
@@ -96,7 +96,7 @@ void array_cos(T *arr, double *out, int offset, int size, int dim, int *shape, i
 }
 
 template<typename T>
-T array_max(T *arr, int offset, int size, int dim, int *shape, int *strides) {
+T array_max(T *arr, int offset, int size, int dim, const int *shape, const int *strides) {
   T max = *(arr + offset);
   int *index = new int[dim];
   std::memset(index, 0, dim * 4);
@@ -112,7 +112,7 @@ T array_max(T *arr, int offset, int size, int dim, int *shape, int *strides) {
 }
 
 template<typename T>
-T array_min(T *arr, int offset, int size, int dim, int *shape, int *strides) {
+T array_min(T *arr, int offset, int size, int dim, const int *shape, const int *strides) {
   T min = *(arr + offset);
   int *index = new int[dim];
   std::memset(index, 0, dim * 4);
@@ -128,7 +128,7 @@ T array_min(T *arr, int offset, int size, int dim, int *shape, int *strides) {
 }
 
 template<typename T>
-T array_sum(T *arr, int offset, int size, int dim, int *shape, int *strides) {
+T array_sum(T *arr, int offset, int size, int dim, const int *shape, const int *strides) {
   double accum = 0;
   double compens = 0;
   int *index = new int[dim];
@@ -146,7 +146,7 @@ T array_sum(T *arr, int offset, int size, int dim, int *shape, int *strides) {
 }
 
 template<typename T>
-void array_cumsum(T *arr, T *out, int offset, int size, int dim, int *shape, int *strides) {
+void array_cumsum(T *arr, T *out, int offset, int size, int dim, const int *shape, const int *strides) {
   double accum = 0;
   double compens = 0;
   int *index = new int[dim];
@@ -163,16 +163,16 @@ void array_cumsum(T *arr, T *out, int offset, int size, int dim, int *shape, int
   delete [] index;
 }
 
-int array_ptr(int offset, int *index, int *strides, int size) {
+int array_ptr(int offset, int *index, const int *strides, int size) {
   int ptr = offset;
-  for (int *ind = index, *str = strides; ind < index + size; ++ind, ++str) {
+  for (int *ind = index, *str = const_cast<int *>(strides); ind < index + size; ++ind, ++str) {
     ptr += (*str) * (*ind);
   }
   return ptr;
 }
 
-void index_increment(int *index, int *shape, int size) {
-  for (int *ind = index + size - 1, *sh = shape + size - 1; ind >= index; --ind, --sh) {
+void index_increment(int *index, const int *shape, int size) {
+  for (int *ind = index + size - 1, *sh = const_cast<int *>(shape + size - 1); ind >= index; --ind, --sh) {
     int tmp = (*ind) + 1;
     if (tmp >= *sh && ind != index) {
       *ind = 0;
