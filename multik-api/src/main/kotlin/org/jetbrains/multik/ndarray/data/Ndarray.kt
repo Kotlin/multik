@@ -9,7 +9,7 @@ public typealias D4Array<T> = Ndarray<T, D4>
  * Multidimensional array. Stores a [MemoryView] object.
  */
 public class Ndarray<T : Number, D : Dimension> constructor(
-    public override val data: MemoryView<T>,
+    data: ImmutableMemoryView<T>,
     public override val offset: Int = 0,
     //TODO (check empty?!)
     //TODO (make immutable)
@@ -18,6 +18,8 @@ public class Ndarray<T : Number, D : Dimension> constructor(
     public override val dtype: DataType,
     public override val dim: D
 ) : MutableMultiArray<T, D> {
+
+    public override val data: MemoryView<T> = data as MemoryView<T>
 
     public override val size: Int get() = shape.fold(1, Int::times)
 
@@ -29,8 +31,6 @@ public class Ndarray<T : Number, D : Dimension> constructor(
         }
 
     override val multiIndices: MultiIndexProgression get() = IntArray(dim.d)..shape
-
-    public fun getData(): Array<T> = data.getData()
 
     override fun isScalar(): Boolean = shape.isEmpty() || (shape.size == 1 && shape.first() == 1)
 

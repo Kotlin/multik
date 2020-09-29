@@ -24,14 +24,12 @@ public abstract class Engine {
             val engine = engineProvider.getEngine()
             if (engine != null) {
                 engines[engine.type] = engine
-            } //else {
-            // need exception? TODO
-            //}
+            }
         }
 
-//        if (engines.isEmpty()) {
-        // need exception?
-//        }
+        if (engines.isEmpty()) {
+            throw EngineMultikException("The map of engines is empty.")
+        }
 
         defaultEngine = if (engines.containsKey(EngineType.JVM)) {
             EngineType.JVM
@@ -51,29 +49,36 @@ public abstract class Engine {
         }
 
         override val name: String
-            get() = TODO("Not yet implemented")
+            get() = throw EngineMultikException("For a companion object, the name is undefined.")
 
         override val type: EngineType
-            get() = TODO("Not yet implemented")
+            get() = throw EngineMultikException("For a companion object, the type is undefined.")
 
         internal fun getDefaultEngine(): String? = defaultEngine?.name
 
         internal fun setDefaultEngine(type: EngineType) {
+            if (!engines.containsKey(type)) throw EngineMultikException("This type of engine is not available.")
             defaultEngine = type
         }
 
         override fun getMath(): Math {
-            if (engines.isEmpty()) throw Exception("") //TODO
-            return engines[defaultEngine]?.getMath() ?: throw Exception()
+            if (engines.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide Math implementation.")
+            return engines[defaultEngine]?.getMath()
+                ?: throw EngineMultikException("The used engine type is not defined.")
         }
 
         override fun getLinAlg(): LinAlg {
-            if (engines.isEmpty()) throw Exception("") //TODO
-            return engines[defaultEngine]?.getLinAlg() ?: throw Exception()
+            if (engines.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide LinAlg implementation.")
+            return engines[defaultEngine]?.getLinAlg()
+                ?: throw throw EngineMultikException("The used engine type is not defined.")
         }
     }
 }
 
 public interface EngineProvider {
     public fun getEngine(): Engine?
+}
+
+public class EngineMultikException(message: String) : Exception(message) {
+    public constructor() : this("")
 }

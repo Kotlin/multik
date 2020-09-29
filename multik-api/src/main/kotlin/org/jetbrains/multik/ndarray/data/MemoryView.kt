@@ -1,9 +1,25 @@
 package org.jetbrains.multik.ndarray.data
 
-//todo (private set)
-public sealed class MemoryView<T : Number> : Iterable<T> {
-    //TODO(hide data?)
-    public abstract val data: Any
+public interface ImmutableMemoryView<T : Number> : Iterable<T> {
+    public val data: Any
+
+    public operator fun get(index: Int): T
+
+    public fun getByteArray(): ByteArray
+
+    public fun getShortArray(): ShortArray
+
+    public fun getIntArray(): IntArray
+
+    public fun getLongArray(): LongArray
+
+    public fun getFloatArray(): FloatArray
+
+    public fun getDoubleArray(): DoubleArray
+}
+
+public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
+    public abstract override val data: Any
 
     public abstract var size: Int
 
@@ -11,27 +27,25 @@ public sealed class MemoryView<T : Number> : Iterable<T> {
 
     public abstract var lastIndex: Int
 
-    public abstract operator fun get(index: Int): T
+    public abstract override operator fun get(index: Int): T
 
     public abstract operator fun set(index: Int, value: T): Unit
-
-    public abstract fun getData(): Array<T>
 
     public abstract override fun iterator(): Iterator<T>
 
     public abstract fun copyOf(): MemoryView<T>
 
-    public open fun getByteArray(): ByteArray = throw UnsupportedOperationException()
+    public override fun getByteArray(): ByteArray = throw UnsupportedOperationException()
 
-    public open fun getShortArray(): ShortArray = throw UnsupportedOperationException()
+    public override fun getShortArray(): ShortArray = throw UnsupportedOperationException()
 
-    public open fun getIntArray(): IntArray = throw UnsupportedOperationException()
+    public override fun getIntArray(): IntArray = throw UnsupportedOperationException()
 
-    public open fun getLongArray(): LongArray = throw UnsupportedOperationException()
+    public override fun getLongArray(): LongArray = throw UnsupportedOperationException()
 
-    public open fun getFloatArray(): FloatArray = throw UnsupportedOperationException()
+    public override fun getFloatArray(): FloatArray = throw UnsupportedOperationException()
 
-    public open fun getDoubleArray(): DoubleArray = throw UnsupportedOperationException()
+    public override fun getDoubleArray(): DoubleArray = throw UnsupportedOperationException()
 }
 
 public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte>() {
@@ -46,8 +60,6 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
     override fun set(index: Int, value: Byte): Unit {
         data[index] = value
     }
-
-    override fun getData(): Array<Byte> = data.toTypedArray()
 
     override fun getByteArray(): ByteArray = data
 
@@ -84,8 +96,6 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
         data[index] = value
     }
 
-    override fun getData(): Array<Short> = data.toTypedArray()
-
     override fun getShortArray(): ShortArray = data
 
     override fun iterator(): Iterator<Short> = data.iterator()
@@ -120,8 +130,6 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
     override fun set(index: Int, value: Int): Unit {
         data[index] = value
     }
-
-    override fun getData(): Array<Int> = data.toTypedArray()
 
     override fun getIntArray(): IntArray = data
 
@@ -158,8 +166,6 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
         data[index] = value
     }
 
-    override fun getData(): Array<Long> = data.toTypedArray()
-
     override fun getLongArray(): LongArray = data
 
     override fun iterator(): Iterator<Long> = data.iterator()
@@ -195,8 +201,6 @@ public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Fl
         data[index] = value
     }
 
-    override fun getData(): Array<Float> = data.toTypedArray()
-
     override fun getFloatArray(): FloatArray = data
 
     override fun iterator(): Iterator<Float> = data.iterator()
@@ -231,8 +235,6 @@ public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<
     override fun set(index: Int, value: Double): Unit {
         data[index] = value
     }
-
-    override fun getData(): Array<Double> = data.toTypedArray()
 
     override fun getDoubleArray(): DoubleArray = data
 

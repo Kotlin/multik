@@ -7,7 +7,7 @@ buildscript {
 }
 
 plugins {
-    val kotlinVersion: String by System.getProperties() // TODO
+    val kotlinVersion: String by System.getProperties()
     kotlin("jvm") version kotlinVersion
 
     id("org.jetbrains.dokka") version "1.4.0"
