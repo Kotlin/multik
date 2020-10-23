@@ -3,11 +3,17 @@ package org.jetbrains.multik.api
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-public enum class EngineType(name: String) {
-    JVM("jvm"), NATIVE("native")
-}
+public sealed class EngineType(public val name: String)
+
+public object JvmEngineType: EngineType("JVM")
+
+public object NativeEngineType: EngineType("NATIVE")
 
 
+/**
+ * This class gives access to different implementations of [LinAlg], [Math].
+ * When initializing [Multik], it loads different engines, by default `JVM` implementation is used.
+ */
 public abstract class Engine {
 
     protected abstract val name: String
@@ -31,8 +37,8 @@ public abstract class Engine {
             throw EngineMultikException("The map of engines is empty.")
         }
 
-        defaultEngine = if (engines.containsKey(EngineType.JVM)) {
-            EngineType.JVM
+        defaultEngine = if (engines.containsKey(JvmEngineType)) {
+            JvmEngineType
         } else {
             engines.iterator().next().key
         }

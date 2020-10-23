@@ -12,8 +12,21 @@ public typealias mk = Multik
 public object Multik {
     public val engine: String? get() = Engine.getDefaultEngine()
 
+    private val _engines: MutableMap<String, EngineType> = mutableMapOf(
+        "JVM" to JvmEngineType,
+        "NATIVE" to NativeEngineType
+    )
+
+    public val engines: Map<String, EngineType>
+        get() = _engines
+
+    public fun addEngine(type: EngineType) {
+        _engines.putIfAbsent(type.name, type)
+    }
+
     public fun setEngine(type: EngineType) {
-        Engine.setDefaultEngine(type)
+        if (type.name in engines)
+            Engine.setDefaultEngine(type)
     }
 
     public val math: Math get() = Engine.getMath()
