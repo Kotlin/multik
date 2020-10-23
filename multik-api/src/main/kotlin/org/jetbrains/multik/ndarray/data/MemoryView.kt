@@ -5,6 +5,10 @@ public interface ImmutableMemoryView<T : Number> : Iterable<T> {
 
     public operator fun get(index: Int): T
 
+    public override fun iterator(): Iterator<T>
+
+    public fun copyOf(): ImmutableMemoryView<T>
+
     public fun getByteArray(): ByteArray
 
     public fun getShortArray(): ShortArray
@@ -33,7 +37,7 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
 
     public abstract override fun iterator(): Iterator<T>
 
-    public abstract fun copyOf(): MemoryView<T>
+    public abstract override fun copyOf(): MemoryView<T>
 
     public override fun getByteArray(): ByteArray = throw UnsupportedOperationException()
 

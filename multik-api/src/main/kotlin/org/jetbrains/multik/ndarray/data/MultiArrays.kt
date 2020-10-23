@@ -9,6 +9,8 @@ public interface MultiArray<T : Number, D : Dimension> {
     public val dtype: DataType
     public val dim: D
 
+    public val consistent: Boolean
+
     public val indices: IntRange
     public val multiIndices: MultiIndexProgression
 
@@ -22,6 +24,8 @@ public interface MultiArray<T : Number, D : Dimension> {
     public fun deepCope(): MultiArray<T, D>
 
     public operator fun iterator(): Iterator<T>
+
+    public fun flatten(): MultiArray<T, D1>
 
 
     // Reshape

@@ -23,6 +23,11 @@ public class Ndarray<T : Number, D : Dimension> constructor(
 
     public override val size: Int get() = shape.fold(1, Int::times)
 
+    public override val consistent: Boolean
+        get() {
+            return offset == 0 && size == data.size && strides.contentEquals(computeStrides(shape))
+        }
+
     override val indices: IntRange
         get() {
             // todo?
@@ -30,7 +35,7 @@ public class Ndarray<T : Number, D : Dimension> constructor(
             return 0..size - 1
         }
 
-    override val multiIndices: MultiIndexProgression get() = IntArray(dim.d)..shape
+    override val multiIndices: MultiIndexProgression get() = IntArray(dim.d)..IntArray(dim.d) { shape[it] - 1 }
 
     override fun isScalar(): Boolean = shape.isEmpty() || (shape.size == 1 && shape.first() == 1)
 
@@ -39,7 +44,7 @@ public class Ndarray<T : Number, D : Dimension> constructor(
     public override fun isNotEmpty(): Boolean = !isEmpty()
 
     public override operator fun iterator(): Iterator<T> =
-        NdarrayIterator(data, offset, strides, shape)
+        if (consistent) this.data.iterator() else NdarrayIterator(data, offset, strides, shape)
 
     public inline fun <reified E : Number> asType(): Ndarray<E, D> {
         val dataType = DataType.of(E::class)
@@ -60,6 +65,18 @@ public class Ndarray<T : Number, D : Dimension> constructor(
         for (el in this)
             data[index++] = el
         return Ndarray<T, D>(data, 0, this.shape, dtype = this.dtype, dim = this.dim)
+    }
+
+    override fun flatten(): MultiArray<T, D1> {
+        val data = if (consistent) {
+            data.copyOf()
+        } else {
+            val tmpData = initMemoryView<T>(size, dtype)
+            var index = 0
+            for (el in this) tmpData[index++] = el
+            tmpData
+        }
+        return D1Array(data, 0, intArrayOf(size), dtype = this.dtype, dim = D1)
     }
 
     // TODO(strides? : view.reshape().reshape()?)
@@ -192,6 +209,7 @@ public class Ndarray<T : Number, D : Dimension> constructor(
         return ret
     }
 
+    //todo extensions
     public fun asD1Array(): D1Array<T> {
         if (this.dim.d == 1) return this as D1Array<T>
         else throw ClassCastException("Cannot cast Ndarray of dimension ${this.dim.d} to Ndarray of dimension 1.")

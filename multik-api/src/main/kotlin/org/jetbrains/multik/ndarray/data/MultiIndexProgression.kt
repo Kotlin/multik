@@ -3,9 +3,13 @@ package org.jetbrains.multik.ndarray.data
 public class MultiIndexProgression(public val first: IntArray, public val last: IntArray, public val step: Int = 1) {
 
     init {
-        if (step == 0) throw IllegalArgumentException("Step must be non-zero.")
-        if (step == Int.MIN_VALUE) throw IllegalArgumentException("Step must be greater than Int.MIN_VALUE to avoid overflow on negation.")
-        if (first.size != last.size) throw IllegalArgumentException("Sizes first and last must be identical.")
+        require(step != 0) { "Step must be non-zero." }
+        require(step != Int.MIN_VALUE) { "Step must be greater than Int.MIN_VALUE to avoid overflow on negation." }
+        require(first.size == last.size) { "Sizes first and last must be identical." }
+    }
+
+    public val reverse: MultiIndexProgression by lazy {
+        last downTo first
     }
 
     public operator fun iterator(): Iterator<IntArray> = MultiIndexIterator(first, last, step)
@@ -23,37 +27,27 @@ public class MultiIndexProgression(public val first: IntArray, public val last: 
 }
 
 internal class MultiIndexIterator(first: IntArray, last: IntArray, private val step: Int) : Iterator<IntArray> {
-    private val finalElement: IntArray = IntArray(last.size) { last[it] - 1 }
-    private var hasNext: Boolean = if (step > 0) {
-        var ret: Boolean = true
-        for (i in first.size - 1 downTo 0) {
-            if (first[i] > last[i]) {
-                ret = false
-                break
-            }
-        }
-        ret
-    } else {
-        var ret: Boolean = true
-        for (i in first.size - 1 downTo 0) {
-            if (first[i] < last[i]) {
-                ret = false
-                break
-            }
-        }
-        ret
-    }
+    private val startElement: IntArray = first.copyOf()
+    private val finalElement: IntArray = last.copyOf()
+    private var hasNext: Boolean = if (step > 0) first < last else first > last
 
-    //todo (-1???)
-    private val next = if (hasNext) first.apply { set(lastIndex, -1) } else finalElement
+    private val next = if (hasNext) first.copyOf().apply { this[lastIndex] -= step } else finalElement
 
     override fun hasNext(): Boolean = hasNext
 
     override fun next(): IntArray {
-        next += step
-        if (next.contentEquals(finalElement)) {
-            if (!hasNext) throw NoSuchElementException()
-            hasNext = false
+        if (step > 0) {
+            next += step
+            if (next >= finalElement) {
+                if (!hasNext) throw NoSuchElementException()
+                hasNext = false
+            }
+        } else {
+            next -= -step
+            if (next <= finalElement) {
+                if (!hasNext) throw NoSuchElementException()
+                hasNext = false
+            }
         }
         return next
     }
@@ -62,10 +56,39 @@ internal class MultiIndexIterator(first: IntArray, last: IntArray, private val s
         for (i in this.size - 1 downTo 0) {
             val t = this[i] + value
             if (t > finalElement[i] && i != 0) {
-                this[i] = 0
+                this[i] = startElement[i]
             } else {
                 this[i] = t
                 break
+            }
+        }
+    }
+
+    private operator fun IntArray.minusAssign(value: Int) {
+        for (i in this.size - 1 downTo 0) {
+            val t = this[i] - value
+            if (t < finalElement[i] && i != 0) {
+                this[i] = startElement[i]
+            } else {
+                this[i] = t
+                break
+            }
+        }
+    }
+
+    private operator fun IntArray.compareTo(other: IntArray): Int {
+        return when {
+            this === other || (this.isEmpty() && other.isEmpty()) -> 0
+            this.isEmpty() -> -1
+            other.isEmpty() -> 1
+            else -> {
+                for (index in this.indices) {
+                    if (this[index] < other[index])
+                        return -1
+                    if (this[index] > other[index])
+                        return 1
+                }
+                0
             }
         }
     }
@@ -76,7 +99,6 @@ public operator fun IntArray.rangeTo(other: IntArray): MultiIndexProgression {
 }
 
 public infix fun MultiIndexProgression.step(step: Int): MultiIndexProgression {
-    if (step <= 0) throw IllegalArgumentException("Step must be positive, was: $step.")
     return MultiIndexProgression(first, last, step)
 }
 

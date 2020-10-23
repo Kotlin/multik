@@ -4,11 +4,13 @@ import org.jetbrains.multik.api.mk
 import org.jetbrains.multik.api.ndarray
 import org.jetbrains.multik.api.toNdarray
 import org.jetbrains.multik.ndarray.data.*
+import kotlin.math.abs
+import kotlin.math.min
 
-//TODO(check all methods)
 
 /**
  * Returns `true` if all elements match the given [predicate].
+ * If a ndarray is empty, then always returns `true`.
  */
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.all(predicate: (T) -> Boolean): Boolean {
     if (isEmpty()) return true
@@ -18,13 +20,15 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.all(predicate: (T
 
 /**
  * Returns `true` if collection has at least one element.
+ * @see Ndarray.isNotEmpty
  */
-public fun <T : Number, D : Dimension> Ndarray<T, D>.any(): Boolean {
-    return !isEmpty()
+public fun <T : Number, D : Dimension> MultiArray<T, D>.any(): Boolean {
+    return isNotEmpty()
 }
 
 /**
  * Returns `true` if at least one element matches the given [predicate].
+ * If a ndarray is empty, then always returns `false`.
  */
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.any(predicate: (T) -> Boolean): Boolean {
     if (isEmpty()) return false
@@ -73,8 +77,7 @@ public inline fun <T : Number, D : Dimension, K> MultiArray<T, D>.associateBy(ke
  * The returned map preserves the entry iteration order of the original collection.
  */
 public inline fun <T : Number, D : Dimension, K, V> MultiArray<T, D>.associateBy(
-    keySelector: (T) -> K,
-    valueTransform: (T) -> V
+    keySelector: (T) -> K, valueTransform: (T) -> V
 ): Map<K, V> {
     val capacity = mapCapacity(size).coerceAtLeast(16)
     return associateByTo(LinkedHashMap<K, V>(capacity), keySelector, valueTransform)
@@ -88,12 +91,10 @@ public inline fun <T : Number, D : Dimension, K, V> MultiArray<T, D>.associateBy
  * If any two elements would have the same key returned by [keySelector] the last one gets added to the map.
  */
 public inline fun <T : Number, D : Dimension, K, M : MutableMap<in K, in T>> MultiArray<T, D>.associateByTo(
-    destination: M,
-    keySelector: (T) -> K
+    destination: M, keySelector: (T) -> K
 ): M {
-    for (element in this) {
+    for (element in this)
         destination.put(keySelector(element), element)
-    }
     return destination
 }
 
@@ -105,13 +106,10 @@ public inline fun <T : Number, D : Dimension, K, M : MutableMap<in K, in T>> Mul
  * If any two elements would have the same key returned by [keySelector] the last one gets added to the map.
  */
 public inline fun <T : Number, D : Dimension, K, V, M : MutableMap<in K, in V>> MultiArray<T, D>.associateByTo(
-    destination: M,
-    keySelector: (T) -> K,
-    valueTransform: (T) -> V
+    destination: M, keySelector: (T) -> K, valueTransform: (T) -> V
 ): M {
-    for (element in this) {
+    for (element in this)
         destination.put(keySelector(element), valueTransform(element))
-    }
     return destination
 }
 
@@ -122,12 +120,10 @@ public inline fun <T : Number, D : Dimension, K, V, M : MutableMap<in K, in V>> 
  * If any of two pairs would have the same key the last one gets added to the map.
  */
 public inline fun <T : Number, D : Dimension, K, V, M : MutableMap<in K, in V>> MultiArray<T, D>.associateTo(
-    destination: M,
-    transform: (T) -> Pair<K, V>
+    destination: M, transform: (T) -> Pair<K, V>
 ): M {
-    for (element in this) {
+    for (element in this)
         destination += transform(element)
-    }
     return destination
 }
 
@@ -151,17 +147,15 @@ public inline fun <K : Number, D : Dimension, V> MultiArray<K, D>.associateWith(
  * If any two elements are equal, the last one overwrites the former value in the map.
  */
 public inline fun <K : Number, D : Dimension, V, M : MutableMap<in K, in V>> MultiArray<K, D>.associateWithTo(
-    destination: M,
-    valueSelector: (K) -> V
+    destination: M, valueSelector: (K) -> V
 ): M {
-    for (element in this) {
+    for (element in this)
         destination.put(element, valueSelector(element))
-    }
     return destination
 }
 
 /**
- * Returns an average value of elements in the collection.
+ * Returns an average value of elements in the ndarray.
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.average(): Double {
     var sum: Double = 0.0
@@ -173,53 +167,29 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.average(): Double {
     return if (count == 0) Double.NaN else sum / count
 }
 
-
-//todo (chunked())
-///**
-// * Splits this collection into a list of lists each not exceeding the given [size].
-// *
-// * The last list in the resulting list may have less elements than the given [size].
-// *
-// * @param size the number of elements to take in each list, must be positive and can be greater than the number of elements in this collection.
-// */
-//public fun <T : Number> MultiArray<T, D2>.chunked(): List<List<T>> {
-//    val firstSize = this.shape[0]
-//    val secondSize = this.shape[1]
-//    val result = ArrayList<List<T>>(firstSize)
-//    for (index in 0 until size step secondSize) {
-//        result.add(List(secondSize) { this[it + index] })
-//    }
-//    return result
-//}
-
-//TODO
-///**
-// * Splits this collection into several lists each not exceeding the given [size]
-// * and applies the given [transform] function to an each.
-// *
-// * @return list of results of the [transform] applied to an each list.
-// *
-// * Note that the list passed to the [transform] function is ephemeral and is valid only inside that function.
-// * You should not store it or allow it to escape in some way, unless you made a snapshot of it.
-// * The last list may have less elements than the given [size].
-// *
-// * @param size the number of elements to take in each list, must be positive and can be greater than the number of elements in this collection.
-// */
-//public fun <T: Number, R> MultiArray<T, D2>.chunked(transform: (List<T>) -> R): List<R> {
-//    val firstSize = this.shape[0]
-//    val secondSize = this.shape[1]
-//    val result = ArrayList<List<T>>(firstSize)
-//    for (index in 0 until size step secondSize) {
-//        result.add(List(secondSize) { transform(this[it + index]) })
-//    }
-//    return result
-//}
+/**
+ * Splits this ndarray into a 2-D ndarray.
+ * The last elements in the resulting ndarray may be zero.
+ *
+ * @param size number of elements in axis 1.
+ */
+public fun <T : Number, D : Dimension> MultiArray<T, D>.chunked(size: Int): Ndarray<T, D2> {
+    return windowed(size, size, limit = false)
+}
 
 /**
  * Returns `true` if [element] is found in the collection.
  */
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.contains(element: T): Boolean {
     return indexOf(element) >= 0
+}
+
+/**
+ * Returns the number of elements in a ndarray.
+ */
+@Suppress("NOTHING_TO_INLINE")
+public inline fun <T : Number, D : Dimension> MultiArray<T, D>.count(): Int {
+    return size
 }
 
 /**
@@ -255,18 +225,20 @@ public inline fun <T : Number, D : Dimension, K> MultiArray<T, D>.distinctBy(sel
 }
 
 /**
- * Drop first n elements.
+ * Drops first n elements.
  */
 public fun <T : Number> MultiArray<T, D1>.drop(n: Int): D1Array<T> {
-    require(n >= 0) { "Requested element count $n is less than zero." }
-    val resultSize = size - n
-    val d = initMemoryView<T>(resultSize, dtype) { this@drop.data[it + n] }
+    if (n == 0) return D1Array(this.data.copyOf(), shape = shape.copyOf(), dtype = dtype, dim = D1)
+    val resultSize = size - abs(n)
+    if (resultSize < 0) return D1Array(initMemoryView(0, dtype), shape = intArrayOf(0), dtype = dtype, dim = D1)
+    val k = if (n < 0) 0 else n
+    val d = initMemoryView<T>(resultSize, dtype) { this[it + k] }
     val shape = intArrayOf(resultSize)
-    return D1Array(d, shape = shape, dtype = dtype, dim = D1)
+    return D1Array<T>(d, shape = shape, dtype = dtype, dim = D1)
 }
 
 /**
- *
+ * Drops elements that don't satisfy the [predicate].
  */
 public inline fun <T : Number> MultiArray<T, D1>.dropWhile(predicate: (T) -> Boolean): Ndarray<T, D1> {
     var yielding = false
@@ -287,31 +259,28 @@ public inline fun <T : Number> MultiArray<T, D1>.dropWhile(predicate: (T) -> Boo
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.filter(predicate: (T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     forEach { if (predicate(it)) list.add(it) }
-    val data = list.toViewPrimitiveArray(this.dtype)
-    return D1Array<T>(data, 0, intArrayOf(data.size), dtype = dtype, dim = D1)
+    return list.toNdarray()
 }
 
 /**
  * Return a new array contains elements matching filter.
  */
-public inline fun <T : Number, D : Dimension> MultiArray<T, D>.filterIndexed(predicate: (index: Int, T) -> Boolean): D1Array<T> {
+@JvmName("filterD1Indexed")
+public inline fun <T : Number> MultiArray<T, D1>.filterIndexed(predicate: (index: Int, T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
-    forEachIndexed { index, element -> if (predicate(index, element)) list.add(element) }
-    val data = list.toViewPrimitiveArray(dtype)
-    return D1Array<T>(data, shape = intArrayOf(data.size), dtype = dtype, dim = D1)
+    forEachIndexed { index: Int, element -> if (predicate(index, element)) list.add(element) }
+    return list.toNdarray()
 }
 
-//todo (View and slice)
+
 /**
- * Appends elements matching filter to [destination].
+ * Return a new array contains elements matching filter.
  */
-public inline fun <T : Number, D : Dimension, C : D1Array<T>> MultiArray<T, D>.filterIndexedTo(
-    destination: C,
-    predicate: (index: Int, T) -> Boolean
-): C {
-    var count = 0
-    forEachIndexed { index, element -> if (predicate(index, element)) destination[count++] = element }
-    return destination
+@JvmName("filterDNIndexed")
+public inline fun <T : Number, D : Dimension> MultiArray<T, D>.filterIndexed(predicate: (index: IntArray, T) -> Boolean): D1Array<T> {
+    val list = ArrayList<T>()
+    forEachIndexed { index: IntArray, element -> if (predicate(index, element)) list.add(element) }
+    return list.toNdarray()
 }
 
 /**
@@ -320,34 +289,7 @@ public inline fun <T : Number, D : Dimension, C : D1Array<T>> MultiArray<T, D>.f
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.filterNot(predicate: (T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     for (element in this) if (!predicate(element)) list.add(element)
-    val data = list.toViewPrimitiveArray(dtype)
-    return D1Array<T>(data, shape = intArrayOf(data.size), dtype = dtype, dim = D1)
-}
-
-//todo (View and slice)
-/**
- * Appends elements matching filter to [destination].
- */
-public inline fun <T : Number, D : Dimension, C : D1Array<T>> MultiArray<T, D>.filterNotTo(
-    destination: C,
-    predicate: (T) -> Boolean
-): C {
-    var count = 0
-    for (element in this) if (!predicate(element)) destination[count++] = element
-    return destination
-}
-
-//todo check size
-/**
- * Appends elements matching filter to [destination].
- */
-public inline fun <T : Number, D : Dimension, C : D1Array<T>> MultiArray<T, D>.filterTo(
-    destination: C,
-    predicate: (T) -> Boolean
-): C {
-    var count = 0
-    for (element in this) if (predicate(element)) destination[count++] = element
-    return destination
+    return list.toNdarray()
 }
 
 /**
@@ -397,20 +339,52 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.firstOrNull(predi
     return null
 }
 
-//TODO(size!)
-//    public inline fun <reified R : Number> flatMap(transform: (T) -> Iterable<R>): Ndarray<R, D> {
-//        val d = initMemoryView<R>(size, DataType.of(R::class))
-//        val handle = Basic.allocate(d.getData())
-//        return flatMapTo(Ndarray(handle, d, shape, size, dtype, dim), transform)
-//    }
-//
-//    public inline fun <R : Number, C : Ndarray<in R, D>> flatMapTo(destination: C, transform: (T) -> Iterable<R>): C {
-//        for (element in this) {
-//            val list = transform(element)
-//            destination.data.put(list)
-//        }
-//        return destination
-//    }
+/**
+ * Returns a flat ndarray of all elements resulting from calling the [transform] function on each element
+ * in this ndarray.
+ */
+public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.flatMap(transform: (T) -> Iterable<R>): D1Array<R> {
+    val destination = ArrayList<R>()
+    for (element in this) {
+        val list = transform(element)
+        destination.addAll(list)
+    }
+    return destination.toNdarray()
+}
+
+/**
+ * Returns a flat ndarray of all elements resulting from calling the [transform] function on each element and its single
+ * index in this d1 ndarray.
+ */
+@JvmName("flatMapD1Indexed")
+public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.flatMapIndexed(transform: (index: Int, T) -> Iterable<R>): D1Array<R> {
+    var index = 0
+    val destination = ArrayList<R>()
+    for (element in this) {
+        val list = transform(checkIndexOverflow(index++), element)
+        destination.addAll(list)
+    }
+    return destination.toNdarray()
+}
+
+/**
+ * Returns a flat ndarray of all elements resulting from calling the [transform] function on each element and its multi
+ * index in this dn ndarray.
+ */
+@JvmName("flatMapDNIndexed")
+public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.flatMapIndexed(transform: (index: IntArray, T) -> Iterable<R>): D1Array<R> {
+    val indexIter = this.multiIndices.iterator()
+    val destination = ArrayList<R>()
+    for (element in this) {
+        if (indexIter.hasNext()) {
+            val list = transform(indexIter.next(), element)
+            destination.addAll(list)
+        } else {
+            throw ArithmeticException("Index overflow has happened.")
+        }
+    }
+    return destination.toNdarray()
+}
 
 
 /**
@@ -424,21 +398,38 @@ public inline fun <T : Number, D : Dimension, R> MultiArray<T, D>.fold(initial: 
 
 /**
  * Accumulates value starting with [initial] value and applying [operation] from left to right
- * to current accumulator value and each element with its index in the original collection.
+ * to current accumulator value and each element with its index in the original ndarray.
  * @param [operation] function that takes the index of an element, current accumulator value
  * and the element itself, and calculates the next accumulator value.
  */
-public inline fun <T : Number, D : Dimension, R> MultiArray<T, D>.foldIndexed(
-    initial: R,
-    operation: (index: Int, acc: R, T) -> R
+@JvmName("foldD1Indexed")
+public inline fun <T : Number, R> MultiArray<T, D1>.foldIndexed(
+    initial: R, operation: (index: Int, acc: R, T) -> R
 ): R {
     var index = 0
     var accumulator = initial
-    for (element in this) accumulator = operation(
-        if (index++ < 0) throw ArithmeticException("Index overflow has happened.") else index,
-        accumulator,
-        element
-    )
+    for (element in this) accumulator = operation(checkIndexOverflow(index++), accumulator, element)
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with [initial] value and applying [operation] from left to right
+ * to current accumulator value and each element with its index in the original ndarray.
+ * @param [operation] function that takes the index of an element, current accumulator value
+ * and the element itself, and calculates the next accumulator value.
+ */
+@JvmName("foldDNIndexed")
+public inline fun <T : Number, D : Dimension, R> MultiArray<T, D>.foldIndexed(
+    initial: R, operation: (index: IntArray, acc: R, T) -> R
+): R {
+    val indexIter = this.multiIndices.iterator()
+    var accumulator = initial
+    for (element in this) {
+        if (indexIter.hasNext())
+            accumulator = operation(indexIter.next(), accumulator, element)
+        else
+            throw ArithmeticException("Index overflow has happened.")
+    }
     return accumulator
 }
 
@@ -454,33 +445,54 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEach(action: (
  * @param [action] function that takes the index of an element and the element itself
  * and performs the desired action on the element.
  */
-public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEachIndexed(action: (index: Int, T) -> Unit): Unit {
+@JvmName("forEachD1Indexed")
+public inline fun <T : Number> MultiArray<T, D1>.forEachIndexed(action: (index: Int, T) -> Unit): Unit {
     var index = 0
-    for (item in this) action(
-        if (index < 0) throw ArithmeticException("Index overflow has happened.") else index++,
-        item
-    )
+    for (item in this) action(checkIndexOverflow(index++), item)
+}
+
+/**
+ * Performs the given [action] on each element, providing sequential index with the element.
+ * @param [action] function that takes the index of an element and the element itself
+ * and performs the desired action on the element.
+ */
+@JvmName("forEachDNIndexed")
+public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEachIndexed(action: (index: IntArray, T) -> Unit): Unit {
+    val indexIter = this.multiIndices.iterator()
+    for (item in this) {
+        if (indexIter.hasNext())
+            action(indexIter.next(), item)
+        else
+            throw ArithmeticException("Index overflow has happened.")
+    }
 }
 
 
 /**
- *
+ * Groups elements of a given ndarray by the key returned by [keySelector] for each element,
+ * and returns a map where each group key is associated with a ndarray of matching elements.
  */
 public inline fun <T : Number, D : Dimension, K> MultiArray<T, D>.groupNdarrayBy(keySelector: (T) -> K): Map<K, Ndarray<T, D1>> {
     return groupNdarrayByTo(LinkedHashMap<K, Ndarray<T, D1>>(), keySelector)
 }
 
+/**
+ * Groups values returned by [valueTransform] applied to each element of the given ndarray
+ * with the key returned by [keySelector] applied to each element,
+ * and returns a map where each group key is associated with a ndarray of matching values.
+ */
 public inline fun <T : Number, D : Dimension, K, V : Number> MultiArray<T, D>.groupNdarrayBy(
-    keySelector: (T) -> K,
-    valueTransform: (T) -> V
+    keySelector: (T) -> K, valueTransform: (T) -> V
 ): Map<K, Ndarray<V, D1>> {
     return groupNdarrayByTo(LinkedHashMap<K, Ndarray<V, D1>>(), keySelector, valueTransform)
 }
 
-//todo(add?)
+/**
+ * Groups elements of the given array by the key returned by [keySelector] function applied to each
+ * element and puts to the [destination] map each group key associated with a ndarray of corresponding elements.
+ */
 public inline fun <T : Number, D : Dimension, K, M : MutableMap<in K, Ndarray<T, D1>>> MultiArray<T, D>.groupNdarrayByTo(
-    destination: M,
-    keySelector: (T) -> K
+    destination: M, keySelector: (T) -> K
 ): M {
     val map = LinkedHashMap<K, MutableList<T>>()
     for (element in this) {
@@ -493,7 +505,11 @@ public inline fun <T : Number, D : Dimension, K, M : MutableMap<in K, Ndarray<T,
     return destination
 }
 
-//todo(add?)
+/**
+ * Groups values returned by the [valueTransform] function applied to each element of the given ndarray by the key
+ * returned by [keySelector] function applied to the element and puts to the destination map each group key
+ * associated with a ndarray of corresponding values.
+ */
 public inline fun <T : Number, D : Dimension, K, V : Number, M : MutableMap<in K, Ndarray<V, D1>>> MultiArray<T, D>.groupNdarrayByTo(
     destination: M, keySelector: (T) -> K, valueTransform: (T) -> V
 ): M {
@@ -508,6 +524,10 @@ public inline fun <T : Number, D : Dimension, K, V : Number, M : MutableMap<in K
     return destination
 }
 
+/**
+ * Creates a [Grouping] source from a ndarray to be used later with one of group-and-fold operations using the
+ * specified [keySelector] function to extract a key from each element.
+ */
 public inline fun <T : Number, D : Dimension, K> MultiArray<T, D>.groupingNdarrayBy(crossinline keySelector: (T) -> K): Grouping<T, K> {
     return object : Grouping<T, K> {
         override fun sourceIterator(): Iterator<T> = this@groupingNdarrayBy.iterator()
@@ -521,7 +541,7 @@ public inline fun <T : Number, D : Dimension, K> MultiArray<T, D>.groupingNdarra
 public fun <T : Number, D : Dimension> MultiArray<T, D>.indexOf(element: T): Int {
     var index = 0
     for (item in this) {
-        if (index < 0) throw ArithmeticException("Index overflow has happened.")
+        checkIndexOverflow(index)
         if (element == item)
             return index
         index++
@@ -535,7 +555,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.indexOf(element: T): Int
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.indexOfFirst(predicate: (T) -> Boolean): Int {
     var index = 0
     for (item in this) {
-        if (index < 0) throw ArithmeticException("Index overflow has happened.")
+        checkIndexOverflow(index)
         if (predicate(item))
             return index
         index++
@@ -550,7 +570,7 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.indexOfLast(predi
     var lastIndex = -1
     var index = 0
     for (item in this) {
-        if (index < 0) throw ArithmeticException("Index overflow has happened.")
+        checkIndexOverflow(index)
         if (predicate(item))
             lastIndex = index
         index++
@@ -578,13 +598,8 @@ public infix fun <T : Number, D : Dimension> MultiArray<T, D>.intersect(other: I
  * elements will be appended, followed by the [truncated] string (which defaults to "...").
  */
 public fun <T : Number, D : Dimension, A : Appendable> MultiArray<T, D>.joinTo(
-    buffer: A,
-    separator: CharSequence = ", ",
-    prefix: CharSequence = "",
-    postfix: CharSequence = "",
-    limit: Int = -1,
-    truncated: CharSequence = "...",
-    transform: ((T) -> CharSequence)? = null
+    buffer: A, separator: CharSequence = ", ", prefix: CharSequence = "", postfix: CharSequence = "",
+    limit: Int = -1, truncated: CharSequence = "...", transform: ((T) -> CharSequence)? = null
 ): A {
     buffer.append(prefix)
     var count = 0
@@ -617,26 +632,25 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.joinToString(
 }
 
 
-// todo (last!!!)
 /**
  * Returns the last element.
  * @throws [NoSuchElementException] if the collection is empty.
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.last(): T {
     if (isEmpty()) throw NoSuchElementException("Ndarray is empty.")
-    return this.asDNArray()[size - 1]
+    val index = IntArray(dim.d) { shape[it] - 1 }
+    return this.asDNArray()[index]
 }
 
 
-// todo (last!!!)
 /**
  * Returns the last element matching the given [predicate].
  * @throws [NoSuchElementException] if no such element is found.
  */
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.last(predicate: (T) -> Boolean): T {
-    this as MultiArray<T, DN>
-    for (i in size - 1..0) {
-        val element = this[i]
+    val ndarray = this.asDNArray()
+    for (i in this.multiIndices.reverse) {
+        val element = ndarray[i]
         if (predicate(element)) return element
     }
     throw NoSuchElementException("Ndarray contains no element matching the predicate.")
@@ -657,13 +671,11 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.lastIndexOf(element: T):
     return lastIndex
 }
 
-// todo (last!!!)
 /**
  * Returns the last element, or `null` if the list is empty.
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.lastOrNull(): T? {
-    this as MultiArray<T, DN>
-    return if (isEmpty()) null else this[size - 1]
+    return if (isEmpty()) null else this.asDNArray()[this.multiIndices.last]
 }
 
 /**
@@ -686,54 +698,67 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.lastOrNull(predic
 public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.map(transform: (T) -> R): Ndarray<R, D> {
     val newDtype = DataType.of(R::class)
     val data = initMemoryView<R>(size, newDtype)
-    return mapTo(Ndarray<R, D>(data, shape = shape, dtype = newDtype, dim = dim), transform)
-}
-
-/**
- * Return a new array contains elements after applying [transform].
- */
-public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.mapIndexed(transform: (index: Int, T) -> R): Ndarray<R, D> {
-    val newDtype = DataType.of(R::class)
-    val data = initMemoryView<R>(size, newDtype)
-    return mapIndexedTo(Ndarray<R, D>(data, shape = shape, dtype = newDtype, dim = dim), transform)
-}
-
-/**
- * Return a new array contains elements after applying [transform].
- */
-public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.mapIndexedNotNull(transform: (index: Int, T) -> R?): Ndarray<R, D> {
-    val newDtype = DataType.of(R::class)
-    val data = initMemoryView<R>(size, newDtype)
-    return mapIndexedNotNullTo(Ndarray<R, D>(data, shape = shape, dtype = newDtype, dim = dim), transform)
-}
-
-/**
- * Appends elements after applying [transform] to [destination].
- */
-public inline fun <T : Number, D : Dimension, R : Any, C : Ndarray<in R, D>> MultiArray<T, D>.mapIndexedNotNullTo(
-    destination: C,
-    transform: (index: Int, T) -> R?
-): C {
+    val op = this.asDNArray()
     var count = 0
-    forEachIndexed { index, element ->
-        transform(index, element)?.let {
-            destination.data[count++] = it
-        }
-    }
-    return destination
+    for (i in this.multiIndices)
+        data[count++] = transform(op[i])
+    return Ndarray<R, D>(data, shape = shape, dtype = newDtype, dim = dim)
 }
 
 /**
- * Appends elements after applying [transform] to [destination].
+ * Return a new array contains elements after applying [transform].
  */
-public inline fun <T : Number, D : Dimension, R, C : Ndarray<in R, D>> MultiArray<T, D>.mapIndexedTo(
-    destination: C,
-    transform: (index: Int, T) -> R
-): C {
+@JvmName("mapD1Indexed")
+public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.mapIndexed(transform: (index: Int, T) -> R): D1Array<R> {
+    val newDtype = DataType.of(R::class)
+    val data = initMemoryView<R>(size, newDtype)
     var index = 0
     for (item in this)
-        destination.data[index] = transform(index++, item)
-    return destination
+        data[index] = transform(index++, item)
+    return D1Array<R>(data, shape = shape, dtype = newDtype, dim = D1)
+}
+
+/**
+ * Return a new array contains elements after applying [transform].
+ */
+@JvmName("mapDNIndexed")
+public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.mapIndexed(transform: (index: IntArray, T) -> R): Ndarray<R, D> {
+    val newDtype = DataType.of(R::class)
+    val data = initMemoryView<R>(size, newDtype)
+    val indexIter = this.multiIndices.iterator()
+    var index = 0
+    for (item in this) {
+        if (indexIter.hasNext()) {
+            data[index++] = transform(indexIter.next(), item)
+        } else {
+            throw ArithmeticException("Index overflow has happened.")
+        }
+    }
+    return Ndarray<R, D>(data, shape = shape, dtype = newDtype, dim = dim)
+}
+
+/**
+ * Return a new array contains elements after applying [transform].
+ */
+@JvmName("mapD1IndexedNotNull")
+public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.mapIndexedNotNull(transform: (index: Int, T) -> R?): D1Array<R> {
+    val newDtype = DataType.of(R::class)
+    val data = initMemoryView<R>(size, newDtype)
+    var count = 0
+    forEachIndexed { index: Int, element -> transform(index, element)?.let { data[count++] = it } }
+    return D1Array<R>(data, shape = shape, dtype = newDtype, dim = D1)
+}
+
+/**
+ * Return a new array contains elements after applying [transform].
+ */
+@JvmName("mapDNIndexedNotNull")
+public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.mapIndexedNotNull(transform: (index: IntArray, T) -> R?): Ndarray<R, D> {
+    val newDtype = DataType.of(R::class)
+    val data = initMemoryView<R>(size, newDtype)
+    var count = 0
+    forEachIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
+    return Ndarray<R, D>(data, shape = shape.copyOf(), dtype = newDtype, dim = dim)
 }
 
 /**
@@ -742,34 +767,9 @@ public inline fun <T : Number, D : Dimension, R, C : Ndarray<in R, D>> MultiArra
 public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.mapNotNull(transform: (T) -> R?): Ndarray<R, D> {
     val newDtype = DataType.of(R::class)
     val data = initMemoryView<R>(size, newDtype)
-    return mapNotNullTo(Ndarray<R, D>(data, shape = shape, dtype = newDtype, dim = dim), transform)
-}
-
-/**
- * Appends elements after applying [transform] to [destination].
- */
-public inline fun <T : Number, D : Dimension, R : Any, C : Ndarray<in R, D>> MultiArray<T, D>.mapNotNullTo(
-    destination: C,
-    transform: (T) -> R?
-): C {
     var index = 0
-    forEach { element -> transform(element)?.let { destination.data[index++] = it } }
-    return destination
-}
-
-
-// todo(map, dimension)
-/**
- * Appends elements after applying [transform] to [destination].
- */
-public inline fun <T : Number, D : Dimension, R : Number, C : Ndarray<R, D>> MultiArray<T, D>.mapTo(
-    destination: C, transform: (T) -> R
-): C {
-    val op = this.asDNArray()
-    val des = destination.asDNArray()
-    for (i in this.multiIndices)
-        des[i] = transform(op[i])
-    return destination
+    forEach { element -> transform(element)?.let { data[index++] = it } }
+    return Ndarray<R, D>(data, shape = shape, dtype = newDtype, dim = dim)
 }
 
 /**
@@ -894,6 +894,51 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.partition(predica
 }
 
 /**
+ * Returns a 2-D ndarray of window segments of the specified size, sliding over this ndarray with the specified step.
+ *
+ * The last few arrays are filled with zeros if limit is false.
+ * The [size] and [step] must be positive and can be greater than the number of elements in this ndarray.
+ *
+ * @param size the size and step must be positive and can be greater than the number of elements in this array
+ * @param step the number of elements to move the window forward by on an each step, by default 1
+ * @param limit sets a limit on the set of significant elements in the result, otherwise it fills in with zeros
+ */
+public fun <T : Number, D : Dimension> MultiArray<T, D>.windowed(
+    size: Int, step: Int = 1, limit: Boolean = true
+): Ndarray<T, D2> {
+    require(size > 0 && step > 0) {
+        if (size != step)
+            "Both size $size and step $step must be greater than zero."
+        else
+            "size $size must be greater than zero."
+    }
+
+    val thisSize = this.size
+    val rSize = min(thisSize, size)
+    val rStep = min(thisSize, step)
+    val resultCapacity = when {
+        limit -> thisSize / rStep * rSize
+        thisSize % rStep == 0 -> thisSize / rStep * rSize
+        else -> (thisSize / rStep + 1) * rSize
+    }
+    val resData = initMemoryView<T>(resultCapacity, this.dtype)
+    val thisNdarray = this.flatten()
+    var index = 0
+    var resIndex = 0
+    while (index in 0 until thisSize) {
+        for (i in 0 until rSize) {
+            if (i + index >= thisSize) {
+                resIndex++
+                continue
+            }
+            resData[resIndex++] = thisNdarray[i + index]
+        }
+        index += rStep
+    }
+    return D2Array<T>(resData, 0, intArrayOf(resultCapacity / rSize, rSize), dtype = this.dtype, dim = D2)
+}
+
+/**
  * Accumulates value starting with the first element and applying [operation] from left to right to current accumulator value and each element.
  */
 public inline fun <S : Number, D : Dimension, T : S> MultiArray<T, D>.reduce(operation: (acc: S, T) -> S): S {
@@ -912,17 +957,32 @@ public inline fun <S : Number, D : Dimension, T : S> MultiArray<T, D>.reduce(ope
  * @param [operation] function that takes the index of an element, current accumulator value
  * and the element itself and calculates the next accumulator value.
  */
-public inline fun <S : Number, D : Dimension, T : S> MultiArray<T, D>.reduceIndexed(operation: (index: Int, acc: S, T) -> S): S {
+@JvmName("reduceD1Indexed")
+public inline fun <S : Number, T : S> MultiArray<T, D1>.reduceIndexed(operation: (index: Int, acc: S, T) -> S): S {
     val iterator = this.iterator()
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty ndarray can't be reduced.")
     var index = 1
     var accumulator: S = iterator.next()
     while (iterator.hasNext()) {
-        accumulator = operation(
-            if (index++ < 0) throw ArithmeticException("Index overflow has happened.") else index,
-            accumulator,
-            iterator.next()
-        )
+        accumulator = operation(checkIndexOverflow(index++), accumulator, iterator.next())
+    }
+    return accumulator
+}
+
+/**
+ * Accumulates value starting with the first element and applying [operation] from left to right
+ * to current accumulator value and each element with its index in the original collection.
+ * @param [operation] function that takes the index of an element, current accumulator value
+ * and the element itself and calculates the next accumulator value.
+ */
+@JvmName("reduceDNIndexed")
+public inline fun <S : Number, D : Dimension, T : S> MultiArray<T, D>.reduceIndexed(operation: (index: IntArray, acc: S, T) -> S): S {
+    val iterator = this.iterator()
+    if (!iterator.hasNext()) throw UnsupportedOperationException("Empty ndarray can't be reduced.")
+    val indexIter = this.multiIndices.iterator()
+    var accumulator: S = iterator.next()
+    while (iterator.hasNext() && indexIter.hasNext()) {
+        accumulator = operation(indexIter.next(), accumulator, iterator.next())
     }
     return accumulator
 }
@@ -940,33 +1000,84 @@ public inline fun <S : Number, D : Dimension, T : S> MultiArray<T, D>.reduceOrNu
     return accumulator
 }
 
-//TODO (create view: swap position and limit)
-//public fun <T: Number, D: Dimension> MultiArray<T, D>.reversed(): Ndarray<T, D> {}
+/**
+ *
+ */
+public fun <T : Number, D : Dimension> MultiArray<T, D>.reversed(): Ndarray<T, D> {
+    if (size <= 1) return this.clone() as Ndarray<T, D>
+    val data = initMemoryView<T>(this.size, this.dtype)
+    var index = this.size - 1
+    for (element in this)
+        data[index--] = element
+    return Ndarray<T, D>(data, 0, this.shape.copyOf(), dtype = this.dtype, dim = this.dim)
+}
 
 
-//todo (shape and dim?)
 /**
  * Returns a list containing successive accumulation values generated by applying [operation] from left to right
  * to each element and current accumulator value that starts with [initial] value.
  *
  * Note that `acc` value passed to [operation] function should not be mutated;
- * otherwise it would affect the previous value in resulting list.
+ * otherwise it would affect the previous value in resulting ndarray.
  *
  * @param [operation] function that takes current accumulator value and an element, and calculates the next accumulator value.
  */
 public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.scan(
-    initial: R,
-    operation: (acc: R, T) -> R
+    initial: R, operation: (acc: R, T) -> R
 ): Ndarray<R, D> {
-    val retList = ArrayList<R>(size + 1).apply { add(initial) }
+    val dataType = DataType.of(R::class)
+    val data = initMemoryView<R>(this.size + 1, dataType)
+    data[0] = initial
+    var index = 1
     var accumulator = initial
     for (element in this) {
         accumulator = operation(accumulator, element)
-        retList.add(accumulator)
+        data[index++] = accumulator
     }
+    return Ndarray<R, D>(data, 0, this.shape.copyOf(), dtype = dataType, dim = this.dim)
+}
+
+/**
+ * Return a flat ndarray containing successive accumulation values generated by applying [operation] from left to right to
+ * each element, its index in this d1 ndarray and current accumulator value that starts with [initial] value.
+ */
+@JvmName("scanD1Indexed")
+public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.scanIndexed(
+    initial: R, operation: (index: Int, acc: R, T) -> R
+): D1Array<R> {
     val dataType = DataType.of(R::class)
-    val data = retList.toViewPrimitiveArray(dataType)
-    return Ndarray<R, D>(data, shape = shape, dtype = dataType, dim = dim)
+    val data = initMemoryView<R>(this.size + 1, dataType)
+    data[0] = initial
+    var count = 1
+    var accumulator = initial
+    val ndarrayIter = this.iterator()
+    val indexIter = this.multiIndices.iterator()
+    while (ndarrayIter.hasNext() && indexIter.hasNext()) {
+        accumulator = operation(count, accumulator, ndarrayIter.next())
+        data[count++] = accumulator
+    }
+    return D1Array<R>(data, 0, this.shape.copyOf(), dtype = dataType, dim = D1)
+}
+
+/**
+ * Return a flat ndarray containing successive accumulation values generated by applying [operation] from left to right to
+ * each element, its multi index in this dn ndarray and current accumulator value that starts with [initial] value.
+ */
+public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.scanIndexed(
+    initial: R, operation: (index: IntArray, acc: R, T) -> R
+): Ndarray<R, D> {
+    val dataType = DataType.of(R::class)
+    val data = initMemoryView<R>(this.size + 1, dataType)
+    data[0] = initial
+    var count = 1
+    var accumulator = initial
+    val ndarrayIter = this.iterator()
+    val indexIter = this.multiIndices.iterator()
+    while (ndarrayIter.hasNext() && indexIter.hasNext()) {
+        accumulator = operation(indexIter.next(), accumulator, ndarrayIter.next())
+        data[count++] = accumulator
+    }
+    return Ndarray<R, D>(data, 0, this.shape.copyOf(), dtype = dataType, dim = this.dim)
 }
 
 //TODO sort
@@ -1085,4 +1196,11 @@ internal fun mapCapacity(size: Int): Int {
         size < 1 shl (Int.SIZE_BITS - 2) -> ((size / 0.75F) + 1.0F).toInt()
         else -> Int.MAX_VALUE
     }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+@PublishedApi
+internal inline fun checkIndexOverflow(index: Int): Int {
+    if (index < 0) throw ArithmeticException("Index overflow has happened.")
+    return index
 }
