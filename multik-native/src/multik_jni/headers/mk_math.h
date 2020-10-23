@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <string.h>
 
 #ifndef CPP_HEADERS_MK_MATH_H_
 #define CPP_HEADERS_MK_MATH_H_
@@ -12,7 +13,7 @@ int array_argmax(T *arr, int offset, int size, int dim, const int *shape, const 
   int ret = 0;
   T max = *(arr + offset);
   int *index = new int[dim];
-  std::memset(index, 0, dim * 4);
+  memset(index, 0, dim * 4);
   for (int kI = 0; kI < size; ++kI) {
     int p = array_ptr(offset, index, strides, dim);
     if (max < arr[p]) {
@@ -30,7 +31,7 @@ int array_argmin(T *arr, int offset, int size, int dim, const int *shape, const 
   int ret = 0;
   T min = *(arr + offset);
   int *index = new int[dim];
-  std::memset(index, 0, dim * 4);
+  memset(index, 0, dim * 4);
   for (int kI = 0; kI < size; ++kI) {
     int p = array_ptr(offset, index, strides, dim);
     if (min > arr[p]) {
@@ -46,7 +47,7 @@ int array_argmin(T *arr, int offset, int size, int dim, const int *shape, const 
 template<typename T>
 void array_exp(T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
   int *index = new int[dim];
-  std::memset(index, 0, dim * 4);
+  memset(index, 0, dim * 4);
 
   for (int i = 0; i < size; ++i) {
     int p = array_ptr(offset, index, strides, dim);
@@ -59,7 +60,7 @@ void array_exp(T *arr, double *out, int offset, int size, int dim, const int *sh
 template<typename T>
 void array_log(T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
   int *index = new int[dim];
-  std::memset(index, 0, dim * 4);
+  memset(index, 0, dim * 4);
 
   for (int i = 0; i < size; ++i) {
     int p = array_ptr(offset, index, strides, dim);
@@ -72,7 +73,7 @@ void array_log(T *arr, double *out, int offset, int size, int dim, const int *sh
 template<typename T>
 void array_sin(T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
   int *index = new int[dim];
-  std::memset(index, 0, dim * 4);
+  memset(index, 0, dim * 4);
 
   for (int i = 0; i < size; ++i) {
     int p = array_ptr(offset, index, strides, dim);
@@ -85,7 +86,7 @@ void array_sin(T *arr, double *out, int offset, int size, int dim, const int *sh
 template<typename T>
 void array_cos(T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
   int *index = new int[dim];
-  std::memset(index, 0, dim * 4);
+  memset(index, 0, dim * 4);
 
   for (int i = 0; i < size; ++i) {
     int p = array_ptr(offset, index, strides, dim);
@@ -99,7 +100,7 @@ template<typename T>
 T array_max(T *arr, int offset, int size, int dim, const int *shape, const int *strides) {
   T max = *(arr + offset);
   int *index = new int[dim];
-  std::memset(index, 0, dim * 4);
+  memset(index, 0, dim * 4);
   for (int kI = 0; kI < size; ++kI) {
     int p = array_ptr(offset, index, strides, dim);
     if (max < arr[p]) {
@@ -115,7 +116,7 @@ template<typename T>
 T array_min(T *arr, int offset, int size, int dim, const int *shape, const int *strides) {
   T min = *(arr + offset);
   int *index = new int[dim];
-  std::memset(index, 0, dim * 4);
+  memset(index, 0, dim * 4);
   for (int kI = 0; kI < size; ++kI) {
     int p = array_ptr(offset, index, strides, dim);
     if (min > arr[p]) {
@@ -132,7 +133,7 @@ T array_sum(T *arr, int offset, int size, int dim, const int *shape, const int *
   double accum = 0;
   double compens = 0;
   int *index = new int[dim];
-  std::memset(index, 0, dim * 4);
+  memset(index, 0, dim * 4);
   for (int i = 0; i < size; ++i) {
     int p = array_ptr(offset, index, strides, dim);
     double y = arr[p] - compens;
@@ -150,7 +151,7 @@ void array_cumsum(T *arr, T *out, int offset, int size, int dim, const int *shap
   double accum = 0;
   double compens = 0;
   int *index = new int[dim];
-  std::memset(index, 0, dim * 4);
+  memset(index, 0, dim * 4);
   for (int i = 0; i < size; ++i) {
     int p = array_ptr(offset, index, strides, dim);
     double y = arr[p] - compens;
