@@ -14,7 +14,7 @@ public object JvmEngine : Engine() {
         get() = type.name
 
     override val type: EngineType
-        get() = EngineType.JVM
+        get() = JvmEngineType
 
     override fun getMath(): Math {
         return JvmMath

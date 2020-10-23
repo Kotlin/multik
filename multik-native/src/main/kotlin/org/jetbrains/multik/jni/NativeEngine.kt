@@ -14,7 +14,7 @@ public object NativeEngine : Engine() {
         get() = type.name
 
     override val type: EngineType
-        get() = EngineType.NATIVE
+        get() = NativeEngineType
 
     private val loader: Loader by lazy { Loader("multik_jni") }
 
