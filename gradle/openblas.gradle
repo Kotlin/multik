@@ -36,13 +36,13 @@ def nullOutputStream = new OutputStream() {
 }
 
 task installOpenBlas(dependsOn: unzipOpenBlas) {
-    def wrkDirOpenBlas = "$buildDir/openblas-${openblasRoot}"
+    def wrkDirOpenBlas = "$buildDir/OpenBLAS-${openblasRoot}"
     outputs.dir new File(buildDir, 'openblas')
     doLast {
         exec {
             workingDir wrkDirOpenBlas
             standardOutput = nullOutputStream
-            commandLine("make", "-w")
+            commandLine("make")
         }
         exec {
             workingDir wrkDirOpenBlas
