@@ -13,7 +13,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: Mul
     for (i in this.indices) {
         data[i] = iterLeft.next() + iterRight.next()
     }
-    return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
+    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: T): Ndarray<T, D> {
@@ -22,7 +22,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: T):
     for (i in this.indices) {
         data[i] = iterLeft.next() + other
     }
-    return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
+    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 /**
@@ -72,7 +72,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: Mu
     for (i in this.indices) {
         data[i] = iterLeft.next() - iterRight.next()
     }
-    return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
+    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: T): Ndarray<T, D> {
@@ -81,7 +81,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: T)
     for (i in this.indices) {
         data[i] = iterLeft.next() - other
     }
-    return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
+    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 /**
@@ -128,7 +128,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: Mu
     for (i in this.indices) {
         data[i] = iterLeft.next() * iterRight.next()
     }
-    return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
+    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: T): Ndarray<T, D> {
@@ -137,7 +137,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: T)
     for (i in this.indices) {
         data[i] = iterLeft.next() * other
     }
-    return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
+    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 /**
@@ -184,7 +184,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: Mult
     for (i in this.indices) {
         data[i] = iterLeft.next() / iterRight.next()
     }
-    return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
+    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: T): Ndarray<T, D> {
@@ -193,7 +193,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: T): 
     for (i in this.indices) {
         data[i] = iterLeft.next() / other
     }
-    return Ndarray<T, D>(data, shape = shape, dtype = dtype, dim = dim)
+    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 /**
