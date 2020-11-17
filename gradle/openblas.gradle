@@ -1,8 +1,8 @@
 // taken from https://github.com/JetBrains-Research/viktor
 
 ext {
-    openblasBranch = 'v0.3.10'
-    openblasRoot = '0.3.10'
+    openblasBranch = 'v0.3.12'
+    openblasRoot = '0.3.12'
 }
 
 buildscript {
