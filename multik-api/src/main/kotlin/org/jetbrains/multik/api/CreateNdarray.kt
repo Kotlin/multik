@@ -20,6 +20,17 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.empty(varar
 /**
  *
  */
+public fun <T: Number, D: Dimension> Multik.empty(dims: IntArray, dtype: DataType): Ndarray<T, D> {
+    val dim = dimensionOf<D>(dims.size)
+    requireDimension(dim, dims.size)
+    val size = dims.fold(1, Int::times)
+    val data = initMemoryView<T>(size, dtype)
+    return Ndarray<T, D>(data, shape = dims, dtype = dtype, dim = dim)
+}
+
+/**
+ *
+ */
 public inline fun <reified T : Number> Multik.identity(n: Int): D2Array<T> {
     val dtype = DataType.of(T::class)
     return identity(n, dtype)
@@ -543,6 +554,16 @@ public inline fun <reified T : Number> Multik.dnarray(
     val size = shape.fold(1, Int::times)
     val data = initMemoryView<T>(size, dtype, init)
     return Ndarray<T, DN>(data, shape = shape, dtype = dtype, dim = dimensionOf(shape.size))
+}
+
+/**
+ *
+ */
+public inline fun <reified T : Number, D: Dimension> Multik.dnarray(dims: IntArray, noinline init: (Int) -> T): Ndarray<T, D> {
+    val dtype = DataType.of(T::class)
+    val size = dims.fold(1, Int::times)
+    val data = initMemoryView<T>(size, dtype, init)
+    return Ndarray<T, D>(data, shape = dims, dtype = dtype, dim = dimensionOf(dims.size))
 }
 
 /**
