@@ -29,4 +29,8 @@ public object NativeEngine : Engine() {
     override fun getLinAlg(): LinAlg {
         return NativeLinAlg
     }
+
+    override fun getStatistics(): Statistics {
+        return NativeStatistics
+    }
 }

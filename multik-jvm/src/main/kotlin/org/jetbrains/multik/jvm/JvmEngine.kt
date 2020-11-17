@@ -23,4 +23,8 @@ public object JvmEngine : Engine() {
     override fun getLinAlg(): LinAlg {
         return JvmLinAlg
     }
+
+    override fun getStatistics(): Statistics {
+        return JvmStatistics
+    }
 }

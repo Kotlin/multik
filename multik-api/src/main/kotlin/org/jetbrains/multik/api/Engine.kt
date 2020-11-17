@@ -47,6 +47,7 @@ public abstract class Engine {
 
     public abstract fun getMath(): Math
     public abstract fun getLinAlg(): LinAlg
+    public abstract fun getStatistics(): Statistics
 
     internal companion object : Engine() {
 
@@ -76,6 +77,12 @@ public abstract class Engine {
         override fun getLinAlg(): LinAlg {
             if (engines.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide LinAlg implementation.")
             return engines[defaultEngine]?.getLinAlg()
+                ?: throw throw EngineMultikException("The used engine type is not defined.")
+        }
+
+        override fun getStatistics(): Statistics {
+            if (engines.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide Statistics implementation.")
+            return engines[defaultEngine]?.getStatistics()
                 ?: throw throw EngineMultikException("The used engine type is not defined.")
         }
     }

@@ -31,6 +31,7 @@ public object Multik {
 
     public val math: Math get() = Engine.getMath()
     public val linalg: LinAlg get() = Engine.getLinAlg()
+    public val stat: Statistics get() = Engine.getStatistics()
 
     public operator fun <T> get(vararg elements: T): List<T> = elements.toList()
 }
