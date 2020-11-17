@@ -86,7 +86,11 @@ tasks.withType(CppCompile) {
 
 jar {
 //    dependsOn 'buildCpp'
-    from "$buildDir/libs"
+    if (file("$buildDir/libs").exists()) {
+        from "$buildDir/libs"
+    } else {
+        from "$rootDir/libs"
+    }
     exclude '*.jar'
 }
 
