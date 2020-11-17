@@ -64,7 +64,7 @@ public class Ndarray<T : Number, D : Dimension> constructor(
         var index = 0
         for (el in this)
             data[index++] = el
-        return Ndarray<T, D>(data, 0, this.shape, dtype = this.dtype, dim = this.dim)
+        return Ndarray<T, D>(data, 0, this.shape.copyOf(), dtype = this.dtype, dim = this.dim)
     }
 
     override fun flatten(): MultiArray<T, D1> {

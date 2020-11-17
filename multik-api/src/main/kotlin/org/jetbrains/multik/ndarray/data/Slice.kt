@@ -49,8 +49,13 @@ public class Slice(start: Int, stop: Int, step: Int) : Indexing {
 public val Int.r: RInt get() = RInt(this)
 
 public inline class RInt(internal val data: Int) : Indexing {
-    public operator fun rangeTo(that: RInt): Slice = Slice(data, that.data, 1)
 
+    public operator fun plus(r: RInt): RInt = RInt(this.data + r.data)
+    public operator fun minus(r: RInt): RInt = RInt(this.data - r.data)
+    public operator fun times(r: RInt): RInt = RInt(this.data * r.data)
+    public operator fun div(r: RInt): RInt = RInt(this.data / r.data)
+
+    public operator fun rangeTo(that: RInt): Slice = Slice(data, that.data, 1)
     public operator fun rangeTo(that: Int): Slice = Slice(data, that, 1)
 }
 
