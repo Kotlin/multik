@@ -1,17 +1,34 @@
 package org.jetbrains.multik.jvm
 
 import org.jetbrains.multik.api.Statistics
+import org.jetbrains.multik.api.mk
 import org.jetbrains.multik.ndarray.data.*
 import org.jetbrains.multik.ndarray.operations.div
+import org.jetbrains.multik.ndarray.operations.first
+import org.jetbrains.multik.ndarray.operations.sorted
+import org.jetbrains.multik.ndarray.operations.times
 
 public object JvmStatistics : Statistics {
-    override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double {
-        //TODO("Sort")
-        TODO("Not yet implemented")
+    override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? {
+        val size = a.size
+        return when {
+            size == 1 -> a.first().toDouble()
+            size > 1 -> {
+                val sorted = a.sorted()
+                val mid = size / 2
+                if (size % 2 != 0) {
+                    sorted.data[mid].toDouble()
+                } else {
+                    (sorted.data[mid - 1].toDouble() + sorted.data[mid].toDouble()) / 2
+                }
+            }
+            else -> null
+        }
     }
 
-    override fun <T : Number, D : Dimension> average(a: MultiArray<T, D>, weights: MultiArray<T, D>?): T {
-        TODO("Not yet implemented")
+    override fun <T : Number, D : Dimension> average(a: MultiArray<T, D>, weights: MultiArray<T, D>?): Double {
+        if (weights == null) return mean(a)
+        return mk.math.sum(a * weights).toDouble() / mk.math.sum(weights).toDouble()
     }
 
     override fun <T : Number, D : Dimension> mean(a: MultiArray<T, D>): Double {

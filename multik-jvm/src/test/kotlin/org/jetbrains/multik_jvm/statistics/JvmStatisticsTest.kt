@@ -1,5 +1,6 @@
 package org.jetbrains.multik_jvm.statistics
 
+import org.jetbrains.multik.api.arange
 import org.jetbrains.multik.api.mk
 import org.jetbrains.multik.api.ndarray
 import org.jetbrains.multik.jvm.JvmStatistics
@@ -7,6 +8,25 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class JvmStatisticsTest {
+    @Test
+    fun `test median`() {
+        val a = mk.ndarray(mk[mk[10, 7, 4], mk[3, 2, 1]])
+        println(mk.stat.median(a))
+    }
+
+    @Test
+    fun `test simple average`() {
+        val a = mk.arange<Long>(1, 11, 1)
+        assertEquals(mk.stat.mean(a), mk.stat.average(a))
+    }
+
+    @Test
+    fun `test average with weights`() {
+        val a = mk.arange<Long>(1, 11, 1)
+        val weights = mk.arange<Long>(10, 0, -1)
+        assertEquals(4.0, mk.stat.average(a, weights))
+    }
+
     @Test
     fun `test of mean function on a 3-d ndarray`() {
         val ndarray = mk.ndarray(mk[mk[mk[0, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])

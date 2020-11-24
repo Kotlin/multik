@@ -285,6 +285,15 @@ class IterableNdarrayTest {
     }
 
     @Test
+    fun `test sort`() {
+        val intArray = intArrayOf(42, 42, 23, 1, 23, 4, 10, 14, 3, 7, 25, 16, 2, 1, 37)
+        val ndarray = mk.ndarray(intArray, 3, 5)
+        val sortedNdarray = ndarray.sorted()
+        sortedNdarray[2, 2] = 1000
+
+    }
+
+    @Test
     fun `test reduce`() {
         val list = listOf(1, 2, 3, 4, 5, 6, 7)
         val ndarray = mk.ndarray(list)

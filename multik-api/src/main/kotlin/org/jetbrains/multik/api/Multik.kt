@@ -13,6 +13,7 @@ public object Multik {
     public val engine: String? get() = Engine.getDefaultEngine()
 
     private val _engines: MutableMap<String, EngineType> = mutableMapOf(
+        "DEFAULT" to DefaultEngineType,
         "JVM" to JvmEngineType,
         "NATIVE" to NativeEngineType
     )

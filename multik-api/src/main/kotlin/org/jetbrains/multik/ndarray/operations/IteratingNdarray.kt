@@ -1080,7 +1080,21 @@ public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, 
     return Ndarray<R, D>(data, 0, this.shape.copyOf(), dtype = dataType, dim = this.dim)
 }
 
-//TODO sort
+/**
+ *
+ */
+public fun <T : Number, D : Dimension> MultiArray<T, D>.sorted(): Ndarray<T, D> {
+    val ret = this.deepCope() as Ndarray<T, D>
+    when (this.dtype) {
+        DataType.ByteDataType -> ret.data.getByteArray().sort()
+        DataType.ShortDataType -> ret.data.getShortArray().sort()
+        DataType.IntDataType -> ret.data.getIntArray().sort()
+        DataType.LongDataType -> ret.data.getLongArray().sort()
+        DataType.FloatDataType -> ret.data.getFloatArray().sort()
+        DataType.DoubleDataType -> ret.data.getDoubleArray().sort()
+    }
+    return ret
+}
 
 /**
  * Returns the sum of all elements in the collection.

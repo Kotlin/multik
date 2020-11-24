@@ -5,9 +5,11 @@ import java.util.concurrent.ConcurrentHashMap
 
 public sealed class EngineType(public val name: String)
 
-public object JvmEngineType: EngineType("JVM")
+public object DefaultEngineType : EngineType("DEFAULT")
 
-public object NativeEngineType: EngineType("NATIVE")
+public object JvmEngineType : EngineType("JVM")
+
+public object NativeEngineType : EngineType("NATIVE")
 
 
 /**
@@ -37,8 +39,8 @@ public abstract class Engine {
             throw EngineMultikException("The map of engines is empty.")
         }
 
-        defaultEngine = if (engines.containsKey(JvmEngineType)) {
-            JvmEngineType
+        defaultEngine = if (engines.containsKey(DefaultEngineType)) {
+            DefaultEngineType
         } else {
             engines.iterator().next().key
         }

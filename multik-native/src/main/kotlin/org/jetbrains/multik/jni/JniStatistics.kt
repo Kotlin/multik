@@ -3,12 +3,12 @@ package org.jetbrains.multik.jni
 import org.jetbrains.multik.api.Statistics
 import org.jetbrains.multik.ndarray.data.*
 
-public object NativeStatistics: Statistics {
-    override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double {
+public object NativeStatistics : Statistics {
+    override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number, D : Dimension> average(a: MultiArray<T, D>, weights: MultiArray<T, D>?): T {
+    override fun <T : Number, D : Dimension> average(a: MultiArray<T, D>, weights: MultiArray<T, D>?): Double {
         TODO("Not yet implemented")
     }
 
