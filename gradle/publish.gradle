@@ -1,0 +1,50 @@
+apply plugin: 'maven-publish'
+apply plugin: "com.jfrog.bintray"
+
+def repUrl = "https://github.com/devcrocod/multik"
+
+task sourcesJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId project.name
+            version project.version
+            artifact sourcesJar { classifier "sources" }
+        }
+    }
+}
+
+if (hasProperty('bintray_user') && hasProperty('bintray_key')) {
+    bintray {
+        // property must be set in ~/.gradle/gradle.properties
+        user = bintray_user
+        key = bintray_key
+        publications = ['maven'] //When uploading configuration files
+        dryRun = false //Whether to run this as dry-run, without deploying
+        publish = true // If version should be auto published after an upload
+        pkg {
+            repo = 'kotlin-datascience'
+            name = rootProject.name
+            userOrg = 'kotlin'
+            vcsUrl = repUrl
+            websiteUrl = repUrl
+            issueTrackerUrl = "$repUrl/issues"
+            licenses = ['Apache-2.0']
+            publicDownloadNumbers = true
+
+            //Optional version descriptor
+            version {
+                name = project.version //Bintray logical version name
+                desc = '.'
+                released = new Date()
+                vcsTag = 'v' + project.version
+            }
+        }
+    }
+}
