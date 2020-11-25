@@ -85,7 +85,7 @@ tasks.withType(CppCompile) {
 }
 
 jar {
-    dependsOn 'buildCpp'
+//    dependsOn 'buildCpp'
     from "$buildDir/libs"
     exclude '*.jar'
 }

@@ -16,8 +16,8 @@ plugins {
 }
 
 val kotlinVersion: String by System.getProperties()
-val multikVersion by extra("0.0.1")
-val unpublished = listOf("examples", "benchmarks")
+val multikVersion: String by project
+val unpublished = listOf("multik", "examples", "benchmarks")
 
 allprojects {
     apply(plugin = "maven-publish")
@@ -26,13 +26,21 @@ allprojects {
     }
 
     group = "org.jetbrains.multik"
-    version = multikVersion
+    version = when {
+        hasProperty("build_counter") -> {
+            "$multikVersion-dev-${property("build_counter")}"
+        }
+        hasProperty("release") -> {
+            multikVersion
+        }
+        else -> {
+            "$multikVersion-dev"
+        }
+    }
 
     tasks.withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
     }
-
-//    TODO(dokka tasks)
 }
 
 subprojects {
