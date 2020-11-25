@@ -20,3 +20,4 @@ val fatJar = task("fatJar", type = Jar::class) {
 }
 
 tasks.named("build") { dependsOn(fatJar) }
+tasks.named("bintrayUpload") { dependsOn(fatJar) }

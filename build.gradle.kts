@@ -27,15 +27,9 @@ allprojects {
 
     group = "org.jetbrains.multik"
     version = when {
-        hasProperty("build_counter") -> {
-            "$multikVersion-dev-${property("build_counter")}"
-        }
-        hasProperty("release") -> {
-            multikVersion
-        }
-        else -> {
-            "$multikVersion-dev"
-        }
+        hasProperty("build_counter") -> { "$multikVersion-dev-${property("build_counter")}" }
+        hasProperty("release") -> { multikVersion }
+        else -> { "$multikVersion-dev" }
     }
 
     tasks.withType<KotlinCompile> {

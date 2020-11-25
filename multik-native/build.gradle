@@ -37,16 +37,18 @@ model {
                 if (os.linux) {
                     cppCompiler.args("-I$javaHome/include", "-I$javaHome/include/linux")
                     cppCompiler.args("-I$buildDir/openblas/include/")
-                    linker.args("-L$buildDir/openblas/lib/", "-lopenblas")
+//                    linker.args("-L$buildDir/openblas/lib/", "-lopenblas")
+                    linker.args("$buildDir/openblas/lib/libopenblas.a")
                 } else if (os.macOsX) {
                     cppCompiler.args("-I$javaHome/include", "-I$javaHome/include/darwin")
                     cppCompiler.args("-I$buildDir/openblas/include/")
-                    linker.args("-L$buildDir/openblas/lib/", "-lopenblas")
-//                    linker.args("$buildDir/openblas/lib/libopenblas.a")
+//                    linker.args("-L$buildDir/openblas/lib/", "-lopenblas")
+                    linker.args("$buildDir/openblas/lib/libopenblas.a")
                 } else if (os.windows) {
                     cppCompiler.args("/I$javaHome/include", "/I$javaHome/include/win32")
                     cppCompiler.args("/I$buildDir/openblas/include/")
-                    linker.args("/L$buildDir/openblas/lib/", "-lopenblas")
+//                    linker.args("/L$buildDir/openblas/lib/", "-lopenblas")
+                    linker.args("$buildDir/openblas/lib/libopenblas.a")
                 }
 
                 def libraryName = System.mapLibraryName("multik_jni")
