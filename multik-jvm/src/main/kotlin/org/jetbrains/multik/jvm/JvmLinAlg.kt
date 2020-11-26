@@ -20,36 +20,12 @@ public object JvmLinAlg : LinAlg {
         }
     }
 
-    override fun svd() {
-        TODO("Not yet implemented")
-    }
-
     override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
         var n = 0.0
         for (element in mat) {
             n += element.toDouble().pow(p)
         }
         return n.pow(1 / p.toDouble())
-    }
-
-    override fun cond() {
-        TODO("Not yet implemented")
-    }
-
-    override fun det() {
-        TODO("Not yet implemented")
-    }
-
-    override fun matRank() {
-        TODO("Not yet implemented")
-    }
-
-    override fun solve() {
-        TODO("Not yet implemented")
-    }
-
-    override fun inv() {
-        TODO("Not yet implemented")
     }
 
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): Ndarray<T, D> {
