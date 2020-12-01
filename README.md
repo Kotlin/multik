@@ -3,127 +3,201 @@
 Multidimensional array library for Kotlin.
 
 ## Modules
-* multik-api &mdash; contains ndarrays, methods called on them and [math] and [linalg] interfaces.
-* multik-jvm &mdash; implementation of [math] and [linalg] interfaces on JVM.
-* multik-native &mdash; implementation of [math] and [linalg] interfaces in native code using OpenBLAS.
+* multik-api &mdash; contains ndarrays, methods called on them and [math], [stat] and [linalg] interfaces.
+* multik-jvm &mdash; implementation including `jvm` and `native` for performance.
+* multik-jvm &mdash; implementation of [math], [stat] and [linalg] interfaces on JVM.
+* multik-native &mdash; implementation of [math], [stat] and [linalg] interfaces in native code using OpenBLAS.
 
 ## Using in your projects
+In your Gradle build script:
+1. Add the `kotlin-datascience` repository.
+2. Add the `org.jetbrains.multik:multik-api:$multik_version` api dependency.
+3. Add an implementation dependency: `org.jetbrains.multik:multik-default:$multik_version`,
+`org.jetbrains.multik:multik-jvm:$multik_version` or `org.jetbrains.multik:multik-native:$multik_version`.
 
+`build.gradle`:
+```groovy
+repositories {
+    maven { url "https://dl.bintray.com/kotlin/kotlin-datascience" }
+}
 
-## Examples
-
-#### Create
-
-```kotlin
-val array = intArrayOf(1, 2, 3, 4, 5, 6)
-mk.ndarray(array) // Creates ndarray [1, 2, 3, 4, 5, 6] of dimension 1 and shape (6)
-
-// Creates ndarray
-// [[1, 2, 3],
-// [4, 5, 6]] of dimension 2 and shape (2, 3)
-mk.ndarray(array, 2, 3)
-
-// [[1.0, 2.0, 3.0],
-// [4.0, 5.0, 6.0]]
-mk.ndarray(mk[mk[1f, 2f, 3f], mk[3f, 2f, 1f]])
-
-// [[[0, 1, 4],
-// [9, 16, 25]],
-// 
-// [[36, 49, 64],
-// [81, 100, 121]]]
-mk.d3array(2, 2, 3) { it * it }
-
-mk.arange<Long>(10, 25, 5) // [10, 15, 20]
-
-mk.linspace<Double>(0, 2, 9) // [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
-
-// [[1, 2],
-// [3, 4]
-mk.ndarray<Int, D2>(setOf(1, 2, 3, 4), intArrayOf(2, 2)) //
+dependencies {
+    implementation "org.jetbrains.multik:multik-api:0.0.1-dev-7"
+    implementation "org.jetbrains.multik:multik-default:0.0.1-dev-7"
+}
 ```
 
-#### Indexing/Iterating
+`build.gradle.kts`:
+```kotlin
+repositories {
+    maven("https://dl.bintray.com/kotlin/kotlin-datascience")
+}
+
+dependencies {
+    implementation("org.jetbrains.multik:multik-api:0.0.1-dev-7")
+    implementation("org.jetbrains.multik:multik-default:0.0.1-dev-7")
+}
+```
+
+## Quickstart
+
+#### Creating arrays
 
 ```kotlin
-val array = floatArrayOf(1.5f,2.3f,3.1f,4.7f,5.9f,6.1f,7f,8f,9f,10f,11f,12f)
-val a = mk.ndarray(array, 2, 2, 3)
+val a = mk.ndarray(mk[1, 2, 3])
+/* [1, 2, 3] */
+val b = mk.ndarray(mk[mk[1.5, 2.1, 3.0], mk[4.0, 5.0, 6.0]])
+/*
+[[1.5, 2.1, 3.0],
+[4.0, 5.0, 6.0]]
+*/
+val c = mk.ndarray(mk[mk[mk[1.5f, 2f, 3f], mk[4f, 5f, 6f]], mk[mk[3f, 2f, 1f], mk[4f, 5f, 6f]]])
+/*
+[[[1.5, 2.0, 3.0],
+[4.0, 5.0, 6.0]],
 
-a[1, 1, 0] // 10.0
+[[3.0, 2.0, 1.0],
+[4.0, 5.0, 6.0]]]
+*/
 
-a[1, 0] // [7.0, 8.0, 9.0]
 
-// for n-dimensional
-val b = a.asDNArray()
+mk.empty<Double, D2>(3, 4) // create an array of zeros
+/*
+[[0.0, 0.0, 0.0, 0.0],
+[0.0, 0.0, 0.0, 0.0],
+[0.0, 0.0, 0.0, 0.0]]
+*/
+mk.ndarray<Float, D2>(setOf(30f, 2f, 13f, 12f), intArrayOf(2, 2)) // create an array from a collection
+/*
+[[30.0, 2.0],
+[13.0, 12.0]]
+*/
+val d = mk.ndarray(doubleArrayOf(1.0, 1.3, 3.0, 4.0, 9.5, 5.0), 2, 3) // create an array of shape(2, 3) from a primitive array
+/*
+[[1.0, 1.3, 3.0],
+[4.0, 9.5, 5.0]]
+*/
+mk.d3array(2, 2, 3) { it * it } // create an array of 3 dimension
+/*
+[[[0, 1, 4],
+[9, 16, 25]],
 
-// [[1.5, 2.3, 3.1],
-// [4.7, 5.9, 6.1]]
-b.V[0]
+[[36, 49, 64],
+[81, 100, 121]]]
+*/
+mk.arange<Long>(10, 25, 5) // creare an array with elements in the interval [19, 25) with step 5
+/* [10, 15, 20] */
+mk.linspace<Double>(0, 2, 9) // create an array of 9 elements in the interval [0, 2]
+/* [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0] */
+val e = mk.identity<Double>(3) // create an identity array of shape (3, 3)
+/*
+[[1.0, 0.0, 0.0],
+[0.0, 1.0, 0.0],
+[0.0, 0.0, 1.0]]
+*/
+```
 
-// [[7.0, 8.0, 9.0],
-// [10.0, 11.0, 12.0]]
-b.V[1]
-
-for (el in a) {
-    print("$el, ") // 1.5, 2.3, 3.1, 4.7, 5.9, 6.1, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 
-}
-
-// for n-dimensional
-println(b.multiIndices) // (0, 0, 0)..(2, 2, 3)
-for (index in b.multiIndices) {
-    print("${b[index]}, ") // 1.5, 2.3, 3.1, 4.7, 5.9, 6.1, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0,
-}
+#### Array properties
+```kotlin
+a.shape // Array dimensions
+a.size // Size of array
+a.dim // object Dimension
+a.dim.d // number of array dimensions
+a.dtype // Data type of array elements
 ```
 
 #### Arithmetic operations
-
 ```kotlin
-val a = mk.ndarray(mk[1.0, 2.0, 3.0])
-val b = mk.ndarray(mk[4.0, 5.0, 6.0])
+val f = b - d // subtraction
+/*
+[[0.5, 0.8, 0.0],
+[0.0, -4.5, 1.0]]
+*/
 
-a + b // [5.0, 7.0, 9.0]
+d + f // addition
+/*
+[[1.5, 2.1, 3.0],
+[4.0, 5.0, 6.0]]
+*/
 
-a += 1.0 // a = [2.0, 3.0, 4.0]
+b / d // division
+/*
+[[1.5, 1.6153846153846154, 1.0],
+[1.0, 0.5263157894736842, 1.2]]
+*/
 
-a - b // [-2.0, -2.0, -2.0]
-
-a / b // [0.5, 0.6, 0.6666666666666666]
-
-a * b // [8.0, 15.0, 24.0]
+f * d // multiplication
+/*
+[[0.5, 1.04, 0.0],
+[0.0, -42.75, 5.0]]
+*/
 ```
 
-#### Mathematics 
-
+#### Array mathematics
 ```kotlin
-val a = mk.ndarray(mk[mk[mk[1.5f,2.3f,3.1f], mk[4.7f,5.9f,6.1f]], mk[mk[7f,8f,9f], mk[10f,11f,12f]]])
+mk.math.sin(a) // element-wise sin 
+mk.math.cos(a) // element-wise cos
+mk.math.log(b) // element-wise natural logarithm
+mk.math.exp(b) // element-wise epx
+mk.linalg.dot(d, e) // dot product
+```
 
-mk.math.argMax(a) // 11
+#### Aggregate functions
+```kotlin
+mk.math.sum(c) // array-wise sum
+mk.math.min(c) // array-wise minimum elements
+mk.math.maxD3(c, axis=0) // maximum value of an array along axis 0
+mk.math.cumSum(b, axis=1) // cumulative sum of the elements
+mk.stat.mean(a) // mean
+mk.stat.median(b) // meadian
+```
 
-mk.math.exp(a)
-// [[[4.4816890703380645, 9.97418197920865, 22.197949164480132],
-// [109.94715148136659, 365.0375026780162, 445.85772756220854]],
-//
-// [[1096.6331584284585, 2980.9579870417283, 8103.083927575384],
-// [22026.465794806718, 59874.14171519782, 162754.79141900392]]]
+#### Copying arrays
+```kotlin
+val f = a.clone() // create a copy of the array and its data
+val h = b.deepCope() // create a copy of the array and copy the meaningful data
+```
 
-mk.math.cumSum(a) // [1.5, 3.8, 6.8999996, 11.599999, 17.5, 23.6, 30.6, 38.6, 47.6, 57.6, 68.6, 80.6]
+#### Operations of Iterable
+```kotlin
+c.filter { it < 3 } // select all elements less than 3
+b.map { (it * it).toInt() } // return squares
+c.groupNdarrayBy { it % 2 } // group elemetns by condition
+c.sorted() // sort elements
+```
 
-mk.math.max(a) // 12.0
-mk.math.min(a) // 1.5
-mk.math.sum(a) // 80.6
+#### Indexing/Slicing/Iterating
+```kotlin
+a[2] // select the element at the 2 index
+b[1, 2] // select the element at row 1 column 2
+b[1] // select row 1 
+b[0.r..2, 1] // select elements at rows 0 and 1 in column 1
+b[0..1..1] // select all elements at row 0
 
-val matrix = mk.ndarray(mk[mk[1f, 2f, 3f], mk[4f, 5f, 6f], mk[7f, 8f, 9f]])
-mk.linalg.dot(matrix, matrix)
-// [[30.0, 36.0, 42.0],
-// [66.0, 81.0, 96.0],
-// [102.0, 126.0, 150.0]]
+for (el in b) {
+    print("$el, ") // 1.5, 2.1, 3.0, 4.0, 5.0, 6.0, 
+}
+
+// for n-dimensional
+val q = b.asDNArray()
+for (index in q.multiIndices) {
+    print("${q[index]}, ") // 1.5, 2.1, 3.0, 4.0, 5.0, 6.0, 
+}
 ```
 
 #### Inplace
 
 ```kotlin
 val a = mk.linspace<Float>(0, 1, 10)
+/*
+a = [0.0, 0.1111111111111111, 0.2222222222222222, 0.3333333333333333, 0.4444444444444444, 0.5555555555555556, 
+0.6666666666666666, 0.7777777777777777, 0.8888888888888888, 1.0]
+*/
 val b = mk.linspace<Float>(8, 9, 10)
+/*
+b = [8.0, 8.11111111111111, 8.222222222222221, 8.333333333333334, 8.444444444444445, 8.555555555555555,
+8.666666666666666, 8.777777777777779, 8.88888888888889, 9.0]
+*/
 
 a.inplace { 
     math { 
@@ -134,28 +208,13 @@ a.inplace {
 // a = [64.0, 64.88888, 65.77778, 66.66666, 67.55556, 68.44444, 69.333336, 70.22222, 71.111115, 72.0]
 ```
 
-#### Iterable
-
-```kotlin
-val a = mk.ndarray(mk[mk[mk[1.5f,2.3f,3.1f], mk[4.7f,5.9f,6.1f]], mk[mk[7f,8f,9f], mk[10f,11f,12f]]])
-
-a.filter { it < 7 } // [1.5, 2.3, 3.1, 4.7, 5.9, 6.1]
-
-a.map { (it * it).toInt() }
-// [[[2, 5, 9],
-// [22, 34, 37]],
-//
-// [[49, 64, 81],
-// [100, 121, 144]]]
-
-mk.arange<Long>(50).dropWhile { it < 45 } // [45, 46, 47, 48, 49]
-
-mk.d3array(2, 2, 2) { it }.groupNdarrayBy { it % 2 } // {0=[0, 2, 4, 6], 1=[1, 3, 5, 7]}
-```
-
 ## Building
 Multik uses blas for implementing algebraic operations. Therefore, you would need a C ++ compiler.
-To build, run `./gradlew assemble`
+Run `./gradlew assemble` to build all modules.
+* To build api module run `./gradlew multik-api:assemble`.
+* To build jvm module run `./gradlew multik-jvm:assemble`.
+* To build native module run `./gradlew multik-native:assemble`.
+* To build default module run `./gradlew multik-native:assemble` then `./gradlew multik-default:assemble`.
 
 ## Testing
 `./gradlew test`
