@@ -331,9 +331,10 @@ public object JvmLinAlg : LinAlg {
     }
 
     override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
+        require(a.size == b.size) { "Sizes a and b don't match: a.size(${a.size}) != b.size(${b.size})"}
         var ret: Number = zeroNumber(a.dtype)
         for (i in a.indices) {
-            ret += a[i] * b[1]
+            ret += a[i] * b[i]
         }
         return ret as T
     }

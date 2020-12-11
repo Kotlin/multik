@@ -22,11 +22,7 @@ public object DefaultLinAlg : LinAlg {
     }
 
     override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
-        return when (a.dtype) {
-            DataType.FloatDataType -> NativeLinAlg.dot(a, b)
-            DataType.DoubleDataType -> NativeLinAlg.dot(a, b)
-            else -> JvmLinAlg.dot(a, b)
-        }
+        return JvmLinAlg.dot(a, b)
     }
 
 }
