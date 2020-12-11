@@ -198,13 +198,3 @@ public operator fun <T : Number> MutableMultiArray<T, DN>.set(index: IntArray, v
     check(index.size == dim.d) { "number of indices doesn't match dimension: ${index.size} != ${dim.d}" }
     data[strides.foldIndexed(offset) { i, acc, stride -> acc + index[i] * stride }] = value
 }
-
-//_________________________________________________Transform____________________________________________________________
-
-public fun <T : Number, D : Dimension> MutableMultiArray<T, D>.cat(
-    other: MutableMultiArray<T, D>, axis: Int = 0
-): MutableMultiArray<T, DN> {
-    if (this is Ndarray<T, D>)
-        return this.cat(other, axis)
-    else throw ClassCastException("Cannot cast MultiArray to Ndarray of dimension n.")
-}

@@ -457,13 +457,3 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.asDNArray(): Ndarray<T, 
         return this.asDNArray()
     else throw ClassCastException("Cannot cast MultiArray to Ndarray of dimension n.")
 }
-
-//_________________________________________________Transform____________________________________________________________
-
-public fun <T : Number, D : Dimension> MultiArray<T, D>.cat(other: MultiArray<T, D>, axis: Int = 0): MultiArray<T, DN> {
-    if (this is Ndarray<T, D>)
-        return this.cat(other, axis)
-//    if (this is Ndarray<T, D>)
-//        return this.cat(other, axis)
-    else throw ClassCastException("Cannot cast MultiArray to Ndarray of dimension n.")
-}
