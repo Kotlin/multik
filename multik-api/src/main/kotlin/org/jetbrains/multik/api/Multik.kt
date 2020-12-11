@@ -1,13 +1,24 @@
 package org.jetbrains.multik.api
 
 /**
- * Alternative names.
+ * Abbreviated name for [Multik].
  */
 public typealias mk = Multik
 
 
 /**
- * The basic object through which calls all ndarray functions.
+ * The basic object through which calls all ndarray functions. Gives access to ndarray creation and interfaces [Math],
+ * [LinAlg] and [Statistics].
+ * Calling [Multik] will load the engine. The default is "DEFAULT".
+ * If no engine is found, then an exception is thrown only when you call an implementation that requires the engine.
+ *
+ * Note: Through [Multik], you can set your own interface implementation.
+ *
+ * @property engine currently used engine.
+ * @property engines list of engines.
+ * @property math returns the [Math] implementation of the corresponding engine.
+ * @property linalg returns the [LinAlg] implementation of the corresponding engine.
+ * @property stat returns the [Statistics] implementation of the corresponding engine.
  */
 public object Multik {
     public val engine: String? get() = Engine.getDefaultEngine()
@@ -21,18 +32,27 @@ public object Multik {
     public val engines: Map<String, EngineType>
         get() = _engines
 
+    public val math: Math get() = Engine.getMath()
+    public val linalg: LinAlg get() = Engine.getLinAlg()
+    public val stat: Statistics get() = Engine.getStatistics()
+
+    /**
+     * Adds engine to [engines].
+     */
     public fun addEngine(type: EngineType) {
         _engines.putIfAbsent(type.name, type)
     }
 
+    /**
+     * Sets the engine of type [type] as the current implementation.
+     */
     public fun setEngine(type: EngineType) {
         if (type.name in engines)
             Engine.setDefaultEngine(type)
     }
 
-    public val math: Math get() = Engine.getMath()
-    public val linalg: LinAlg get() = Engine.getLinAlg()
-    public val stat: Statistics get() = Engine.getStatistics()
-
+    /**
+     * Returns a list of [elements]. Sugar for easy array creation.
+     */
     public operator fun <T> get(vararg elements: T): List<T> = elements.toList()
 }

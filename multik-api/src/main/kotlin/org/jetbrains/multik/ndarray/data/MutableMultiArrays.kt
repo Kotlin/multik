@@ -1,5 +1,8 @@
 package org.jetbrains.multik.ndarray.data
 
+/**
+ * A generic ndarray. Methods in this interface support write access to the ndarray.
+ */
 public interface MutableMultiArray<T : Number, D : Dimension> : MultiArray<T, D> {
     public override val data: MemoryView<T>
 

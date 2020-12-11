@@ -1,7 +1,7 @@
 package org.jetbrains.multik.ndarray.data
 
 /**
- *
+ * Iterator over multidimensional arrays. Iterated taking into account the [offset], [strides] and [shape].
  */
 public class NdarrayIterator<T : Number>(
     private val data: MemoryView<T>,

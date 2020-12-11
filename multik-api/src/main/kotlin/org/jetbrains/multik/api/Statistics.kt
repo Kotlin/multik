@@ -3,51 +3,54 @@ package org.jetbrains.multik.api
 import org.jetbrains.multik.ndarray.data.*
 
 /**
- *
+ * Statistics methods interface.
  */
 public interface Statistics {
 
     /**
-     *
+     * Returns the median of the [a] elements.
      */
     public fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double?
 
     /**
-     *
+     * Returns the weighted average over the [a] elements and [weights] elements.
      */
     public fun <T : Number, D : Dimension> average(a: MultiArray<T, D>, weights: MultiArray<T, D>? = null): Double
 
     /**
-     *
+     * Returns the arithmetic mean of the [a] elements.
      */
     public fun <T : Number, D : Dimension> mean(a: MultiArray<T, D>): Double
 
     /**
-     *
+     * Returns the arithmetic mean of the [a] elements along the given [axis].
      */
     public fun <T : Number, D : Dimension, O : Dimension> mean(a: MultiArray<T, D>, axis: Int): Ndarray<Double, O>
 
     /**
-     *
+     * Returns the arithmetic mean of the two-dimensional ndarray [a] elements along the given [axis].
      */
     public fun <T : Number> meanD2(a: MultiArray<T, D2>, axis: Int): Ndarray<Double, D1>
 
     /**
-     *
+     * Returns the arithmetic mean of the three-dimensional ndarray [a] elements along the given [axis].
      */
     public fun <T : Number> meanD3(a: MultiArray<T, D3>, axis: Int): Ndarray<Double, D2>
 
     /**
-     *
+     * Returns the arithmetic mean of the four-dimensional ndarray [a] elements along the given [axis].
      */
     public fun <T : Number> meanD4(a: MultiArray<T, D4>, axis: Int): Ndarray<Double, D3>
 
     /**
-     *
+     * Returns the arithmetic mean of the n-dimensional ndarray [a] elements along the given [axis].
      */
     public fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): Ndarray<Double, D4>
 }
 
+/**
+ * Returns the absolute value of the given ndarray [a].
+ */
 @JvmName("absByte")
 public fun <D : Dimension> Statistics.abs(a: MultiArray<Byte, D>): Ndarray<Byte, D> {
     val ret = initMemoryView<Byte>(a.size, a.dtype)

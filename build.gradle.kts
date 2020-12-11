@@ -10,8 +10,6 @@ plugins {
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm") version kotlinVersion
 
-    id("org.jetbrains.dokka") version "1.4.10.2"
-
     id("com.jfrog.bintray") version "1.8.5"
 }
 
@@ -47,6 +45,5 @@ subprojects {
 }
 
 configure(subprojects.filter { it.name !in unpublished }) {
-    apply("$rootDir/gradle/dokka.gradle")
     apply("$rootDir/gradle/publish.gradle")
 }

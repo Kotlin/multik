@@ -1,41 +1,82 @@
 package org.jetbrains.multik.ndarray.data
 
+/**
+ * View for storing data in a [Ndarray] and working them in a uniform style.
+ *
+ * @property data one of the primitive arrays.
+ */
 public interface ImmutableMemoryView<T : Number> : Iterable<T> {
     public val data: Any
 
+    /**
+     * Returns the value at [index].
+     *
+     * Note: Indexing takes place according to the initial data, so if you did any manipulations with the ndarray
+     * (ex. reshape), then `get` from the ndarray with the same index will return another value.
+     */
     public operator fun get(index: Int): T
 
+    /**
+     * [data] iterator
+     */
     public override fun iterator(): Iterator<T>
 
+    /**
+     * Returns a new instance with a copied primitive array.
+     */
     public fun copyOf(): ImmutableMemoryView<T>
 
+    /**
+     * Returns [ByteArray] if it is [MemoryViewByteArray].
+     */
     public fun getByteArray(): ByteArray
 
+    /**
+     * Returns [ShortArray] if it is [MemoryViewShortArray].
+     */
     public fun getShortArray(): ShortArray
 
+    /**
+     * Returns [IntArray] if it is [MemoryViewIntArray].
+     */
     public fun getIntArray(): IntArray
 
+    /**
+     * Returns [LongArray] if it is [MemoryViewLongArray].
+     */
     public fun getLongArray(): LongArray
 
+    /**
+     * Returns [FloatArray] if it is [MemoryViewFloatArray].
+     */
     public fun getFloatArray(): FloatArray
 
+    /**
+     * Returns [DoubleArray] if it is [MemoryViewDoubleArray].
+     */
     public fun getDoubleArray(): DoubleArray
 }
 
+/**
+ * Extends [ImmutableMemoryView].
+ *
+ * @property size number of elements in [data].
+ * @property indices indices of [data].
+ * @property lastIndex last index in [data].
+ */
 public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
-    public abstract override val data: Any
-
     public abstract var size: Int
 
     public abstract var indices: IntRange
 
     public abstract var lastIndex: Int
 
-    public abstract override operator fun get(index: Int): T
-
+    /**
+     * Replaces the element at the given [index] with the specified [value].
+     *
+     * Note: Indexing takes place according to the initial data.
+     */
     public abstract operator fun set(index: Int, value: T): Unit
-
-    public abstract override fun iterator(): Iterator<T>
 
     public abstract override fun copyOf(): MemoryView<T>
 
@@ -52,6 +93,9 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
     public override fun getDoubleArray(): DoubleArray = throw UnsupportedOperationException()
 }
 
+/**
+ * View for [ByteArray].
+ */
 public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte>() {
     override var size: Int = data.size
 
@@ -87,6 +131,9 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
         }
 }
 
+/**
+ * View for [ShortArray].
+ */
 public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Short>() {
     override var size: Int = data.size
 
@@ -122,6 +169,9 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
         }
 }
 
+/**
+ * View for [IntArray].
+ */
 public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>() {
     override var size: Int = data.size
 
@@ -157,6 +207,9 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
         }
 }
 
+/**
+ * View for [LongArray].
+ */
 public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long>() {
     override var size: Int = data.size
 
@@ -192,6 +245,9 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
         }
 }
 
+/**
+ * View for [FloatArray].
+ */
 public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Float>() {
     override var size: Int = data.size
 
@@ -227,6 +283,9 @@ public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Fl
         }
 }
 
+/**
+ * View for [DoubleArray].
+ */
 public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<Double>() {
     override var size: Int = data.size
 
@@ -262,6 +321,9 @@ public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<
         }
 }
 
+/**
+ * Creates a [MemoryView] based [size] and [dataType].
+ */
 public fun <T : Number> initMemoryView(size: Int, dataType: DataType): MemoryView<T> {
     val t = when (dataType.nativeCode) {
         1 -> MemoryViewByteArray(ByteArray(size))
@@ -276,6 +338,10 @@ public fun <T : Number> initMemoryView(size: Int, dataType: DataType): MemoryVie
     return t as MemoryView<T>
 }
 
+/**
+ * Create a [MemoryView] based [size] and [dataType], where each elements will be initialized according
+ * to the given [init] function.
+ */
 @Suppress("UNCHECKED_CAST")
 public fun <T : Number> initMemoryView(size: Int, dataType: DataType, init: (Int) -> T): MemoryView<T> {
     val t = when (dataType.nativeCode) {

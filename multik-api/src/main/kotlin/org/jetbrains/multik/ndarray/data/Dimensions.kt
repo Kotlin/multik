@@ -1,7 +1,7 @@
 package org.jetbrains.multik.ndarray.data
 
 /**
- * Dimension class.
+ * Marker interface for dimensions.
  */
 public interface Dimension {
     public val d: Int
@@ -14,6 +14,9 @@ public interface Dim3 : Dim4
 public interface Dim2 : Dim3
 public interface Dim1 : Dim2
 
+/**
+ * Returns specific [Dimension] by integer [dim].
+ */
 @Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST")
 public inline fun <D : Dimension> dimensionOf(dim: Int): D = when (dim) {
     1 -> D1
@@ -23,6 +26,9 @@ public inline fun <D : Dimension> dimensionOf(dim: Int): D = when (dim) {
     else -> DN(dim)
 } as D
 
+/**
+ * * Returns specific [Dimension] by integer [dim]. Where [D] is `reified` type.
+ */
 public inline fun <reified D : Dimension> dimensionClassOf(dim: Int = -1): D = when (D::class) {
     D1::class -> D1
     D2::class -> D2
@@ -31,6 +37,9 @@ public inline fun <reified D : Dimension> dimensionClassOf(dim: Int = -1): D = w
     else -> DN(dim)
 } as D
 
+/**
+ * N dimension. Usually, the dimension is greater than four. It can also be used when the dimension is unknown.
+ */
 public class DN(override val d: Int) : Dimension, DimN {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -48,6 +57,9 @@ public class DN(override val d: Int) : Dimension, DimN {
     }
 }
 
+/**
+ * Four dimensions.
+ */
 public sealed class D4(override val d: Int = 4) : Dimension, Dim4 {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -67,6 +79,9 @@ public sealed class D4(override val d: Int = 4) : Dimension, Dim4 {
     public companion object : D4()
 }
 
+/**
+ * Three dimensions.
+ */
 public sealed class D3(override val d: Int = 3) : Dimension, Dim3 {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -86,6 +101,9 @@ public sealed class D3(override val d: Int = 3) : Dimension, Dim3 {
     public companion object : D3()
 }
 
+/**
+ * Two dimensions.
+ */
 public sealed class D2(override val d: Int = 2) : Dimension, Dim2 {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -105,6 +123,9 @@ public sealed class D2(override val d: Int = 2) : Dimension, Dim2 {
     public companion object : D2()
 }
 
+/**
+ * One dimension.
+ */
 public sealed class D1(override val d: Int = 1) : Dimension, Dim1 {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

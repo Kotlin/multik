@@ -6,7 +6,14 @@ public typealias D3Array<T> = Ndarray<T, D3>
 public typealias D4Array<T> = Ndarray<T, D4>
 
 /**
- * Multidimensional array. Stores a [MemoryView] object.
+ * A class that implements multidimensional arrays. This implementation is based on primitive arrays.
+ * With the help of [offset], [shape], [strides] there is a multidimensionality representation
+ * over a sequential homogeneous array.
+ *
+ * Native code uses `GetPrimitiveArrayCritical` for calculation.
+ *
+ * @param T type of stored values.
+ * @param D dimension.
  */
 public class Ndarray<T : Number, D : Dimension> constructor(
     data: ImmutableMemoryView<T>,

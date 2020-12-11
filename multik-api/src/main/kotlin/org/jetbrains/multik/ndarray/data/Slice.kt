@@ -1,8 +1,13 @@
 package org.jetbrains.multik.ndarray.data
 
+/**
+ * Marker class. Serves to share slice and simple indexes.
+ */
 public interface Indexing
 
-
+/**
+ * Slice class. An analogue of slices in python.
+ */
 public class Slice(start: Int, stop: Int, step: Int) : Indexing {
     init {
         if (step == 0 && start != 0 && stop != 0) throw IllegalArgumentException("Step must be non-zero.")
@@ -46,8 +51,14 @@ public class Slice(start: Int, stop: Int, step: Int) : Indexing {
     }
 }
 
+/**
+ * Returns [RInt].
+ */
 public val Int.r: RInt get() = RInt(this)
 
+/**
+ * Helper class for indexing. Since the standard rangeTo overrides the rangeTo for slices.
+ */
 public inline class RInt(internal val data: Int) : Indexing {
 
     public operator fun plus(r: RInt): RInt = RInt(this.data + r.data)
@@ -59,9 +70,15 @@ public inline class RInt(internal val data: Int) : Indexing {
     public operator fun rangeTo(that: Int): Slice = Slice(data, that, 1)
 }
 
+/**
+ *
+ */
 public operator fun Int.rangeTo(that: RInt): Slice = Slice(this, that.data, 1)
 
 //TODO (Experimental)
+/**
+ * Returns a slice at a specified [step].
+ */
 public operator fun IntProgression.rangeTo(step: Int): Slice {
     return Slice(this.first, this.last, step)
 }

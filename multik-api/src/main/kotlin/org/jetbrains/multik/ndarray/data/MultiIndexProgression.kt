@@ -1,5 +1,12 @@
 package org.jetbrains.multik.ndarray.data
 
+/**
+ * Multidimensional index.
+ *
+ * @param first a start array indices.
+ * @param last a final array indices.
+ * @param step index traversal step, can be negative.
+ */
 public class MultiIndexProgression(public val first: IntArray, public val last: IntArray, public val step: Int = 1) {
 
     init {
@@ -94,14 +101,23 @@ internal class MultiIndexIterator(first: IntArray, last: IntArray, private val s
     }
 }
 
+/**
+ * Returns a multidimensional index based on given arrays.
+ */
 public operator fun IntArray.rangeTo(other: IntArray): MultiIndexProgression {
     return MultiIndexProgression(this, other)
 }
 
+/**
+ * Returns a multidimensional index with a given [step].
+ */
 public infix fun MultiIndexProgression.step(step: Int): MultiIndexProgression {
     return MultiIndexProgression(first, last, step)
 }
 
+/**
+ * Returns multidimensional index from highest to lowest in the step of -1.
+ */
 public infix fun IntArray.downTo(to: IntArray): MultiIndexProgression {
     return MultiIndexProgression(this, to, -1)
 }

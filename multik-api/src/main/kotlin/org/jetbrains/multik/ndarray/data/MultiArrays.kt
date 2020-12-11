@@ -1,5 +1,19 @@
 package org.jetbrains.multik.ndarray.data
 
+/**
+ *  A generic ndarray. Methods in this interface support only read-only access to the ndarray.
+ *
+ *  @property data [MemoryView].
+ *  @property offset Offset from the start of a ndarray's data.
+ *  @property shape [IntArray] of a ndarray dimensions.
+ *  @property strides [IntArray] indices to step in each dimension when iterating a ndarray.
+ *  @property size number of elements in a ndarray.
+ *  @property dtype [DataType] of a ndarray's data.
+ *  @property dim [Dimension].
+ *  @property consistent indicates whether the array data is homogeneous.
+ *  @property indices indices for a one-dimensional ndarray.
+ *  @property multiIndices indices for a n-dimensional ndarray.
+ */
 public interface MultiArray<T : Number, D : Dimension> {
     public val data: ImmutableMemoryView<T>
     public val offset: Int
@@ -14,22 +28,43 @@ public interface MultiArray<T : Number, D : Dimension> {
     public val indices: IntRange
     public val multiIndices: MultiIndexProgression
 
+    /**
+     * Returns `true` if the array contains only one element, otherwise `false`.
+     */
     public fun isScalar(): Boolean
 
+    /**
+     * Returns `true` if this ndarray is empty.
+     */
     public fun isEmpty(): Boolean
+
+    /**
+     * Returns `true` if this ndarray is not empty.
+     */
     public fun isNotEmpty(): Boolean
 
+    /**
+     * Returns new [MultiArray] which is a copy of the original ndarray.
+     */
     public fun clone(): MultiArray<T, D>
 
+    /**
+     * Returns new [MultiArray] which is a deep copy of the original ndarray.
+     */
     public fun deepCope(): MultiArray<T, D>
 
     public operator fun iterator(): Iterator<T>
 
+    /**
+     * Returns new one-dimensional ndarray which is a copy of the original ndarray.
+     */
     public fun flatten(): MultiArray<T, D1>
 
 
     // Reshape
-
+    /**
+     * Returns a ndarray with a new shape without changing data.
+     */
     public fun reshape(dim1: Int): MultiArray<T, D1>
 
     public fun reshape(dim1: Int, dim2: Int): MultiArray<T, D2>
@@ -40,14 +75,27 @@ public interface MultiArray<T : Number, D : Dimension> {
 
     public fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int): MultiArray<T, DN>
 
+    /**
+     * Reverse or permute the [axes] of an array.
+     */
     public fun transpose(vararg axes: Int): MultiArray<T, D>
 
     // TODO(maybe be done on one axis? like pytorch)
+    /**
+     * Returns a ndarray with all axes removed equal to one.
+     */
     public fun squeeze(vararg axes: Int): MultiArray<T, DN>
 
     // TODO(maybe be done on one axis? like pytorch)
+    /**
+     * Returns a new ndarray with a dimension of size one inserted at the specified [axes].
+     */
     public fun unsqueeze(vararg axes: Int): MultiArray<T, DN>
 
+    // TODO(concatenate over axis)
+    /**
+     * Concatenates this ndarray with [other].
+     */
     public fun cat(other: MultiArray<T, D>, axis: Int = 0): MultiArray<T, DN>
 }
 

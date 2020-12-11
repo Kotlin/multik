@@ -13,8 +13,8 @@ public object NativeEngineType : EngineType("NATIVE")
 
 
 /**
- * This class gives access to different implementations of [LinAlg], [Math].
- * When initializing [Multik], it loads different engines, by default `JVM` implementation is used.
+ * This class gives access to different implementations of [LinAlg], [Math], [Statistics].
+ * When initializing [Multik], it loads engines, by default `DEFAULT` implementation is used.
  */
 public abstract class Engine {
 
@@ -46,9 +46,19 @@ public abstract class Engine {
         }
     }
 
-
+    /**
+     * Returns [Math] implementation.
+     */
     public abstract fun getMath(): Math
+
+    /**
+     * Returns [LinAlg] implementation.
+     */
     public abstract fun getLinAlg(): LinAlg
+
+    /**
+     * Returns [Statistics] implementation.
+     */
     public abstract fun getStatistics(): Statistics
 
     internal companion object : Engine() {
