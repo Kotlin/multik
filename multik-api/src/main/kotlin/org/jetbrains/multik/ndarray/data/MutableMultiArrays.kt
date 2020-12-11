@@ -92,11 +92,11 @@ public val <T : Number> MutableMultiArray<T, DN>.W: WritableView<T>
 //____________________________________________________Get_______________________________________________________________
 
 @JvmName("get1")
-public operator fun <T : Number> MutableMultiArray<T, D2>.get(write: WritableView.Companion, index: Int): MultiArray<T, D1> =
+public operator fun <T : Number> MutableMultiArray<T, D2>.get(write: WritableView.Companion, index: Int): MutableMultiArray<T, D1> =
     mutableView(index, 0)
 
 @JvmName("get3")
-public operator fun <T : Number> MutableMultiArray<T, D3>.get(write: WritableView.Companion, index: Int): MultiArray<T, D2> =
+public operator fun <T : Number> MutableMultiArray<T, D3>.get(write: WritableView.Companion, index: Int): MutableMultiArray<T, D2> =
     mutableView(index, 0)
 
 @JvmName("get4")
@@ -105,7 +105,7 @@ public operator fun <T : Number> MutableMultiArray<T, D3>.get(
 ): MultiArray<T, D1> = mutableView(ind1, ind2, 0, 1)
 
 @JvmName("get6")
-public operator fun <T : Number> MutableMultiArray<T, D4>.get(write: WritableView.Companion, index: Int): MultiArray<T, D3> =
+public operator fun <T : Number> MutableMultiArray<T, D4>.get(write: WritableView.Companion, index: Int): MutableMultiArray<T, D3> =
     mutableView(index, 0)
 
 @JvmName("get7")
@@ -116,7 +116,7 @@ public operator fun <T : Number> MutableMultiArray<T, D4>.get(
 @JvmName("get8")
 public operator fun <T : Number> MutableMultiArray<T, D4>.get(
     write: WritableView.Companion, ind1: Int, ind2: Int, ind3: Int
-): MultiArray<T, D1> = mutableView(ind1, ind2, ind3, 0, 1, 2)
+): MutableMultiArray<T, D1> = mutableView(ind1, ind2, ind3, 0, 1, 2)
 
 //____________________________________________________Set_______________________________________________________________
 
