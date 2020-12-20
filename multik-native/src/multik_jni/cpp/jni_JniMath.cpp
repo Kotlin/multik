@@ -41,32 +41,32 @@
 #define FUNCTION_WITH_TYPE(fun, varr) \
         switch (type) {\
             case 1: {\
-                auto *arr = reinterpret_cast<int8_t *>(varr);\
+                auto *arr = (int8_t *)(varr);\
                 fun(arr, out, offset, size, dim, shape, strides);\
                 break;\
             }\
             case 2: {\
-                auto *arr = reinterpret_cast<int16_t *>(varr);\
+                auto *arr = (int16_t *)(varr);\
                 fun(arr, out, offset, size, dim, shape, strides);\
                 break;\
             }\
             case 3: {\
-                auto *arr = reinterpret_cast<int32_t *>(varr);\
+                auto *arr = (int32_t *)(varr);\
                 fun(arr, out, offset, size, dim, shape, strides);\
                 break;\
             }\
             case 4: {\
-                auto *arr = reinterpret_cast<int64_t *>(varr);\
+                auto *arr = (int64_t *)(varr);\
                 fun(arr, out, offset, size, dim, shape, strides);\
                 break;\
             }\
             case 5: {\
-                auto *arr = reinterpret_cast<float *>(varr);\
+                auto *arr = (float *)(varr);\
                 fun(arr, out, offset, size, dim, shape, strides);\
                 break;\
             }\
             case 6: {\
-                auto *arr = reinterpret_cast<double *>(varr);\
+                auto *arr = (double *)(varr);\
                 fun(arr, out, offset, size, dim, shape, strides);\
                 break;\
             }                            \
@@ -86,11 +86,11 @@ jobject getNewJObject(JNIEnv *env, T value, const char *class_name, const char *
 
 
 /*
- * Class:     org_jetbrains_multik_jni_JniMath
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniMath
  * Method:    argMax
  * Signature: (Ljava/lang/Object;II[I[II)I
  */
-JNIEXPORT jint JNICALL Java_org_jetbrains_multik_jni_JniMath_argMax
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniMath_argMax
 	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size, jintArray jshape, jintArray jstrides, jint type) {
   int arg = 0;
   int dim = env->GetArrayLength(jshape);
@@ -107,11 +107,11 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_multik_jni_JniMath_argMax
 }
 
 /*
- * Class:     org_jetbrains_multik_jni_JniMath
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniMath
  * Method:    argMin
  * Signature: (Ljava/lang/Object;II[I[II)I
  */
-JNIEXPORT jint JNICALL Java_org_jetbrains_multik_jni_JniMath_argMin
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniMath_argMin
 	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size, jintArray jshape, jintArray jstrides, jint type) {
   int arg = 0;
   int dim = env->GetArrayLength(jshape);
@@ -128,17 +128,17 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_multik_jni_JniMath_argMin
 }
 
 /*
- * Class:     org_jetbrains_multik_jni_JniMath
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniMath
  * Method:    exp
  * Signature: (Ljava/lang/Object;II[I[I[DI)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_jetbrains_multik_jni_JniMath_exp
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniMath_exp
 	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size,
 	 jintArray jshape, jintArray jstrides, jdoubleArray jout, jint type) {
   int dim = env->GetArrayLength(jshape);
-  int *shape = reinterpret_cast<int *>(env->GetPrimitiveArrayCritical(jshape, nullptr));
-  int *strides = reinterpret_cast<int *>(env->GetPrimitiveArrayCritical(jstrides, nullptr));
-  auto *out = reinterpret_cast<double *>(env->GetPrimitiveArrayCritical(jout, nullptr));
+  int *shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  int *strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+  auto *out = (double *)(env->GetPrimitiveArrayCritical(jout, nullptr));
   auto *varr = env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
 
   FUNCTION_WITH_TYPE(array_exp, varr)
@@ -152,11 +152,11 @@ JNIEXPORT jboolean JNICALL Java_org_jetbrains_multik_jni_JniMath_exp
 }
 
 /*
- * Class:     org_jetbrains_multik_jni_JniMath
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniMath
  * Method:    log
  * Signature: (Ljava/lang/Object;II[I[I[DI)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_jetbrains_multik_jni_JniMath_log
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniMath_log
 	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size,
 	 jintArray jshape, jintArray jstrides, jdoubleArray jout, jint type) {
   int dim = env->GetArrayLength(jshape);
@@ -176,11 +176,11 @@ JNIEXPORT jboolean JNICALL Java_org_jetbrains_multik_jni_JniMath_log
 }
 
 /*
- * Class:     org_jetbrains_multik_jni_JniMath
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniMath
  * Method:    sin
  * Signature: (Ljava/lang/Object;II[I[I[DI)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_jetbrains_multik_jni_JniMath_sin
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniMath_sin
 	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size,
 	 jintArray jshape, jintArray jstrides, jdoubleArray jout, jint type) {
   int dim = env->GetArrayLength(jshape);
@@ -200,11 +200,11 @@ JNIEXPORT jboolean JNICALL Java_org_jetbrains_multik_jni_JniMath_sin
 }
 
 /*
- * Class:     org_jetbrains_multik_jni_JniMath
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniMath
  * Method:    cos
  * Signature: (Ljava/lang/Object;II[I[I[DI)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_jetbrains_multik_jni_JniMath_cos
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniMath_cos
 	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size,
 	 jintArray jshape, jintArray jstrides, jdoubleArray jout, jint type) {
   int dim = env->GetArrayLength(jshape);
@@ -224,11 +224,11 @@ JNIEXPORT jboolean JNICALL Java_org_jetbrains_multik_jni_JniMath_cos
 }
 
 /*
- * Class:     org_jetbrains_multik_jni_JniMath
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniMath
  * Method:    max
  * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_multik_jni_JniMath_max
+JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniMath_max
 	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size, jintArray jshape, jintArray jstrides, jint type) {
   jobject ret = nullptr;
   int dim = env->GetArrayLength(jshape);
@@ -284,11 +284,11 @@ JNIEXPORT jobject JNICALL Java_org_jetbrains_multik_jni_JniMath_max
 }
 
 /*
- * Class:     org_jetbrains_multik_jni_JniMath
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniMath
  * Method:    min
  * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_multik_jni_JniMath_min
+JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniMath_min
 	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size, jintArray jshape, jintArray jstrides, jint type) {
   jobject ret = nullptr;
   int dim = env->GetArrayLength(jshape);
@@ -344,11 +344,11 @@ JNIEXPORT jobject JNICALL Java_org_jetbrains_multik_jni_JniMath_min
 }
 
 /*
- * Class:     org_jetbrains_multik_jni_JniMath
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniMath
  * Method:    sum
  * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_multik_jni_JniMath_sum
+JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniMath_sum
 	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size, jintArray jshape, jintArray jstrides, jint type) {
   jobject ret = nullptr;
   int dim = env->GetArrayLength(jshape);
@@ -404,11 +404,11 @@ JNIEXPORT jobject JNICALL Java_org_jetbrains_multik_jni_JniMath_sum
 }
 
 /*
- * Class:     org_jetbrains_multik_jni_JniMath
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniMath
  * Method:    cumSum
  * Signature: (Ljava/lang/Object;II[I[ILjava/lang/Object;II)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_jetbrains_multik_jni_JniMath_cumSum
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniMath_cumSum
 	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size,
 	 jintArray jshape, jintArray jstrides, jobject jout, jint axis, jint type) {
   int dim = env->GetArrayLength(jshape);

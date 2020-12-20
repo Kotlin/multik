@@ -11,9 +11,9 @@ Multidimensional array library for Kotlin.
 ## Using in your projects
 In your Gradle build script:
 1. Add the `kotlin-datascience` repository.
-2. Add the `org.jetbrains.multik:multik-api:$multik_version` api dependency.
-3. Add an implementation dependency: `org.jetbrains.multik:multik-default:$multik_version`,
-`org.jetbrains.multik:multik-jvm:$multik_version` or `org.jetbrains.multik:multik-native:$multik_version`.
+2. Add the `org.jetbrains.kotlinx.multik:multik-api:$multik_version` api dependency.
+3. Add an implementation dependency: `org.jetbrains.kotlinx.multik:multik-default:$multik_version`,
+`org.jetbrains.kotlinx.multik:multik-jvm:$multik_version` or `org.jetbrains.kotlinx.multik:multik-native:$multik_version`.
 
 `build.gradle`:
 ```groovy
@@ -22,8 +22,8 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.multik:multik-api:0.0.1-dev-7"
-    implementation "org.jetbrains.multik:multik-default:0.0.1-dev-7"
+    implementation "org.jetbrains.kotlinx.multik:multik-api:0.0.1-dev-7"
+    implementation "org.jetbrains.kotlinx.multik:multik-default:0.0.1-dev-7"
 }
 ```
 
@@ -34,8 +34,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.multik:multik-api:0.0.1-dev-7")
-    implementation("org.jetbrains.multik:multik-default:0.0.1-dev-7")
+    implementation("org.jetbrains.kotlinx.multik:multik-api:0.0.1-dev-7")
+    implementation("org.jetbrains.kotlinx.multik:multik-default:0.0.1-dev-7")
 }
 ```
 

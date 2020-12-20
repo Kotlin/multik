@@ -23,7 +23,7 @@ allprojects {
         jcenter()
     }
 
-    group = "org.jetbrains.multik"
+    group = "org.jetbrains.kotlinx.multik"
     version = when {
         hasProperty("build_counter") -> { "$multikVersion-dev-${property("build_counter")}" }
         hasProperty("release") -> { multikVersion }

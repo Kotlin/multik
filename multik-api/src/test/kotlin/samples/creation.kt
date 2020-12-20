@@ -1,10 +1,10 @@
 package samples
 
-import org.jetbrains.multik.api.*
-import org.jetbrains.multik.ndarray.data.D2
-import org.jetbrains.multik.ndarray.data.D3
-import org.jetbrains.multik.ndarray.data.DN
-import org.jetbrains.multik.ndarray.data.DataType
+import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.ndarray.data.D2
+import org.jetbrains.kotlinx.multik.ndarray.data.D3
+import org.jetbrains.kotlinx.multik.ndarray.data.DN
+import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 
 class Ndarray {
     @kotlin.test.Test
