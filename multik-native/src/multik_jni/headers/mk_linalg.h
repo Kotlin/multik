@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 #ifndef CPP_CPP_LINALG_H_
 #define CPP_CPP_LINALG_H_
 

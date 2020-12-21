@@ -11,5 +11,4 @@ tasks.jar {
                 "Implementation-Version" to project.version)
         )
     }
-//    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
 }
