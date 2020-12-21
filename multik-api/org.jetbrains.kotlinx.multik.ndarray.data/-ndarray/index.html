@@ -1,0 +1,907 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Ndarray</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+    <link href="../../../styles/style.css" rel="Stylesheet">
+    <link href="../../../styles/logo-styles.css" rel="Stylesheet">
+    <link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+    <link href="../../../styles/main.css" rel="Stylesheet">
+    <script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+    <script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+    <script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+    <script type="text/javascript" src="../../../scripts/main.js" async="async"></script>
+    <script>var pathToRoot = "../../../";</script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn">
+        <div id="logo"></div>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="leftToggler"><span class="icon-toggler"></span></div>
+        <div id="searchBar"></div>
+        <script type="text/javascript" src="../../../scripts/pages.js"></script>
+        <script type="text/javascript" src="../../../scripts/main.js"></script>
+        <div id="content" pageIds="org.jetbrains.kotlinx.multik.ndarray.data/Ndarray///PointingToDeclaration//769040687">
+          <div class="breadcrumbs"><a href="../../index.html">multik-api</a>/<a href="../index.html">org.jetbrains.kotlinx.multik.ndarray.data</a>/<a href="index.html">Ndarray</a></div>
+          <div class="cover ">
+            <h1 class="cover"><span>Ndarray</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">class <a href="index.html">Ndarray</a>&lt;<a href="index.html">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a>, <a href="index.html">D</a> : <a href="../-dimension/index.html">Dimension</a>&gt;(data: <a href="../-immutable-memory-view/index.html">ImmutableMemoryView</a>&lt;<a href="index.html">T</a>&gt;, offset: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, shape: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a>, strides: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a>, dtype: <a href="../-data-type/index.html">DataType</a>, dim: <a href="index.html">D</a>) : <a href="../-mutable-multi-array/index.html">MutableMultiArray</a>&lt;<a href="index.html">T</a>, <a href="index.html">D</a>&gt; <span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A class that implements multidimensional arrays. This implementation is based on primitive arrays. With the help of <a href="offset.html">offset</a>, <a href="shape.html">shape</a>, <a href="strides.html">strides</a> there is a multidimensionality representation over a sequential homogeneous array.</p><p class="paragraph">Native code uses <code>GetPrimitiveArrayCritical</code> for calculation.</p></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Extensions">Extensions</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+            <div class="tabs-section-body">
+              <h2 class="">Parameters</h2>
+              <div data-togglable="Parameters">
+                <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex">D</span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">dimension.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex">T</span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">type of stored values.</p></div></div></div></div></div></div></div></div></div>
+              </div>
+              <h2 class="tabbedcontent">Constructors</h2>
+              <div class="table" data-togglable="Constructors"><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FNdarray%2F%23org.jetbrains.kotlinx.multik.ndarray.data.ImmutableMemoryView%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%5D%23kotlin.Int%23kotlin.IntArray%23kotlin.IntArray%23org.jetbrains.kotlinx.multik.ndarray.data.DataType%23TypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%2FPointingToDeclaration%2F%5D%2FConstructors%2F769040687" anchor-label="Ndarray" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FNdarray%2F%23org.jetbrains.kotlinx.multik.ndarray.data.ImmutableMemoryView%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%5D%23kotlin.Int%23kotlin.IntArray%23kotlin.IntArray%23org.jetbrains.kotlinx.multik.ndarray.data.DataType%23TypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%2FPointingToDeclaration%2F%5D%2FConstructors%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue TabbedContent">
+                    <div class=""><span class="inline-flex"><a href="-ndarray.html">Ndarray</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FNdarray%2F%23org.jetbrains.kotlinx.multik.ndarray.data.ImmutableMemoryView%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%5D%23kotlin.Int%23kotlin.IntArray%23kotlin.IntArray%23org.jetbrains.kotlinx.multik.ndarray.data.DataType%23TypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%2FPointingToDeclaration%2F%5D%2FConstructors%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">fun &lt;<a href="index.html">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a>, <a href="index.html">D</a> : <a href="../-dimension/index.html">Dimension</a>&gt; <a href="-ndarray.html">Ndarray</a>(data: <a href="../-immutable-memory-view/index.html">ImmutableMemoryView</a>&lt;<a href="index.html">T</a>&gt;, offset: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a> = 0, shape: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a>, strides: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a> = computeStrides(shape), dtype: <a href="../-data-type/index.html">DataType</a>, dim: <a href="index.html">D</a>)<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief ">type of stored values.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD1Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="asD1Array" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD1Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="as-d1-array.html">asD1Array</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD1Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">fun <a href="as-d1-array.html">asD1Array</a>(): <a href="../index.html#%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FD1Array%2F%2F%2FPointingToDeclaration%2F%5D%2FClasslikes%2F769040687">D1Array</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD2Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="asD2Array" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD2Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="as-d2-array.html">asD2Array</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD2Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">fun <a href="as-d2-array.html">asD2Array</a>(): <a href="../index.html#%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FD2Array%2F%2F%2FPointingToDeclaration%2F%5D%2FClasslikes%2F769040687">D2Array</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD3Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="asD3Array" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD3Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="as-d3-array.html">asD3Array</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD3Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">fun <a href="as-d3-array.html">asD3Array</a>(): <a href="../index.html#%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FD3Array%2F%2F%2FPointingToDeclaration%2F%5D%2FClasslikes%2F769040687">D3Array</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD4Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="asD4Array" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD4Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="as-d4-array.html">asD4Array</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasD4Array%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">fun <a href="as-d4-array.html">asD4Array</a>(): <a href="../index.html#%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FD4Array%2F%2F%2FPointingToDeclaration%2F%5D%2FClasslikes%2F769040687">D4Array</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasDNArray%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="asDNArray" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasDNArray%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="as-d-n-array.html">asDNArray</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasDNArray%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">fun <a href="as-d-n-array.html">asDNArray</a>(): <a href="index.html">Ndarray</a>&lt;<a href="index.html">T</a>, <a href="../-d-n/index.html">DN</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasType%2F%23%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasType%2F%23org.jetbrains.kotlinx.multik.ndarray.data.DataType%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="asType" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasType%2F%23%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasType%2F%23org.jetbrains.kotlinx.multik.ndarray.data.DataType%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="as-type.html">asType</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasType%2F%23%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FasType%2F%23org.jetbrains.kotlinx.multik.ndarray.data.DataType%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">inline fun &lt;<a href="as-type.html">E</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a>&gt; <a href="as-type.html">asType</a>(): <a href="index.html">Ndarray</a>&lt;<a href="as-type.html">E</a>, <a href="index.html">D</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace">fun &lt;<a href="as-type.html">E</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a>&gt; <a href="as-type.html">asType</a>(dataType: <a href="../-data-type/index.html">DataType</a>): <a href="index.html">Ndarray</a>&lt;<a href="as-type.html">E</a>, <a href="index.html">D</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fcat%2F%23org.jetbrains.kotlinx.multik.ndarray.data.MultiArray%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="cat" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fcat%2F%23org.jetbrains.kotlinx.multik.ndarray.data.MultiArray%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="cat.html">cat</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fcat%2F%23org.jetbrains.kotlinx.multik.ndarray.data.MultiArray%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="cat.html">cat</a>(other: <a href="../-multi-array/index.html">MultiArray</a>&lt;<a href="index.html">T</a>, <a href="index.html">D</a>&gt;, axis: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="index.html">Ndarray</a>&lt;<a href="index.html">T</a>, <a href="../-d-n/index.html">DN</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fcat%2F%23org.jetbrains.kotlinx.multik.ndarray.data.MultiArray%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="cat" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fcat%2F%23org.jetbrains.kotlinx.multik.ndarray.data.MultiArray%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fcat%2F%23org.jetbrains.kotlinx.multik.ndarray.data.MultiArray%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="cat" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fcat%2F%23org.jetbrains.kotlinx.multik.ndarray.data.MultiArray%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Concatenates this ndarray with <span data-unresolved-link="org.jetbrains.kotlinx.multik.ndarray.data/Ndarray/other/#/PointingToCallableParameters(-1)/">other</span>.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fclone%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="clone" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fclone%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="clone.html">clone</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fclone%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="clone.html">clone</a>(): <a href="index.html">Ndarray</a>&lt;<a href="index.html">T</a>, <a href="index.html">D</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fclone%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="clone" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fclone%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fclone%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="clone" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fclone%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Returns new <a href="../-multi-array/index.html">MultiArray</a> which is a copy of the original ndarray.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FdeepCope%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="deepCope" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FdeepCope%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="deep-cope.html">deepCope</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FdeepCope%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="deep-cope.html">deepCope</a>(): <a href="index.html">Ndarray</a>&lt;<a href="index.html">T</a>, <a href="index.html">D</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FdeepCope%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="deepCope" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FdeepCope%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FdeepCope%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="deepCope" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FdeepCope%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Returns new <a href="../-multi-array/index.html">MultiArray</a> which is a deep copy of the original ndarray.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fequals%2F%23kotlin.Any%3F%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="equals" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fequals%2F%23kotlin.Any%3F%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="equals.html">equals</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fequals%2F%23kotlin.Any%3F%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open operator override fun <a href="equals.html">equals</a>(other: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fflatten%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="flatten" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fflatten%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="flatten.html">flatten</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fflatten%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="flatten.html">flatten</a>(): <a href="../-multi-array/index.html">MultiArray</a>&lt;<a href="index.html">T</a>, <a href="../-d1/index.html">D1</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fflatten%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="flatten" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fflatten%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fflatten%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="flatten" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fflatten%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Returns new one-dimensional ndarray which is a copy of the original ndarray.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FhashCode%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="hashCode" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FhashCode%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="hash-code.html">hashCode</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FhashCode%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="hash-code.html">hashCode</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="isEmpty" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="is-empty.html">isEmpty</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="is-empty.html">isEmpty</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="isEmpty" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="isEmpty" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Returns <code>true</code> if this ndarray is empty.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisNotEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="isNotEmpty" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisNotEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="is-not-empty.html">isNotEmpty</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisNotEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="is-not-empty.html">isNotEmpty</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisNotEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="isNotEmpty" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisNotEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisNotEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="isNotEmpty" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisNotEmpty%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Returns <code>true</code> if this ndarray is not empty.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisScalar%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="isScalar" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisScalar%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="is-scalar.html">isScalar</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisScalar%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="is-scalar.html">isScalar</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisScalar%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="isScalar" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisScalar%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisScalar%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="isScalar" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FisScalar%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Returns <code>true</code> if the array contains only one element, otherwise <code>false</code>.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fiterator%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="iterator" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fiterator%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="iterator.html">iterator</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fiterator%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open operator override fun <a href="iterator.html">iterator</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-iterator/index.html">Iterator</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%23kotlin.Int%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%23kotlin.Int%23kotlin.Int%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="reshape" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%23kotlin.Int%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%23kotlin.Int%23kotlin.Int%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="reshape.html">reshape</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%23kotlin.Int%23kotlin.Int%2FPointingToDeclaration%2F%2C+org.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%23kotlin.Int%23kotlin.Int%23kotlin.Int%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="reshape.html">reshape</a>(dim1: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="../index.html#%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FD1Array%2F%2F%2FPointingToDeclaration%2F%5D%2FClasslikes%2F769040687">D1Array</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="reshape" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="reshape" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Freshape%2F%23kotlin.Int%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Returns a ndarray with a new shape without changing data.</div></div>
+<div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="reshape.html">reshape</a>(dim1: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dim2: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="../index.html#%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FD2Array%2F%2F%2FPointingToDeclaration%2F%5D%2FClasslikes%2F769040687">D2Array</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace">open override fun <a href="reshape.html">reshape</a>(dim1: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dim2: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dim3: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="../index.html#%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FD3Array%2F%2F%2FPointingToDeclaration%2F%5D%2FClasslikes%2F769040687">D3Array</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace">open override fun <a href="reshape.html">reshape</a>(dim1: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dim2: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dim3: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dim4: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="../index.html#%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FD4Array%2F%2F%2FPointingToDeclaration%2F%5D%2FClasslikes%2F769040687">D4Array</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace">open override fun <a href="reshape.html">reshape</a>(dim1: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dim2: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dim3: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, dim4: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, vararg dims: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="index.html">Ndarray</a>&lt;<a href="index.html">T</a>, <a href="../-d-n/index.html">DN</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="squeeze" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="squeeze.html">squeeze</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="squeeze.html">squeeze</a>(vararg axes: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="index.html">Ndarray</a>&lt;<a href="index.html">T</a>, <a href="../-d-n/index.html">DN</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="squeeze" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="squeeze" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Returns a ndarray with all axes removed equal to one.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FtoString%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="toString" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FtoString%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="to-string.html">toString</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FtoString%2F%23%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="to-string.html">toString</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Ftranspose%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="transpose" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Ftranspose%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="transpose.html">transpose</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Ftranspose%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="transpose.html">transpose</a>(vararg axes: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="index.html">Ndarray</a>&lt;<a href="index.html">T</a>, <a href="index.html">D</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Ftranspose%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="transpose" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Ftranspose%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Ftranspose%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="transpose" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Ftranspose%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Reverse or permute the <span data-unresolved-link="org.jetbrains.kotlinx.multik.ndarray.data/Ndarray/axes/#/PointingToCallableParameters(-1)/">axes</span> of an array.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Funsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="unsqueeze" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Funsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="unsqueeze.html">unsqueeze</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Funsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override fun <a href="unsqueeze.html">unsqueeze</a>(vararg axes: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="index.html">Ndarray</a>&lt;<a href="index.html">T</a>, <a href="../-d-n/index.html">DN</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Funsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="unsqueeze" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Funsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a><div class="brief "><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Funsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" anchor-label="unsqueeze" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Funsqueeze%2F%23kotlin.IntArray%2FPointingToDeclaration%2F%5D%2FFunctions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>Returns a new ndarray with a dimension of size one inserted at the specified <span data-unresolved-link="org.jetbrains.kotlinx.multik.ndarray.data/Ndarray/axes/#/PointingToCallableParameters(-1)/">axes</span>.</div></div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="">Properties</h2>
+              <div class="table" data-togglable="Properties"><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fconsistent%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" anchor-label="consistent" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fconsistent%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="consistent.html">consistent</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fconsistent%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override val <a href="consistent.html">consistent</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief ">indicates whether the array data is homogeneous.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fdata%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" anchor-label="data" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fdata%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="data.html">data</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fdata%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override val <a href="data.html">data</a>: <a href="../-memory-view/index.html">MemoryView</a>&lt;<a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief "><a href="../-memory-view/index.html">MemoryView</a>.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fdim%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" anchor-label="dim" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fdim%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="dim.html">dim</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fdim%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override val <a href="dim.html">dim</a>: <a href="index.html">D</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief "><a href="../-dimension/index.html">Dimension</a>.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fdtype%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" anchor-label="dtype" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fdtype%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="dtype.html">dtype</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fdtype%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override val <a href="dtype.html">dtype</a>: <a href="../-data-type/index.html">DataType</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief "><a href="../-data-type/index.html">DataType</a> of a ndarray's data.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Findices%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" anchor-label="indices" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Findices%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="indices.html">indices</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Findices%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override val <a href="indices.html">indices</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.ranges/-int-range/index.html">IntRange</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief ">indices for a one-dimensional ndarray.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FmultiIndices%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" anchor-label="multiIndices" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FmultiIndices%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="multi-indices.html">multiIndices</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2FmultiIndices%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override val <a href="multi-indices.html">multiIndices</a>: <a href="../-multi-index-progression/index.html">MultiIndexProgression</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief ">indices for a n-dimensional ndarray.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Foffset%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" anchor-label="offset" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Foffset%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="offset.html">offset</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Foffset%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override val <a href="offset.html">offset</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a> = 0<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief ">Offset from the start of a ndarray's data.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fshape%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" anchor-label="shape" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fshape%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="shape.html">shape</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fshape%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override val <a href="shape.html">shape</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief "><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a> of a ndarray dimensions.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fsize%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" anchor-label="size" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fsize%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="size.html">size</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fsize%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override val <a href="size.html">size</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief ">number of elements in a ndarray.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+<a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fstrides%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" anchor-label="strides" id="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fstrides%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="strides.html">strides</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.data%2FNdarray%2Fstrides%2F%23%2FPointingToDeclaration%2F%5D%2FProperties%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">open override val <a href="strides.html">strides</a>: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div><div class="brief "><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a> indices to step in each dimension when iterating a ndarray.</div></div></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2 class="tabbedcontent">Extensions</h2>
+              <div class="table" data-togglable="Extensions"><a data-name="%5Borg.jetbrains.kotlinx.multik.ndarray.operations%2F%2Finplace%2Forg.jetbrains.kotlinx.multik.ndarray.data.Ndarray%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%23kotlin.Function1%5Borg.jetbrains.kotlinx.multik.ndarray.operations.InplaceOperation%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%2Ckotlin.Unit%5D%2FPointingToDeclaration%2F%5D%2FExtensions%2F769040687" anchor-label="inplace" id="%5Borg.jetbrains.kotlinx.multik.ndarray.operations%2F%2Finplace%2Forg.jetbrains.kotlinx.multik.ndarray.data.Ndarray%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%23kotlin.Function1%5Borg.jetbrains.kotlinx.multik.ndarray.operations.InplaceOperation%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%2Ckotlin.Unit%5D%2FPointingToDeclaration%2F%5D%2FExtensions%2F769040687" data-filterable-set=":multik-api:dokkaHtml/main"></a>
+                <div class="table-row" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main">
+                  <div class="main-subrow keyValue ">
+                    <div class=""><span class="inline-flex"><a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">inplace</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="%5Borg.jetbrains.kotlinx.multik.ndarray.operations%2F%2Finplace%2Forg.jetbrains.kotlinx.multik.ndarray.data.Ndarray%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%23kotlin.Function1%5Borg.jetbrains.kotlinx.multik.ndarray.operations.InplaceOperation%5BTypeParam%28bounds%3D%5Bkotlin.Number%5D%29%2CTypeParam%28bounds%3D%5Borg.jetbrains.kotlinx.multik.ndarray.data.Dimension%5D%29%5D%2Ckotlin.Unit%5D%2FPointingToDeclaration%2F%5D%2FExtensions%2F769040687"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                          <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                        </span></span></div>
+                    <div>
+                      <div class="title"><div class="divergent-group" data-filterable-current=":multik-api:dokkaHtml/main" data-filterable-set=":multik-api:dokkaHtml/main"><div class="with-platform-tags"><span class="pull-right"></span></div>
+
+  <div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-api:dokkaHtml/main"><div class="symbol monospace">fun &lt;<a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">T</a> : <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a>, <a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">D</a> : <a href="../-dimension/index.html">Dimension</a>&gt; <a href="index.html">Ndarray</a>&lt;<a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">T</a>, <a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">D</a>&gt;.<a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">inplace</a>(init: <a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/-inplace-operation/index.html">InplaceOperation</a>&lt;<a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">T</a>, <a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">D</a>&gt;.() -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a>)<span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#container"><svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M11.3337 9.66683H0.666992L6.00033 3.66683L11.3337 9.66683Z" fill="black"/>
+    <path d="M0.666992 0.333496H11.3337V1.66683H0.666992V0.333496Z" fill="black"/>
+</svg></a></span><span>© 2020 Copyright</span><span class="pull-right"><span>Sponsored and developed by dokka</span><a href="https://github.com/Kotlin/dokka"><span class="padded-icon"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 0H2.3949L4.84076 2.44586L0 7.28662L0.713376 8L5.55414 3.15924L8 5.6051V0Z" fill="black"/>
+</svg></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

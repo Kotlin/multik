@@ -1,0 +1,7 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+org.jetbrains.kotlinx.multik.api
+org.jetbrains.kotlinx.multik.ndarray.data
+org.jetbrains.kotlinx.multik.ndarray.operations
+
