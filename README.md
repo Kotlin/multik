@@ -26,8 +26,8 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx.multik:multik-api:0.0.1-dev-7"
-    implementation "org.jetbrains.kotlinx.multik:multik-default:0.0.1-dev-7"
+    implementation "org.jetbrains.kotlinx.multik:multik-api:$multik_version"
+    implementation "org.jetbrains.kotlinx.multik:multik-default:$multik_version"
 }
 ```
 
@@ -38,10 +38,11 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx.multik:multik-api:0.0.1-dev-7")
-    implementation("org.jetbrains.kotlinx.multik:multik-default:0.0.1-dev-7")
+    implementation("org.jetbrains.kotlinx.multik:multik-api:$multik_version")
+    implementation("org.jetbrains.kotlinx.multik:multik-default:$multik_version")
 }
 ```
+The latest KotlinDL version is ![bintray](https://img.shields.io/bintray/v/kotlin/kotlin-datascience/multik?style=plastic).
 
 ## Quickstart
 
