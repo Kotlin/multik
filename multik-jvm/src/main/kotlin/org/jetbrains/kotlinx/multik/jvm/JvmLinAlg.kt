@@ -13,7 +13,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.times
 import kotlin.math.pow
 
 public object JvmLinAlg : LinAlg {
-    override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): Ndarray<T, D2> {
+    override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> {
         if (n == 0) return mk.identity<T>(mat.shape[0], mat.dtype)
 
         return if (n % 2 == 0) {
@@ -32,16 +32,16 @@ public object JvmLinAlg : LinAlg {
         return n.pow(1 / p.toDouble())
     }
 
-    override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): Ndarray<T, D> {
+    override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         require(a.shape[1] == b.shape[0]) { "Shapes mismatch: shapes " +
                 "${a.shape.joinToString(prefix = "(", postfix = ")")} and " +
                 "${b.shape.joinToString(prefix = "(", postfix = ")")} not aligned: " +
                 "${a.shape[1]} (dim 1) != ${b.shape[0]} (dim 0)"}
 
         return if (b.dim.d == 2) {
-            dotMatrix(a, b as D2Array<T>) as Ndarray<T, D>
+            dotMatrix(a, b as D2Array<T>) as NDArray<T, D>
         } else {
-            dotVector(a, b as D1Array<T>) as Ndarray<T, D>
+            dotVector(a, b as D1Array<T>) as NDArray<T, D>
         }
     }
 

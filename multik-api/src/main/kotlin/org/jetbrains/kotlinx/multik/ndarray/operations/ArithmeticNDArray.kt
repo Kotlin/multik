@@ -9,7 +9,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 /**
  * Create a new array as the sum of [this] and [other].
  */
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: MultiArray<T, D>): Ndarray<T, D> {
+public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
     val data = initMemoryView<T>(size, dtype)
     val iterLeft = this.iterator()
@@ -17,16 +17,16 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: Mul
     for (i in this.indices) {
         data[i] = iterLeft.next() + iterRight.next()
     }
-    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
+    return NDArray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: T): Ndarray<T, D> {
+public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: T): NDArray<T, D> {
     val data = initMemoryView<T>(size, dtype)
     val iterLeft = this.iterator()
     for (i in this.indices) {
         data[i] = iterLeft.next() + other
     }
-    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
+    return NDArray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 /**
@@ -40,7 +40,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssi
         for (i in this.indices)
             this[i] += other[i]
     } else {
-        val left = this.asDNArray()
+        val left = this.asNDArray()
         val iterRight = other.iterator()
         for (index in this.multiIndices)
             left[index] += iterRight.next()
@@ -58,7 +58,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssi
         for (i in this.indices)
             this[i] += other
     } else {
-        val left = this.asDNArray()
+        val left = this.asNDArray()
         for (index in this.multiIndices)
             left[index] += other
     }
@@ -68,7 +68,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssi
 /**
  * Create a new array as difference between [this] and [other].
  */
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: MultiArray<T, D>): Ndarray<T, D> {
+public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
     val data = initMemoryView<T>(size, dtype)
     val iterLeft = this.iterator()
@@ -76,16 +76,16 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: Mu
     for (i in this.indices) {
         data[i] = iterLeft.next() - iterRight.next()
     }
-    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
+    return NDArray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: T): Ndarray<T, D> {
+public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: T): NDArray<T, D> {
     val data = initMemoryView<T>(size, dtype)
     val iterLeft = this.iterator()
     for (i in this.indices) {
         data[i] = iterLeft.next() - other
     }
-    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
+    return NDArray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 /**
@@ -99,7 +99,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAss
         for (i in this.indices)
             this[i] -= other[i]
     } else {
-        val left = this.asDNArray()
+        val left = this.asNDArray()
         val iterRight = other.iterator()
         for (index in this.multiIndices)
             left[index] -= iterRight.next()
@@ -115,7 +115,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAss
         for (i in this.indices)
             this[i] -= other
     } else {
-        val left = this.asDNArray()
+        val left = this.asNDArray()
         for (index in this.multiIndices)
             left[index] -= other
     }
@@ -124,7 +124,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAss
 /**
  * Create a new array as product of [this] and [other].
  */
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: MultiArray<T, D>): Ndarray<T, D> {
+public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
     val data = initMemoryView<T>(size, dtype)
     val iterLeft = this.iterator()
@@ -132,16 +132,16 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: Mu
     for (i in this.indices) {
         data[i] = iterLeft.next() * iterRight.next()
     }
-    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
+    return NDArray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: T): Ndarray<T, D> {
+public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: T): NDArray<T, D> {
     val data = initMemoryView<T>(size, dtype)
     val iterLeft = this.iterator()
     for (i in this.indices) {
         data[i] = iterLeft.next() * other
     }
-    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
+    return NDArray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 /**
@@ -155,7 +155,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAss
         for (i in this.indices)
             this[i] *= other[i]
     } else {
-        val left = this.asDNArray()
+        val left = this.asNDArray()
         val iterRight = other.iterator()
         for (index in this.multiIndices)
             left[index] *= iterRight.next()
@@ -171,7 +171,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAss
         for (i in this.indices)
             this[i] *= other
     } else {
-        val left = this.asDNArray()
+        val left = this.asNDArray()
         for (index in this.multiIndices)
             left[index] *= other
     }
@@ -180,7 +180,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAss
 /**
  * Create a new array as division of [this] by [other].
  */
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: MultiArray<T, D>): Ndarray<T, D> {
+public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
     val data = initMemoryView<T>(size, dtype)
     val iterLeft = this.iterator()
@@ -188,16 +188,16 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: Mult
     for (i in this.indices) {
         data[i] = iterLeft.next() / iterRight.next()
     }
-    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
+    return NDArray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: T): Ndarray<T, D> {
+public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: T): NDArray<T, D> {
     val data = initMemoryView<T>(size, dtype)
     val iterLeft = this.iterator()
     for (i in this.indices) {
         data[i] = iterLeft.next() / other
     }
-    return Ndarray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
+    return NDArray<T, D>(data, shape = shape.copyOf(), dtype = dtype, dim = dim)
 }
 
 /**
@@ -211,7 +211,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssig
         for (i in this.indices)
             this[i] /= other[i]
     } else {
-        val left = this.asDNArray()
+        val left = this.asNDArray()
         val iterRight = other.iterator()
         for (index in this.multiIndices)
             left[index] /= iterRight.next()
@@ -227,7 +227,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssig
         for (i in this.indices)
             this[i] /= other
     } else {
-        val left = this.asDNArray()
+        val left = this.asNDArray()
         for (index in this.multiIndices)
             left[index] /= other
     }

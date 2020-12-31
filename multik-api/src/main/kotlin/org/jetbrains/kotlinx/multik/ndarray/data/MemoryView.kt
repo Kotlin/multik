@@ -5,7 +5,7 @@
 package org.jetbrains.kotlinx.multik.ndarray.data
 
 /**
- * View for storing data in a [Ndarray] and working them in a uniform style.
+ * View for storing data in a [NDArray] and working them in a uniform style.
  *
  * @property data one of the primitive arrays.
  */

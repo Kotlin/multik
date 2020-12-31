@@ -8,7 +8,7 @@ import org.jetbrains.kotlinx.multik.api.LinAlg
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object NativeLinAlg : LinAlg {
-    override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): Ndarray<T, D2> {
+    override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> {
         TODO("Not yet implemented")
     }
 
@@ -17,7 +17,7 @@ public object NativeLinAlg : LinAlg {
     }
 
     //TODO (Double and Number type)
-    override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): Ndarray<T, D> {
+    override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         require(a.shape[1] == b.shape[0]) {
             "Shapes mismatch: shapes " +
                     "${a.shape.joinToString(prefix = "(", postfix = ")")} and " +
@@ -39,7 +39,7 @@ public object NativeLinAlg : LinAlg {
                     D2Array<Double>(MemoryViewDoubleArray(c), 0, shape, dtype = DataType.DoubleDataType, dim = D2)
                 }
                 else -> throw UnsupportedOperationException()
-            } as Ndarray<T, D>
+            } as NDArray<T, D>
         } else {
             val shape = intArrayOf(a.shape[0])
             when (a.dtype) {
@@ -54,7 +54,7 @@ public object NativeLinAlg : LinAlg {
                     D1Array<Double>(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D1)
                 }
                 else -> throw UnsupportedOperationException()
-            } as Ndarray<T, D>
+            } as NDArray<T, D>
         }
     }
 

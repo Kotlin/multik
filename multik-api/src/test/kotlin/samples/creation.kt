@@ -10,7 +10,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.D3
 import org.jetbrains.kotlinx.multik.ndarray.data.DN
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 
-class Ndarray {
+class NDArrayTest {
     @kotlin.test.Test
     fun empty() {
         val ndarray = mk.empty<Int, D2>(2, 2)
@@ -35,8 +35,8 @@ class Ndarray {
 
     @kotlin.test.Test
     fun identity() {
-        val identNdarray = mk.identity<Long>(3)
-        println(identNdarray)
+        val identNDArray = mk.identity<Long>(3)
+        println(identNDArray)
         /*
         [[1, 0, 0],
         [0, 1, 0],
@@ -46,8 +46,8 @@ class Ndarray {
 
     @kotlin.test.Test
     fun identityWithDtype() {
-        val identNdarray = mk.identity<Long>(3, DataType.LongDataType)
-        println(identNdarray)
+        val identNDArray = mk.identity<Long>(3, DataType.LongDataType)
+        println(identNDArray)
         /*
         [[1, 0, 0],
         [0, 1, 0],
@@ -791,9 +791,9 @@ class Ndarray {
     }
 
     @kotlin.test.Test
-    fun toNdarray() {
+    fun toNDArray() {
         val list = listOf(1, 2, 3, 4)
-        val ndarray = list.toNdarray()
+        val ndarray = list.toNDArray()
         println(ndarray) // [1, 2, 3, 4]
     }
 }

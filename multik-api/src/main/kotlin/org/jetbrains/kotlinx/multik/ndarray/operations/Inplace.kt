@@ -9,7 +9,7 @@ import kotlin.math.*
 
 private fun unsupported(): Nothing = throw UnsupportedOperationException("Not supported for local property reference.")
 
-public fun <T : Number, D : Dimension> Ndarray<T, D>.inplace(init: InplaceOperation<T, D>.() -> Unit): Unit {
+public fun <T : Number, D : Dimension> NDArray<T, D>.inplace(init: InplaceOperation<T, D>.() -> Unit): Unit {
     val inplaceOperation = InplaceOperation(this)
     inplaceOperation.init()
 }

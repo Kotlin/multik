@@ -10,7 +10,7 @@ import org.jetbrains.kotlinx.multik.jni.NativeMath
 import org.jetbrains.kotlinx.multik.jvm.JvmMath
 import org.jetbrains.kotlinx.multik.ndarray.data.D2
 import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
-import org.jetbrains.kotlinx.multik.ndarray.data.Ndarray
+import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
@@ -28,7 +28,7 @@ open class SinBenchmark {
     @Param("10", "100", "1000")
     var size: Int = 0
     private lateinit var arg: D2Array<Double>
-    private lateinit var result: Ndarray<Double, D2>
+    private lateinit var result: NDArray<Double, D2>
     private lateinit var ran: Random
 
     @Setup

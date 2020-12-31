@@ -8,7 +8,7 @@ import org.jetbrains.kotlinx.multik.api.dnarray
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.ndarray.data.DN
-import org.jetbrains.kotlinx.multik.ndarray.data.Ndarray
+import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 import org.jetbrains.kotlinx.multik.ndarray.operations.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -94,8 +94,8 @@ class CreateArrayNDTest {
         val shapeCol = intArrayOf(2, 3, 3, 2, 1)
         val l = Array(36) { it }.toList()
         val size_ = HashSet(l)
-        val a: Ndarray<Int, DN> = mk.ndarray(size_, shapeCol)
-        val b: Ndarray<Int, DN> = mk.ndarray(l, shapeCol)
+        val a: NDArray<Int, DN> = mk.ndarray(size_, shapeCol)
+        val b: NDArray<Int, DN> = mk.ndarray(l, shapeCol)
         assertEquals(a, b)
     }
 }

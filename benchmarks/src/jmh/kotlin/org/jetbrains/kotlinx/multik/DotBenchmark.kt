@@ -10,7 +10,7 @@ import org.jetbrains.kotlinx.multik.jni.NativeLinAlg
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg
 import org.jetbrains.kotlinx.multik.ndarray.data.D2
 import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
-import org.jetbrains.kotlinx.multik.ndarray.data.Ndarray
+import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 import org.openjdk.jmh.annotations.*
 import org.openjdk.jmh.infra.Blackhole
 import java.util.concurrent.TimeUnit
@@ -29,7 +29,7 @@ open class DotBenchmark {
     var size: Int = 0
     private lateinit var arg1: D2Array<Double>
     private lateinit var arg2: D2Array<Double>
-    private lateinit var result: Ndarray<Double, D2>
+    private lateinit var result: NDArray<Double, D2>
     private lateinit var ran: Random
 
     @Setup

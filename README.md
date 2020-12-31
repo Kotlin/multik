@@ -167,7 +167,7 @@ val h = b.deepCopy() // create a copy of the array and copy the meaningful data
 ```kotlin
 c.filter { it < 3 } // select all elements less than 3
 b.map { (it * it).toInt() } // return squares
-c.groupNdarrayBy { it % 2 } // group elemetns by condition
+c.groupNDArrayBy { it % 2 } // group elements by condition
 c.sorted() // sort elements
 ```
 
@@ -184,7 +184,7 @@ for (el in b) {
 }
 
 // for n-dimensional
-val q = b.asDNArray()
+val q = b.asNDArray()
 for (index in q.multiIndices) {
     print("${q[index]}, ") // 1.5, 2.1, 3.0, 4.0, 5.0, 6.0, 
 }

@@ -12,7 +12,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class IterableNdarrayTest {
+class IterableNDArrayTest {
 
     @Test
     fun `test of function associate`() {
@@ -204,13 +204,13 @@ class IterableNdarrayTest {
     }
 
     @Test
-    fun `test groupNdarrayBy`() {
+    fun `test groupNDArrayBy`() {
         val data = mk.d3array(2, 2, 2) { it }
         val expected1 = mapOf(0 to mk.ndarrayOf(0, 2, 4, 6), 1 to mk.ndarrayOf(1, 3, 5, 7))
-        assertEquals(expected1, data.groupNdarrayBy { it % 2 })
+        assertEquals(expected1, data.groupNDArrayBy { it % 2 })
 
         val expected2 = mapOf(0 to mk.ndarrayOf(0f, 2f, 4f, 6f), 1 to mk.ndarrayOf(1f, 3f, 5f, 7f))
-        assertEquals(expected2, data.groupNdarrayBy({ it % 2 }, { it.toFloat() }))
+        assertEquals(expected2, data.groupNDArrayBy({ it % 2 }, { it.toFloat() }))
     }
 
     @Test
@@ -292,8 +292,8 @@ class IterableNdarrayTest {
     fun `test sort`() {
         val intArray = intArrayOf(42, 42, 23, 1, 23, 4, 10, 14, 3, 7, 25, 16, 2, 1, 37)
         val ndarray = mk.ndarray(intArray, 3, 5)
-        val sortedNdarray = ndarray.sorted()
-        sortedNdarray[2, 2] = 1000
+        val sortedNDArray = ndarray.sorted()
+        sortedNDArray[2, 2] = 1000
 
     }
 
