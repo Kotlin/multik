@@ -12,7 +12,7 @@ public interface MutableMultiArray<T : Number, D : Dimension> : MultiArray<T, D>
 
     override fun clone(): MutableMultiArray<T, D>
 
-    override fun deepCope(): MutableMultiArray<T, D>
+    override fun deepCopy(): MutableMultiArray<T, D>
 
     // Reshape
 

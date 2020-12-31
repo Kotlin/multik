@@ -1088,7 +1088,7 @@ public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, 
  *
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.sorted(): Ndarray<T, D> {
-    val ret = this.deepCope() as Ndarray<T, D>
+    val ret = this.deepCopy() as Ndarray<T, D>
     when (this.dtype) {
         DataType.ByteDataType -> ret.data.getByteArray().sort()
         DataType.ShortDataType -> ret.data.getShortArray().sort()

@@ -269,7 +269,7 @@ public object JvmMath : Math {
 
     override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>, axis: Int): Ndarray<T, D> {
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
-        val ret: Ndarray<T, D> = (a as Ndarray<T, D>).deepCope()
+        val ret: Ndarray<T, D> = (a as Ndarray<T, D>).deepCopy()
         val indexMap: MutableMap<Int, Indexing> = mutableMapOf()
         for (i in a.shape.indices) {
             if (i == axis) continue

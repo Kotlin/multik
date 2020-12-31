@@ -160,7 +160,7 @@ mk.stat.median(b) // meadian
 #### Copying arrays
 ```kotlin
 val f = a.clone() // create a copy of the array and its data
-val h = b.deepCope() // create a copy of the array and copy the meaningful data
+val h = b.deepCopy() // create a copy of the array and copy the meaningful data
 ```
 
 #### Operations of Iterable

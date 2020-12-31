@@ -55,7 +55,7 @@ public interface MultiArray<T : Number, D : Dimension> {
     /**
      * Returns new [MultiArray] which is a deep copy of the original ndarray.
      */
-    public fun deepCope(): MultiArray<T, D>
+    public fun deepCopy(): MultiArray<T, D>
 
     public operator fun iterator(): Iterator<T>
 

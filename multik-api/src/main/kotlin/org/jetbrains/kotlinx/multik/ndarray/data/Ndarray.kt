@@ -70,7 +70,7 @@ public class Ndarray<T : Number, D : Dimension> constructor(
     override fun clone(): Ndarray<T, D> =
         Ndarray(this.data.copyOf(), this.offset, this.shape.copyOf(), this.strides.copyOf(), this.dtype, this.dim)
 
-    override fun deepCope(): Ndarray<T, D> {
+    override fun deepCopy(): Ndarray<T, D> {
         val data = initMemoryView<T>(this.size, this.dtype)
         var index = 0
         for (el in this)
