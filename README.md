@@ -8,7 +8,7 @@ Multidimensional array library for Kotlin.
 
 ## Modules
 * multik-api &mdash; contains ndarrays, methods called on them and [math], [stat] and [linalg] interfaces.
-* multik-jvm &mdash; implementation including `jvm` and `native` for performance.
+* multik-default &mdash; implementation including `jvm` and `native` for performance.
 * multik-jvm &mdash; implementation of [math], [stat] and [linalg] interfaces on JVM.
 * multik-native &mdash; implementation of [math], [stat] and [linalg] interfaces in native code using OpenBLAS.
 
