@@ -234,7 +234,7 @@ java -jar ./build/libs/multik-benchmark.jar
 
 ## Contributing
 There is an opportunity to contribute to the project:
-1. Implement [math](multik-api/src/main/kotlin/org/jetbrains/multik/api/Math.kt) and [linalg](multik-api/src/main/kotlin/org/jetbrains/multik/api/LinAlg.kt) interfaces.
-2. Create your own engine successor from [Engine](multik-api/src/main/kotlin/org/jetbrains/multik/api/Engine.kt), for example - [JvmEngine](multik-jvm/src/main/kotlin/org/jetbrains/multik/jvm/JvmEngine.kt).
+1. Implement [math](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/Math.kt) and [linalg](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/LinAlg.kt) interfaces.
+2. Create your own engine successor from [Engine](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/Engine.kt), for example - [JvmEngine](multik-jvm/src/main/kotlin/org/jetbrains/kotlinx/multik/jvm/JvmEngine.kt).
 3. Use [mk.addEngine](https://github.com/devcrocod/multik/blob/972b18cfd2952abd811fabf34461d238e55c5587/multik-api/src/main/kotlin/org/jetbrains/multik/api/Multik.kt#L23) and [mk.setEngine](https://github.com/devcrocod/multik/blob/972b18cfd2952abd811fabf34461d238e55c5587/multik-api/src/main/kotlin/org/jetbrains/multik/api/Multik.kt#L27)
 to use your implementation.
