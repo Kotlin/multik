@@ -796,7 +796,6 @@ public fun Multik.ndarray(
 }
 
 //______________________________________________________________________________________________________________________
-//TODO check negative dims
 /**
  * Returns a 1-dimension array.
  *
@@ -806,6 +805,7 @@ public fun Multik.ndarray(
  * @sample samples.Ndarray.d1array
  */
 public inline fun <reified T : Number> Multik.d1array(sizeD1: Int, noinline init: (Int) -> T): D1Array<T> {
+    require(sizeD1 > 0) { "Dimension must be positive."}
     val dtype = DataType.of(T::class)
     val shape = intArrayOf(sizeD1)
     val data = initMemoryView<T>(sizeD1, dtype, init)
@@ -824,6 +824,9 @@ public inline fun <reified T : Number> Multik.d1array(sizeD1: Int, noinline init
 public inline fun <reified T : Number> Multik.d2array(sizeD1: Int, sizeD2: Int, noinline init: (Int) -> T): D2Array<T> {
     val dtype = DataType.of(T::class)
     val shape = intArrayOf(sizeD1, sizeD2)
+    for (i in shape.indices) {
+        require(shape[i] > 0) { "Dimension $i must be positive."}
+    }
     val data = initMemoryView<T>(sizeD1 * sizeD2, dtype, init)
     return D2Array<T>(data, shape = shape, dtype = dtype, dim = D2)
 }
@@ -843,6 +846,9 @@ public inline fun <reified T : Number> Multik.d3array(
 ): D3Array<T> {
     val dtype = DataType.of(T::class)
     val shape = intArrayOf(sizeD1, sizeD2, sizeD3)
+    for (i in shape.indices) {
+        require(shape[i] > 0) { "Dimension $i must be positive."}
+    }
     val data = initMemoryView<T>(sizeD1 * sizeD2 * sizeD3, dtype, init)
     return D3Array<T>(data, shape = shape, dtype = dtype, dim = D3)
 }
@@ -863,6 +869,9 @@ public inline fun <reified T : Number> Multik.d4array(
 ): D4Array<T> {
     val dtype = DataType.of(T::class)
     val shape = intArrayOf(sizeD1, sizeD2, sizeD3, sizeD4)
+    for (i in shape.indices) {
+        require(shape[i] > 0) { "Dimension $i must be positive."}
+    }
     val data = initMemoryView<T>(sizeD1 * sizeD2 * sizeD3 * sizeD4, dtype, init)
     return D4Array<T>(data, shape = shape, dtype = dtype, dim = D4)
 }
@@ -885,6 +894,9 @@ public inline fun <reified T : Number> Multik.dnarray(
 ): Ndarray<T, DN> {
     val dtype = DataType.of(T::class)
     val shape = intArrayOf(sizeD1, sizeD2, sizeD3, sizeD4) + dims
+    for (i in shape.indices) {
+        require(shape[i] > 0) { "Dimension $i must be positive."}
+    }
     val size = shape.fold(1, Int::times)
     val data = initMemoryView<T>(size, dtype, init)
     return Ndarray<T, DN>(data, shape = shape, dtype = dtype, dim = dimensionOf(shape.size))
@@ -899,14 +911,19 @@ public inline fun <reified T : Number> Multik.dnarray(
  * @return [Ndarray] of [DN] dimension.
  * @sample samples.Ndarray.dnarrayWithDims
  */
-public inline fun <reified T : Number, D : Dimension> Multik.dnarray(
+public inline fun <reified T : Number, reified D : Dimension> Multik.dnarray(
     dims: IntArray,
     noinline init: (Int) -> T
 ): Ndarray<T, D> {
+    for (i in dims.indices) {
+        require(dims[i] > 0) { "Dimension $i must be positive."}
+    }
+    val dim = dimensionClassOf<D>(dims.size)
+    requireDimension(dim, dims.size)
     val dtype = DataType.of(T::class)
     val size = dims.fold(1, Int::times)
     val data = initMemoryView<T>(size, dtype, init)
-    return Ndarray<T, D>(data, shape = dims, dtype = dtype, dim = dimensionOf(dims.size))
+    return Ndarray<T, D>(data, shape = dims, dtype = dtype, dim = dim)
 }
 
 /**
