@@ -46,13 +46,36 @@ public class WritableView<T : Number>(private val base: MutableMultiArray<T, DN>
     public companion object
 }
 
-public fun <T : Number, D : Dimension, M : Dimension> MutableMultiArray<T, D>.mutableView(
+public inline fun <T : Number, D : Dimension, reified M : Dimension> MultiArray<T, D>.writableView(
     index: Int, axis: Int = 0
-): MutableMultiArray<T, M> = this.view<T, D, M>(index, axis) as MutableMultiArray<T, M>
+): MutableMultiArray<T, M> {
+    checkBounds(index in 0 until shape[axis], index, axis, axis)
+    return Ndarray<T, M>(
+        data, offset + strides[axis] * index, shape.remove(axis),
+        strides.remove(axis), this.dtype, dimensionClassOf<M>(this.dim.d - 1)
+    )
+}
 
-public fun <T : Number, D : Dimension, M : Dimension> MutableMultiArray<T, D>.mutableView(
+public inline fun <T : Number, D : Dimension, reified M : Dimension> MultiArray<T, D>.writableView(
+    indices: IntArray, axes: IntArray
+): MutableMultiArray<T, M> {
+    for ((ind, axis) in indices.zip(axes))
+        checkBounds(ind in 0 until this.shape[axis], ind, axis, this.shape[axis])
+    val newShape = shape.filterIndexed { i, _ -> !axes.contains(i) }.toIntArray()
+    val newStrides = strides.filterIndexed { i, _ -> !axes.contains(i) }.toIntArray()
+    var newOffset = offset
+    for (i in axes.indices)
+        newOffset += strides[axes[i]] * indices[i]
+    return Ndarray<T, M>(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
+}
+
+public inline fun <T : Number, D : Dimension, reified M : Dimension> MutableMultiArray<T, D>.mutableView(
+    index: Int, axis: Int = 0
+): MutableMultiArray<T, M> = this.writableView<T, D, M>(index, axis)
+
+public inline fun <T : Number, D : Dimension, reified M : Dimension> MutableMultiArray<T, D>.mutableView(
     index: IntArray, axes: IntArray
-): MutableMultiArray<T, M> = this.view<T, D, M>(index, axes) as MutableMultiArray<T, M>
+): MutableMultiArray<T, M> = this.writableView<T, D, M>(index, axes)
 
 @JvmName("mutableViewD2")
 public fun <T : Number> MutableMultiArray<T, D2>.mutableView(index: Int, axis: Int = 0): MutableMultiArray<T, D1> =
@@ -126,6 +149,7 @@ public operator fun <T : Number> MutableMultiArray<T, D4>.get(
 
 @JvmName("set0")
 public operator fun <T : Number> MutableMultiArray<T, D1>.set(index: Int, value: T): Unit {
+    checkBounds(index in 0 until this.shape[0], index, 0, this.shape[0])
     data[offset + strides.first() * index] = value
 }
 
@@ -139,6 +163,8 @@ public operator fun <T : Number> MutableMultiArray<T, D2>.set(index: Int, value:
 
 @JvmName("set2")
 public operator fun <T : Number> MutableMultiArray<T, D2>.set(ind1: Int, ind2: Int, value: T): Unit {
+    checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
+    checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
     data[offset + strides[0] * ind1 + strides[1] * ind2] = value
 }
 
@@ -159,6 +185,9 @@ public operator fun <T : Number> MutableMultiArray<T, D3>.set(ind1: Int, ind2: I
 
 @JvmName("set5")
 public operator fun <T : Number> MutableMultiArray<T, D3>.set(ind1: Int, ind2: Int, ind3: Int, value: T): Unit {
+    checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
+    checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
+    checkBounds(ind3 in 0 until this.shape[2], ind3, 2, this.shape[2])
     data[offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3] = value
 }
 
@@ -189,6 +218,10 @@ public operator fun <T : Number> MutableMultiArray<T, D4>.set(
 public operator fun <T : Number> MutableMultiArray<T, D4>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, value: T
 ): Unit {
+    checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
+    checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
+    checkBounds(ind3 in 0 until this.shape[2], ind3, 2, this.shape[2])
+    checkBounds(ind4 in 0 until this.shape[3], ind4, 3, this.shape[3])
     data[offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3 + strides[3] * ind4] = value
 }
 
@@ -200,5 +233,7 @@ public operator fun <T : Number> MutableMultiArray<T, DN>.set(vararg index: Int,
 @JvmName("set11")
 public operator fun <T : Number> MutableMultiArray<T, DN>.set(index: IntArray, value: T): Unit {
     check(index.size == dim.d) { "number of indices doesn't match dimension: ${index.size} != ${dim.d}" }
+    for (i in index.indices)
+        checkBounds(index[i] in 0 until this.shape[i], index[i], i, this.shape[i])
     data[strides.foldIndexed(offset) { i, acc, stride -> acc + index[i] * stride }] = value
 }
