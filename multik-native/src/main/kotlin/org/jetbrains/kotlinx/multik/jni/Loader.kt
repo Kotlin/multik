@@ -33,7 +33,6 @@ internal class Loader(private val name: String) {
 
     private val nativeNameLib = buildString {
         append(name)
-        //TODO (Delete os, add arch)
 //        append("$os.")
 //        append(arch)
     }
@@ -41,17 +40,19 @@ internal class Loader(private val name: String) {
     fun load(): Boolean {
         val resource = System.mapLibraryName(nativeNameLib)
         val inputStream = Loader::class.java.getResourceAsStream("/$resource")
+        var libraryPath: Path? = null
         return try {
             if (inputStream != null) {
-                val libraryPath = libraryDir.resolve(resource)
-                Files.copy(inputStream, libraryPath, StandardCopyOption.REPLACE_EXISTING)
+                libraryPath = libraryDir.resolve(resource)
+                Files.copy(inputStream, libraryPath!!, StandardCopyOption.REPLACE_EXISTING)
                 System.load(libraryPath.toString())
             } else {
                 System.loadLibrary(nativeNameLib)
             }
             true
         } catch (e: Throwable) {
-            false
+            libraryPath?.toFile()?.delete()
+            throw e
         }
     }
 }
