@@ -8,8 +8,6 @@ import org.jetbrains.kotlinx.multik.api.LinAlg
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import org.jetbrains.kotlinx.multik.ndarray.operations.plus
-import org.jetbrains.kotlinx.multik.ndarray.operations.times
 import kotlin.math.pow
 
 public object JvmLinAlg : LinAlg {
@@ -336,10 +334,91 @@ public object JvmLinAlg : LinAlg {
 
     override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
         require(a.size == b.size) { "Sizes a and b don't match: a.size(${a.size}) != b.size(${b.size})"}
-        var ret: Number = zeroNumber(a.dtype)
-        for (i in a.indices) {
-            ret += a[i] * b[i]
+        return when (a.dtype) {
+            DataType.FloatDataType -> {
+                dotVecToVec(a.data.getFloatArray(), a.offset, a.strides[0], b.data.getFloatArray(), b.offset, b.strides[0], a.size)
+            }
+            DataType.IntDataType -> {
+                dotVecToVec(a.data.getIntArray(), a.offset, a.strides[0], b.data.getIntArray(), b.offset, b.strides[0], a.size)
+            }
+            DataType.DoubleDataType -> {
+                dotVecToVec(a.data.getDoubleArray(), a.offset, a.strides[0], b.data.getDoubleArray(), b.offset, b.strides[0], a.size)
+            }
+            DataType.LongDataType -> {
+                dotVecToVec(a.data.getLongArray(), a.offset, a.strides[0], b.data.getLongArray(), b.offset, b.strides[0], a.size)
+            }
+            DataType.ShortDataType -> {
+                dotVecToVec(a.data.getShortArray(), a.offset, a.strides[0], b.data.getShortArray(), b.offset, b.strides[0], a.size)
+            }
+            DataType.ByteDataType -> {
+                dotVecToVec(a.data.getByteArray(), a.offset, a.strides[0], b.data.getByteArray(), b.offset, b.strides[0], a.size)
+            }
+        } as T
+    }
+
+    private fun dotVecToVec(
+        left: FloatArray, leftOffset: Int, lStride: Int,
+        right: FloatArray, rightOffset: Int, rStride: Int,
+        n: Int): Float {
+        var ret = 0f
+        for (i in 0 until n) {
+            ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
         }
-        return ret as T
+        return ret
+    }
+
+    private fun dotVecToVec(
+        left: IntArray, leftOffset: Int, lStride: Int,
+        right: IntArray, rightOffset: Int, rStride: Int,
+        n: Int): Int {
+        var ret = 0
+        for (i in 0 until n) {
+            ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
+        }
+        return ret
+    }
+
+    private fun dotVecToVec(
+        left: DoubleArray, leftOffset: Int, lStride: Int,
+        right: DoubleArray, rightOffset: Int, rStride: Int,
+        n: Int): Double {
+        var ret = 0.0
+        for (i in 0 until n) {
+            ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
+        }
+        return ret
+    }
+
+    private fun dotVecToVec(
+        left: LongArray, leftOffset: Int, lStride: Int,
+        right: LongArray, rightOffset: Int, rStride: Int,
+        n: Int): Long {
+        var ret = 0L
+        for (i in 0 until n) {
+            ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
+        }
+        return ret
+    }
+
+    private fun dotVecToVec(
+        left: ShortArray, leftOffset: Int, lStride: Int,
+        right: ShortArray, rightOffset: Int, rStride: Int,
+        n: Int): Short {
+        var ret = 0
+        for (i in 0 until n) {
+            ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
+        }
+        return ret.toShort()
+    }
+
+    private fun dotVecToVec(
+        left: ByteArray, leftOffset: Int, lStride: Int,
+        right: ByteArray, rightOffset: Int, rStride: Int,
+        n: Int): Byte {
+        var ret = 0
+        for (i in 0 until n) {
+            ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
+        }
+        return ret.toByte()
     }
 }
