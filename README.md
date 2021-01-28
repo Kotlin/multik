@@ -42,7 +42,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx.multik:multik-default:$multik_version")
 }
 ```
-The latest KotlinDL version is ![bintray](https://img.shields.io/bintray/v/kotlin/kotlin-datascience/multik?style=plastic).
+The latest Multik version is ![bintray](https://img.shields.io/bintray/v/kotlin/kotlin-datascience/multik?style=plastic).
 
 ## Quickstart
 
