@@ -23,7 +23,7 @@ model {
     }
 
     toolChains {
-        visualCpp(VisualCpp)
+//        visualCpp(VisualCpp)
         gcc(Gcc)
         clang(Clang)
     }
@@ -49,9 +49,10 @@ model {
 //                    linker.args("-L$buildDir/openblas/lib/", "-lopenblas")
                     linker.args("$buildDir/openblas/lib/libopenblas.a")
                 } else if (os.windows) {
-                    cppCompiler.args("/I$javaHome/include", "/I$javaHome/include/win32")
-                    cppCompiler.args("/I$buildDir/openblas/include/")
-//                    linker.args("/L$buildDir/openblas/lib/", "-lopenblas")
+                    cppCompiler.args("-I$javaHome/include", "-I$javaHome/include/win32")
+                    cppCompiler.args("-I$buildDir/openblas/include/")
+                    linker.args("-static-libgcc", "-static-libstdc++")
+                    linker.args("-static", "-lpthread")
                     linker.args("$buildDir/openblas/lib/libopenblas.a")
                 }
 
@@ -72,6 +73,9 @@ model {
                 }
                 if (toolChain in Clang) {
 //                TODO("Which flags?")
+                    cppCompiler.args('-std=c++14', '-O3', '-fno-exceptions', '-ffast-math')
+                }
+                if (toolChain in VisualCpp) {
                     cppCompiler.args('-std=c++14', '-O3', '-fno-exceptions', '-ffast-math')
                 }
             }

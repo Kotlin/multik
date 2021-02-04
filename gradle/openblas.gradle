@@ -4,8 +4,8 @@
 
 
 ext {
-    openblasBranch = 'v0.3.12'
-    openblasRoot = '0.3.12'
+    openblasBranch = 'v0.3.13'
+    openblasRoot = '0.3.13'
 }
 
 buildscript {
@@ -20,37 +20,52 @@ buildscript {
 
 apply plugin: de.undercouch.gradle.tasks.download.DownloadTaskPlugin
 
+static boolean isWindows() {
+    return System.getProperty('os.name').toLowerCase().contains('windows')
+}
+
 
 task downloadOpenBlas(type: de.undercouch.gradle.tasks.download.Download) {
-    src "https://github.com/xianyi/OpenBLAS/archive/${openblasBranch}.zip"
+    if (isWindows()) {
+        src "https://github.com/xianyi/OpenBLAS/archive/${openblasBranch}.zip"
+    } else {
+        src "https://github.com/xianyi/OpenBLAS/releases/download/${openblasBranch}/OpenBLAS-${openblasRoot}-x64.zip"
+    }
+//    src (isWindows()) ? "https://github.com/xianyi/OpenBLAS/archive/${openblasBranch}.zip" : "https://github.com/xianyi/OpenBLAS/releases/download/${openblasBranch}/OpenBLAS-${openblasRoot}-x64.zip"
     dest new File(buildDir, "openblas.${openblasBranch}.zip")
     overwrite false
 }
 
 task unzipOpenBlas(dependsOn: downloadOpenBlas, type: Copy) {
     from zipTree(downloadOpenBlas.dest)
-    into buildDir
-    outputs.dir new File(buildDir as File, "openblas-$openblasRoot")
+    if (isWindows()) {
+        into buildDir
+    } else {
+        outputs.dir new File(buildDir as File, "openblas-$openblasRoot")
+        into "$buildDir/openblas-$openblasRoot"
+    }
 }
 
 def nullOutputStream = new OutputStream() {
     @Override
-    public void write(int b) {}
+    void write(int b) {}
 }
 
 task installOpenBlas(dependsOn: unzipOpenBlas) {
-    def wrkDirOpenBlas = "$buildDir/OpenBLAS-${openblasRoot}"
-    outputs.dir new File(buildDir, 'openblas')
-    doLast {
-        exec {
-            workingDir wrkDirOpenBlas
-            standardOutput = nullOutputStream
-            commandLine("make")
-        }
-        exec {
-            workingDir wrkDirOpenBlas
-            standardOutput = nullOutputStream
-            commandLine("make", "install", "PREFIX=$buildDir/openblas")
+    if (!isWindows()) {
+        def wrkDirOpenBlas = "$buildDir/OpenBLAS-${openblasRoot}"
+        outputs.dir new File(buildDir, 'openblas')
+        doLast {
+            exec {
+                workingDir wrkDirOpenBlas
+                standardOutput = nullOutputStream
+                commandLine("make")
+            }
+            exec {
+                workingDir wrkDirOpenBlas
+                standardOutput = nullOutputStream
+                commandLine("make", "install", "PREFIX=$buildDir/openblas")
+            }
         }
     }
 }
