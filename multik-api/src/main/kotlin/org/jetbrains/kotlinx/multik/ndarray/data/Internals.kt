@@ -79,6 +79,7 @@ internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::
 //TODO(create module utils)
 /*internal*/ public operator fun <T : Number> Number.compareTo(other: T): Int = (this - other).toInt()
 
+@PublishedApi
 internal fun IntArray.remove(pos: Int): IntArray = when (pos) {
     0 -> sliceArray(1..lastIndex)
     lastIndex -> sliceArray(0 until lastIndex)

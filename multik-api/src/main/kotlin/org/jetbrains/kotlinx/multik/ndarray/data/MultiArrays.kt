@@ -114,8 +114,7 @@ public class ReadableView<T : Number>(private val base: MultiArray<T, DN>) /*: B
 public fun <T : Number, D : Dimension, M : Dimension> MultiArray<T, D>.view(
     index: Int, axis: Int = 0
 ): MultiArray<T, M> {
-    //todo negative?
-    if (index >= shape[axis]) throw ArrayIndexOutOfBoundsException("Index $index out of bounds shape dimension ${shape[axis]}")
+    checkBounds(index in 0 until shape[axis], index, axis, axis)
     return NDArray<T, M>(
         data, offset + strides[axis] * index, shape.remove(axis),
         strides.remove(axis), this.dtype, dimensionOf(this.dim.d - 1)
@@ -123,13 +122,15 @@ public fun <T : Number, D : Dimension, M : Dimension> MultiArray<T, D>.view(
 }
 
 public fun <T : Number, D : Dimension, M : Dimension> MultiArray<T, D>.view(
-    index: IntArray, axes: IntArray
+    indices: IntArray, axes: IntArray
 ): MultiArray<T, M> {
+    for ((ind, axis) in indices.zip(axes))
+        checkBounds(ind in 0 until this.shape[axis], ind, axis, this.shape[axis])
     val newShape = shape.filterIndexed { i, _ -> !axes.contains(i) }.toIntArray()
     val newStrides = strides.filterIndexed { i, _ -> !axes.contains(i) }.toIntArray()
     var newOffset = offset
     for (i in axes.indices)
-        newOffset += strides[axes[i]] * index[i]
+        newOffset += strides[axes[i]] * indices[i]
     return NDArray<T, M>(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
 }
 
@@ -174,14 +175,20 @@ public val <T : Number> MultiArray<T, DN>.V: ReadableView<T>
 //____________________________________________________Get_______________________________________________________________
 
 @JvmName("get0")
-public operator fun <T : Number> MultiArray<T, D1>.get(index: Int): T = data[offset + strides.first() * index]
+public operator fun <T : Number> MultiArray<T, D1>.get(index: Int): T {
+    checkBounds(index in 0 until this.shape[0], index, 0, this.shape[0])
+    return data[offset + strides.first() * index]
+}
 
 @JvmName("get1")
 public operator fun <T : Number> MultiArray<T, D2>.get(index: Int): MultiArray<T, D1> = view(index, 0)
 
 @JvmName("get2")
-public operator fun <T : Number> MultiArray<T, D2>.get(ind1: Int, ind2: Int): T =
-    data[offset + strides[0] * ind1 + strides[1] * ind2]
+public operator fun <T : Number> MultiArray<T, D2>.get(ind1: Int, ind2: Int): T {
+    checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
+    checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
+    return data[offset + strides[0] * ind1 + strides[1] * ind2]
+}
 
 @JvmName("get3")
 public operator fun <T : Number> MultiArray<T, D3>.get(index: Int): MultiArray<T, D2> = view(index, 0)
@@ -191,8 +198,12 @@ public operator fun <T : Number> MultiArray<T, D3>.get(ind1: Int, ind2: Int): Mu
     view(ind1, ind2, 0, 1)
 
 @JvmName("get5")
-public operator fun <T : Number> MultiArray<T, D3>.get(ind1: Int, ind2: Int, ind3: Int): T =
-    data[offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3]
+public operator fun <T : Number> MultiArray<T, D3>.get(ind1: Int, ind2: Int, ind3: Int): T {
+    checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
+    checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
+    checkBounds(ind3 in 0 until this.shape[2], ind3, 2, this.shape[2])
+    return data[offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3]
+}
 
 @JvmName("get6")
 public operator fun <T : Number> MultiArray<T, D4>.get(index: Int): MultiArray<T, D3> = view(index, 0)
@@ -206,8 +217,13 @@ public operator fun <T : Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind
     view(ind1, ind2, ind3, 0, 1, 2)
 
 @JvmName("get9")
-public operator fun <T : Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int): T =
-    data[offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3 + strides[3] * ind4]
+public operator fun <T : Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int): T {
+    checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
+    checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
+    checkBounds(ind3 in 0 until this.shape[2], ind3, 2, this.shape[2])
+    checkBounds(ind4 in 0 until this.shape[3], ind4, 3, this.shape[3])
+    return data[offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3 + strides[3] * ind4]
+}
 
 @JvmName("get10")
 public operator fun <T : Number> MultiArray<T, DN>.get(vararg index: Int): T = this[index]
@@ -215,6 +231,8 @@ public operator fun <T : Number> MultiArray<T, DN>.get(vararg index: Int): T = t
 @JvmName("get11")
 public operator fun <T : Number> MultiArray<T, DN>.get(index: IntArray): T {
     check(index.size == dim.d) { "number of indices doesn't match dimension: ${index.size} != ${dim.d}" }
+    for (i in index.indices)
+        checkBounds(index[i] in 0 until this.shape[i], index[i], i, this.shape[i])
     return data[strides.foldIndexed(offset) { i, acc, stride -> acc + index[i] * stride }]
 }
 
@@ -456,8 +474,15 @@ public fun <T: Number> MultiArray<T, DN>.slice(map: Map<Int, Indexing>): MultiAr
 
 //________________________________________________asDimension___________________________________________________________
 
-public fun <T : Number, D : Dimension> MultiArray<T, D>.asNDArray(): NDArray<T, DN> {
+public fun <T : Number, D : Dimension> MultiArray<T, D>.asDNArray(): NDArray<T, DN> {
     if (this is NDArray<T, D>)
-        return this.asNDArray()
+        return this.asDNArray()
     else throw ClassCastException("Cannot cast MultiArray to NDArray of dimension n.")
+}
+
+
+public inline fun checkBounds(value: Boolean, index: Int, axis: Int, size: Int): Unit {
+    if (!value) {
+        throw IndexOutOfBoundsException("Index $index is out of bounds shape dimension $axis with size $size")
+    }
 }

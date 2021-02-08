@@ -643,7 +643,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.joinToString(
 public fun <T : Number, D : Dimension> MultiArray<T, D>.last(): T {
     if (isEmpty()) throw NoSuchElementException("NDArray is empty.")
     val index = IntArray(dim.d) { shape[it] - 1 }
-    return this.asNDArray()[index]
+    return this.asDNArray()[index]
 }
 
 
@@ -652,7 +652,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.last(): T {
  * @throws [NoSuchElementException] if no such element is found.
  */
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.last(predicate: (T) -> Boolean): T {
-    val ndarray = this.asNDArray()
+    val ndarray = this.asDNArray()
     for (i in this.multiIndices.reverse) {
         val element = ndarray[i]
         if (predicate(element)) return element
@@ -679,7 +679,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.lastIndexOf(element: T):
  * Returns the last element, or `null` if the list is empty.
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.lastOrNull(): T? {
-    return if (isEmpty()) null else this.asNDArray()[this.multiIndices.last]
+    return if (isEmpty()) null else this.asDNArray()[this.multiIndices.last]
 }
 
 /**
@@ -702,7 +702,7 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.lastOrNull(predic
 public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.map(transform: (T) -> R): NDArray<R, D> {
     val newDtype = DataType.of(R::class)
     val data = initMemoryView<R>(size, newDtype)
-    val op = this.asNDArray()
+    val op = this.asDNArray()
     var count = 0
     for (i in this.multiIndices)
         data[count++] = transform(op[i])

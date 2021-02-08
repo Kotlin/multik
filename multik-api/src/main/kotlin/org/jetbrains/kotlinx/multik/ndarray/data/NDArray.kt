@@ -22,13 +22,15 @@ public typealias D4Array<T> = NDArray<T, D4>
 public class NDArray<T : Number, D : Dimension> constructor(
     data: ImmutableMemoryView<T>,
     public override val offset: Int = 0,
-    //TODO (check empty?!)
-    //TODO (make immutable)
     public override val shape: IntArray,
     public override val strides: IntArray = computeStrides(shape),
     public override val dtype: DataType,
     public override val dim: D
 ) : MutableMultiArray<T, D> {
+
+    init {
+        check(shape.isNotEmpty()) { "Shape can't be empty."}
+    }
 
     public override val data: MemoryView<T> = data as MemoryView<T>
 
@@ -154,6 +156,9 @@ public class NDArray<T : Number, D : Dimension> constructor(
     }
 
     override fun transpose(vararg axes: Int): NDArray<T, D> {
+        require(axes.isEmpty() || axes.size == dim.d) { "All dimensions must be indicated." }
+        for (axis in axes) require(axis in 0 until dim.d) { "Dimension must be from 0 to ${dim.d}." }
+        require(axes.toSet().size == axes.size) { "The specified dimensions must be unique." }
         val newShape: IntArray
         val newStrides: IntArray
         if (axes.isEmpty()) {
@@ -242,7 +247,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
         else throw ClassCastException("Cannot cast NDArray of dimension ${this.dim.d} to NDArray of dimension 4.")
     }
 
-    public fun asNDArray(): NDArray<T, DN> {
+    public fun asDNArray(): NDArray<T, DN> {
         if (this.dim.d == -1) throw Exception("Array dimension is undefined")
         if (this.dim.d > 4) return this as NDArray<T, DN>
 
