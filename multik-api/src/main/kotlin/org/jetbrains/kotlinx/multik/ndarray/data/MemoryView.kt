@@ -95,6 +95,94 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
     public override fun getFloatArray(): FloatArray = throw UnsupportedOperationException()
 
     public override fun getDoubleArray(): DoubleArray = throw UnsupportedOperationException()
+
+    public operator fun plusAssign(other: MemoryView<T>): Unit {
+        when {
+            this is MemoryViewFloatArray && other is MemoryViewFloatArray -> this += other
+            this is MemoryViewIntArray && other is MemoryViewIntArray -> this += other
+            this is MemoryViewDoubleArray && other is MemoryViewDoubleArray -> this += other
+            this is MemoryViewLongArray && other is MemoryViewLongArray -> this += other
+            this is MemoryViewShortArray && other is MemoryViewShortArray -> this += other
+            this is MemoryViewByteArray && other is MemoryViewByteArray -> this += other
+        }
+    }
+
+    public open operator fun plusAssign(other: T): Unit {
+        when {
+            this is MemoryViewFloatArray && other is Float -> this += other
+            this is MemoryViewIntArray && other is Int -> this += other
+            this is MemoryViewDoubleArray && other is Double -> this += other
+            this is MemoryViewLongArray && other is Long -> this += other
+            this is MemoryViewShortArray && other is Short -> this += other
+            this is MemoryViewByteArray && other is Byte -> this += other
+        }
+    }
+
+    public operator fun minusAssign(other: MemoryView<T>): Unit {
+        when {
+            this is MemoryViewFloatArray && other is MemoryViewFloatArray -> this -= other
+            this is MemoryViewIntArray && other is MemoryViewIntArray -> this -= other
+            this is MemoryViewDoubleArray && other is MemoryViewDoubleArray -> this -= other
+            this is MemoryViewLongArray && other is MemoryViewLongArray -> this -= other
+            this is MemoryViewShortArray && other is MemoryViewShortArray -> this -= other
+            this is MemoryViewByteArray && other is MemoryViewByteArray -> this -= other
+        }
+    }
+
+    public open operator fun minusAssign(other: T): Unit {
+        when {
+            this is MemoryViewFloatArray && other is Float -> this -= other
+            this is MemoryViewIntArray && other is Int -> this -= other
+            this is MemoryViewDoubleArray && other is Double -> this -= other
+            this is MemoryViewLongArray && other is Long -> this -= other
+            this is MemoryViewShortArray && other is Short -> this -= other
+            this is MemoryViewByteArray && other is Byte -> this -= other
+        }
+    }
+
+    public operator fun timesAssign(other: MemoryView<T>): Unit {
+        when {
+            this is MemoryViewFloatArray && other is MemoryViewFloatArray -> this *= other
+            this is MemoryViewIntArray && other is MemoryViewIntArray -> this *= other
+            this is MemoryViewDoubleArray && other is MemoryViewDoubleArray -> this *= other
+            this is MemoryViewLongArray && other is MemoryViewLongArray -> this *= other
+            this is MemoryViewShortArray && other is MemoryViewShortArray -> this *= other
+            this is MemoryViewByteArray && other is MemoryViewByteArray -> this *= other
+        }
+    }
+
+    public open operator fun timesAssign(other: T): Unit {
+        when {
+            this is MemoryViewFloatArray && other is Float -> this *= other
+            this is MemoryViewIntArray && other is Int -> this *= other
+            this is MemoryViewDoubleArray && other is Double -> this *= other
+            this is MemoryViewLongArray && other is Long -> this *= other
+            this is MemoryViewShortArray && other is Short -> this *= other
+            this is MemoryViewByteArray && other is Byte -> this *= other
+        }
+    }
+
+    public operator fun divAssign(other: MemoryView<T>): Unit {
+        when {
+            this is MemoryViewFloatArray && other is MemoryViewFloatArray -> this /= other
+            this is MemoryViewIntArray && other is MemoryViewIntArray -> this /= other
+            this is MemoryViewDoubleArray && other is MemoryViewDoubleArray -> this /= other
+            this is MemoryViewLongArray && other is MemoryViewLongArray -> this /= other
+            this is MemoryViewShortArray && other is MemoryViewShortArray -> this /= other
+            this is MemoryViewByteArray && other is MemoryViewByteArray -> this /= other
+        }
+    }
+
+    public open operator fun divAssign(other: T): Unit {
+        when {
+            this is MemoryViewFloatArray && other is Float -> this /= other
+            this is MemoryViewIntArray && other is Int -> this /= other
+            this is MemoryViewDoubleArray && other is Double -> this /= other
+            this is MemoryViewLongArray && other is Long -> this /= other
+            this is MemoryViewShortArray && other is Short -> this /= other
+            this is MemoryViewByteArray && other is Byte -> this /= other
+        }
+    }
 }
 
 /**
@@ -133,6 +221,54 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
         (0 until size).fold(1) { acc, r ->
             31 * acc + data[r].hashCode()
         }
+
+    public operator fun plusAssign(other: MemoryViewByteArray): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] + other.data[i]).toByte()
+        }
+    }
+
+    public override operator fun plusAssign(other: Byte): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] + other).toByte()
+        }
+    }
+
+    public operator fun minusAssign(other: MemoryViewByteArray): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] - other.data[i]).toByte()
+        }
+    }
+
+    public override operator fun minusAssign(other: Byte): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] - other).toByte()
+        }
+    }
+
+    public operator fun timesAssign(other: MemoryViewByteArray): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] * other.data[i]).toByte()
+        }
+    }
+
+    public override operator fun timesAssign(other: Byte): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] * other).toByte()
+        }
+    }
+
+    public operator fun divAssign(other: MemoryViewByteArray): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] / other.data[i]).toByte()
+        }
+    }
+
+    public override operator fun divAssign(other: Byte): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] / other).toByte()
+        }
+    }
 }
 
 /**
@@ -171,6 +307,54 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
         (0 until size).fold(1) { acc, r ->
             31 * acc + data[r].hashCode()
         }
+
+    public operator fun plusAssign(other: MemoryViewShortArray): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] + other.data[i]).toShort()
+        }
+    }
+
+    public override operator fun plusAssign(other: Short): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] + other).toShort()
+        }
+    }
+
+    public operator fun minusAssign(other: MemoryViewShortArray): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] - other.data[i]).toShort()
+        }
+    }
+
+    public override operator fun minusAssign(other: Short): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] - other).toShort()
+        }
+    }
+
+    public operator fun timesAssign(other: MemoryViewShortArray): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] * other.data[i]).toShort()
+        }
+    }
+
+    public override operator fun timesAssign(other: Short): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] * other).toShort()
+        }
+    }
+
+    public operator fun divAssign(other: MemoryViewShortArray): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] / other.data[i]).toShort()
+        }
+    }
+
+    public override operator fun divAssign(other: Short): Unit {
+        for (i in this.indices) {
+            this.data[i] = (this.data[i] / other).toShort()
+        }
+    }
 }
 
 /**
@@ -209,6 +393,54 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
         (0 until size).fold(1) { acc, r ->
             31 * acc + data[r].hashCode()
         }
+
+    public operator fun plusAssign(other: MemoryViewIntArray): Unit {
+        for (i in this.indices) {
+            this.data[i] += other.data[i]
+        }
+    }
+
+    public override operator fun plusAssign(other: Int): Unit {
+        for (i in this.indices) {
+            this.data[i] += other
+        }
+    }
+
+    public operator fun minusAssign(other: MemoryViewIntArray): Unit {
+        for (i in this.indices) {
+            this.data[i] -= other.data[i]
+        }
+    }
+
+    public override operator fun minusAssign(other: Int): Unit {
+        for (i in this.indices) {
+            this.data[i] -= other
+        }
+    }
+
+    public operator fun timesAssign(other: MemoryViewIntArray): Unit {
+        for (i in this.indices) {
+            this.data[i] *= other.data[i]
+        }
+    }
+
+    public override operator fun timesAssign(other: Int): Unit {
+        for (i in this.indices) {
+            this.data[i] *= other
+        }
+    }
+
+    public operator fun divAssign(other: MemoryViewIntArray): Unit {
+        for (i in this.indices) {
+            this.data[i] /= other.data[i]
+        }
+    }
+
+    public override operator fun divAssign(other: Int): Unit {
+        for (i in this.indices) {
+            this.data[i] += other
+        }
+    }
 }
 
 /**
@@ -247,6 +479,54 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
         (0 until size).fold(1) { acc, r ->
             31 * acc + data[r].hashCode()
         }
+
+    public operator fun plusAssign(other: MemoryViewLongArray): Unit {
+        for (i in this.indices) {
+            this.data[i] += other.data[i]
+        }
+    }
+
+    public override operator fun plusAssign(other: Long): Unit {
+        for (i in this.indices) {
+            this.data[i] += other
+        }
+    }
+
+    public operator fun minusAssign(other: MemoryViewLongArray): Unit {
+        for (i in this.indices) {
+            this.data[i] -= other.data[i]
+        }
+    }
+
+    public override operator fun minusAssign(other: Long): Unit {
+        for (i in this.indices) {
+            this.data[i] -= other
+        }
+    }
+
+    public operator fun timesAssign(other: MemoryViewLongArray): Unit {
+        for (i in this.indices) {
+            this.data[i] *= other.data[i]
+        }
+    }
+
+    public override operator fun timesAssign(other: Long): Unit {
+        for (i in this.indices) {
+            this.data[i] *= other
+        }
+    }
+
+    public operator fun divAssign(other: MemoryViewLongArray): Unit {
+        for (i in this.indices) {
+            this.data[i] /= other.data[i]
+        }
+    }
+
+    public override operator fun divAssign(other: Long): Unit {
+        for (i in this.indices) {
+            this.data[i] /= other
+        }
+    }
 }
 
 /**
@@ -285,6 +565,54 @@ public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Fl
         (0 until size).fold(1) { acc, r ->
             31 * acc + data[r].hashCode()
         }
+
+    public operator fun plusAssign(other: MemoryViewFloatArray): Unit {
+        for (i in this.indices) {
+            this.data[i] += other.data[i]
+        }
+    }
+
+    public override operator fun plusAssign(other: Float): Unit {
+        for (i in this.indices) {
+            this.data[i] += other
+        }
+    }
+
+    public operator fun minusAssign(other: MemoryViewFloatArray): Unit {
+        for (i in this.indices) {
+            this.data[i] -= other.data[i]
+        }
+    }
+
+    public override operator fun minusAssign(other: Float): Unit {
+        for (i in this.indices) {
+            this.data[i] -= other
+        }
+    }
+
+    public operator fun timesAssign(other: MemoryViewFloatArray): Unit {
+        for (i in this.indices) {
+            this.data[i] *= other.data[i]
+        }
+    }
+
+    public override operator fun timesAssign(other: Float): Unit {
+        for (i in this.indices) {
+            this.data[i] *= other
+        }
+    }
+
+    public operator fun divAssign(other: MemoryViewFloatArray): Unit {
+        for (i in this.indices) {
+            this.data[i] /= other.data[i]
+        }
+    }
+
+    public override operator fun divAssign(other: Float): Unit {
+        for (i in this.indices) {
+            this.data[i] /= other
+        }
+    }
 }
 
 /**
@@ -323,6 +651,54 @@ public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<
         (0 until size).fold(1) { acc, r ->
             31 * acc + data[r].hashCode()
         }
+
+    public operator fun plusAssign(other: MemoryViewDoubleArray) {
+        for (i in this.indices) {
+            this.data[i] += other.data[i]
+        }
+    }
+
+    public override operator fun plusAssign(other: Double): Unit {
+        for (i in this.indices) {
+            this.data[i] += other
+        }
+    }
+
+    public operator fun minusAssign(other: MemoryViewDoubleArray): Unit {
+        for (i in this.indices) {
+            this.data[i] -= other.data[i]
+        }
+    }
+
+    public override operator fun minusAssign(other: Double): Unit {
+        for (i in this.indices) {
+            this.data[i] -= other
+        }
+    }
+
+    public operator fun timesAssign(other: MemoryViewDoubleArray): Unit {
+        for (i in this.indices) {
+            this.data[i] *= other.data[i]
+        }
+    }
+
+    public override operator fun timesAssign(other: Double): Unit {
+        for (i in this.indices) {
+            this.data[i] *= other
+        }
+    }
+
+    public operator fun divAssign(other: MemoryViewDoubleArray): Unit {
+        for (i in this.indices) {
+            this.data[i] /= other.data[i]
+        }
+    }
+
+    public override operator fun divAssign(other: Double): Unit {
+        for (i in this.indices) {
+            this.data[i] /= other
+        }
+    }
 }
 
 /**
