@@ -19,6 +19,12 @@ task javadocJar(type: Jar) {
     from javadoc
 }
 
+nexusStaging {
+    username sonatypeUser
+    password sonatypePassword
+    repositoryDescription "kotlinx.multik staging repository, version: $version"
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
@@ -44,15 +50,13 @@ publishing {
 
 def signingKey = System.getenv("SIGN_KEY_ID")
 def signingKeyPassphrase = System.getenv("SIGN_KEY_PASSPHRASE")
+def signingPrivateKey = System.getenv("SIGN_KEY_PRIVATE")
+
 
 if (signingKey != null) {
-    project.ext["signing.gnupg.keyName"] = signingKey
-    project.ext["signing.gnupg.passphrase"] = signingKeyPassphrase
-
     apply plugin: 'signing'
-
     signing {
-        useGpgCmd()
+        useInMemoryPgpKeys(signingKey, signingPrivateKey, signingKeyPassphrase)
         sign publishing.publications
     }
 }

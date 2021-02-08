@@ -6,13 +6,15 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 
 plugins {
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm") version kotlinVersion
+
+    id("io.codearte.nexus-staging") version "0.22.0"
 }
 
 val kotlinVersion: String by System.getProperties()
@@ -21,7 +23,7 @@ val unpublished = listOf("multik", "examples", "benchmarks")
 
 allprojects {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
     group = "org.jetbrains.kotlinx.multik"
