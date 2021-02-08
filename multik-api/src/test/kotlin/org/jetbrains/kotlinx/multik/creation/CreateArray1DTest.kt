@@ -7,7 +7,7 @@ package org.jetbrains.kotlinx.multik.creation
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.ndarray.data.D1
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType
-import org.jetbrains.kotlinx.multik.ndarray.data.Ndarray
+import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 import org.jetbrains.kotlinx.multik.ndarray.operations.toList
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -106,14 +106,14 @@ class CreateArray1DTest {
 
     @Test
     fun createArrayFromCollectionTest() {
-        val a: Ndarray<Int, D1> = mk.ndarray(setOf(1, 2, 3), intArrayOf(3))
-        val b: Ndarray<Int, D1> = mk.ndarray(arrayListOf(1, 2, 3), intArrayOf(3))
+        val a: NDArray<Int, D1> = mk.ndarray(setOf(1, 2, 3), intArrayOf(3))
+        val b: NDArray<Int, D1> = mk.ndarray(arrayListOf(1, 2, 3), intArrayOf(3))
         assertEquals(a, b)
     }
 
     @Test
     fun createArrayFromIntRangeTest() {
-        val a = (0..9).toNdarray()
+        val a = (0..9).toNDArray()
         val b = mk.d1array(10) { it }
         assertEquals(a, b)
     }

@@ -8,11 +8,11 @@ package org.jetbrains.kotlinx.multik.ndarray.data
  *  A generic ndarray. Methods in this interface support only read-only access to the ndarray.
  *
  *  @property data [MemoryView].
- *  @property offset Offset from the start of a ndarray's data.
- *  @property shape [IntArray] of a ndarray dimensions.
- *  @property strides [IntArray] indices to step in each dimension when iterating a ndarray.
- *  @property size number of elements in a ndarray.
- *  @property dtype [DataType] of a ndarray's data.
+ *  @property offset Offset from the start of an ndarray's data.
+ *  @property shape [IntArray] of an ndarray dimensions.
+ *  @property strides [IntArray] indices to step in each dimension when iterating an ndarray.
+ *  @property size number of elements in an ndarray.
+ *  @property dtype [DataType] of an ndarray's data.
  *  @property dim [Dimension].
  *  @property consistent indicates whether the array data is homogeneous.
  *  @property indices indices for a one-dimensional ndarray.
@@ -55,7 +55,7 @@ public interface MultiArray<T : Number, D : Dimension> {
     /**
      * Returns new [MultiArray] which is a deep copy of the original ndarray.
      */
-    public fun deepCope(): MultiArray<T, D>
+    public fun deepCopy(): MultiArray<T, D>
 
     public operator fun iterator(): Iterator<T>
 
@@ -67,7 +67,7 @@ public interface MultiArray<T : Number, D : Dimension> {
 
     // Reshape
     /**
-     * Returns a ndarray with a new shape without changing data.
+     * Returns an ndarray with a new shape without changing data.
      */
     public fun reshape(dim1: Int): MultiArray<T, D1>
 
@@ -86,7 +86,7 @@ public interface MultiArray<T : Number, D : Dimension> {
 
     // TODO(maybe be done on one axis? like pytorch)
     /**
-     * Returns a ndarray with all axes removed equal to one.
+     * Returns an ndarray with all axes removed equal to one.
      */
     public fun squeeze(vararg axes: Int): MultiArray<T, DN>
 
@@ -105,7 +105,7 @@ public interface MultiArray<T : Number, D : Dimension> {
 
 //___________________________________________________ReadableView_______________________________________________________
 
-public class ReadableView<T : Number>(private val base: MultiArray<T, DN>) /*: BaseNdarray by base */ {
+public class ReadableView<T : Number>(private val base: MultiArray<T, DN>) /*: BaseNDArray by base */ {
     public operator fun get(vararg indices: Int): MultiArray<T, DN> {
         return indices.fold(this.base) { m, pos -> m.view(pos) }
     }
@@ -115,7 +115,7 @@ public fun <T : Number, D : Dimension, M : Dimension> MultiArray<T, D>.view(
     index: Int, axis: Int = 0
 ): MultiArray<T, M> {
     checkBounds(index in 0 until shape[axis], index, axis, axis)
-    return Ndarray<T, M>(
+    return NDArray<T, M>(
         data, offset + strides[axis] * index, shape.remove(axis),
         strides.remove(axis), this.dtype, dimensionOf(this.dim.d - 1)
     )
@@ -131,7 +131,7 @@ public fun <T : Number, D : Dimension, M : Dimension> MultiArray<T, D>.view(
     var newOffset = offset
     for (i in axes.indices)
         newOffset += strides[axes[i]] * indices[i]
-    return Ndarray<T, M>(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
+    return NDArray<T, M>(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
 }
 
 @JvmName("viewD2")
@@ -238,7 +238,7 @@ public operator fun <T : Number> MultiArray<T, DN>.get(index: IntArray): T {
 
 //_______________________________________________GetWithSlice___________________________________________________________
 
-public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(slice: Slice, axis: Int = 0): Ndarray<T, O> {
+public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(slice: Slice, axis: Int = 0): NDArray<T, O> {
     //TODO (require)
 //    require(range.step > 0) { "slicing step must be positive, but was ${range.step}" }
 //    require(axis in 0 until this.dim.d) { "axis out of bounds: $axis" }
@@ -258,11 +258,11 @@ public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(slice:
     val sliceShape = shape.clone().apply {
         this[axis] = (actualTo - slice.start + slice.step - 1) / slice.step
     }
-    return Ndarray<T, O>(data, offset + slice.start * strides[axis], sliceShape, sliceStrides, this.dtype, dimensionOf(sliceShape.size))
+    return NDArray<T, O>(data, offset + slice.start * strides[axis], sliceShape, sliceStrides, this.dtype, dimensionOf(sliceShape.size))
 }
 
 
-public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(indexing: Map<Int, Indexing>): Ndarray<T, O> {
+public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(indexing: Map<Int, Indexing>): NDArray<T, O> {
     var newOffset = offset
     var newShape: IntArray = shape.clone()
     var newStrides: IntArray = strides.clone()
@@ -300,7 +300,7 @@ public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(indexi
 
     newShape = newShape.removeAll(removeAxes)
     newStrides = newStrides.removeAll(removeAxes)
-    return Ndarray<T, O>(this.data, newOffset, newShape, newStrides, this.dtype, dimensionOf(newShape.size))
+    return NDArray<T, O>(this.data, newOffset, newShape, newStrides, this.dtype, dimensionOf(newShape.size))
 }
 
 @JvmName("get12")
@@ -474,10 +474,10 @@ public fun <T: Number> MultiArray<T, DN>.slice(map: Map<Int, Indexing>): MultiAr
 
 //________________________________________________asDimension___________________________________________________________
 
-public fun <T : Number, D : Dimension> MultiArray<T, D>.asDNArray(): Ndarray<T, DN> {
-    if (this is Ndarray<T, D>)
+public fun <T : Number, D : Dimension> MultiArray<T, D>.asDNArray(): NDArray<T, DN> {
+    if (this is NDArray<T, D>)
         return this.asDNArray()
-    else throw ClassCastException("Cannot cast MultiArray to Ndarray of dimension n.")
+    else throw ClassCastException("Cannot cast MultiArray to NDArray of dimension n.")
 }
 
 

@@ -29,90 +29,90 @@ public interface Statistics {
     /**
      * Returns the arithmetic mean of the [a] elements along the given [axis].
      */
-    public fun <T : Number, D : Dimension, O : Dimension> mean(a: MultiArray<T, D>, axis: Int): Ndarray<Double, O>
+    public fun <T : Number, D : Dimension, O : Dimension> mean(a: MultiArray<T, D>, axis: Int): NDArray<Double, O>
 
     /**
      * Returns the arithmetic mean of the two-dimensional ndarray [a] elements along the given [axis].
      */
-    public fun <T : Number> meanD2(a: MultiArray<T, D2>, axis: Int): Ndarray<Double, D1>
+    public fun <T : Number> meanD2(a: MultiArray<T, D2>, axis: Int): NDArray<Double, D1>
 
     /**
      * Returns the arithmetic mean of the three-dimensional ndarray [a] elements along the given [axis].
      */
-    public fun <T : Number> meanD3(a: MultiArray<T, D3>, axis: Int): Ndarray<Double, D2>
+    public fun <T : Number> meanD3(a: MultiArray<T, D3>, axis: Int): NDArray<Double, D2>
 
     /**
      * Returns the arithmetic mean of the four-dimensional ndarray [a] elements along the given [axis].
      */
-    public fun <T : Number> meanD4(a: MultiArray<T, D4>, axis: Int): Ndarray<Double, D3>
+    public fun <T : Number> meanD4(a: MultiArray<T, D4>, axis: Int): NDArray<Double, D3>
 
     /**
      * Returns the arithmetic mean of the n-dimensional ndarray [a] elements along the given [axis].
      */
-    public fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): Ndarray<Double, D4>
+    public fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, D4>
 }
 
 /**
  * Returns the absolute value of the given ndarray [a].
  */
 @JvmName("absByte")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Byte, D>): Ndarray<Byte, D> {
+public fun <D : Dimension> Statistics.abs(a: MultiArray<Byte, D>): NDArray<Byte, D> {
     val ret = initMemoryView<Byte>(a.size, a.dtype)
     var index = 0
     for (element in a) {
         ret[index++] = absByte(element)
     }
-    return Ndarray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
 }
 
 @JvmName("absShort")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Short, D>): Ndarray<Short, D> {
+public fun <D : Dimension> Statistics.abs(a: MultiArray<Short, D>): NDArray<Short, D> {
     val ret = initMemoryView<Short>(a.size, a.dtype)
     var index = 0
     for (element in a) {
         ret[index++] = absShort(element)
     }
-    return Ndarray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
 }
 
 @JvmName("absInt")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Int, D>): Ndarray<Int, D> {
+public fun <D : Dimension> Statistics.abs(a: MultiArray<Int, D>): NDArray<Int, D> {
     val ret = initMemoryView<Int>(a.size, a.dtype)
     var index = 0
     for (element in a) {
         ret[index++] = kotlin.math.abs(element)
     }
-    return Ndarray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
 }
 
 @JvmName("absLong")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Long, D>): Ndarray<Long, D> {
+public fun <D : Dimension> Statistics.abs(a: MultiArray<Long, D>): NDArray<Long, D> {
     val ret = initMemoryView<Long>(a.size, a.dtype)
     var index = 0
     for (element in a) {
         ret[index++] = kotlin.math.abs(element)
     }
-    return Ndarray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
 }
 
 @JvmName("absFloat")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Float, D>): Ndarray<Float, D> {
+public fun <D : Dimension> Statistics.abs(a: MultiArray<Float, D>): NDArray<Float, D> {
     val ret = initMemoryView<Float>(a.size, a.dtype)
     var index = 0
     for (element in a) {
         ret[index++] = kotlin.math.abs(element)
     }
-    return Ndarray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
 }
 
 @JvmName("absDouble")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Double, D>): Ndarray<Double, D> {
+public fun <D : Dimension> Statistics.abs(a: MultiArray<Double, D>): NDArray<Double, D> {
     val ret = initMemoryView<Double>(a.size, a.dtype)
     var index = 0
     for (element in a) {
         ret[index++] = kotlin.math.abs(element)
     }
-    return Ndarray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
 }
 
 private inline fun absByte(a: Byte): Byte = if (a < 0) (-a).toByte() else a

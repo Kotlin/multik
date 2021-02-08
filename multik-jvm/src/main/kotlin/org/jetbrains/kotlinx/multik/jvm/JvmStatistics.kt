@@ -40,8 +40,8 @@ public object JvmStatistics : Statistics {
         return ret.toDouble() / a.size
     }
 
-    override fun <T : Number, D : Dimension, O : Dimension> mean(a: MultiArray<T, D>, axis: Int): Ndarray<Double, O> {
-        require(a.dim.d > 1) { "Ndarray of dimension one, use the `mean` function without axis." }
+    override fun <T : Number, D : Dimension, O : Dimension> mean(a: MultiArray<T, D>, axis: Int): NDArray<Double, O> {
+        require(a.dim.d > 1) { "NDArray of dimension one, use the `mean` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
         val retData = initMemoryView<Double>(newShape.fold(1, Int::times), DataType.DoubleDataType)
@@ -59,16 +59,16 @@ public object JvmStatistics : Statistics {
             }
         }
 
-        return Ndarray<Double, O>(
+        return NDArray<Double, O>(
             retData, 0, newShape, dtype = DataType.DoubleDataType, dim = dimensionOf(newShape.size)
         ) / a.shape[axis].toDouble()
     }
 
-    override fun <T : Number> meanD2(a: MultiArray<T, D2>, axis: Int): Ndarray<Double, D1> = mean(a, axis)
+    override fun <T : Number> meanD2(a: MultiArray<T, D2>, axis: Int): NDArray<Double, D1> = mean(a, axis)
 
-    override fun <T : Number> meanD3(a: MultiArray<T, D3>, axis: Int): Ndarray<Double, D2> = mean(a, axis)
+    override fun <T : Number> meanD3(a: MultiArray<T, D3>, axis: Int): NDArray<Double, D2> = mean(a, axis)
 
-    override fun <T : Number> meanD4(a: MultiArray<T, D4>, axis: Int): Ndarray<Double, D3> = mean(a, axis)
+    override fun <T : Number> meanD4(a: MultiArray<T, D4>, axis: Int): NDArray<Double, D3> = mean(a, axis)
 
-    override fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): Ndarray<Double, D4> = mean(a, axis)
+    override fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, D4> = mean(a, axis)
 }

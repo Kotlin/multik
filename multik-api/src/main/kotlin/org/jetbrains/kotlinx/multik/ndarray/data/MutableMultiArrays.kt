@@ -12,7 +12,7 @@ public interface MutableMultiArray<T : Number, D : Dimension> : MultiArray<T, D>
 
     override fun clone(): MutableMultiArray<T, D>
 
-    override fun deepCope(): MutableMultiArray<T, D>
+    override fun deepCopy(): MutableMultiArray<T, D>
 
     // Reshape
 
@@ -50,7 +50,7 @@ public inline fun <T : Number, D : Dimension, reified M : Dimension> MultiArray<
     index: Int, axis: Int = 0
 ): MutableMultiArray<T, M> {
     checkBounds(index in 0 until shape[axis], index, axis, axis)
-    return Ndarray<T, M>(
+    return NDArray<T, M>(
         data, offset + strides[axis] * index, shape.remove(axis),
         strides.remove(axis), this.dtype, dimensionClassOf<M>(this.dim.d - 1)
     )
@@ -66,7 +66,7 @@ public inline fun <T : Number, D : Dimension, reified M : Dimension> MultiArray<
     var newOffset = offset
     for (i in axes.indices)
         newOffset += strides[axes[i]] * indices[i]
-    return Ndarray<T, M>(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
+    return NDArray<T, M>(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
 }
 
 public inline fun <T : Number, D : Dimension, reified M : Dimension> MutableMultiArray<T, D>.mutableView(

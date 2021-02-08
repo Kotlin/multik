@@ -160,14 +160,14 @@ mk.stat.median(b) // meadian
 #### Copying arrays
 ```kotlin
 val f = a.clone() // create a copy of the array and its data
-val h = b.deepCope() // create a copy of the array and copy the meaningful data
+val h = b.deepCopy() // create a copy of the array and copy the meaningful data
 ```
 
 #### Operations of Iterable
 ```kotlin
 c.filter { it < 3 } // select all elements less than 3
 b.map { (it * it).toInt() } // return squares
-c.groupNdarrayBy { it % 2 } // group elemetns by condition
+c.groupNDArrayBy { it % 2 } // group elements by condition
 c.sorted() // sort elements
 ```
 

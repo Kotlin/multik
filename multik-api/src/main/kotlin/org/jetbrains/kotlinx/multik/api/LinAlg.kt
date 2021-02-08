@@ -15,7 +15,7 @@ public interface LinAlg {
     /**
      * Raise a square matrix to power [n].
      */
-    public fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): Ndarray<T, D2>
+    public fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2>
 
     /**
      * Matrix ov vector norm. The default is Frobenius norm.
@@ -25,7 +25,7 @@ public interface LinAlg {
     /**
      * Dot products of two arrays. Matrix product.
      */
-    public fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): Ndarray<T, D>
+    public fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D>
 
     /**
      * Dot products of two one-dimensional arrays. Scalar product.

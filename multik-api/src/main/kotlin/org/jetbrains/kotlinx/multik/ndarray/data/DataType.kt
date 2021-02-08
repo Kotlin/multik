@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
 
 /**
- * Describes the type of elements stored in a [Ndarray].
+ * Describes the type of elements stored in a [NDArray].
  *
  * @param nativeCode an integer value of the type. Required to define the type in JNI.
  * @param itemSize size of one ndarray element in bytes.

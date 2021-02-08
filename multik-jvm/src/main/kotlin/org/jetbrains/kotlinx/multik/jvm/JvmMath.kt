@@ -27,8 +27,8 @@ public object JvmMath : Math {
         return arg
     }
 
-    override fun <T : Number, D : Dimension, O : Dimension> argMax(a: MultiArray<T, D>, axis: Int): Ndarray<Int, O> {
-        require(a.dim.d > 1) { "Ndarray of dimension one, use the `argMax` function without axis." }
+    override fun <T : Number, D : Dimension, O : Dimension> argMax(a: MultiArray<T, D>, axis: Int): NDArray<Int, O> {
+        require(a.dim.d > 1) { "NDArray of dimension one, use the `argMax` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
         val min = JvmMath.min(a)
@@ -52,16 +52,16 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return Ndarray<Int, O>(argMaxData, 0, newShape, dtype = DataType.IntDataType, dim = dimensionOf(newShape.size))
+        return NDArray<Int, O>(argMaxData, 0, newShape, dtype = DataType.IntDataType, dim = dimensionOf(newShape.size))
     }
 
-    override fun <T : Number> argMaxD2(a: MultiArray<T, D2>, axis: Int): Ndarray<Int, D1> = argMax(a, axis)
+    override fun <T : Number> argMaxD2(a: MultiArray<T, D2>, axis: Int): NDArray<Int, D1> = argMax(a, axis)
 
-    override fun <T : Number> argMaxD3(a: MultiArray<T, D3>, axis: Int): Ndarray<Int, D2> = argMax(a, axis)
+    override fun <T : Number> argMaxD3(a: MultiArray<T, D3>, axis: Int): NDArray<Int, D2> = argMax(a, axis)
 
-    override fun <T : Number> argMaxD4(a: MultiArray<T, D4>, axis: Int): Ndarray<Int, D3> = argMax(a, axis)
+    override fun <T : Number> argMaxD4(a: MultiArray<T, D4>, axis: Int): NDArray<Int, D3> = argMax(a, axis)
 
-    override fun <T : Number> argMaxDN(a: MultiArray<T, DN>, axis: Int): Ndarray<Int, D4> = argMax(a, axis)
+    override fun <T : Number> argMaxDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4> = argMax(a, axis)
 
     override fun <T : Number, D : Dimension> argMin(a: MultiArray<T, D>): Int {
         var arg = 0
@@ -77,8 +77,8 @@ public object JvmMath : Math {
         return arg
     }
 
-    override fun <T : Number, D : Dimension, O : Dimension> argMin(a: MultiArray<T, D>, axis: Int): Ndarray<Int, O> {
-        require(a.dim.d > 1) { "Ndarray of dimension one, use the `argMin` function without axis." }
+    override fun <T : Number, D : Dimension, O : Dimension> argMin(a: MultiArray<T, D>, axis: Int): NDArray<Int, O> {
+        require(a.dim.d > 1) { "NDArray of dimension one, use the `argMin` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
         val max = JvmMath.max(a)
@@ -102,30 +102,30 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return Ndarray<Int, O>(argMinData, 0, newShape, dtype = DataType.IntDataType, dim = dimensionOf(newShape.size))
+        return NDArray<Int, O>(argMinData, 0, newShape, dtype = DataType.IntDataType, dim = dimensionOf(newShape.size))
     }
 
-    override fun <T : Number> argMinD2(a: MultiArray<T, D2>, axis: Int): Ndarray<Int, D1> = argMin(a, axis)
+    override fun <T : Number> argMinD2(a: MultiArray<T, D2>, axis: Int): NDArray<Int, D1> = argMin(a, axis)
 
-    override fun <T : Number> argMinD3(a: MultiArray<T, D3>, axis: Int): Ndarray<Int, D2> = argMin(a, axis)
+    override fun <T : Number> argMinD3(a: MultiArray<T, D3>, axis: Int): NDArray<Int, D2> = argMin(a, axis)
 
-    override fun <T : Number> argMinD4(a: MultiArray<T, D4>, axis: Int): Ndarray<Int, D3> = argMin(a, axis)
+    override fun <T : Number> argMinD4(a: MultiArray<T, D4>, axis: Int): NDArray<Int, D3> = argMin(a, axis)
 
-    override fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): Ndarray<Int, D4> = argMin(a, axis)
+    override fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4> = argMin(a, axis)
 
-    override fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): Ndarray<Double, D> {
+    override fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): NDArray<Double, D> {
         return mathOperation(a) { kotlin.math.exp(it) }
     }
 
-    override fun <T : Number, D : Dimension> log(a: MultiArray<T, D>): Ndarray<Double, D> {
+    override fun <T : Number, D : Dimension> log(a: MultiArray<T, D>): NDArray<Double, D> {
         return mathOperation(a) { ln(it) }
     }
 
-    override fun <T : Number, D : Dimension> sin(a: MultiArray<T, D>): Ndarray<Double, D> {
+    override fun <T : Number, D : Dimension> sin(a: MultiArray<T, D>): NDArray<Double, D> {
         return mathOperation(a) { kotlin.math.sin(it) }
     }
 
-    override fun <T : Number, D : Dimension> cos(a: MultiArray<T, D>): Ndarray<Double, D> {
+    override fun <T : Number, D : Dimension> cos(a: MultiArray<T, D>): NDArray<Double, D> {
         return mathOperation(a) { kotlin.math.cos(it) }
     }
 
@@ -135,8 +135,8 @@ public object JvmMath : Math {
         return max
     }
 
-    override fun <T : Number, D : Dimension, O : Dimension> max(a: MultiArray<T, D>, axis: Int): Ndarray<T, O> {
-        require(a.dim.d > 1) { "Ndarray of dimension one, use the `max` function without axis." }
+    override fun <T : Number, D : Dimension, O : Dimension> max(a: MultiArray<T, D>, axis: Int): NDArray<T, O> {
+        require(a.dim.d > 1) { "NDArray of dimension one, use the `max` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
         val min = JvmMath.min(a)
@@ -158,16 +158,16 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return Ndarray<T, O>(maxData, 0, newShape, dtype = a.dtype, dim = dimensionOf(newShape.size))
+        return NDArray<T, O>(maxData, 0, newShape, dtype = a.dtype, dim = dimensionOf(newShape.size))
     }
 
-    override fun <T : Number> maxD2(a: MultiArray<T, D2>, axis: Int): Ndarray<T, D1> = max(a, axis)
+    override fun <T : Number> maxD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = max(a, axis)
 
-    override fun <T : Number> maxD3(a: MultiArray<T, D3>, axis: Int): Ndarray<T, D2> = max(a, axis)
+    override fun <T : Number> maxD3(a: MultiArray<T, D3>, axis: Int): NDArray<T, D2> = max(a, axis)
 
-    override fun <T : Number> maxD4(a: MultiArray<T, D4>, axis: Int): Ndarray<T, D3> = max(a, axis)
+    override fun <T : Number> maxD4(a: MultiArray<T, D4>, axis: Int): NDArray<T, D3> = max(a, axis)
 
-    override fun <T : Number> maxDN(a: MultiArray<T, DN>, axis: Int): Ndarray<T, D4> = max(a, axis)
+    override fun <T : Number> maxDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> = max(a, axis)
 
     override fun <T : Number, D : Dimension> min(a: MultiArray<T, D>): T {
         var min = a.first()
@@ -175,8 +175,8 @@ public object JvmMath : Math {
         return min
     }
 
-    override fun <T : Number, D : Dimension, O : Dimension> min(a: MultiArray<T, D>, axis: Int): Ndarray<T, O> {
-        require(a.dim.d > 1) { "Ndarray of dimension one, use the `min` function without axis." }
+    override fun <T : Number, D : Dimension, O : Dimension> min(a: MultiArray<T, D>, axis: Int): NDArray<T, O> {
+        require(a.dim.d > 1) { "NDArray of dimension one, use the `min` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
         val max = JvmMath.max(a)
@@ -198,16 +198,16 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return Ndarray<T, O>(minData, 0, newShape, dtype = a.dtype, dim = dimensionOf(newShape.size))
+        return NDArray<T, O>(minData, 0, newShape, dtype = a.dtype, dim = dimensionOf(newShape.size))
     }
 
-    override fun <T : Number> minD2(a: MultiArray<T, D2>, axis: Int): Ndarray<T, D1> = min(a, axis)
+    override fun <T : Number> minD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = min(a, axis)
 
-    override fun <T : Number> minD3(a: MultiArray<T, D3>, axis: Int): Ndarray<T, D2> = min(a, axis)
+    override fun <T : Number> minD3(a: MultiArray<T, D3>, axis: Int): NDArray<T, D2> = min(a, axis)
 
-    override fun <T : Number> minD4(a: MultiArray<T, D4>, axis: Int): Ndarray<T, D3> = min(a, axis)
+    override fun <T : Number> minD4(a: MultiArray<T, D4>, axis: Int): NDArray<T, D3> = min(a, axis)
 
-    override fun <T : Number> minDN(a: MultiArray<T, DN>, axis: Int): Ndarray<T, D4> = min(a, axis)
+    override fun <T : Number> minDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> = min(a, axis)
 
     override fun <T : Number, D : Dimension> sum(a: MultiArray<T, D>): T {
         var accum = 0.0
@@ -221,11 +221,11 @@ public object JvmMath : Math {
         return accum.toPrimitiveType(a.dtype)
     }
 
-    override fun <T : Number, D : Dimension, O : Dimension> sum(a: MultiArray<T, D>, axis: Int): Ndarray<T, O> {
-        require(a.dim.d > 1) { "Ndarray of dimension one, use the `sum` function without axis." }
+    override fun <T : Number, D : Dimension, O : Dimension> sum(a: MultiArray<T, D>, axis: Int): NDArray<T, O> {
+        require(a.dim.d > 1) { "NDArray of dimension one, use the `sum` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
-        val ret: Ndarray<T, O> = mk.empty(newShape, a.dtype)
+        val ret: NDArray<T, O> = mk.empty(newShape, a.dtype)
         val indexMap: MutableMap<Int, Indexing> = mutableMapOf()
         for (i in a.shape.indices) {
             if (i == axis) continue
@@ -239,13 +239,13 @@ public object JvmMath : Math {
     }
 
     // todo: without create view
-    override fun <T : Number> sumD2(a: MultiArray<T, D2>, axis: Int): Ndarray<T, D1> = JvmMath.sum(a, axis)
+    override fun <T : Number> sumD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = JvmMath.sum(a, axis)
 
-    override fun <T : Number> sumD3(a: MultiArray<T, D3>, axis: Int): Ndarray<T, D2> = JvmMath.sum(a, axis)
+    override fun <T : Number> sumD3(a: MultiArray<T, D3>, axis: Int): NDArray<T, D2> = JvmMath.sum(a, axis)
 
-    override fun <T : Number> sumD4(a: MultiArray<T, D4>, axis: Int): Ndarray<T, D3> = JvmMath.sum(a, axis)
+    override fun <T : Number> sumD4(a: MultiArray<T, D4>, axis: Int): NDArray<T, D3> = JvmMath.sum(a, axis)
 
-    override fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): Ndarray<T, D4> = JvmMath.sum(a, axis)
+    override fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> = JvmMath.sum(a, axis)
 
     override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>): D1Array<T> {
         val ret = D1Array<Double>(
@@ -267,9 +267,9 @@ public object JvmMath : Math {
         return ret.asType<T>(a.dtype)
     }
 
-    override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>, axis: Int): Ndarray<T, D> {
+    override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>, axis: Int): NDArray<T, D> {
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
-        val ret: Ndarray<T, D> = (a as Ndarray<T, D>).deepCope()
+        val ret: NDArray<T, D> = (a as NDArray<T, D>).deepCopy()
         val indexMap: MutableMap<Int, Indexing> = mutableMapOf()
         for (i in a.shape.indices) {
             if (i == axis) continue
@@ -286,7 +286,7 @@ public object JvmMath : Math {
 
     private fun <T : Number, D : Dimension> mathOperation(
         a: MultiArray<T, D>, function: (Double) -> Double
-    ): Ndarray<Double, D> {
+    ): NDArray<Double, D> {
         val iter = a.iterator()
         val data = initMemoryView<Double>(a.size, DataType.DoubleDataType) {
             if (iter.hasNext())
@@ -294,7 +294,7 @@ public object JvmMath : Math {
             else
                 0.0
         }
-        return Ndarray<Double, D>(data, 0, a.shape, dtype = DataType.DoubleDataType, dim = a.dim)
+        return NDArray<Double, D>(data, 0, a.shape, dtype = DataType.DoubleDataType, dim = a.dim)
     }
 }
 
