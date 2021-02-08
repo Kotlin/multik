@@ -13,8 +13,6 @@ buildscript {
 plugins {
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm") version kotlinVersion
-
-    id("com.jfrog.bintray") version "1.8.5"
 }
 
 val kotlinVersion: String by System.getProperties()
@@ -22,7 +20,6 @@ val multikVersion: String by project
 val unpublished = listOf("multik", "examples", "benchmarks")
 
 allprojects {
-    apply(plugin = "maven-publish")
     repositories {
         jcenter()
     }

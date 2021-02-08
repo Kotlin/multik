@@ -4,9 +4,10 @@
 
 
 apply plugin: 'maven-publish'
-apply plugin: "com.jfrog.bintray"
+apply from: project.rootProject.file('gradle/maven-metadata.gradle')
 
-def repUrl = "https://github.com/devcrocod/multik"
+def sonatypeUser = System.getenv('SONATYPE_USER')
+def sonatypePassword = System.getenv('SONATYPE_PASSWORD')
 
 task sourcesJar(type: Jar) {
     classifier 'sources'
@@ -16,6 +17,7 @@ task sourcesJar(type: Jar) {
 publishing {
     publications {
         maven(MavenPublication) {
+            pom.withXml(configureMavenCentralMetadata)
             from components.java
             groupId project.group
             artifactId project.name
@@ -23,33 +25,28 @@ publishing {
             artifact sourcesJar { classifier "sources" }
         }
     }
-}
-
-if (hasProperty('bintray_user') && hasProperty('bintray_key')) {
-    bintray {
-        // property must be set in ~/.gradle/gradle.properties
-        user = bintray_user
-        key = bintray_key
-        publications = ['maven'] //When uploading configuration files
-        dryRun = false //Whether to run this as dry-run, without deploying
-        publish = true // If version should be auto published after an upload
-        pkg {
-            repo = 'kotlin-datascience'
-            name = rootProject.name
-            userOrg = 'kotlin'
-            vcsUrl = repUrl
-            websiteUrl = repUrl
-            issueTrackerUrl = "$repUrl/issues"
-            licenses = ['Apache-2.0']
-            publicDownloadNumbers = true
-
-            //Optional version descriptor
-            version {
-                name = project.version //Bintray logical version name
-                desc = '.'
-                released = new Date()
-                vcsTag = 'v' + project.version
+    repositories {
+        maven {
+            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+            credentials {
+                username = sonatypeUser
+                password = sonatypePassword
             }
         }
+    }
+}
+
+def signingKey = System.getenv("SIGN_KEY_ID")
+def signingKeyPassphrase = System.getenv("SIGN_KEY_PASSPHRASE")
+
+if (signingKey != null) {
+    project.ext["signing.gnupg.keyName"] = signingKey
+    project.ext["signing.gnupg.passphrase"] = signingKeyPassphrase
+
+    apply plugin: 'signing'
+
+    signing {
+        useGpgCmd()
+        sign publishing.puclications
     }
 }
