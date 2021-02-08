@@ -14,6 +14,11 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
+task javadocJar(type: Jar) {
+    classifier 'javadoc'
+    from javadoc
+}
+
 publishing {
     publications {
         maven(MavenPublication) {
@@ -23,6 +28,7 @@ publishing {
             artifactId project.name
             version project.version
             artifact sourcesJar { classifier "sources" }
+            artifact javadocJar { classifier "javadoc" }
         }
     }
     repositories {
@@ -47,6 +53,6 @@ if (signingKey != null) {
 
     signing {
         useGpgCmd()
-        sign publishing.puclications
+        sign publishing.publications
     }
 }
