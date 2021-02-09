@@ -58,7 +58,8 @@ task installOpenBlas(dependsOn: unzipOpenBlas) {
             exec {
                 workingDir wrkDirOpenBlas
                 standardOutput = nullOutputStream
-                commandLine("make")
+                commandLine("make", "clean")
+                commandLine("make", "DYNAMIC_ARCH=1", "NUM_THREADS=64")
             }
             exec {
                 workingDir wrkDirOpenBlas
