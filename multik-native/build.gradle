@@ -26,8 +26,8 @@ model {
 
     toolChains {
         gcc(Gcc) {
-            if (gcc != null) {
-                path("C:\\Tools\\msys2\\mingw64\\bin")
+            if (gccPath != null) {
+                path(gccPath)
             }
         }
         clang(Clang)
