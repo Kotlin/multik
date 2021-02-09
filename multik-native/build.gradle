@@ -15,6 +15,8 @@ dependencies {
     api project(":multik-api")
 }
 
+def gccPath = System.getenv("MinGW_x64_Bin_Path")
+
 model {
     platforms {
         linux { operatingSystem 'linux' }
@@ -23,8 +25,11 @@ model {
     }
 
     toolChains {
-//        visualCpp(VisualCpp)
-        gcc(Gcc)
+        gcc(Gcc) {
+            if (gcc != null) {
+                path("C:\\Tools\\msys2\\mingw64\\bin")
+            }
+        }
         clang(Clang)
     }
 
