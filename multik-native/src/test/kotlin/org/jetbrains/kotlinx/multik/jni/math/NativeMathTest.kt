@@ -4,8 +4,11 @@ import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.jni.Loader
 import org.jetbrains.kotlinx.multik.jni.NativeMath
+import org.jetbrains.kotlinx.multik.jni.roundDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.D2
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
+import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,26 +34,26 @@ class NativeMathTest {
 
     @Test
     fun expTest() {
-        val expected = mk.ndarray(mk[mk[298.8673439626328, 2.9446796774374633], mk[9136.200570869447, 34.813315827573724]])
-        assertEquals(expected, NativeMath.exp(ndarray))
+        val expected = mk.ndarray(mk[mk[298.87, 2.94], mk[9136.2, 34.81]])
+        assertEquals(expected, roundDouble(NativeMath.exp(ndarray)))
     }
 
     @Test
     fun logTest() {
-        val expected = mk.ndarray(mk[mk[1.7404661413782472, 0.07696108087255739], mk[2.2104697915378937, 1.2669475900552918]])
-        assertEquals(expected, NativeMath.log(ndarray))
+        val expected = mk.ndarray(mk[mk[1.74, 0.08], mk[2.21, 1.27]])
+        assertEquals(expected, roundDouble(NativeMath.log(ndarray)))
     }
 
     @Test
     fun sinTest() {
-        val expected = mk.ndarray(mk[mk[-0.5506857018064566, 0.8819578271121656], mk[0.300081485531831, -0.39714812352401446]])
-        assertEquals(expected, NativeMath.sin(ndarray))
+        val expected = mk.ndarray(mk[mk[-0.55, 0.88], mk[0.3, -0.4]])
+        assertEquals(expected, roundDouble(NativeMath.sin(ndarray)))
     }
 
     @Test
     fun cosTest() {
-        val expected = mk.ndarray(mk[mk[0.8347126798042128, 0.47132832632421673], mk[-0.9539135715781643, -0.9177545249037752]])
-        assertEquals(expected, NativeMath.cos(ndarray))
+        val expected = mk.ndarray(mk[mk[0.83, 0.47], mk[-0.95, -0.92]])
+        assertEquals(expected, roundDouble(NativeMath.cos(ndarray)))
     }
 
     @Test

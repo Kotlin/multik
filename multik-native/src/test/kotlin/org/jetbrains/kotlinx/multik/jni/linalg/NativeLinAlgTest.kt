@@ -4,6 +4,8 @@ import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.jni.Loader
 import org.jetbrains.kotlinx.multik.jni.NativeLinAlg
+import org.jetbrains.kotlinx.multik.jni.roundDouble
+import org.jetbrains.kotlinx.multik.jni.roundFloat
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -18,10 +20,10 @@ class NativeLinAlgTest {
     @Test
     fun `matrix-matrix dot test D`() {
         val expected = mk.ndarray(
-            mk[mk[1.0718999999999999, 0.6181, 0.46080000000000004, 0.48109999999999997],
-                    mk[0.8210999999999999, 0.7162, 0.79, 0.8199],
-                    mk[0.5287999999999999, 0.48339999999999994, 0.5342, 0.5082],
-                    mk[1.0353, 0.758, 0.7114, 0.6647]]
+            mk[mk[1.07, 0.62, 0.46, 0.48],
+                    mk[0.82, 0.72, 0.79, 0.82],
+                    mk[0.53, 0.48, 0.53, 0.51],
+                    mk[1.04, 0.76, 0.71, 0.66]]
         )
         val matrix1 = mk.ndarray(
             mk[mk[0.22, 0.9, 0.27],
@@ -36,16 +38,16 @@ class NativeLinAlgTest {
         )
 
         val actual = NativeLinAlg.dot(matrix1, matrix2)
-        assertEquals(expected, actual)
+        assertEquals(expected, roundDouble(actual))
     }
 
     @Test
     fun `matrix-matrix dot test F`() {
         val expected = mk.ndarray(
-            mk[mk[1.0719f, 0.6181f, 0.4608f, 0.4811f],
-                    mk[0.8211f, 0.7162f, 0.79f, 0.8199f],
-                    mk[0.52879995f, 0.48339996f, 0.5342f, 0.5082f],
-                    mk[1.0353f, 0.758f, 0.71140003f, 0.6647f]]
+            mk[mk[1.07f, 0.62f, 0.46f, 0.48f],
+                    mk[0.82f, 0.72f, 0.79f, 0.82f],
+                    mk[0.53f, 0.48f, 0.53f, 0.51f],
+                    mk[1.04f, 0.76f, 0.71f, 0.66f]]
         )
         val matrix1 = mk.ndarray(
             mk[mk[0.22f, 0.9f, 0.27f],
@@ -60,12 +62,12 @@ class NativeLinAlgTest {
         )
 
         val actual = NativeLinAlg.dot(matrix1, matrix2)
-        assertEquals(expected, actual)
+        assertEquals(expected, roundFloat(actual))
     }
 
     @Test
     fun `matrix-vector dot test D`() {
-        val expected = mk.ndarray(mk[0.8006, 0.663, 0.5771])
+        val expected = mk.ndarray(mk[0.80, 0.66, 0.58])
 
         val matrix = mk.ndarray(
             mk[mk[0.22, 0.9, 0.27],
@@ -75,12 +77,12 @@ class NativeLinAlgTest {
         val vector = mk.ndarray(mk[0.08, 0.63, 0.8])
 
         val actual = NativeLinAlg.dot(matrix, vector)
-        assertEquals(expected, actual)
+        assertEquals(expected, roundDouble(actual))
     }
 
     @Test
     fun `matrix-vector dot test F`() {
-        val expected = mk.ndarray(mk[0.8006f, 0.663f, 0.5771f])
+        val expected = mk.ndarray(mk[0.80f, 0.66f, 0.58f])
 
         val matrix = mk.ndarray(
             mk[mk[0.22f, 0.9f, 0.27f],
@@ -90,6 +92,6 @@ class NativeLinAlgTest {
         val vector = mk.ndarray(mk[0.08f, 0.63f, 0.8f])
 
         val actual = NativeLinAlg.dot(matrix, vector)
-        assertEquals(expected, actual)
+        assertEquals(expected, roundFloat(actual))
     }
 }
