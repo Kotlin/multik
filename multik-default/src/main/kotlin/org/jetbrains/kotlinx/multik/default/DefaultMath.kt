@@ -5,11 +5,16 @@
 package org.jetbrains.kotlinx.multik.default
 
 import org.jetbrains.kotlinx.multik.api.Math
+import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.jni.NativeMath
 import org.jetbrains.kotlinx.multik.jvm.JvmMath
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object DefaultMath : Math {
+    init {
+        NativeEngine
+    }
+
     override fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int = if (a.size <= 100) {
         JvmMath.argMax(a)
     } else {

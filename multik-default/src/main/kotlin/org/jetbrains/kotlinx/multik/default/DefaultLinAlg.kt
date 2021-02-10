@@ -5,11 +5,16 @@
 package org.jetbrains.kotlinx.multik.default
 
 import org.jetbrains.kotlinx.multik.api.LinAlg
+import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.jni.NativeLinAlg
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object DefaultLinAlg : LinAlg {
+    init {
+        NativeEngine
+    }
+
     override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> {
         return JvmLinAlg.pow(mat, n)
     }

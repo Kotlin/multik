@@ -5,10 +5,15 @@
 package org.jetbrains.kotlinx.multik.default
 
 import org.jetbrains.kotlinx.multik.api.Statistics
+import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.jvm.JvmStatistics
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object DefaultStatistics : Statistics {
+    init {
+        NativeEngine
+    }
+
     override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? = JvmStatistics.median(a)
 
     override fun <T : Number, D : Dimension> average(a: MultiArray<T, D>, weights: MultiArray<T, D>?): Double =
