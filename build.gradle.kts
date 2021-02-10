@@ -26,12 +26,8 @@ allprojects {
         mavenCentral()
     }
 
-    group = "org.jetbrains.kotlinx.multik"
-    version = when {
-        hasProperty("build_counter") -> { "$multikVersion-dev-${property("build_counter")}" }
-        hasProperty("release") -> { multikVersion }
-        else -> { "$multikVersion-dev" }
-    }
+    group = "org.jetbrains.kotlinx"
+    version = multikVersion
 
     tasks.withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"

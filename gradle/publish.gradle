@@ -22,6 +22,7 @@ task javadocJar(type: Jar) {
 nexusStaging {
     username sonatypeUser
     password sonatypePassword
+    packageGroup project.group.toString()
     repositoryDescription "kotlinx.multik staging repository, version: $version"
 }
 
