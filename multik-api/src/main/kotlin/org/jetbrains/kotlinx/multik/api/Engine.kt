@@ -39,14 +39,10 @@ public abstract class Engine {
             }
         }
 
-        if (engines.isEmpty()) {
-            throw EngineMultikException("The map of engines is empty.")
-        }
-
-        defaultEngine = if (engines.containsKey(DefaultEngineType)) {
-            DefaultEngineType
-        } else {
-            engines.iterator().next().key
+        defaultEngine = when {
+            engines.containsKey(DefaultEngineType) -> DefaultEngineType
+            engines.isNotEmpty() -> engines.iterator().next().key
+            else -> null
         }
     }
 

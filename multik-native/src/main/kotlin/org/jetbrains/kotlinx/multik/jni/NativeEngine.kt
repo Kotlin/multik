@@ -23,7 +23,7 @@ public object NativeEngine : Engine() {
     private val loader: Loader by lazy { Loader("multik_jni") }
 
     init {
-        loader.load()
+        if(!loader.loading) loader.load()
     }
 
     override fun getMath(): Math {

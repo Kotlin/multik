@@ -10,12 +10,18 @@ import java.nio.file.StandardCopyOption
 
 internal class Loader(private val name: String) {
 
-    // TODO(add linux and win)
-    private val os: String
-        get() = when (val os: String = System.getProperty("os.name")) {
-            "Mac OS X" -> "darwin"
-            else -> error("Unsupported operating system: $os")
+    var loading: Boolean = false
+        private set
+
+    private val os: String by lazy {
+        val osProperty: String = System.getProperty("os.name").toLowerCase()
+        when {
+            osProperty.contains("mac") -> "darwin"
+            osProperty.contains("nux") -> "linux"
+            osProperty.contains("win") -> "win"
+            else -> error("Unsupported operating system: $osProperty")
         }
+    }
 
     // TODO(add different arch)
     private val arch: String
@@ -49,10 +55,23 @@ internal class Loader(private val name: String) {
             } else {
                 System.loadLibrary(nativeNameLib)
             }
+            loading = true
             true
         } catch (e: Throwable) {
             libraryPath?.toFile()?.delete()
             throw e
         }
+    }
+
+    fun manualLoad(javaPath: String? = null): Boolean {
+        if (javaPath.isNullOrEmpty()) {
+            System.loadLibrary(name)
+        } else {
+            val libFullName = System.mapLibraryName(name)
+            val fullPath = if (os == "win") "$javaPath\\$libFullName" else "$javaPath/$libFullName"
+            System.load(fullPath)
+        }
+        loading = true
+        return true
     }
 }
