@@ -1,8 +1,8 @@
 [![JetBrains incubator project](https://jb.gg/badges/incubator.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
-[ ![Download](https://api.bintray.com/packages/kotlin/kotlin-datascience/multik/images/download.svg) ](https://bintray.com/kotlin/kotlin-datascience/multik/_latestVersion)
+[![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlinx/multik-api)](https://mvnrepository.com/artifact/org.jetbrains.kotlinx/multik-api)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
-# MultiK
+# Multik
 
 Multidimensional array library for Kotlin.
 
@@ -14,35 +14,34 @@ Multidimensional array library for Kotlin.
 
 ## Using in your projects
 In your Gradle build script:
-1. Add the `kotlin-datascience` repository.
-2. Add the `org.jetbrains.kotlinx.multik:multik-api:$multik_version` api dependency.
-3. Add an implementation dependency: `org.jetbrains.kotlinx.multik:multik-default:$multik_version`,
-`org.jetbrains.kotlinx.multik:multik-jvm:$multik_version` or `org.jetbrains.kotlinx.multik:multik-native:$multik_version`.
+1. Add the Maven Central Repository.
+2. Add the `org.jetbrains.kotlinx:multik-api:$multik_version` api dependency.
+3. Add an implementation dependency: `org.jetbrains.kotlinx:multik-default:$multik_version`,
+`org.jetbrains.kotlinx:multik-jvm:$multik_version` or `org.jetbrains.kotlinx:multik-native:$multik_version`.
 
 `build.gradle`:
 ```groovy
 repositories {
-    maven { url "https://dl.bintray.com/kotlin/kotlin-datascience" }
+    mavenCentral()
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx.multik:multik-api:$multik_version"
-    implementation "org.jetbrains.kotlinx.multik:multik-default:$multik_version"
+    implementation "org.jetbrains.kotlinx:multik-api:0.0.1"
+    implementation "org.jetbrains.kotlinx:multik-default:0.0.1"
 }
 ```
 
 `build.gradle.kts`:
 ```kotlin
 repositories {
-    maven("https://dl.bintray.com/kotlin/kotlin-datascience")
+    mavenCentral()
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx.multik:multik-api:$multik_version")
-    implementation("org.jetbrains.kotlinx.multik:multik-default:$multik_version")
+    implementation("org.jetbrains.kotlinx:multik-api:0.0.1")
+    implementation("org.jetbrains.kotlinx:multik-default:0.0.1")
 }
 ```
-The latest Multik version is ![bintray](https://img.shields.io/bintray/v/kotlin/kotlin-datascience/multik?style=plastic).
 
 ## Quickstart
 
