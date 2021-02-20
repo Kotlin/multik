@@ -238,27 +238,35 @@ public operator fun <T : Number> MultiArray<T, DN>.get(index: IntArray): T {
 
 //_______________________________________________GetWithSlice___________________________________________________________
 
-public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(slice: Slice, axis: Int = 0): NDArray<T, O> {
-    //TODO (require)
-//    require(range.step > 0) { "slicing step must be positive, but was ${range.step}" }
-//    require(axis in 0 until this.dim.d) { "axis out of bounds: $axis" }
-//    require(range.first >= 0) { "slicing start index must be positive, but was ${range.first}" }
-    //TODO (negative indexing)
+public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(inSlice: ClosedRange<Int>, axis: Int = 0): NDArray<T, O> {
+    require(axis in 0 until this.dim.d) { "axis out of bounds: $axis" }
+
+    val slice = inSlice.toSlice()
+
+    val actualFrom = if (slice.start != -1) {
+        check(slice.start > -1) { "slicing start index must be positive, but was ${slice.start}"}
+        slice.start
+    } else {
+        0
+    }
+
     val actualTo = if (slice.stop != -1) {
-        //TODO (require)
-        require(slice.stop > slice.start) { "slicing end index ${slice.stop} must be greater than start index ${slice.start}" }
         check(slice.stop <= shape[axis]) { "slicing end index out of bounds: ${slice.stop} > ${shape[axis]}" }
         slice.stop
     } else {
-        check(shape[axis] > slice.start) { "slicing start index out of bounds: ${slice.start} >= ${shape[axis]}" }
+        check(shape[axis] > actualFrom) { "slicing start index out of bounds: $actualFrom >= ${shape[axis]}" }
         shape[axis]
     }
 
     val sliceStrides = strides.clone().apply { this[axis] *= slice.step }
-    val sliceShape = shape.clone().apply {
-        this[axis] = (actualTo - slice.start + slice.step - 1) / slice.step
+    val sliceShape = if (actualFrom > actualTo) {
+        intArrayOf(0)
+    } else {
+        shape.clone().apply {
+            this[axis] = (actualTo - actualFrom + slice.step - 1) / slice.step
+        }
     }
-    return NDArray<T, O>(data, offset + slice.start * strides[axis], sliceShape, sliceStrides, this.dtype, dimensionOf(sliceShape.size))
+    return NDArray<T, O>(data, offset + actualFrom * strides[axis], sliceShape, sliceStrides, this.dtype, dimensionOf(sliceShape.size))
 }
 
 
@@ -268,31 +276,35 @@ public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(indexi
     var newStrides: IntArray = strides.clone()
     val removeAxes = mutableListOf<Int>()
     for (ind in indexing) {
+        require(ind.key in 0 until this.dim.d) { "axis out of bounds: ${ind.key}" }
         when (ind.value) {
             is RInt -> {
-                //todo check
                 val index = (ind.value as RInt).data
+                require(index in 0 until shape[ind.key]) { "Index $index out of bounds at [0, ${shape[ind.key] - 1}]" }
+
                 newOffset += newStrides[ind.key] * index
                 removeAxes.add(ind.key)
-//                newShape = newShape.remove(ind.key)
-//                newStrides = newStrides.remove(ind.key)
             }
             is Slice -> {
                 val index = ind.value as Slice
-//                require(index.step > 0) { "slicing step must be positive, but was ${index.step}" }
-//                require(ind.key in 0 until this.dim.d) { "axis out of bounds: ${ind.key}" }
-//                require(index.start >= 0) { "slicing start index must be positive, but was ${index.start}" }
+
+                val actualFrom = if (index.start != -1) {
+                    check(index.start > -1) { "slicing start index must be positive, but was ${index.start}"}
+                    index.start
+                } else {
+                    0
+                }
+
                 val actualTo = if (index.start != -1) {
-                    require(index.stop > index.start) { "slicing end index ${index.stop} must be greater than start index ${index.start}" }
                     check(index.stop <= shape[ind.key]) { "slicing end index out of bounds: ${index.stop} > ${shape[ind.key]}" }
                     index.stop
                 } else {
-                    check(shape[ind.key] > index.start) { "slicing start index out of bounds: ${index.start} >= ${shape[ind.key]}" }
+                    check(shape[ind.key] > index.start) { "slicing start index out of bounds: $actualFrom >= ${shape[ind.key]}" }
                     shape[ind.key]
                 }
 
-                newOffset += index.start * newStrides[ind.key]
-                newShape[ind.key] = (actualTo - index.start + index.step - 1) / index.step
+                newOffset += actualFrom * newStrides[ind.key]
+                newShape[ind.key] = if(actualFrom > actualTo) 0 else (actualTo - actualFrom + index.step - 1) / index.step
                 newStrides[ind.key] *= index.step
             }
         }
@@ -304,170 +316,170 @@ public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(indexi
 }
 
 @JvmName("get12")
-public operator fun <T: Number> MultiArray<T, D1>.get(index: Slice): MultiArray<T, D1> = slice(index)
+public operator fun <T: Number> MultiArray<T, D1>.get(index: ClosedRange<Int>): MultiArray<T, D1> = slice(index)
 
 @JvmName("get13")
-public operator fun <T: Number> MultiArray<T, D2>.get(index: Slice): MultiArray<T, D2> = slice(index)
+public operator fun <T: Number> MultiArray<T, D2>.get(index: ClosedRange<Int>): MultiArray<T, D2> = slice(index)
 
 @JvmName("get14")
-public operator fun <T: Number> MultiArray<T, D2>.get(ind1: Slice, ind2: Slice): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1, 1 to ind2))
+public operator fun <T: Number> MultiArray<T, D2>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice()))
 
 @JvmName("get15")
-public operator fun <T: Number> MultiArray<T, D2>.get(ind1: Int, ind2: Slice): MultiArray<T, D1> =
-    slice(mapOf(0 to ind1.r, 1 to ind2))
+public operator fun <T: Number> MultiArray<T, D2>.get(ind1: Int, ind2: ClosedRange<Int>): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice()))
 
 @JvmName("get16")
-public operator fun <T: Number> MultiArray<T, D2>.get(ind1: Slice, ind2: Int): MultiArray<T, D1> =
-    slice(mapOf(0 to ind1, 1 to ind2.r))
+public operator fun <T: Number> MultiArray<T, D2>.get(ind1: ClosedRange<Int>, ind2: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r))
 
 @JvmName("get17")
-public operator fun <T: Number> MultiArray<T, D3>.get(index: Slice): MultiArray<T, D3> = slice(index)
+public operator fun <T: Number> MultiArray<T, D3>.get(index: ClosedRange<Int>): MultiArray<T, D3> = slice(index)
 
 @JvmName("get18")
-public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Slice): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1, 1 to ind2))
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice()))
 
 @JvmName("get19")
-public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: Slice): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1.r, 1 to ind2))
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: ClosedRange<Int>): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice()))
 
 @JvmName("get20")
-public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Int): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1, 1 to ind2.r))
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: ClosedRange<Int>, ind2: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r))
 
 @JvmName("get21")
-public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Slice, ind3: Slice): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3))
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>, ind3: ClosedRange<Int>): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice(), 2 to ind3.toSlice()))
 
 @JvmName("get22")
-public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: Int, ind3: Slice): MultiArray<T, D1> =
-    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3))
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: Int, ind3: ClosedRange<Int>): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3.toSlice()))
 
 @JvmName("get23")
-public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: Slice, ind3: Int): MultiArray<T, D1> =
-    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3.r))
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: ClosedRange<Int>, ind3: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice(), 2 to ind3.r))
 
 @JvmName("get24")
-public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Int, ind3: Int): MultiArray<T, D1> =
-    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3.r))
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: ClosedRange<Int>, ind2: Int, ind3: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r, 2 to ind3.r))
 
 @JvmName("get25")
-public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: Slice, ind3: Slice): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3))
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Int, ind2: ClosedRange<Int>, ind3: ClosedRange<Int>): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice(), 2 to ind3.toSlice()))
 
 @JvmName("get26")
-public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Slice, ind3: Int): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3.r))
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>, ind3: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice(), 2 to ind3.r))
 
 @JvmName("get27")
-public operator fun <T: Number> MultiArray<T, D3>.get(ind1: Slice, ind2: Int, ind3: Slice): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3))
+public operator fun <T: Number> MultiArray<T, D3>.get(ind1: ClosedRange<Int>, ind2: Int, ind3: ClosedRange<Int>): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r, 2 to ind3.toSlice()))
 
 @JvmName("get28")
-public operator fun <T: Number> MultiArray<T, D4>.get(index: Slice): MultiArray<T, D4> =
+public operator fun <T: Number> MultiArray<T, D4>.get(index: ClosedRange<Int>): MultiArray<T, D4> =
     slice(index)
 
 @JvmName("get29")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice): MultiArray<T, D4> =
-    slice(mapOf(0 to ind1, 1 to ind2))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>): MultiArray<T, D4> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice()))
 
 
 @JvmName("get30")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1.r, 1 to ind2))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: ClosedRange<Int>): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice()))
 
 @JvmName("get31")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1, 1 to ind2.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: Int): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r))
 
 @JvmName("get32")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Slice): MultiArray<T, D4> =
-    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>, ind3: ClosedRange<Int>): MultiArray<T, D4> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice(), 2 to ind3.toSlice()))
 
 @JvmName("get33")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Slice): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: ClosedRange<Int>): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3.toSlice()))
 
 @JvmName("get34")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Int): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: ClosedRange<Int>, ind3: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice(), 2 to ind3.r))
 
 @JvmName("get35")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Int): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: Int, ind3: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r, 2 to ind3.r))
 
 @JvmName("get36")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Slice): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: ClosedRange<Int>, ind3: ClosedRange<Int>): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice(), 2 to ind3.toSlice()))
 
 @JvmName("get37")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Int): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>, ind3: Int): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice(), 2 to ind3.r))
 
 @JvmName("get38")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Slice): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: Int, ind3: ClosedRange<Int>): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r, 2 to ind3.toSlice()))
 
 @JvmName("get39")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Slice, ind4: Slice): MultiArray<T, D4> =
-    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3, 3 to ind4))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>, ind3: ClosedRange<Int>, ind4: ClosedRange<Int>): MultiArray<T, D4> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice(), 2 to ind3.toSlice(), 3 to ind4.toSlice()))
 
 @JvmName("get39")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Slice): MultiArray<T, D1> =
-    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3.r, 3 to ind4))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, ind4: ClosedRange<Int>): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3.r, 3 to ind4.toSlice()))
 
 @JvmName("get40")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Slice, ind4: Int): MultiArray<T, D1> =
-    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3, 3 to ind4.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: ClosedRange<Int>, ind4: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3.toSlice(), 3 to ind4.r))
 
 @JvmName("get41")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Int, ind4: Int): MultiArray<T, D1> =
-    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3.r, 3 to ind4.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: ClosedRange<Int>, ind3: Int, ind4: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice(), 2 to ind3.r, 3 to ind4.r))
 
 @JvmName("get42")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Int, ind4: Int): MultiArray<T, D1> =
-    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3.r, 3 to ind4.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: Int, ind3: Int, ind4: Int): MultiArray<T, D1> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r, 2 to ind3.r, 3 to ind4.r))
 
 @JvmName("get43")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Slice, ind4: Slice): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3, 3 to ind4))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: ClosedRange<Int>, ind4: ClosedRange<Int>): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3.toSlice(), 3 to ind4.toSlice()))
 
 @JvmName("get44")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Slice, ind4: Int): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3, 3 to ind4.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: ClosedRange<Int>, ind3: Slice, ind4: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice(), 2 to ind3.toSlice(), 3 to ind4.r))
 
 @JvmName("get45")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Int, ind4: Int): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3.r, 3 to ind4.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>, ind3: Int, ind4: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice(), 2 to ind3.r, 3 to ind4.r))
 
 @JvmName("get46")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Int, ind4: Slice): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3.r, 3 to ind4))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: ClosedRange<Int>, ind3: Int, ind4: ClosedRange<Int>): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice(), 2 to ind3.r, 3 to ind4.toSlice()))
 
 @JvmName("get47")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Int, ind4: Slice): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3.r, 3 to ind4))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: Int, ind3: Int, ind4: ClosedRange<Int>): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r, 2 to ind3.r, 3 to ind4.toSlice()))
 
 @JvmName("get48")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Slice, ind4: Int): MultiArray<T, D2> =
-    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3, 3 to ind4.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: Int, ind3: ClosedRange<Int>, ind4: Int): MultiArray<T, D2> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r, 2 to ind3.toSlice(), 3 to ind4.r))
 
 @JvmName("get49")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: Slice, ind3: Slice, ind4: Slice): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1.r, 1 to ind2, 2 to ind3, 3 to ind4))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Int, ind2: ClosedRange<Int>, ind3: ClosedRange<Int>, ind4: ClosedRange<Int>): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.r, 1 to ind2.toSlice(), 2 to ind3.toSlice(), 3 to ind4.toSlice()))
 
 @JvmName("get50")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Int, ind3: Slice, ind4: Slice): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1, 1 to ind2.r, 2 to ind3, 3 to ind4))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: Int, ind3: ClosedRange<Int>, ind4: ClosedRange<Int>): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.r, 2 to ind3.toSlice(), 3 to ind4.toSlice()))
 
 @JvmName("get51")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Int, ind4: Slice): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3.r, 3 to ind4))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>, ind3: Int, ind4: ClosedRange<Int>): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice(), 2 to ind3.r, 3 to ind4.toSlice()))
 
 @JvmName("get52")
-public operator fun <T: Number> MultiArray<T, D4>.get(ind1: Slice, ind2: Slice, ind3: Slice, ind4: Int): MultiArray<T, D3> =
-    slice(mapOf(0 to ind1, 1 to ind2, 2 to ind3, 3 to ind4.r))
+public operator fun <T: Number> MultiArray<T, D4>.get(ind1: ClosedRange<Int>, ind2: ClosedRange<Int>, ind3: ClosedRange<Int>, ind4: Int): MultiArray<T, D3> =
+    slice(mapOf(0 to ind1.toSlice(), 1 to ind2.toSlice(), 2 to ind3.toSlice(), 3 to ind4.r))
 
 public fun <T: Number> MultiArray<T, DN>.slice(map: Map<Int, Indexing>): MultiArray<T, DN> =
     slice<T, DN, DN>(map)
