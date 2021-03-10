@@ -21,17 +21,25 @@ public object DefaultLinAlg : LinAlg {
 
     override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double = JvmLinAlg.norm(mat, p)
 
-    //TODO()
+    override fun <T : Number, D: Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
+        return when (a.dtype) {
+            DataType.FloatDataType, DataType.DoubleDataType -> NativeLinAlg.dot(a, b)
+            else -> throw UnsupportedOperationException()
+        }
+    }
+
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         return when (a.dtype) {
-            DataType.FloatDataType -> NativeLinAlg.dot(a, b)
-            DataType.DoubleDataType -> NativeLinAlg.dot(a, b)
+            DataType.FloatDataType, DataType.DoubleDataType -> NativeLinAlg.dot(a, b)
             else -> JvmLinAlg.dot(a, b)
         }
     }
 
     override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
-        return JvmLinAlg.dot(a, b)
+        return when(a.dtype) {
+            DataType.FloatDataType, DataType.DoubleDataType -> NativeLinAlg.dot(a, b)
+            else -> JvmLinAlg.dot(a, b)
+        }
     }
 
 }

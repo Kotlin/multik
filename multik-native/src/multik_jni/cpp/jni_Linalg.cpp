@@ -46,6 +46,24 @@ JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_norm__
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_JniLinAlg
+ * Method:    solve
+ * Signature: (II[FI[FI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_solve
+	(JNIEnv *env, jobject jobj, jint n, jint nrhs, jfloatArray j_a, jint strA, jfloatArray j_b, jint strB) {
+  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *B = (float *)env->GetPrimitiveArrayCritical(j_b, nullptr);
+
+  int info = solve_linear_system_float(n, nrhs, A, strA, B, strB);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_b, B, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniLinAlg
  * Method:    dot
  * Signature: ([FII[FI[F)V
  */
@@ -114,4 +132,40 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_dot___3DI
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);
   env->ReleasePrimitiveArrayCritical(j_c, C, 0);
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniLinAlg
+ * Method:    dot
+ * Signature: (I[FI[FI)F
+ */
+JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_dot__I_3FI_3FI
+	(JNIEnv *env, jobject jobj, jint n, jfloatArray j_a, jint strA, jfloatArray j_b, jint strB) {
+  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *B = (float *)env->GetPrimitiveArrayCritical(j_b, nullptr);
+
+  float ret = vector_dot_float(n, A, strA, B, strB);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_b, B, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniLinAlg
+ * Method:    dot
+ * Signature: (I[DI[DI)D
+ */
+JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_dot__I_3DI_3DI
+	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_a, jint strA, jdoubleArray j_b, jint strB) {
+  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *B = (double *)env->GetPrimitiveArrayCritical(j_b, nullptr);
+
+  double ret = vector_dot_double(n, A, strA, B, strB);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_b, B, 0);
+
+  return ret;
 }

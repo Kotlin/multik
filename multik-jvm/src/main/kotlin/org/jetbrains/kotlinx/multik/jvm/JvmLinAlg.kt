@@ -30,6 +30,10 @@ public object JvmLinAlg : LinAlg {
         return n.pow(1 / p.toDouble())
     }
 
+    override fun <T : Number, D: Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
+        TODO("Not yet implemented")
+    }
+
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         require(a.shape[1] == b.shape[0]) { "Shapes mismatch: shapes " +
                 "${a.shape.joinToString(prefix = "(", postfix = ")")} and " +
