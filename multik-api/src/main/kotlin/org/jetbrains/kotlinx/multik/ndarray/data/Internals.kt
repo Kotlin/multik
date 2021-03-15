@@ -4,8 +4,6 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
-import org.jetbrains.kotlinx.multik.ndarray.operations.minus
-
 @PublishedApi
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun requireDimension(dim: Dimension, shapeSize: Int) {
@@ -77,7 +75,17 @@ internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::
 } as T
 
 //TODO(create module utils)
-/*internal*/ public operator fun <T : Number> Number.compareTo(other: T): Int = (this - other).toInt()
+public operator fun <T : Number> Number.compareTo(other: T): Int {
+    return when {
+        this is Float && other is Float -> this.compareTo(other)
+        this is Double && other is Double -> this.compareTo(other)
+        this is Int && other is Int -> this.compareTo(other)
+        this is Long && other is Long -> this.compareTo(other)
+        this is Short && other is Short -> this.compareTo(other)
+        this is Byte && other is Byte -> this.compareTo(other)
+        else -> this.toDouble().compareTo(other.toDouble())
+    }
+}
 
 @PublishedApi
 internal fun IntArray.remove(pos: Int): IntArray = when (pos) {
