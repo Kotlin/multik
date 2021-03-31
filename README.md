@@ -142,7 +142,7 @@ f * d // multiplication
 mk.math.sin(a) // element-wise sin 
 mk.math.cos(a) // element-wise cos
 mk.math.log(b) // element-wise natural logarithm
-mk.math.exp(b) // element-wise epx
+mk.math.exp(b) // element-wise exp
 mk.linalg.dot(d, e) // dot product
 ```
 
