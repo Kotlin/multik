@@ -7,12 +7,6 @@ package org.jetbrains.kotlinx.multik.jni
 import org.jetbrains.kotlinx.multik.api.*
 
 
-public class NativeEngineProvider : EngineProvider {
-    override fun getEngine(): Engine? {
-        return NativeEngine
-    }
-}
-
 public object NativeEngine : Engine() {
     override val name: String
         get() = type.name

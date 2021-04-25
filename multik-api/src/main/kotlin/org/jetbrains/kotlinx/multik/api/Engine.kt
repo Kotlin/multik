@@ -4,9 +4,6 @@
 
 package org.jetbrains.kotlinx.multik.api
 
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
-
 public sealed class EngineType(public val name: String)
 
 public object DefaultEngineType : EngineType("DEFAULT")
@@ -26,17 +23,13 @@ public abstract class Engine {
 
     protected abstract val type: EngineType
 
-    protected val engines: MutableMap<EngineType, Engine> = ConcurrentHashMap<EngineType, Engine>()
+    protected val engines: MutableMap<EngineType, Engine> = HashMap()
 
     protected var defaultEngine: EngineType? = null
 
     protected fun loadEngine() {
-        val loaders: ServiceLoader<EngineProvider> = ServiceLoader.load(EngineProvider::class.java)
-        for (engineProvider in loaders) {
-            val engine = engineProvider.getEngine()
-            if (engine != null) {
-                engines[engine.type] = engine
-            }
+        for (engine in engines_provider) {
+            engines[engine.type] = engine
         }
 
         defaultEngine = when {
@@ -100,8 +93,21 @@ public abstract class Engine {
     }
 }
 
-public interface EngineProvider {
-    public fun getEngine(): Engine?
+private val engines_provider : List<Engine> by lazy {
+    val engineClassNames = listOf(
+        "org.jetbrains.kotlinx.multik.jvm.JvmEngine",
+        "org.jetbrains.kotlinx.multik.jni.NativeEngine",
+        "org.jetbrains.kotlinx.multik.default.DefaultEngine")
+    val engines = mutableListOf<Engine>()
+    engineClassNames.forEach { e ->
+        try {
+            engines.add(
+                Class.forName(e).kotlin.objectInstance as Engine)
+        } catch (t: Throwable){
+            t.printStackTrace()
+        }
+    }
+    engines
 }
 
 public class EngineMultikException(message: String) : Exception(message) {
