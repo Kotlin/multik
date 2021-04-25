@@ -8,7 +8,7 @@ import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jni.NativeEngine
 
 
-public object DefaultEngine : Engine() {
+public class DefaultEngine : Engine() {
     override val name: String
         get() = type.name
 

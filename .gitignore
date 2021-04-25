@@ -124,3 +124,5 @@ out/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
+
+.DS_Store

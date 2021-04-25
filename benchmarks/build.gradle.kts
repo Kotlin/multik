@@ -5,6 +5,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    kotlin("jvm")
     id("me.champeau.gradle.jmh") version "0.5.0"
 }
 

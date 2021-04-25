@@ -10,9 +10,6 @@ import org.jetbrains.kotlinx.multik.jvm.JvmStatistics
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object DefaultStatistics : Statistics {
-    init {
-        NativeEngine
-    }
 
     override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? = JvmStatistics.median(a)
 
