@@ -8,9 +8,6 @@ import org.jetbrains.kotlinx.multik.api.Statistics
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object NativeStatistics : Statistics {
-    init {
-        NativeEngine
-    }
 
     override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? {
         TODO("Not yet implemented")

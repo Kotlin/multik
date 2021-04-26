@@ -2,8 +2,6 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 buildscript {
     repositories {
         mavenCentral()
@@ -12,8 +10,7 @@ buildscript {
 
 plugins {
     val kotlinVersion: String by System.getProperties()
-    kotlin("jvm") version kotlinVersion
-
+    kotlin("multiplatform") version kotlinVersion apply false
     id("io.codearte.nexus-staging") version "0.22.0"
 }
 
@@ -29,20 +26,9 @@ allprojects {
     group = "org.jetbrains.kotlinx"
     version = multikVersion
 
-    tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
-    }
 }
 
-subprojects {
-    apply(plugin = "kotlin")
-
-    dependencies {
-        testImplementation(kotlin("test"))
-        testImplementation(kotlin("test-junit"))
-    }
-}
 
 configure(subprojects.filter { it.name !in unpublished }) {
-    apply("$rootDir/gradle/publish.gradle")
+    //apply("$rootDir/gradle/publish.gradle")
 }

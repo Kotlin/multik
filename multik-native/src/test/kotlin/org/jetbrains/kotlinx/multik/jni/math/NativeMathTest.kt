@@ -7,8 +7,6 @@ import org.jetbrains.kotlinx.multik.jni.NativeMath
 import org.jetbrains.kotlinx.multik.jni.roundDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.D2
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
-import java.math.BigDecimal
-import java.math.RoundingMode
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

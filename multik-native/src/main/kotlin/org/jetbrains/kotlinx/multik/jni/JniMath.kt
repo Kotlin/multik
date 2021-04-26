@@ -8,9 +8,6 @@ import org.jetbrains.kotlinx.multik.api.Math
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object NativeMath : Math {
-    init {
-        NativeEngine
-    }
 
     override fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int {
         return JniMath.argMax(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)

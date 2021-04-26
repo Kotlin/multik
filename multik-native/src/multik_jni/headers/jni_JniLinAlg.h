@@ -41,6 +41,14 @@ JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_norm__
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_JniLinAlg
+ * Method:    solve
+ * Signature: (II[FI[FI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_solve
+	(JNIEnv *, jobject, jint, jint, jfloatArray, jint, jfloatArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniLinAlg
  * Method:    dot
  * Signature: ([FII[FI[F)V
  */
@@ -70,6 +78,22 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_dot___3FI
  */
 JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_dot___3DII_3D_3D
 	(JNIEnv *, jobject, jdoubleArray, jint, jint, jdoubleArray, jdoubleArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniLinAlg
+ * Method:    dot
+ * Signature: (I[FI[FI)F
+ */
+JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_dot__I_3FI_3FI
+	(JNIEnv *, jobject, jint, jfloatArray, jint, jfloatArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_JniLinAlg
+ * Method:    dot
+ * Signature: (I[DI[DI)D
+ */
+JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_jni_JniLinAlg_dot__I_3DI_3DI
+	(JNIEnv *, jobject, jint, jdoubleArray, jint, jdoubleArray, jint);
 
 #ifdef __cplusplus
 }

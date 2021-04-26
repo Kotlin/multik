@@ -6,6 +6,7 @@
 #define CPP_CPP_LINALG_H_
 
 #include "cblas.h"
+#include "lapacke.h"
 
 void matrix_power() {
 
@@ -50,6 +51,26 @@ void eigen_values(double *A, int n) {
   delete[] eigReal;
   delete[] eigImag;
   delete[] work;
+}
+
+float vector_dot_float(int n, float *A, int strA, float *B, int strB) {
+  return cblas_sdot(n, A, strA, B, strB);
+}
+
+double vector_dot_double(int n, double *A, int strA, double *B, int strB) {
+  return cblas_ddot(n, A, strA, B, strB);
+}
+
+int solve_linear_system_float(int n, int nrhs, float *A, int strA, float *b, int strB) {
+  int ipiv[n];
+
+  return LAPACKE_sgesv(LAPACK_ROW_MAJOR, n, nrhs, A, strA, ipiv, b, strB);
+}
+
+int solve_linear_system_double(int n, int nrhs, double *A, int strA, double *b, int strB) {
+  int ipiv[n];
+
+  return LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, A, strA, ipiv, b, strB);
 }
 
 void matrix_dot_float(float *A, int m, int n, int k, float *B, float *C) {
