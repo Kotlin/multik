@@ -22,6 +22,8 @@ public interface LinAlg {
      */
     public fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int = 2): Double
 
+    public fun <T : Number, D: Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D>
+
     /**
      * Dot products of two arrays. Matrix product.
      */

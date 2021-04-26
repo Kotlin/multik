@@ -24,6 +24,15 @@ class JvmMathTest {
     }
 
     @Test
+    fun `test of argMax function Double`() {
+        val ndarray1 = mk.ndarray(mk[0.008830892, 0.7638366187, -0.0401326368965, -0.269757419187])
+        val ndarray2 = mk.ndarray(mk[0.0088308926050, 0.763836618743, Double.NaN, -0.2697574191872])
+
+        assertEquals(1, mk.math.argMax(ndarray1))
+        assertEquals(2, mk.math.argMax(ndarray2))
+    }
+
+    @Test
     fun `test of argMax function with axis`() {
         val ndarray = mk.ndarray(mk[mk[mk[50, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
