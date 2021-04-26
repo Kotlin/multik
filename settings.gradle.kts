@@ -11,6 +11,5 @@ include(
     ":multik-default",
     ":multik-jvm",
     ":multik-native",
-    ":benchmarks",
     ":examples"
 )
