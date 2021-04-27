@@ -12,20 +12,6 @@ kotlin {
             useJUnit()
         }
         withJava()
-        val jvmJar by tasks.getting(org.gradle.jvm.tasks.Jar::class) {
-            doFirst {
-                from({
-                    configurations.getByName("runtimeClasspath").filter { it.name.endsWith("jar") }.map { zipTree(it) }
-                })
-                manifest {
-                    attributes["Implementation-Title"] = project.name
-                    attributes["Implementation-Version"] = project.version
-                }
-//                print(configurations.names)
-                from(configurations.getByName("runtimeClasspath").map { if (it.isDirectory) it else zipTree(it) })
-                duplicatesStrategy = DuplicatesStrategy.INCLUDE
-            }
-        }
     }
     val hostOs = System.getProperty("os.name")
     val isMingwX64 = hostOs.startsWith("Windows")
