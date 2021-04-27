@@ -13,10 +13,7 @@ public actual val enginesProvider : Set<Engine> get() {
             try {
                 val instance = Class.forName(e).kotlin.createInstance() as Engine
                 engines.add(instance)
-            } catch (t: Throwable){
-                print(t.message)
-                t.printStackTrace()
-            }
+            } catch (t: Throwable){ }
         }
         return engines.toSet()
     }
