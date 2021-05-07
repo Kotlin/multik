@@ -209,17 +209,7 @@ public object JvmMath : Math {
 
     override fun <T : Number> minDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> = min(a, axis)
 
-    override fun <T : Number, D : Dimension> sum(a: MultiArray<T, D>): T {
-        var accum = 0.0
-        var compens = 0.0 // compensation
-        for (el in a) {
-            val y = el.toDouble() - compens
-            val t = accum + y
-            compens = t - accum - y
-            accum = t
-        }
-        return accum.toPrimitiveType(a.dtype)
-    }
+    override fun <T : Number, D : Dimension> sum(a: MultiArray<T, D>): T = summation(a)
 
     override fun <T : Number, D : Dimension, O : Dimension> sum(a: MultiArray<T, D>, axis: Int): NDArray<T, O> {
         require(a.dim.d > 1) { "NDArray of dimension one, use the `sum` function without axis." }
@@ -238,7 +228,6 @@ public object JvmMath : Math {
         return ret
     }
 
-    // todo: without create view
     override fun <T : Number> sumD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = JvmMath.sum(a, axis)
 
     override fun <T : Number> sumD3(a: MultiArray<T, D3>, axis: Int): NDArray<T, D2> = JvmMath.sum(a, axis)
@@ -304,3 +293,62 @@ internal fun IntArray.remove(pos: Int): IntArray = when (pos) {
     lastIndex -> sliceArray(0 until lastIndex)
     else -> sliceArray(0 until pos) + sliceArray(pos + 1..lastIndex)
 }
+
+private fun <T : Number, D : Dimension> summation(a: MultiArray<T, D>): T = when (a.dtype) {
+    DataType.FloatDataType -> {
+        var accum = 0.0f
+        var compens = 0.0f // compensation
+        val iter = if (a.consistent) a.data.getFloatArray().iterator() else (a as MultiArray<Float, *>).iterator()
+        for (el in iter) {
+            val y = el - compens
+            val t = accum + y
+            compens = t - accum - y
+            accum = t
+        }
+        accum
+    }
+    DataType.DoubleDataType -> {
+        var accum = 0.0
+        var compens = 0.0 // compensation
+        val iter = if (a.consistent) a.data.getDoubleArray().iterator() else (a as MultiArray<Double, *>).iterator()
+        for (el in iter) {
+            val y = el - compens
+            val t = accum + y
+            compens = t - accum - y
+            accum = t
+        }
+        accum
+    }
+    DataType.IntDataType -> {
+        var accum = 0
+        val iter = if (a.consistent) a.data.getIntArray().iterator() else (a as MultiArray<Int, *>).iterator()
+        for (el in iter) {
+            accum += el
+        }
+        accum
+    }
+    DataType.LongDataType -> {
+        var accum = 0L
+        val iter = if (a.consistent) a.data.getLongArray().iterator() else (a as MultiArray<Long, *>).iterator()
+        for (el in iter) {
+            accum += el
+        }
+        accum
+    }
+    DataType.ShortDataType -> {
+        var accum = 0
+        val iter = if (a.consistent) a.data.getShortArray().iterator() else (a as MultiArray<Short, *>).iterator()
+        for (el in iter) {
+            accum += el
+        }
+        accum
+    }
+    DataType.ByteDataType -> {
+        var accum = 0
+        val iter = if (a.consistent) a.data.getByteArray().iterator() else (a as MultiArray<Byte, *>).iterator()
+        for (el in iter) {
+            accum += el
+        }
+        accum
+    }
+} as T
