@@ -8,6 +8,7 @@ import org.jetbrains.kotlinx.multik.api.LinAlg
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import kotlin.math.absoluteValue
 import kotlin.math.pow
 
 public object JvmLinAlg : LinAlg {
@@ -23,16 +24,55 @@ public object JvmLinAlg : LinAlg {
     }
 
     override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
+        // for norm computation we will use next formula:
+        // norm(mat) = abs(max(mat)) *
+        //  * ( sum (mat[i][j]/abs(max(mat))).pow(p) ).pow(1/p)
+
+        require(p > 0) { "power $p must be positive" }
+
+
         var n = 0.0
         for (element in mat) {
+            //incorrect for L_1 norm because of absence of `abs`
             n += element.toDouble().pow(p)
         }
         return n.pow(1 / p.toDouble())
+
+        TODO("Not implemented")
     }
 
-    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
+
+    private fun norm(
+        mat: ByteArray, matOffset: Int, matStrides: IntArray,
+        n: Int, m: Int, power: Int
+    ): Double {
+        var result = 0.0
+        var maxAbsElement = 0.0;
+
+        val (matStride_0, matStride_1) = matStrides
+
+        val tmp = 1.toDouble().pow(1)
+
+        //computes maxAbsElement
+        for (i in 0 until n) {
+            val matInd = i * matStride_0 + matOffset
+            for (k in 0 until m) {
+                val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                maxAbsElement = if (elementDoubleAbsValue > maxAbsElement) elementDoubleAbsValue else maxAbsElement
+            }
+        }
+
+        for (i in 0 until n) {
+            val matInd = i * matStride_0 + matOffset
+            for (k in 0 until m) {
+                val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+            }
+        }
+
+        return maxAbsElement * result.pow(1 / power.toDouble())
     }
+
 
     override fun <T : Number, D: Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         TODO("Not yet implemented")
