@@ -14,7 +14,7 @@ internal class Loader(private val name: String) {
         private set
 
     private val os: String by lazy {
-        val osProperty: String = System.getProperty("os.name").toLowerCase()
+        val osProperty: String = System.getProperty("os.name").lowercase()
         when {
             osProperty.contains("mac") -> "darwin"
             osProperty.contains("nux") -> "linux"

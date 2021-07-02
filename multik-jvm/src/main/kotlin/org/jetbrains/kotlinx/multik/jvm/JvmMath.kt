@@ -52,7 +52,7 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return NDArray<Int, O>(argMaxData, 0, newShape, dtype = DataType.IntDataType, dim = dimensionOf(newShape.size))
+        return NDArray(argMaxData, 0, newShape, dtype = DataType.IntDataType, dim = dimensionOf(newShape.size))
     }
 
     override fun <T : Number> argMaxD2(a: MultiArray<T, D2>, axis: Int): NDArray<Int, D1> = argMax(a, axis)
@@ -102,7 +102,7 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return NDArray<Int, O>(argMinData, 0, newShape, dtype = DataType.IntDataType, dim = dimensionOf(newShape.size))
+        return NDArray(argMinData, 0, newShape, dtype = DataType.IntDataType, dim = dimensionOf(newShape.size))
     }
 
     override fun <T : Number> argMinD2(a: MultiArray<T, D2>, axis: Int): NDArray<Int, D1> = argMin(a, axis)
@@ -141,7 +141,7 @@ public object JvmMath : Math {
         val newShape = a.shape.remove(axis)
         val min = JvmMath.min(a)
         val size = newShape.fold(1, Int::times)
-        val maxData = initMemoryView<T>(size, a.dtype) { min }
+        val maxData = initMemoryView(size, a.dtype) { min }
         val indexMap: MutableMap<Int, Indexing> = mutableMapOf()
         for (i in a.shape.indices) {
             if (i == axis) continue
@@ -158,7 +158,7 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return NDArray<T, O>(maxData, 0, newShape, dtype = a.dtype, dim = dimensionOf(newShape.size))
+        return NDArray(maxData, 0, newShape, dtype = a.dtype, dim = dimensionOf(newShape.size))
     }
 
     override fun <T : Number> maxD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = max(a, axis)
@@ -181,7 +181,7 @@ public object JvmMath : Math {
         val newShape = a.shape.remove(axis)
         val max = JvmMath.max(a)
         val size = newShape.fold(1, Int::times)
-        val minData = initMemoryView<T>(size, a.dtype) { max }
+        val minData = initMemoryView(size, a.dtype) { max }
         val indexMap: MutableMap<Int, Indexing> = mutableMapOf()
         for (i in a.shape.indices) {
             if (i == axis) continue
@@ -198,7 +198,7 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return NDArray<T, O>(minData, 0, newShape, dtype = a.dtype, dim = dimensionOf(newShape.size))
+        return NDArray(minData, 0, newShape, dtype = a.dtype, dim = dimensionOf(newShape.size))
     }
 
     override fun <T : Number> minD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = min(a, axis)
@@ -253,7 +253,7 @@ public object JvmMath : Math {
             accum = t
             ret[ind++] = accum
         }
-        return ret.asType<T>(a.dtype)
+        return ret.asType(a.dtype)
     }
 
     override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>, axis: Int): NDArray<T, D> {
@@ -277,13 +277,13 @@ public object JvmMath : Math {
         a: MultiArray<T, D>, function: (Double) -> Double
     ): NDArray<Double, D> {
         val iter = a.iterator()
-        val data = initMemoryView<Double>(a.size, DataType.DoubleDataType) {
+        val data = initMemoryView(a.size, DataType.DoubleDataType) {
             if (iter.hasNext())
                 function(iter.next().toDouble())
             else
                 0.0
         }
-        return NDArray<Double, D>(data, 0, a.shape, dtype = DataType.DoubleDataType, dim = a.dim)
+        return NDArray(data, 0, a.shape, dtype = DataType.DoubleDataType, dim = a.dim)
     }
 }
 

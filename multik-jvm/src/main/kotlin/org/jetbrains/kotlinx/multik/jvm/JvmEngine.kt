@@ -8,7 +8,7 @@ import org.jetbrains.kotlinx.multik.api.*
 
 
 public class JvmEngineProvider : EngineProvider {
-    override fun getEngine(): Engine? {
+    override fun getEngine(): Engine {
         return JvmEngine
     }
 }

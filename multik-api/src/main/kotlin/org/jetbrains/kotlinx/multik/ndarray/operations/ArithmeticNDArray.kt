@@ -25,7 +25,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: T):
 /**
  * Add [other] to [this]. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: MultiArray<T, D>): Unit {
+public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: MultiArray<T, D>) {
     requireArraySizes(this.size, other.size)
     when {
         this.consistent && other.consistent -> {
@@ -49,7 +49,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssi
 /**
  * Add [other] element-wise. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: T): Unit {
+public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: T) {
     when {
         this.consistent -> {
             this.data += other
@@ -86,7 +86,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: T)
 /**
  * Subtract [other] from [this]. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: MultiArray<T, D>): Unit {
+public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: MultiArray<T, D>) {
     requireArraySizes(this.size, other.size)
     when {
         this.consistent && other.consistent -> {
@@ -109,7 +109,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAss
 /**
  * Subtract [other] element-wise. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: T): Unit {
+public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: T) {
     when {
         this.consistent -> {
             this.data -= other
@@ -146,7 +146,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: T)
 /**
  * Multiply [this] by [other]. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: MultiArray<T, D>): Unit {
+public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: MultiArray<T, D>) {
     requireArraySizes(this.size, other.size)
     when {
         this.consistent && other.consistent -> {
@@ -169,7 +169,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAss
 /**
  * Multiply [other] element-wise. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: T): Unit {
+public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: T) {
     when {
         this.consistent -> {
             this.data *= other
@@ -206,7 +206,7 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: T): 
 /**
  * Divide [this] by [other]. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssign(other: MultiArray<T, D>): Unit {
+public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssign(other: MultiArray<T, D>) {
     requireArraySizes(this.size, other.size)
     when {
         this.consistent && other.consistent -> {
@@ -229,7 +229,7 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssig
 /**
  * Divide by [other] element-wise. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssign(other: T): Unit {
+public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssign(other: T) {
     when {
         this.consistent -> {
             this.data /= other

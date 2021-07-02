@@ -85,7 +85,7 @@ class CreateArray4DTest {
         assertEquals(mk.ndarray(inputArr, 2, 5, 3, 2), a)
 
         val b = mk.d4array(2, 5, 3, 2) { it * it }
-        assertEquals(mk.ndarray<Int, D4>(inputArr.map { it * it }, shape), b)
+        assertEquals(mk.ndarray(inputArr.map { it * it }, shape), b)
     }
 
     @Test
