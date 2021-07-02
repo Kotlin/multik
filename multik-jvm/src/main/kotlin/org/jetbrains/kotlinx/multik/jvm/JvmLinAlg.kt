@@ -9,9 +9,15 @@ import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.math.absoluteValue
+import kotlin.math.max
 import kotlin.math.pow
 
 public object JvmLinAlg : LinAlg {
+
+    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
+        TODO("Not yet implemented")
+    }
+
     override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> {
         if (n == 0) return mk.identity<T>(mat.shape[0], mat.dtype)
 
@@ -27,51 +33,319 @@ public object JvmLinAlg : LinAlg {
         // for norm computation we will use next formula:
         // norm(mat) = abs(max(mat)) *
         //  * ( sum (mat[i][j]/abs(max(mat))).pow(p) ).pow(1/p)
+        // the idea is same as in: https://en.wikipedia.org/wiki/Hypot#Implementation
 
         require(p > 0) { "power $p must be positive" }
 
-
-        var n = 0.0
-        for (element in mat) {
-            //incorrect for L_1 norm because of absence of `abs`
-            n += element.toDouble().pow(p)
+        return when (mat.dtype) {
+            DataType.FloatDataType -> {
+                norm(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+            }
+            DataType.IntDataType -> {
+                norm(mat.data.getIntArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+            }
+            DataType.DoubleDataType -> {
+                norm(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+            }
+            DataType.LongDataType -> {
+                norm(mat.data.getLongArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+            }
+            DataType.ShortDataType -> {
+                norm(mat.data.getShortArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+            }
+            DataType.ByteDataType -> {
+                norm(mat.data.getByteArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+            }
         }
-        return n.pow(1 / p.toDouble())
 
-        TODO("Not implemented")
     }
 
-
+//----------------- start cases for norm method ----------------------
     private fun norm(
         mat: ByteArray, matOffset: Int, matStrides: IntArray,
-        n: Int, m: Int, power: Int
+        n: Int, m: Int, power: Int,
+        consistent: Boolean
     ): Double {
         var result = 0.0
         var maxAbsElement = 0.0;
 
         val (matStride_0, matStride_1) = matStrides
 
-        val tmp = 1.toDouble().pow(1)
-
         //computes maxAbsElement
-        for (i in 0 until n) {
-            val matInd = i * matStride_0 + matOffset
-            for (k in 0 until m) {
-                val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                maxAbsElement = if (elementDoubleAbsValue > maxAbsElement) elementDoubleAbsValue else maxAbsElement
+        if(consistent) {
+            for (element in mat) {
+                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                }
             }
         }
 
-        for (i in 0 until n) {
-            val matInd = i * matStride_0 + matOffset
-            for (k in 0 until m) {
-                val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+        if(maxAbsElement == 0.0) {
+            return 0.0;
+        }
+
+        //compute expression under the root
+        if (consistent) {
+            for (element in mat) {
+                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                }
             }
         }
 
         return maxAbsElement * result.pow(1 / power.toDouble())
     }
+
+    private fun norm(
+        mat: FloatArray, matOffset: Int, matStrides: IntArray,
+        n: Int, m: Int, power: Int,
+        consistent: Boolean
+    ): Double {
+        var result = 0.0
+        var maxAbsElement = 0.0;
+
+        val (matStride_0, matStride_1) = matStrides
+
+        //computes maxAbsElement
+        if(consistent) {
+            for (element in mat) {
+                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                }
+            }
+        }
+
+        if(maxAbsElement == 0.0) {
+            return 0.0;
+        }
+
+        //compute expression under the root
+        if (consistent) {
+            for (element in mat) {
+                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                }
+            }
+        }
+
+        return maxAbsElement * result.pow(1 / power.toDouble())
+    }
+
+    private fun norm(
+        mat: ShortArray, matOffset: Int, matStrides: IntArray,
+        n: Int, m: Int, power: Int,
+        consistent: Boolean
+    ): Double {
+        var result = 0.0
+        var maxAbsElement = 0.0;
+
+        val (matStride_0, matStride_1) = matStrides
+
+        //computes maxAbsElement
+        if(consistent) {
+            for (element in mat) {
+                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                }
+            }
+        }
+
+        if(maxAbsElement == 0.0) {
+            return 0.0;
+        }
+
+        //compute expression under the root
+        if (consistent) {
+            for (element in mat) {
+                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                }
+            }
+        }
+
+        return maxAbsElement * result.pow(1 / power.toDouble())
+    }
+
+    private fun norm(
+        mat: IntArray, matOffset: Int, matStrides: IntArray,
+        n: Int, m: Int, power: Int,
+        consistent: Boolean
+    ): Double {
+        var result = 0.0
+        var maxAbsElement = 0.0;
+
+        val (matStride_0, matStride_1) = matStrides
+
+        //computes maxAbsElement
+        if(consistent) {
+            for (element in mat) {
+                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                }
+            }
+        }
+
+        if(maxAbsElement == 0.0) {
+            return 0.0;
+        }
+
+        //compute expression under the root
+        if (consistent) {
+            for (element in mat) {
+                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                }
+            }
+        }
+
+        return maxAbsElement * result.pow(1 / power.toDouble())
+    }
+
+    private fun norm(
+        mat: LongArray, matOffset: Int, matStrides: IntArray,
+        n: Int, m: Int, power: Int,
+        consistent: Boolean
+    ): Double {
+        var result = 0.0
+        var maxAbsElement = 0.0;
+
+        val (matStride_0, matStride_1) = matStrides
+
+        //computes maxAbsElement
+        if(consistent) {
+            for (element in mat) {
+                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                }
+            }
+        }
+
+        if(maxAbsElement == 0.0) {
+            return 0.0;
+        }
+
+        //compute expression under the root
+        if (consistent) {
+            for (element in mat) {
+                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                }
+            }
+        }
+
+        return maxAbsElement * result.pow(1 / power.toDouble())
+    }
+
+    private fun norm(
+        mat: DoubleArray, matOffset: Int, matStrides: IntArray,
+        n: Int, m: Int, power: Int,
+        consistent: Boolean
+    ): Double {
+        var result = 0.0
+        var maxAbsElement = 0.0;
+
+        val (matStride_0, matStride_1) = matStrides
+
+        //computes maxAbsElement
+        if(consistent) {
+            for (element in mat) {
+                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                }
+            }
+        }
+
+        if(maxAbsElement == 0.0) {
+            return 0.0;
+        }
+
+        //compute expression under the root
+        if (consistent) {
+            for (element in mat) {
+                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+            }
+        } else {
+            for (i in 0 until n) {
+                val matInd = i * matStride_0 + matOffset
+                for (k in 0 until m) {
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
+                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                }
+            }
+        }
+
+        return maxAbsElement * result.pow(1 / power.toDouble())
+    }
+//----------------- end of cases for norm method ----------------------
+
+
+
 
 
     override fun <T : Number, D: Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
