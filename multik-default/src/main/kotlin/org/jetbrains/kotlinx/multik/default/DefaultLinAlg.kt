@@ -21,6 +21,8 @@ public object DefaultLinAlg : LinAlg {
 
     override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double = JvmLinAlg.norm(mat, p)
 
+    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> = NativeLinAlg.inv(mat)
+
     override fun <T : Number, D: Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         return when (a.dtype) {
             DataType.FloatDataType, DataType.DoubleDataType -> NativeLinAlg.dot(a, b)
@@ -41,5 +43,4 @@ public object DefaultLinAlg : LinAlg {
             else -> JvmLinAlg.dot(a, b)
         }
     }
-
 }

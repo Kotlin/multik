@@ -73,6 +73,22 @@ int solve_linear_system_double(int n, int nrhs, double *A, int strA, double *b, 
   return LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, A, strA, ipiv, b, strB);
 }
 
+int inverse_matrix_float(int n, float *A, int strA) {
+  int ipiv[n];
+
+  LAPACKE_sgetrf(LAPACK_ROW_MAJOR, n, n, A, strA, ipiv);
+
+  return LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, A, strA, ipiv);
+}
+
+int inverse_matrix_double(int n, double *A, int strA) {
+  int ipiv[n];
+
+  LAPACKE_dgetrf(LAPACK_ROW_MAJOR, n, n, A, strA, ipiv);
+
+  return LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, A, strA, ipiv);
+}
+
 void matrix_dot_float(float *A, int m, int n, int k, float *B, float *C) {
   float alpha = 1.0;
   cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, m, n, k, alpha, A, k, B, n, alpha, C, n);

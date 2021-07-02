@@ -20,6 +20,24 @@ public object NativeLinAlg : LinAlg {
         TODO("Not yet implemented")
     }
 
+    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
+        require(mat.shape[0] == mat.shape[1]) { "Ndarray must be square: mat.shape = ${mat.shape.joinToString(",", "(", ")")}"}
+
+        val ret = if (mat.consistent) (mat.clone() as NDArray) else (mat.deepCopy() as NDArray)
+        val info: Int = when (mat.dtype) {
+            DataType.FloatDataType -> JniLinAlg.inv(ret.shape.first(), ret.data.getFloatArray(), ret.strides.first())
+            DataType.DoubleDataType -> JniLinAlg.inv(ret.shape.first(), ret.data.getDoubleArray(), ret.strides.first())
+            else -> throw UnsupportedOperationException()
+        }
+
+        when {
+            info < 0 -> throw IllegalArgumentException("${-info} argument had illegal value. ")
+            info > 0 -> throw Exception("U($info, $info) is exactly zero. Matrix is singular and its inverse could not be computed")
+        }
+
+        return ret
+    }
+
     override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         require(a.shape[0] == a.shape[1]) { "Ndarray must be square: a.shape = ${a.shape.joinToString(",", "(", ")")}" }
         require(a.shape[0] == b.shape[0]) { "The first dimensions of the ndarrays a and b must be match: ${a.shape[0]}(a.shape[0]) != ${b.shape[0]}(b.shape[0]" }
@@ -117,6 +135,8 @@ private object JniLinAlg {
     external fun pow(mat: DoubleArray, n: Int, result: DoubleArray): Unit
     external fun norm(mat: FloatArray, p: Int): Double
     external fun norm(mat: DoubleArray, p: Int): Double
+    external fun inv(n: Int, mat: FloatArray, strA: Int): Int
+    external fun inv(n: Int, mat: DoubleArray, strA: Int): Int
     external fun solve(n: Int, nrhs: Int, a: FloatArray, strA: Int, b: FloatArray, strB: Int): Int
     external fun solve(n: Int, nrhs: Int, a: DoubleArray, strA: Int, b: DoubleArray, strB: Int): Int
     external fun dot(a: FloatArray, m: Int, n: Int, b: FloatArray, k: Int, c: FloatArray): Unit

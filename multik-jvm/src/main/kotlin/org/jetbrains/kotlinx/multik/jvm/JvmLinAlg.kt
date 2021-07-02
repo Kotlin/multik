@@ -30,6 +30,10 @@ public object JvmLinAlg : LinAlg {
         return n.pow(1 / p.toDouble())
     }
 
+    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
+        TODO("Not yet implemented")
+    }
+
     override fun <T : Number, D: Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         TODO("Not yet implemented")
     }
