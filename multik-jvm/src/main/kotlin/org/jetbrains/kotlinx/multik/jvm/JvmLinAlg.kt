@@ -67,45 +67,49 @@ public object JvmLinAlg : LinAlg {
         consistent: Boolean
     ): Double {
         var result = 0.0
-        var maxAbsElement = 0.0;
+        var maxAbsElementInt = 0
 
         val (matStride_0, matStride_1) = matStrides
 
         //computes maxAbsElement
         if(consistent) {
             for (element in mat) {
-                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+                // cast toInt() in following line is necessary for use an abs() function.
+                    // Maybe better use custom abs function here
+                maxAbsElementInt = max(element.toInt().absoluteValue, maxAbsElementInt)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                    val elementAbsValue = mat[matInd + k * matStride_1].toInt().absoluteValue
+                    maxAbsElementInt = max(elementAbsValue, maxAbsElementInt)
                 }
             }
         }
 
-        if(maxAbsElement == 0.0) {
+        if(maxAbsElementInt == 0) {
             return 0.0;
         }
+
+        val maxAbsElementDouble: Double = maxAbsElementInt.toDouble()
 
         //compute expression under the root
         if (consistent) {
             for (element in mat) {
-                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+                result += (element.toInt().absoluteValue / maxAbsElementDouble).pow(power)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
                     val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                    result += (elementDoubleAbsValue / maxAbsElementDouble).pow(power)
                 }
             }
         }
 
-        return maxAbsElement * result.pow(1 / power.toDouble())
+        return maxAbsElementDouble * result.pow(1 / power.toDouble())
     }
 
     private fun norm(
@@ -114,45 +118,46 @@ public object JvmLinAlg : LinAlg {
         consistent: Boolean
     ): Double {
         var result = 0.0
-        var maxAbsElement = 0.0;
+        var maxAbsElementFloat = 0.0f
 
         val (matStride_0, matStride_1) = matStrides
 
         //computes maxAbsElement
         if(consistent) {
             for (element in mat) {
-                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+                maxAbsElementFloat = max(element.absoluteValue, maxAbsElementFloat)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].absoluteValue
+                    maxAbsElementFloat = max(elementDoubleAbsValue, maxAbsElementFloat)
                 }
             }
         }
 
-        if(maxAbsElement == 0.0) {
+        if(maxAbsElementFloat == 0.0f) {
             return 0.0;
         }
 
         //compute expression under the root
+        val maxAbsElementDouble = maxAbsElementFloat.toDouble()
         if (consistent) {
             for (element in mat) {
-                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+                result += (element.absoluteValue / maxAbsElementDouble).pow(power)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].absoluteValue
+                    result += (elementDoubleAbsValue / maxAbsElementDouble).pow(power)
                 }
             }
         }
 
-        return maxAbsElement * result.pow(1 / power.toDouble())
+        return maxAbsElementDouble * result.pow(1 / power.toDouble())
     }
 
     private fun norm(
@@ -160,47 +165,54 @@ public object JvmLinAlg : LinAlg {
         n: Int, m: Int, power: Int,
         consistent: Boolean
     ): Double {
+        // implementation of this function is 100% copy-paste of norm(mat: ByteArray, ... ) above
         var result = 0.0
-        var maxAbsElement = 0.0;
+        var maxAbsElementInt = 0
 
         val (matStride_0, matStride_1) = matStrides
 
         //computes maxAbsElement
         if(consistent) {
             for (element in mat) {
-                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+                // cast toInt() in following line is necessary for use an abs() function.
+                // Maybe better use custom abs function here
+                maxAbsElementInt = max(element.toInt().absoluteValue, maxAbsElementInt)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                    val elementAbsValue = mat[matInd + k * matStride_1].toInt().absoluteValue
+                    maxAbsElementInt = max(elementAbsValue, maxAbsElementInt)
                 }
             }
         }
 
-        if(maxAbsElement == 0.0) {
+        if(maxAbsElementInt == 0) {
             return 0.0;
         }
+
+        val maxAbsElementDouble: Double = maxAbsElementInt.toDouble()
 
         //compute expression under the root
         if (consistent) {
             for (element in mat) {
-                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+                result += (element.toInt().absoluteValue / maxAbsElementDouble).pow(power)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
                     val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                    result += (elementDoubleAbsValue / maxAbsElementDouble).pow(power)
                 }
             }
         }
 
-        return maxAbsElement * result.pow(1 / power.toDouble())
+        return maxAbsElementDouble * result.pow(1 / power.toDouble())
     }
+
+
 
     private fun norm(
         mat: IntArray, matOffset: Int, matStrides: IntArray,
@@ -208,45 +220,49 @@ public object JvmLinAlg : LinAlg {
         consistent: Boolean
     ): Double {
         var result = 0.0
-        var maxAbsElement = 0.0;
+        var maxAbsElementInt = 0
 
         val (matStride_0, matStride_1) = matStrides
 
         //computes maxAbsElement
         if(consistent) {
             for (element in mat) {
-                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+                // cast toInt() in following line is necessary for use an abs() function.
+                // Maybe better use custom abs function here
+                maxAbsElementInt = max(element.absoluteValue, maxAbsElementInt)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                    val elementAbsValue = mat[matInd + k * matStride_1].absoluteValue
+                    maxAbsElementInt = max(elementAbsValue, maxAbsElementInt)
                 }
             }
         }
 
-        if(maxAbsElement == 0.0) {
+        if(maxAbsElementInt == 0) {
             return 0.0;
         }
+
+        val maxAbsElementDouble: Double = maxAbsElementInt.toDouble()
 
         //compute expression under the root
         if (consistent) {
             for (element in mat) {
-                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+                result += (element.absoluteValue / maxAbsElementDouble).pow(power)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
                     val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                    result += (elementDoubleAbsValue / maxAbsElementDouble).pow(power)
                 }
             }
         }
 
-        return maxAbsElement * result.pow(1 / power.toDouble())
+        return maxAbsElementDouble * result.pow(1 / power.toDouble())
     }
 
     private fun norm(
@@ -255,45 +271,49 @@ public object JvmLinAlg : LinAlg {
         consistent: Boolean
     ): Double {
         var result = 0.0
-        var maxAbsElement = 0.0;
+        var maxAbsElementLong = 0L
 
         val (matStride_0, matStride_1) = matStrides
 
         //computes maxAbsElement
         if(consistent) {
             for (element in mat) {
-                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+                // cast toInt() in following line is necessary for use an abs() function.
+                // Maybe better use custom abs function here
+                maxAbsElementLong = max(element.absoluteValue, maxAbsElementLong)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                    val elementAbsValue = mat[matInd + k * matStride_1].absoluteValue
+                    maxAbsElementLong = max(elementAbsValue, maxAbsElementLong)
                 }
             }
         }
 
-        if(maxAbsElement == 0.0) {
+        if(maxAbsElementLong == 0L) {
             return 0.0;
         }
+
+        val maxAbsElementDouble: Double = maxAbsElementLong.toDouble()
 
         //compute expression under the root
         if (consistent) {
             for (element in mat) {
-                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+                result += (element.toInt().absoluteValue / maxAbsElementDouble).pow(power)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
                     val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                    result += (elementDoubleAbsValue / maxAbsElementDouble).pow(power)
                 }
             }
         }
 
-        return maxAbsElement * result.pow(1 / power.toDouble())
+        return maxAbsElementDouble * result.pow(1 / power.toDouble())
     }
 
     private fun norm(
@@ -302,45 +322,45 @@ public object JvmLinAlg : LinAlg {
         consistent: Boolean
     ): Double {
         var result = 0.0
-        var maxAbsElement = 0.0;
+        var maxAbsElementDouble = 0.0;
 
         val (matStride_0, matStride_1) = matStrides
 
         //computes maxAbsElement
         if(consistent) {
             for (element in mat) {
-                maxAbsElement = max(element.toDouble().absoluteValue, maxAbsElement)
+                maxAbsElementDouble = max(element.absoluteValue, maxAbsElementDouble)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    maxAbsElement = max(elementDoubleAbsValue, maxAbsElement)
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].absoluteValue
+                    maxAbsElementDouble = max(elementDoubleAbsValue, maxAbsElementDouble)
                 }
             }
         }
 
-        if(maxAbsElement == 0.0) {
+        if(maxAbsElementDouble == 0.0) {
             return 0.0;
         }
 
         //compute expression under the root
         if (consistent) {
             for (element in mat) {
-                result += (element.toDouble().absoluteValue / maxAbsElement).pow(power)
+                result += (element.absoluteValue / maxAbsElementDouble).pow(power)
             }
         } else {
             for (i in 0 until n) {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    result += (elementDoubleAbsValue / maxAbsElement).pow(power)
+                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].absoluteValue
+                    result += (elementDoubleAbsValue / maxAbsElementDouble).pow(power)
                 }
             }
         }
 
-        return maxAbsElement * result.pow(1 / power.toDouble())
+        return maxAbsElementDouble * result.pow(1 / power.toDouble())
     }
 //----------------- end of cases for norm method ----------------------
 
