@@ -115,7 +115,7 @@ public fun <T : Number, D : Dimension, M : Dimension> MultiArray<T, D>.view(
     index: Int, axis: Int = 0
 ): MultiArray<T, M> {
     checkBounds(index in 0 until shape[axis], index, axis, axis)
-    return NDArray<T, M>(
+    return NDArray(
         data, offset + strides[axis] * index, shape.remove(axis),
         strides.remove(axis), this.dtype, dimensionOf(this.dim.d - 1)
     )
@@ -131,7 +131,7 @@ public fun <T : Number, D : Dimension, M : Dimension> MultiArray<T, D>.view(
     var newOffset = offset
     for (i in axes.indices)
         newOffset += strides[axes[i]] * indices[i]
-    return NDArray<T, M>(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
+    return NDArray(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
 }
 
 @JvmName("viewD2")
@@ -145,7 +145,7 @@ public fun <T : Number> MultiArray<T, D3>.view(index: Int, axis: Int = 0): Multi
 @JvmName("viewD3toD1")
 public fun <T : Number> MultiArray<T, D3>.view(
     ind1: Int, ind2: Int, axis1: Int = 0, axis2: Int = 1
-): MultiArray<T, D1> = view<T, D3, D1>(intArrayOf(ind1, ind2), intArrayOf(axis1, axis2))
+): MultiArray<T, D1> = view(intArrayOf(ind1, ind2), intArrayOf(axis1, axis2))
 
 @JvmName("viewD4")
 public fun <T : Number> MultiArray<T, D4>.view(index: Int, axis: Int = 0): MultiArray<T, D3> =
@@ -154,12 +154,12 @@ public fun <T : Number> MultiArray<T, D4>.view(index: Int, axis: Int = 0): Multi
 @JvmName("viewD4toD2")
 public fun <T : Number> MultiArray<T, D4>.view(
     ind1: Int, ind2: Int, axis1: Int = 0, axis2: Int = 1
-): MultiArray<T, D2> = view<T, D4, D2>(intArrayOf(ind1, ind2), intArrayOf(axis1, axis2))
+): MultiArray<T, D2> = view(intArrayOf(ind1, ind2), intArrayOf(axis1, axis2))
 
 @JvmName("viewD4toD1")
 public fun <T : Number> MultiArray<T, D4>.view(
     ind1: Int, ind2: Int, ind3: Int, axis1: Int = 0, axis2: Int = 1, axis3: Int = 2
-): MultiArray<T, D1> = view<T, D4, D1>(intArrayOf(ind1, ind2, ind3), intArrayOf(axis1, axis2, axis3))
+): MultiArray<T, D1> = view(intArrayOf(ind1, ind2, ind3), intArrayOf(axis1, axis2, axis3))
 
 @JvmName("viewDN")
 public fun <T : Number> MultiArray<T, DN>.view(index: Int, axis: Int = 0): MultiArray<T, DN> =
@@ -266,7 +266,7 @@ public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(inSlic
             this[axis] = (actualTo - actualFrom + slice.step - 1) / slice.step
         }
     }
-    return NDArray<T, O>(data, offset + actualFrom * strides[axis], sliceShape, sliceStrides, this.dtype, dimensionOf(sliceShape.size))
+    return NDArray(data, offset + actualFrom * strides[axis], sliceShape, sliceStrides, this.dtype, dimensionOf(sliceShape.size))
 }
 
 
@@ -312,7 +312,7 @@ public fun <T: Number, D: Dimension, O: Dimension> MultiArray<T, D>.slice(indexi
 
     newShape = newShape.removeAll(removeAxes)
     newStrides = newStrides.removeAll(removeAxes)
-    return NDArray<T, O>(this.data, newOffset, newShape, newStrides, this.dtype, dimensionOf(newShape.size))
+    return NDArray(this.data, newOffset, newShape, newStrides, this.dtype, dimensionOf(newShape.size))
 }
 
 @JvmName("get12")
@@ -493,7 +493,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.asDNArray(): NDArray<T, 
 }
 
 
-public inline fun checkBounds(value: Boolean, index: Int, axis: Int, size: Int): Unit {
+public inline fun checkBounds(value: Boolean, index: Int, axis: Int, size: Int) {
     if (!value) {
         throw IndexOutOfBoundsException("Index $index is out of bounds shape dimension $axis with size $size")
     }

@@ -50,9 +50,9 @@ public inline fun <T : Number, D : Dimension, reified M : Dimension> MultiArray<
     index: Int, axis: Int = 0
 ): MutableMultiArray<T, M> {
     checkBounds(index in 0 until shape[axis], index, axis, axis)
-    return NDArray<T, M>(
+    return NDArray(
         data, offset + strides[axis] * index, shape.remove(axis),
-        strides.remove(axis), this.dtype, dimensionClassOf<M>(this.dim.d - 1)
+        strides.remove(axis), this.dtype, dimensionClassOf(this.dim.d - 1)
     )
 }
 
@@ -66,16 +66,16 @@ public inline fun <T : Number, D : Dimension, reified M : Dimension> MultiArray<
     var newOffset = offset
     for (i in axes.indices)
         newOffset += strides[axes[i]] * indices[i]
-    return NDArray<T, M>(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
+    return NDArray(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
 }
 
 public inline fun <T : Number, D : Dimension, reified M : Dimension> MutableMultiArray<T, D>.mutableView(
     index: Int, axis: Int = 0
-): MutableMultiArray<T, M> = this.writableView<T, D, M>(index, axis)
+): MutableMultiArray<T, M> = this.writableView(index, axis)
 
 public inline fun <T : Number, D : Dimension, reified M : Dimension> MutableMultiArray<T, D>.mutableView(
     index: IntArray, axes: IntArray
-): MutableMultiArray<T, M> = this.writableView<T, D, M>(index, axes)
+): MutableMultiArray<T, M> = this.writableView(index, axes)
 
 @JvmName("mutableViewD2")
 public fun <T : Number> MutableMultiArray<T, D2>.mutableView(index: Int, axis: Int = 0): MutableMultiArray<T, D1> =
@@ -88,7 +88,7 @@ public fun <T : Number> MutableMultiArray<T, D3>.mutableView(index: Int, axis: I
 @JvmName("mutableViewD3toD1")
 public fun <T : Number> MutableMultiArray<T, D3>.mutableView(
     ind1: Int, ind2: Int, axis1: Int = 0, axis2: Int = 1
-): MutableMultiArray<T, D1> = mutableView<T, D3, D1>(intArrayOf(ind1, ind2), intArrayOf(axis1, axis2))
+): MutableMultiArray<T, D1> = mutableView(intArrayOf(ind1, ind2), intArrayOf(axis1, axis2))
 
 @JvmName("mutableViewD4")
 public fun <T : Number> MutableMultiArray<T, D4>.mutableView(index: Int, axis: Int = 0): MutableMultiArray<T, D3> =
@@ -97,12 +97,12 @@ public fun <T : Number> MutableMultiArray<T, D4>.mutableView(index: Int, axis: I
 @JvmName("mutableViewD4toD2")
 public fun <T : Number> MutableMultiArray<T, D4>.mutableView(
     ind1: Int, ind2: Int, axis1: Int = 0, axis2: Int = 1
-): MutableMultiArray<T, D2> = mutableView<T, D4, D2>(intArrayOf(ind1, ind2), intArrayOf(axis1, axis2))
+): MutableMultiArray<T, D2> = mutableView(intArrayOf(ind1, ind2), intArrayOf(axis1, axis2))
 
 @JvmName("mutableViewD4toD1")
 public fun <T : Number> MutableMultiArray<T, D4>.mutableView(
     ind1: Int, ind2: Int, ind3: Int, axis1: Int = 0, axis2: Int = 1, axis3: Int = 2
-): MutableMultiArray<T, D1> = mutableView<T, D4, D1>(intArrayOf(ind1, ind2, ind3), intArrayOf(axis1, axis2, axis3))
+): MutableMultiArray<T, D1> = mutableView(intArrayOf(ind1, ind2, ind3), intArrayOf(axis1, axis2, axis3))
 
 @JvmName("mutableViewDN")
 public fun <T : Number> MutableMultiArray<T, DN>.mutableView(index: Int, axis: Int = 0): MutableMultiArray<T, DN> =
@@ -148,13 +148,13 @@ public operator fun <T : Number> MutableMultiArray<T, D4>.get(
 //____________________________________________________Set_______________________________________________________________
 
 @JvmName("set0")
-public operator fun <T : Number> MutableMultiArray<T, D1>.set(index: Int, value: T): Unit {
+public operator fun <T : Number> MutableMultiArray<T, D1>.set(index: Int, value: T) {
     checkBounds(index in 0 until this.shape[0], index, 0, this.shape[0])
     data[offset + strides.first() * index] = value
 }
 
 @JvmName("set1")
-public operator fun <T : Number> MutableMultiArray<T, D2>.set(index: Int, value: MultiArray<T, D1>): Unit {
+public operator fun <T : Number> MutableMultiArray<T, D2>.set(index: Int, value: MultiArray<T, D1>) {
     val ret = this.mutableView(index, 0)
     requireArraySizes(ret.size, value.size)
     for (i in ret.indices)
@@ -162,14 +162,14 @@ public operator fun <T : Number> MutableMultiArray<T, D2>.set(index: Int, value:
 }
 
 @JvmName("set2")
-public operator fun <T : Number> MutableMultiArray<T, D2>.set(ind1: Int, ind2: Int, value: T): Unit {
+public operator fun <T : Number> MutableMultiArray<T, D2>.set(ind1: Int, ind2: Int, value: T) {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
     checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
     data[offset + strides[0] * ind1 + strides[1] * ind2] = value
 }
 
 @JvmName("set3")
-public operator fun <T : Number> MutableMultiArray<T, D3>.set(index: Int, value: MultiArray<T, D2>): Unit {
+public operator fun <T : Number> MutableMultiArray<T, D3>.set(index: Int, value: MultiArray<T, D2>) {
     val ret = this.mutableView(index, 0)
     requireArraySizes(ret.size, value.size)
     for ((i, j) in ret.multiIndices)
@@ -177,14 +177,14 @@ public operator fun <T : Number> MutableMultiArray<T, D3>.set(index: Int, value:
 }
 
 @JvmName("set4")
-public operator fun <T : Number> MutableMultiArray<T, D3>.set(ind1: Int, ind2: Int, value: MultiArray<T, D1>): Unit {
+public operator fun <T : Number> MutableMultiArray<T, D3>.set(ind1: Int, ind2: Int, value: MultiArray<T, D1>) {
     val ret = this.mutableView(ind1, ind2, 0, 1)
     for (i in ret.indices)
         ret[i] = value[i]
 }
 
 @JvmName("set5")
-public operator fun <T : Number> MutableMultiArray<T, D3>.set(ind1: Int, ind2: Int, ind3: Int, value: T): Unit {
+public operator fun <T : Number> MutableMultiArray<T, D3>.set(ind1: Int, ind2: Int, ind3: Int, value: T) {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
     checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
     checkBounds(ind3 in 0 until this.shape[2], ind3, 2, this.shape[2])
@@ -192,32 +192,28 @@ public operator fun <T : Number> MutableMultiArray<T, D3>.set(ind1: Int, ind2: I
 }
 
 @JvmName("set6")
-public operator fun <T : Number> MutableMultiArray<T, D4>.set(index: Int, value: MultiArray<T, D3>): Unit {
+public operator fun <T : Number> MutableMultiArray<T, D4>.set(index: Int, value: MultiArray<T, D3>) {
     val ret = this.mutableView(index, 0)
     for ((i, j, k) in ret.multiIndices)
         ret[i, j, k] = value[i, j, k]
 }
 
 @JvmName("set7")
-public operator fun <T : Number> MutableMultiArray<T, D4>.set(ind1: Int, ind2: Int, value: MultiArray<T, D2>): Unit {
+public operator fun <T : Number> MutableMultiArray<T, D4>.set(ind1: Int, ind2: Int, value: MultiArray<T, D2>) {
     val ret = this.mutableView(ind1, ind2, 0, 1)
     for ((i, j) in ret.multiIndices)
         ret[i, j] = value[i, j]
 }
 
 @JvmName("set8")
-public operator fun <T : Number> MutableMultiArray<T, D4>.set(
-    ind1: Int, ind2: Int, ind3: Int, value: MultiArray<T, D1>
-): Unit {
+public operator fun <T : Number> MutableMultiArray<T, D4>.set(ind1: Int, ind2: Int, ind3: Int, value: MultiArray<T, D1>) {
     val ret = this.mutableView(ind1, ind2, ind3, 0, 1, 2)
     for (i in ret.indices)
         ret[i] = value[i]
 }
 
 @JvmName("set9")
-public operator fun <T : Number> MutableMultiArray<T, D4>.set(
-    ind1: Int, ind2: Int, ind3: Int, ind4: Int, value: T
-): Unit {
+public operator fun <T : Number> MutableMultiArray<T, D4>.set(ind1: Int, ind2: Int, ind3: Int, ind4: Int, value: T) {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
     checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
     checkBounds(ind3 in 0 until this.shape[2], ind3, 2, this.shape[2])
@@ -226,12 +222,12 @@ public operator fun <T : Number> MutableMultiArray<T, D4>.set(
 }
 
 @JvmName("set10")
-public operator fun <T : Number> MutableMultiArray<T, DN>.set(vararg index: Int, value: T): Unit {
+public operator fun <T : Number> MutableMultiArray<T, DN>.set(vararg index: Int, value: T) {
     set(index, value)
 }
 
 @JvmName("set11")
-public operator fun <T : Number> MutableMultiArray<T, DN>.set(index: IntArray, value: T): Unit {
+public operator fun <T : Number> MutableMultiArray<T, DN>.set(index: IntArray, value: T) {
     check(index.size == dim.d) { "number of indices doesn't match dimension: ${index.size} != ${dim.d}" }
     for (i in index.indices)
         checkBounds(index[i] in 0 until this.shape[i], index[i], i, this.shape[i])

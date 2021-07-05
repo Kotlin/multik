@@ -9,7 +9,7 @@ import kotlin.math.*
 
 private fun unsupported(): Nothing = throw UnsupportedOperationException("Not supported for local property reference.")
 
-public fun <T : Number, D : Dimension> NDArray<T, D>.inplace(init: InplaceOperation<T, D>.() -> Unit): Unit {
+public fun <T : Number, D : Dimension> NDArray<T, D>.inplace(init: InplaceOperation<T, D>.() -> Unit) {
     val inplaceOperation = InplaceOperation(this)
     inplaceOperation.init()
 }
@@ -23,7 +23,7 @@ public sealed class Inplace<T : Number, D : Dimension>(public val base: MutableM
 public open class InplaceOperation<T : Number, D : Dimension>(base: MutableMultiArray<T, D>) : Inplace<T, D>(base)
 
 @JvmName("mathD1")
-public fun <T : Number> InplaceOperation<T, D1>.math(init: InplaceMath<T, D1>.() -> Unit): Unit {
+public fun <T : Number> InplaceOperation<T, D1>.math(init: InplaceMath<T, D1>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()
     for (op in math.batchOperation) {
@@ -37,7 +37,7 @@ public fun <T : Number> InplaceOperation<T, D1>.math(init: InplaceMath<T, D1>.()
 }
 
 @JvmName("mathD2")
-public fun <T : Number> InplaceOperation<T, D2>.math(init: InplaceMath<T, D2>.() -> Unit): Unit {
+public fun <T : Number> InplaceOperation<T, D2>.math(init: InplaceMath<T, D2>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()
     for (op in math.batchOperation)
@@ -51,7 +51,7 @@ public fun <T : Number> InplaceOperation<T, D2>.math(init: InplaceMath<T, D2>.()
 }
 
 @JvmName("mathD3")
-public fun <T : Number> InplaceOperation<T, D3>.math(init: InplaceMath<T, D3>.() -> Unit): Unit {
+public fun <T : Number> InplaceOperation<T, D3>.math(init: InplaceMath<T, D3>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()
     for (op in math.batchOperation)
@@ -66,7 +66,7 @@ public fun <T : Number> InplaceOperation<T, D3>.math(init: InplaceMath<T, D3>.()
 }
 
 @JvmName("mathD4")
-public fun <T : Number> InplaceOperation<T, D4>.math(init: InplaceMath<T, D4>.() -> Unit): Unit {
+public fun <T : Number> InplaceOperation<T, D4>.math(init: InplaceMath<T, D4>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()
     for (op in math.batchOperation)
@@ -82,7 +82,7 @@ public fun <T : Number> InplaceOperation<T, D4>.math(init: InplaceMath<T, D4>.()
 }
 
 @JvmName("mathDN")
-public fun <T : Number> InplaceOperation<T, DN>.math(init: InplaceMath<T, DN>.() -> Unit): Unit {
+public fun <T : Number> InplaceOperation<T, DN>.math(init: InplaceMath<T, DN>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()
     for (op in math.batchOperation)

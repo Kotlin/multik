@@ -10,7 +10,7 @@ ext {
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
