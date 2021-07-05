@@ -169,49 +169,13 @@ public object JvmLinAlg : LinAlg {
                 ret
             }
             DataType.ShortDataType -> {
-                val ret = D2Array(
-                    MemoryViewShortArray(ShortArray(newShape[0] * newShape[1])),
-                    0,
-                    newShape,
-                    dtype = DataType.ShortDataType,
-                    dim = D2
-                )
-                dotMatrix(
-                    a.data.getShortArray(),
-                    a.offset,
-                    a.strides,
-                    b.data.getShortArray(),
-                    b.offset,
-                    b.strides,
-                    newShape[0],
-                    newShape[1],
-                    a.shape[1],
-                    ret.data.getShortArray(),
-                    ret.strides[0]
-                )
+                val ret = D2Array(MemoryViewShortArray(ShortArray(newShape[0] * newShape[1])), 0, newShape, dtype = DataType.ShortDataType, dim = D2)
+                dotMatrix(a.data.getShortArray(), a.offset, a.strides, b.data.getShortArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getShortArray(), ret.strides[0])
                 ret
             }
             DataType.ByteDataType -> {
-                val ret = D2Array(
-                    MemoryViewByteArray(ByteArray(newShape[0] * newShape[1])),
-                    0,
-                    newShape,
-                    dtype = DataType.ByteDataType,
-                    dim = D2
-                )
-                dotMatrix(
-                    a.data.getByteArray(),
-                    a.offset,
-                    a.strides,
-                    b.data.getByteArray(),
-                    b.offset,
-                    b.strides,
-                    newShape[0],
-                    newShape[1],
-                    a.shape[1],
-                    ret.data.getByteArray(),
-                    ret.strides[0]
-                )
+                val ret = D2Array(MemoryViewByteArray(ByteArray(newShape[0] * newShape[1])), 0, newShape, dtype = DataType.ByteDataType, dim = D2)
+                dotMatrix(a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getByteArray(), ret.strides[0])
                 ret
             }
         } as D2Array<T>
