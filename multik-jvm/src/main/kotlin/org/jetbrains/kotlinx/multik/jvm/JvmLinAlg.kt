@@ -325,38 +325,12 @@ public object JvmLinAlg : LinAlg {
                     dtype = DataType.FloatDataType,
                     dim = D1
                 )
-                dotVector(
-                    a.data.getFloatArray(),
-                    a.offset,
-                    a.strides,
-                    b.data.getFloatArray(),
-                    b.offset,
-                    b.strides[0],
-                    newShape[0],
-                    b.shape[0],
-                    ret.data.getFloatArray()
-                )
+                dotVector(a.data.getFloatArray(), a.offset, a.strides, b.data.getFloatArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getFloatArray())
                 ret
             }
             DataType.IntDataType -> {
-                val ret = D1Array(
-                    MemoryViewIntArray(IntArray(newShape[0])),
-                    0,
-                    newShape,
-                    dtype = DataType.IntDataType,
-                    dim = D1
-                )
-                dotVector(
-                    a.data.getIntArray(),
-                    a.offset,
-                    a.strides,
-                    b.data.getIntArray(),
-                    b.offset,
-                    b.strides[0],
-                    newShape[0],
-                    b.shape[0],
-                    ret.data.getIntArray()
-                )
+                val ret = D1Array(MemoryViewIntArray(IntArray(newShape[0])), 0, newShape, dtype = DataType.IntDataType, dim = D1)
+                dotVector(a.data.getIntArray(), a.offset, a.strides, b.data.getIntArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getIntArray())
                 ret
             }
             DataType.DoubleDataType -> {
