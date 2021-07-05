@@ -8,7 +8,7 @@ import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jni.NativeEngine
 
 public class DefaultEngineProvider : EngineProvider {
-    override fun getEngine(): Engine? {
+    override fun getEngine(): Engine {
         return DefaultEngine
     }
 }

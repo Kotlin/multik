@@ -1,5 +1,6 @@
 package org.jetbrains.kotlinx.multik.jni.linalg
 
+import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.api.ndarrayOf
@@ -145,5 +146,21 @@ class NativeLinAlgTest {
         val actual =
             BigDecimal(NativeLinAlg.dot(vector1, vector2).toDouble()).setScale(2, RoundingMode.HALF_UP).toDouble()
         assertEquals(1.71, actual)
+    }
+
+    @Test
+    fun `compute inverse matrix of float`() {
+        val a = mk.ndarray(mk[mk[1f, 2f], mk[3f, 4f]])
+        val ainv = NativeLinAlg.inv(a)
+
+        assertEquals(mk.identity(2), roundFloat(NativeLinAlg.dot(a, ainv)))
+    }
+
+    @Test
+    fun `compute inverse matrix of double`() {
+        val a = mk.ndarray(mk[mk[1.0, 2.0], mk[3.0, 4.0]])
+        val ainv = NativeLinAlg.inv(a)
+
+        assertEquals(mk.identity(2), roundDouble(NativeLinAlg.dot(a, ainv)))
     }
 }

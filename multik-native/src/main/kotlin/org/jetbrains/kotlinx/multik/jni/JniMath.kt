@@ -186,7 +186,7 @@ public object NativeMath : Math {
         } else {
             function(a.data.data, a.offset, a.size, a.shape, a.strides, data.data, a.dtype.nativeCode)
         }
-        return NDArray<Double, D>(data, 0, a.shape, dtype = DataType.DoubleDataType, dim = a.dim)
+        return NDArray(data, 0, a.shape, dtype = DataType.DoubleDataType, dim = a.dim)
     }
 
 }

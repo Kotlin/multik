@@ -57,7 +57,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.asSequence(): Sequence<T
  */
 public inline fun <T : Number, D : Dimension, K, V> MultiArray<T, D>.associate(transform: (T) -> Pair<K, V>): Map<K, V> {
     val capacity = mapCapacity(this.size).coerceAtLeast(16)
-    return associateTo(LinkedHashMap<K, V>(capacity), transform)
+    return associateTo(LinkedHashMap(capacity), transform)
 }
 
 /**
@@ -70,7 +70,7 @@ public inline fun <T : Number, D : Dimension, K, V> MultiArray<T, D>.associate(t
  */
 public inline fun <T : Number, D : Dimension, K> MultiArray<T, D>.associateBy(keySelector: (T) -> K): Map<K, T> {
     val capacity = mapCapacity(size).coerceAtLeast(16)
-    return associateByTo(LinkedHashMap<K, T>(capacity), keySelector)
+    return associateByTo(LinkedHashMap(capacity), keySelector)
 }
 
 /**
@@ -84,7 +84,7 @@ public inline fun <T : Number, D : Dimension, K, V> MultiArray<T, D>.associateBy
     keySelector: (T) -> K, valueTransform: (T) -> V
 ): Map<K, V> {
     val capacity = mapCapacity(size).coerceAtLeast(16)
-    return associateByTo(LinkedHashMap<K, V>(capacity), keySelector, valueTransform)
+    return associateByTo(LinkedHashMap(capacity), keySelector, valueTransform)
 }
 
 /**
@@ -141,7 +141,7 @@ public inline fun <T : Number, D : Dimension, K, V, M : MutableMap<in K, in V>> 
  */
 public inline fun <K : Number, D : Dimension, V> MultiArray<K, D>.associateWith(valueSelector: (K) -> V): Map<K, V> {
     val capacity = mapCapacity(size).coerceAtLeast(16)
-    return associateWithTo(LinkedHashMap<K, V>(capacity), valueSelector)
+    return associateWithTo(LinkedHashMap(capacity), valueSelector)
 }
 
 /**
@@ -162,8 +162,8 @@ public inline fun <K : Number, D : Dimension, V, M : MutableMap<in K, in V>> Mul
  * Returns an average value of elements in the ndarray.
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.average(): Double {
-    var sum: Double = 0.0
-    var count: Int = 0
+    var sum = 0.0
+    var count = 0
     for (element in this) {
         sum += element.toDouble()
         if (++count < 0) throw ArithmeticException("Count overflow has happened.")
@@ -236,9 +236,9 @@ public fun <T : Number> MultiArray<T, D1>.drop(n: Int): D1Array<T> {
     val resultSize = size - abs(n)
     if (resultSize < 0) return D1Array(initMemoryView(0, dtype), shape = intArrayOf(0), dtype = dtype, dim = D1)
     val k = if (n < 0) 0 else n
-    val d = initMemoryView<T>(resultSize, dtype) { this[it + k] }
+    val d = initMemoryView(resultSize, dtype) { this[it + k] }
     val shape = intArrayOf(resultSize)
-    return D1Array<T>(d, shape = shape, dtype = dtype, dim = D1)
+    return D1Array(d, shape = shape, dtype = dtype, dim = D1)
 }
 
 /**
@@ -440,7 +440,7 @@ public inline fun <T : Number, D : Dimension, R> MultiArray<T, D>.foldIndexed(
 /**
  * Performs the given [action] on each element.
  */
-public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEach(action: (T) -> Unit): Unit {
+public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEach(action: (T) -> Unit) {
     for (element in this) action(element)
 }
 
@@ -450,7 +450,7 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEach(action: (
  * and performs the desired action on the element.
  */
 @JvmName("forEachD1Indexed")
-public inline fun <T : Number> MultiArray<T, D1>.forEachIndexed(action: (index: Int, T) -> Unit): Unit {
+public inline fun <T : Number> MultiArray<T, D1>.forEachIndexed(action: (index: Int, T) -> Unit) {
     var index = 0
     for (item in this) action(checkIndexOverflow(index++), item)
 }
@@ -461,7 +461,7 @@ public inline fun <T : Number> MultiArray<T, D1>.forEachIndexed(action: (index: 
  * and performs the desired action on the element.
  */
 @JvmName("forEachDNIndexed")
-public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEachIndexed(action: (index: IntArray, T) -> Unit): Unit {
+public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEachIndexed(action: (index: IntArray, T) -> Unit) {
     val indexIter = this.multiIndices.iterator()
     for (item in this) {
         if (indexIter.hasNext())
@@ -477,7 +477,7 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEachIndexed(ac
  * and returns a map where each group key is associated with an ndarray of matching elements.
  */
 public inline fun <T : Number, D : Dimension, K> MultiArray<T, D>.groupNDArrayBy(keySelector: (T) -> K): Map<K, NDArray<T, D1>> {
-    return groupNDArrayByTo(LinkedHashMap<K, NDArray<T, D1>>(), keySelector)
+    return groupNDArrayByTo(LinkedHashMap(), keySelector)
 }
 
 /**
@@ -488,7 +488,7 @@ public inline fun <T : Number, D : Dimension, K> MultiArray<T, D>.groupNDArrayBy
 public inline fun <T : Number, D : Dimension, K, V : Number> MultiArray<T, D>.groupNDArrayBy(
     keySelector: (T) -> K, valueTransform: (T) -> V
 ): Map<K, NDArray<V, D1>> {
-    return groupNDArrayByTo(LinkedHashMap<K, NDArray<V, D1>>(), keySelector, valueTransform)
+    return groupNDArrayByTo(LinkedHashMap(), keySelector, valueTransform)
 }
 
 /**
@@ -501,7 +501,7 @@ public inline fun <T : Number, D : Dimension, K, M : MutableMap<in K, NDArray<T,
     val map = LinkedHashMap<K, MutableList<T>>()
     for (element in this) {
         val key = keySelector(element)
-        val list = map.getOrPut(key) { ArrayList<T>() }
+        val list = map.getOrPut(key) { ArrayList() }
         list.add(element)
     }
     for (item in map)
@@ -520,7 +520,7 @@ public inline fun <T : Number, D : Dimension, K, V : Number, M : MutableMap<in K
     val map = LinkedHashMap<K, MutableList<V>>()
     for (element in this) {
         val key = keySelector(element)
-        val list = map.getOrPut(key) { ArrayList<V>() }
+        val list = map.getOrPut(key) { ArrayList() }
         list.add(valueTransform(element))
     }
     for (item in map)
@@ -706,7 +706,7 @@ public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, 
     var count = 0
     for (i in this.multiIndices)
         data[count++] = transform(op[i])
-    return NDArray<R, D>(data, shape = shape, dtype = newDtype, dim = dim)
+    return NDArray(data, shape = shape, dtype = newDtype, dim = dim)
 }
 
 /**
@@ -719,7 +719,7 @@ public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.mapIndexed(
     var index = 0
     for (item in this)
         data[index] = transform(index++, item)
-    return D1Array<R>(data, shape = shape, dtype = newDtype, dim = D1)
+    return D1Array(data, shape = shape, dtype = newDtype, dim = D1)
 }
 
 /**
@@ -738,7 +738,7 @@ public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, 
             throw ArithmeticException("Index overflow has happened.")
         }
     }
-    return NDArray<R, D>(data, shape = shape, dtype = newDtype, dim = dim)
+    return NDArray(data, shape = shape, dtype = newDtype, dim = dim)
 }
 
 /**
@@ -750,7 +750,7 @@ public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.mapIndexedN
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
     forEachIndexed { index: Int, element -> transform(index, element)?.let { data[count++] = it } }
-    return D1Array<R>(data, shape = shape, dtype = newDtype, dim = D1)
+    return D1Array(data, shape = shape, dtype = newDtype, dim = D1)
 }
 
 /**
@@ -762,7 +762,7 @@ public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, 
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
     forEachIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
-    return NDArray<R, D>(data, shape = shape.copyOf(), dtype = newDtype, dim = dim)
+    return NDArray(data, shape = shape.copyOf(), dtype = newDtype, dim = dim)
 }
 
 /**
@@ -773,7 +773,7 @@ public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, 
     val data = initMemoryView<R>(size, newDtype)
     var index = 0
     forEach { element -> transform(element)?.let { data[index++] = it } }
-    return NDArray<R, D>(data, shape = shape, dtype = newDtype, dim = dim)
+    return NDArray(data, shape = shape, dtype = newDtype, dim = dim)
 }
 
 /**
@@ -939,7 +939,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.windowed(
         }
         index += rStep
     }
-    return D2Array<T>(resData, 0, intArrayOf(resultCapacity / rSize, rSize), dtype = this.dtype, dim = D2)
+    return D2Array(resData, 0, intArrayOf(resultCapacity / rSize, rSize), dtype = this.dtype, dim = D2)
 }
 
 /**
@@ -1013,7 +1013,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.reversed(): NDArray<T, D
     var index = this.size - 1
     for (element in this)
         data[index--] = element
-    return NDArray<T, D>(data, 0, this.shape.copyOf(), dtype = this.dtype, dim = this.dim)
+    return NDArray(data, 0, this.shape.copyOf(), dtype = this.dtype, dim = this.dim)
 }
 
 
@@ -1038,7 +1038,7 @@ public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, 
         accumulator = operation(accumulator, element)
         data[index++] = accumulator
     }
-    return NDArray<R, D>(data, 0, this.shape.copyOf(), dtype = dataType, dim = this.dim)
+    return NDArray(data, 0, this.shape.copyOf(), dtype = dataType, dim = this.dim)
 }
 
 /**
@@ -1060,7 +1060,7 @@ public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.scanIndexed
         accumulator = operation(count, accumulator, ndarrayIter.next())
         data[count++] = accumulator
     }
-    return D1Array<R>(data, 0, this.shape.copyOf(), dtype = dataType, dim = D1)
+    return D1Array(data, 0, this.shape.copyOf(), dtype = dataType, dim = D1)
 }
 
 /**
@@ -1081,7 +1081,7 @@ public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, 
         accumulator = operation(indexIter.next(), accumulator, ndarrayIter.next())
         data[count++] = accumulator
     }
-    return NDArray<R, D>(data, 0, this.shape.copyOf(), dtype = dataType, dim = this.dim)
+    return NDArray(data, 0, this.shape.copyOf(), dtype = dataType, dim = this.dim)
 }
 
 /**
@@ -1116,7 +1116,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.sum(): T {
  * Returns the sum of all values produced by [selector] function applied to each element in the collection.
  */
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.sumBy(selector: (T) -> Int): Int {
-    var sum: Int = 0
+    var sum = 0
     for (element in this) {
         sum += selector(element)
     }
@@ -1148,7 +1148,7 @@ public fun <T : Number, D : Dimension, C : MutableCollection<in T>> MultiArray<T
  * Returns a [HashSet] of all elements.
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.toHashSet(): HashSet<T> {
-    return toCollection(HashSet<T>(mapCapacity(size)))
+    return toCollection(HashSet(mapCapacity(size)))
 }
 
 /**
@@ -1166,7 +1166,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.toList(): List<T> {
  * Returns a [MutableList] filled with all elements of this collection.
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.toMutableList(): MutableList<T> {
-    return toCollection(ArrayList<T>())
+    return toCollection(ArrayList())
 }
 
 /**
@@ -1175,7 +1175,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.toMutableList(): Mutable
  * The returned set preserves the element iteration order of the original collection.
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.toMutableSet(): MutableSet<T> {
-    return toCollection(LinkedHashSet<T>())
+    return toCollection(LinkedHashSet())
 }
 
 /**
@@ -1187,7 +1187,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.toSet(): Set<T> {
     return when (size) {
         0 -> emptySet()
         1 -> setOf(this.first())
-        else -> toCollection(LinkedHashSet<T>(mapCapacity(size)))
+        else -> toCollection(LinkedHashSet(mapCapacity(size)))
     }
 }
 
@@ -1195,7 +1195,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.toSet(): Set<T> {
  * Returns a [SortedSet][java.util.SortedSet] of all elements.
  */
 public fun <T, D : Dimension> MultiArray<T, D>.toSortedSet(): java.util.SortedSet<T> where T : Number, T : Comparable<T> {
-    return toCollection(java.util.TreeSet<T>())
+    return toCollection(java.util.TreeSet())
 }
 
 /**
@@ -1204,7 +1204,7 @@ public fun <T, D : Dimension> MultiArray<T, D>.toSortedSet(): java.util.SortedSe
  * Elements in the set returned are sorted according to the given [comparator].
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.toSortedSet(comparator: Comparator<in T>): java.util.SortedSet<T> {
-    return toCollection(java.util.TreeSet<T>(comparator))
+    return toCollection(java.util.TreeSet(comparator))
 }
 
 @PublishedApi

@@ -77,12 +77,12 @@ public object NativeLinAlg : LinAlg {
                 DataType.FloatDataType -> {
                     val c = FloatArray(shape[0] * shape[1])
                     JniLinAlg.dot(a.data.getFloatArray(), shape[0], shape[1], b.data.getFloatArray(), a.shape[1], c)
-                    D2Array<Float>(MemoryViewFloatArray(c), 0, shape, dtype = DataType.FloatDataType, dim = D2)
+                    D2Array(MemoryViewFloatArray(c), 0, shape, dtype = DataType.FloatDataType, dim = D2)
                 }
                 DataType.DoubleDataType -> {
                     val c = DoubleArray(shape[0] * shape[1])
                     JniLinAlg.dot(a.data.getDoubleArray(), shape[0], shape[1], b.data.getDoubleArray(), a.shape[1], c)
-                    D2Array<Double>(MemoryViewDoubleArray(c), 0, shape, dtype = DataType.DoubleDataType, dim = D2)
+                    D2Array(MemoryViewDoubleArray(c), 0, shape, dtype = DataType.DoubleDataType, dim = D2)
                 }
                 else -> throw UnsupportedOperationException()
             } as NDArray<T, D>
@@ -92,12 +92,12 @@ public object NativeLinAlg : LinAlg {
                 DataType.FloatDataType -> {
                     val c = FloatArray(shape[0])
                     JniLinAlg.dot(a.data.getFloatArray(), a.shape[0], a.shape[1], b.data.getFloatArray(), c)
-                    D1Array<Float>(MemoryViewFloatArray(c), 0, shape, dtype = a.dtype, dim = D1)
+                    D1Array(MemoryViewFloatArray(c), 0, shape, dtype = a.dtype, dim = D1)
                 }
                 DataType.DoubleDataType -> {
                     val c = DoubleArray(shape[0])
                     JniLinAlg.dot(a.data.getDoubleArray(), a.shape[0], a.shape[1], b.data.getDoubleArray(), c)
-                    D1Array<Double>(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D1)
+                    D1Array(MemoryViewDoubleArray(c), 0, shape, dtype = a.dtype, dim = D1)
                 }
                 else -> throw UnsupportedOperationException()
             } as NDArray<T, D>
@@ -131,18 +131,18 @@ public object NativeLinAlg : LinAlg {
 }
 
 private object JniLinAlg {
-    external fun pow(mat: FloatArray, n: Int, result: FloatArray): Unit
-    external fun pow(mat: DoubleArray, n: Int, result: DoubleArray): Unit
+    external fun pow(mat: FloatArray, n: Int, result: FloatArray)
+    external fun pow(mat: DoubleArray, n: Int, result: DoubleArray)
     external fun norm(mat: FloatArray, p: Int): Double
     external fun norm(mat: DoubleArray, p: Int): Double
     external fun inv(n: Int, mat: FloatArray, strA: Int): Int
     external fun inv(n: Int, mat: DoubleArray, strA: Int): Int
     external fun solve(n: Int, nrhs: Int, a: FloatArray, strA: Int, b: FloatArray, strB: Int): Int
     external fun solve(n: Int, nrhs: Int, a: DoubleArray, strA: Int, b: DoubleArray, strB: Int): Int
-    external fun dot(a: FloatArray, m: Int, n: Int, b: FloatArray, k: Int, c: FloatArray): Unit
-    external fun dot(a: DoubleArray, m: Int, n: Int, b: DoubleArray, k: Int, c: DoubleArray): Unit
-    external fun dot(a: FloatArray, m: Int, n: Int, b: FloatArray, c: FloatArray): Unit
-    external fun dot(a: DoubleArray, m: Int, n: Int, b: DoubleArray, c: DoubleArray): Unit
+    external fun dot(a: FloatArray, m: Int, n: Int, b: FloatArray, k: Int, c: FloatArray)
+    external fun dot(a: DoubleArray, m: Int, n: Int, b: DoubleArray, k: Int, c: DoubleArray)
+    external fun dot(a: FloatArray, m: Int, n: Int, b: FloatArray, c: FloatArray)
+    external fun dot(a: DoubleArray, m: Int, n: Int, b: DoubleArray, c: DoubleArray)
     external fun dot(n: Int, a: FloatArray, strideA: Int, b: FloatArray, strideB: Int): Float
     external fun dot(n: Int, a: DoubleArray, strideA: Int, b: DoubleArray, strideB: Int): Double
 }

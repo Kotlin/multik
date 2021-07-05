@@ -23,7 +23,7 @@ internal inline fun requireElementsWithShape(elementSize: Int, shapeSize: Int) {
 
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun requireArraySizes(rightSize: Int, otherSize: Int) {
-    require(rightSize == otherSize) { "Array sizes don't match: (right operand size) ${rightSize}!= ${otherSize} (left operand size)" }
+    require(rightSize == otherSize) { "Array sizes don't match: (right operand size) $rightSize != $otherSize (left operand size)" }
 }
 
 @Suppress("NOTHING_TO_INLINE")
