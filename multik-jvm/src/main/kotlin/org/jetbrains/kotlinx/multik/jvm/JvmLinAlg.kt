@@ -475,70 +475,22 @@ public object JvmLinAlg : LinAlg {
         require(a.size == b.size) { "Sizes a and b don't match: a.size(${a.size}) != b.size(${b.size})" }
         return when (a.dtype) {
             DataType.FloatDataType -> {
-                dotVecToVec(
-                    a.data.getFloatArray(),
-                    a.offset,
-                    a.strides[0],
-                    b.data.getFloatArray(),
-                    b.offset,
-                    b.strides[0],
-                    a.size
-                )
+                dotVecToVec(a.data.getFloatArray(), a.offset, a.strides[0], b.data.getFloatArray(), b.offset, b.strides[0], a.size)
             }
             DataType.IntDataType -> {
-                dotVecToVec(
-                    a.data.getIntArray(),
-                    a.offset,
-                    a.strides[0],
-                    b.data.getIntArray(),
-                    b.offset,
-                    b.strides[0],
-                    a.size
-                )
+                dotVecToVec(a.data.getIntArray(), a.offset, a.strides[0], b.data.getIntArray(), b.offset, b.strides[0], a.size)
             }
             DataType.DoubleDataType -> {
-                dotVecToVec(
-                    a.data.getDoubleArray(),
-                    a.offset,
-                    a.strides[0],
-                    b.data.getDoubleArray(),
-                    b.offset,
-                    b.strides[0],
-                    a.size
-                )
+                dotVecToVec(a.data.getDoubleArray(), a.offset, a.strides[0], b.data.getDoubleArray(), b.offset, b.strides[0], a.size)
             }
             DataType.LongDataType -> {
-                dotVecToVec(
-                    a.data.getLongArray(),
-                    a.offset,
-                    a.strides[0],
-                    b.data.getLongArray(),
-                    b.offset,
-                    b.strides[0],
-                    a.size
-                )
+                dotVecToVec(a.data.getLongArray(), a.offset, a.strides[0], b.data.getLongArray(), b.offset, b.strides[0], a.size)
             }
             DataType.ShortDataType -> {
-                dotVecToVec(
-                    a.data.getShortArray(),
-                    a.offset,
-                    a.strides[0],
-                    b.data.getShortArray(),
-                    b.offset,
-                    b.strides[0],
-                    a.size
-                )
+                dotVecToVec(a.data.getShortArray(), a.offset, a.strides[0], b.data.getShortArray(), b.offset, b.strides[0], a.size)
             }
             DataType.ByteDataType -> {
-                dotVecToVec(
-                    a.data.getByteArray(),
-                    a.offset,
-                    a.strides[0],
-                    b.data.getByteArray(),
-                    b.offset,
-                    b.strides[0],
-                    a.size
-                )
+                dotVecToVec(a.data.getByteArray(), a.offset, a.strides[0], b.data.getByteArray(), b.offset, b.strides[0], a.size)
             }
         } as T
     }
