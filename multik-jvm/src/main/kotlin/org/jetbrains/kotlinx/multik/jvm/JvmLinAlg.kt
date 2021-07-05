@@ -5,15 +5,12 @@
 package org.jetbrains.kotlinx.multik.jvm
 
 import org.jetbrains.kotlinx.multik.api.LinAlg
-import org.jetbrains.kotlinx.multik.api.d2array
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.math.absoluteValue
 import kotlin.math.abs
 import kotlin.math.pow
-import kotlin.random.Random
-import kotlin.system.measureTimeMillis
 
 public object JvmLinAlg : LinAlg {
 
@@ -41,52 +38,17 @@ public object JvmLinAlg : LinAlg {
             DataType.DoubleDataType -> {
                 norm(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
             }
-            DataType.IntDataType -> {
-                norm(mat.data.getIntArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
-            }
             DataType.FloatDataType -> {
                 norm(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
             }
-            DataType.LongDataType -> {
-                norm(mat.data.getLongArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
-            }
-            DataType.ShortDataType -> {
-                norm(mat.data.getShortArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
-            }
-            DataType.ByteDataType -> {
-                norm(mat.data.getByteArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+            else -> {
+                normGeneral(mat.data, mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
             }
         }
 
     }
 
     //----------------- start cases for norm method ----------------------
-    private fun norm(
-        mat: ByteArray, matOffset: Int, matStrides: IntArray,
-        n: Int, m: Int, power: Int,
-        consistent: Boolean
-    ): Double {
-        var result = 0.0
-
-        val (matStride_0, matStride_1) = matStrides
-
-        if (consistent) {
-            for (element in mat) {
-                result += (element.toDouble().absoluteValue).pow(power)
-            }
-        } else {
-            for (i in 0 until n) {
-                val matInd = i * matStride_0 + matOffset
-                for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    result += (elementDoubleAbsValue).pow(power)
-                }
-            }
-        }
-
-        return result.pow(1 / power.toDouble())
-    }
-
     private fun norm(
         mat: FloatArray, matOffset: Int, matStrides: IntArray,
         n: Int, m: Int, power: Int,
@@ -105,84 +67,6 @@ public object JvmLinAlg : LinAlg {
                 val matInd = i * matStride_0 + matOffset
                 for (k in 0 until m) {
                     val elementDoubleAbsValue = mat[matInd + k * matStride_1].absoluteValue.toDouble()
-                    result += (elementDoubleAbsValue).pow(power)
-                }
-            }
-        }
-
-        return result.pow(1 / power.toDouble())
-    }
-
-    private fun norm(
-        mat: ShortArray, matOffset: Int, matStrides: IntArray,
-        n: Int, m: Int, power: Int,
-        consistent: Boolean
-    ): Double {
-        // implementation of this function is 100% copy-paste of norm(mat: ByteArray, ... ) above
-        var result = 0.0
-
-        val (matStride_0, matStride_1) = matStrides
-
-        if (consistent) {
-            for (element in mat) {
-                result += (element.toDouble().absoluteValue).pow(power)
-            }
-        } else {
-            for (i in 0 until n) {
-                val matInd = i * matStride_0 + matOffset
-                for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    result += (elementDoubleAbsValue).pow(power)
-                }
-            }
-        }
-
-        return result.pow(1 / power.toDouble())
-    }
-
-
-    private fun norm(
-        mat: IntArray, matOffset: Int, matStrides: IntArray,
-        n: Int, m: Int, power: Int,
-        consistent: Boolean
-    ): Double {
-        var result = 0.0
-
-        val (matStride_0, matStride_1) = matStrides
-
-        if (consistent) {
-            for (element in mat) {
-                result += (element.absoluteValue.toDouble()).pow(power)
-            }
-        } else {
-            for (i in 0 until n) {
-                val matInd = i * matStride_0 + matOffset
-                for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].toDouble().absoluteValue
-                    result += (elementDoubleAbsValue).pow(power)
-                }
-            }
-        }
-
-        return result.pow(1 / power.toDouble())
-    }
-
-    private fun norm(
-        mat: LongArray, matOffset: Int, matStrides: IntArray,
-        n: Int, m: Int, power: Int,
-        consistent: Boolean
-    ): Double {
-        var result = 0.0
-
-        val (matStride_0, matStride_1) = matStrides
-
-        if (consistent) {
-            result = mat.sumOf { abs(it).toDouble().pow(power) }
-        } else {
-            for (i in 0 until n) {
-                val matInd = i * matStride_0 + matOffset
-                for (k in 0 until m) {
-                    val elementDoubleAbsValue = abs(mat[matInd + k * matStride_1].toDouble())
                     result += (elementDoubleAbsValue).pow(power)
                 }
             }
@@ -216,16 +100,7 @@ public object JvmLinAlg : LinAlg {
         return result.pow(1 / power.toDouble())
     }
 
-
-
-    public fun <T : Number> testNorm(mat: MultiArray<T, D2>, p: Int): Double {
-
-        require(p > 0) { "power $p must be positive" }
-
-        return testNorm(mat.data, mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
-    }
-
-    private fun <T : Number> testNorm(
+    private fun <T : Number> normGeneral(
         mat: ImmutableMemoryView<T>, matOffset: Int, matStrides: IntArray,
         n: Int, m: Int, power: Int,
         consistent: Boolean
