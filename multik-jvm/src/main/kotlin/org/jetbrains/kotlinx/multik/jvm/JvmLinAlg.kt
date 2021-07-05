@@ -30,10 +30,6 @@ public object JvmLinAlg : LinAlg {
     }
 
     override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
-        // for norm computation we will use next formula:
-        // norm(mat) = abs(max(mat)) *
-        //  * ( sum (mat[i][j]/abs(max(mat))).pow(p) ).pow(1/p)
-        // the idea is same as in: https://en.wikipedia.org/wiki/Hypot#Implementation
 
         require(p > 0) { "power $p must be positive" }
 
