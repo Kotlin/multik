@@ -4,8 +4,8 @@
 
 
 ext {
-    openblasBranch = 'v0.3.13'
-    openblasRoot = '0.3.13'
+    openblasBranch = 'v0.3.15'
+    openblasRoot = '0.3.15'
 }
 
 buildscript {
