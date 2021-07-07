@@ -4,10 +4,20 @@
 
 package org.jetbrains.kotlinx.multik_jvm.linAlg
 
+
 import org.jetbrains.kotlinx.multik.api.d2array
+import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg
+import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
+import org.jetbrains.kotlinx.multik.jvm.JvmMath.max
+import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
+import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
+import org.jetbrains.kotlinx.multik.ndarray.data.set
+import org.jetbrains.kotlinx.multik.ndarray.operations.minus
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
+
 import kotlin.random.Random
 import kotlin.system.measureNanoTime
 import kotlin.test.Test
@@ -55,6 +65,35 @@ class JvmLinAlgTest {
 
     }
 
+    @Test
+    fun `test solveTriangleInplace`() {
+        val procedurePrecision = 1e-5
 
+        val rnd = Random(123)
+        val n = 18
+        val m = 100
 
+        val a = mk.d2array<Double>(n, n) {0.0}
+        for (i in 0 until n) {
+            for (j in 0 .. i) {
+                if (j == i) {
+                    a[i, j] = 1.0
+                } else {
+                    a[i, j] = rnd.nextDouble()
+                }
+            }
+        }
+
+        val b = mk.d2array<Double>(n, m) {0.0}
+        for (i in 0 until n)
+            for (j in 0 until m)
+                b[i, j] = rnd.nextDouble()
+
+        val saveB = b.deepCopy()
+
+        JvmLinAlg.solveTriangleInplace(a, 0, 0, n, b, 0, 0, m)
+
+        //check equality up to precision
+        assert(max(dot(a, b) - saveB) < procedurePrecision)
+    }
 }
