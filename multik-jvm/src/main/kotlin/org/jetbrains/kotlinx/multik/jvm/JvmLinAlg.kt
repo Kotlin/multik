@@ -8,9 +8,11 @@ import org.jetbrains.kotlinx.multik.api.LinAlg
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import java.util.Collections.swap
 import kotlin.math.absoluteValue
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.min
 
 public object JvmLinAlg : LinAlg {
 
@@ -124,6 +126,43 @@ public object JvmLinAlg : LinAlg {
         return result.pow(1 / power.toDouble())
     }
 //----------------- end of cases for norm method ----------------------
+
+//------------------section devoted to linear system solving-----------
+
+    /**
+     * Solves ax=b equation where @param a lower triangular matrix with units on diagonal,
+     * rewrite @param a with solution x
+     * TODO: think of visibility modifier
+     */
+    fun solveTriangleInplace(a: D2Array<Double>, shifta0: Int, shifta1: Int, na: Int, b: D2Array<Double>, shiftb0: Int, shiftb1: Int, mb: Int) {
+        for (i in 0 until na) {
+            for (k in i+1 until na) {
+                for (j in 0 until mb) {
+                    // array getter have extra two bound checks, maybe better use b.data[...]
+                    b[k + shiftb0, j + shiftb1] -= a[k + shifta0, i + shifta1] * b[i + shiftb0, j + shiftb1]
+                }
+            }
+        }
+
+    }
+
+    /**
+     *
+     * computes an LU factorization of a matrix @param a
+     * @return triple of matrices p, l, u. Where u is permutation matrix,
+     * l lower triangular matrix with unit diagonal elements
+     * u upper triangular matrix
+     *
+     * lapack: dgetrf2
+     */
+    private fun PLUdecomposition2Inplace(a: MultiArray<Double, D2>): MultiArray<Int, D1> {
+        val (m, n) = a.shape
+        val n1 = min(m, n) / 2
+        val n2 = n - n1
+
+        TODO("not implemented yet")
+
+    }
 
 
     override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
