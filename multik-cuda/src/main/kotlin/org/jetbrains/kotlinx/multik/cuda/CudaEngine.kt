@@ -9,7 +9,7 @@ import org.jetbrains.kotlinx.multik.api.*
 
 
 public class CudaEngineProvider : EngineProvider {
-    override fun getEngine(): Engine? {
+    override fun getEngine(): Engine {
         return CudaEngine
     }
 }
@@ -25,10 +25,6 @@ public object CudaEngine : Engine(), AutoCloseable {
         JCublas.cublasInit()
     }
 
-    override fun close() {
-        JCublas.cublasShutdown()
-    }
-
     override fun getMath(): Math {
         return CudaMath
     }
@@ -39,5 +35,9 @@ public object CudaEngine : Engine(), AutoCloseable {
 
     override fun getStatistics(): Statistics {
         return CudaStatistics
+    }
+
+    override fun close() {
+        JCublas.cublasShutdown()
     }
 }
