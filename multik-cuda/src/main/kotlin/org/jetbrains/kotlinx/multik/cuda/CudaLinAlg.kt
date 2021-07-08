@@ -30,12 +30,28 @@ public object CudaLinAlg : LinAlg {
         TODO("Not yet implemented")
     }
 
+    private fun <T : Number, D: Dim2> isTransposedConsistent(x: MultiArray<T, D>): Boolean {
+        return x.transpose().consistent
+    }
+
+    private fun <T : Number, D: Dim2> getConsistentOrTransposedConsistent(x: MultiArray<T, D>): Pair<MultiArray<T, D>, Boolean> {
+        return when {
+            x.consistent -> x to false
+            x.dim.d == 2 && isTransposedConsistent(x) -> x to true
+            else -> x.deepCopy() to false
+        }
+    }
+
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         require(a.shape[1] == b.shape[0]) {
             "Shapes mismatch: shapes " +
                     "${a.shape.joinToString(prefix = "(", postfix = ")")} and " +
                     "${b.shape.joinToString(prefix = "(", postfix = ")")} not aligned: " +
                     "${a.shape[1]} (dim 1) != ${b.shape[0]} (dim 0)"
+        }
+
+        if (!(a.dtype == DataType.DoubleDataType || a.dtype == DataType.FloatDataType)) {
+            throw UnsupportedOperationException("Unsupported data type: ${a.dtype}")
         }
 
         val matrixMatrix = b.dim.d == 2
@@ -98,6 +114,13 @@ public object CudaLinAlg : LinAlg {
             val n = b.shape[1]
             val k = a.shape[1]
 
+            val transA = if (transposedA) 't' else 'n'
+            val transB = if (transposedB) 't' else 'n'
+
+            val lda = if (transposedA) m else k
+            val ldb = if (transposedB) k else n
+
+            // multiplication order is swapped because cublas uses column-major storage
             if (a.dtype == DataType.FloatDataType)
                 JCublas.cublasSgemm(
                     'n', 'n',
@@ -111,6 +134,12 @@ public object CudaLinAlg : LinAlg {
                     1.0, dB, n, dA, k, 0.0, dC, n
                 )
         } else {
+            val transA = if (transposedA) 'n' else 't'
+
+            var (m, n) = a.shape
+            if (!transposedA)
+                m = n.also { n = m }
+
             if (a.dtype == DataType.FloatDataType)
                 JCublas.cublasSgemv(
                     't', a.shape[1], a.shape[0], 1f, dA, a.shape[1], dB, 1, 0f, dC, 1
@@ -127,21 +156,7 @@ public object CudaLinAlg : LinAlg {
         JCublas.cublasFree(dB)
         JCublas.cublasFree(dC)
 
-        return (if (a.dtype == DataType.FloatDataType)
-            NDArray(
-                MemoryViewFloatArray(hC as FloatArray),
-                shape = shape,
-                dtype = DataType.FloatDataType,
-                dim = b.dim
-            )
-        else
-            NDArray(
-                MemoryViewDoubleArray(hC as DoubleArray),
-                shape = shape,
-                dtype = DataType.FloatDataType,
-                dim = b.dim
-            )
-                ) as NDArray<T, D>
+        return NDArray(hC, shape = shape, dtype = a.dtype, dim = b.dim)
     }
 
     override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
@@ -152,15 +167,11 @@ public object CudaLinAlg : LinAlg {
                     "${a.shape[0]} (dim 0) != ${b.shape[0]} (dim 0)"
         }
 
-        val elemSize = when (a.dtype) {
-            DataType.DoubleDataType -> {
-                Double.SIZE_BYTES
-            }
-            DataType.FloatDataType -> {
-                Float.SIZE_BYTES
-            }
-            else -> throw UnsupportedOperationException()
+        if (!(a.dtype == DataType.DoubleDataType || a.dtype == DataType.FloatDataType)) {
+            throw UnsupportedOperationException("Unsupported data type: ${a.dtype}")
         }
+
+        val elemSize = a.dtype.itemSize
 
         val dA = Pointer()
         val dB = Pointer()
@@ -169,21 +180,15 @@ public object CudaLinAlg : LinAlg {
         val phA: Pointer
         val phB: Pointer
 
-        val hA: Any
-        val hB: Any
+        val (consistentA, _) = getConsistentOrTransposedConsistent(a)
+        val (consistentB, _) = getConsistentOrTransposedConsistent(b)
 
         if (a.dtype == DataType.FloatDataType) {
-            hA = a.data.getFloatArray()
-            hB = b.data.getFloatArray()
-
-            phA = Pointer.to(hA)
-            phB = Pointer.to(hB)
+            phA = Pointer.to(consistentA.data.getFloatArray())
+            phB = Pointer.to(consistentB.data.getFloatArray())
         } else {
-            hA = a.data.getDoubleArray()
-            hB = b.data.getDoubleArray()
-
-            phA = Pointer.to(hA)
-            phB = Pointer.to(hB)
+            phA = Pointer.to(consistentA.data.getDoubleArray())
+            phB = Pointer.to(consistentB.data.getDoubleArray())
         }
 
         JCublas.cublasAlloc(a.size, elemSize, dA)
