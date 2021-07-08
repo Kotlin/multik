@@ -56,15 +56,7 @@ public object CudaLinAlg : LinAlg {
 
         val matrixMatrix = b.dim.d == 2
 
-        val elemSize = when (a.dtype) {
-            DataType.DoubleDataType -> {
-                Double.SIZE_BYTES
-            }
-            DataType.FloatDataType -> {
-                Float.SIZE_BYTES
-            }
-            else -> throw UnsupportedOperationException()
-        }
+        val elemSize = a.dtype.itemSize
 
         val shape = if (matrixMatrix)
             intArrayOf(a.shape[0], b.shape[1])
@@ -80,26 +72,19 @@ public object CudaLinAlg : LinAlg {
         val phB: Pointer
         val phC: Pointer
 
-        val hA: Any
-        val hB: Any
-        val hC: Any
+        val hC = initMemoryView<T>(cSize, a.dtype)
+
+        val (consistentA, transposedA) = getConsistentOrTransposedConsistent(a)
+        val (consistentB, transposedB) = getConsistentOrTransposedConsistent(b)
 
         if (a.dtype == DataType.FloatDataType) {
-            hA = a.data.getFloatArray()
-            hB = b.data.getFloatArray()
-            hC = FloatArray(cSize)
-
-            phA = Pointer.to(hA)
-            phB = Pointer.to(hB)
-            phC = Pointer.to(hC)
+            phA = Pointer.to(consistentA.data.getFloatArray())
+            phB = Pointer.to(consistentB.data.getFloatArray())
+            phC = Pointer.to(hC.getFloatArray())
         } else {
-            hA = a.data.getDoubleArray()
-            hB = b.data.getDoubleArray()
-            hC = DoubleArray(cSize)
-
-            phA = Pointer.to(hA)
-            phB = Pointer.to(hB)
-            phC = Pointer.to(hC)
+            phA = Pointer.to(consistentA.data.getDoubleArray())
+            phB = Pointer.to(consistentB.data.getDoubleArray())
+            phC = Pointer.to(hC.getDoubleArray())
         }
 
         JCublas.cublasAlloc(a.size, elemSize, dA)
@@ -122,17 +107,9 @@ public object CudaLinAlg : LinAlg {
 
             // multiplication order is swapped because cublas uses column-major storage
             if (a.dtype == DataType.FloatDataType)
-                JCublas.cublasSgemm(
-                    'n', 'n',
-                    n, m, k,
-                    1f, dB, n, dA, k, 0f, dC, n
-                )
+                JCublas.cublasSgemm(transB, transA, n, m, k, 1f, dB, ldb, dA, lda, 0f, dC, n)
             else
-                JCublas.cublasDgemm(
-                    'n', 'n',
-                    n, m, k,
-                    1.0, dB, n, dA, k, 0.0, dC, n
-                )
+                JCublas.cublasDgemm(transB, transA, n, m, k, 1.0, dB, ldb, dA, lda, 0.0, dC, n)
         } else {
             val transA = if (transposedA) 'n' else 't'
 
@@ -141,13 +118,9 @@ public object CudaLinAlg : LinAlg {
                 m = n.also { n = m }
 
             if (a.dtype == DataType.FloatDataType)
-                JCublas.cublasSgemv(
-                    't', a.shape[1], a.shape[0], 1f, dA, a.shape[1], dB, 1, 0f, dC, 1
-                )
+                JCublas.cublasSgemv(transA, m, n, 1f, dA, m, dB, 1, 0f, dC, 1)
             else
-                JCublas.cublasDgemv(
-                    't', a.shape[1], a.shape[0], 1.0, dA, a.shape[1], dB, 1, 0.0, dC, 1
-                )
+                JCublas.cublasDgemv(transA, m, n, 1.0, dA, m, dB, 1, 0.0, dC, 1)
         }
 
         JCublas.cublasGetVector(cSize, elemSize, dC, 1, phC, 1)
