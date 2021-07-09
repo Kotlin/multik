@@ -8,7 +8,7 @@ import org.jetbrains.kotlinx.multik.api.LinAlg
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import java.util.Collections.swap
+import org.jetbrains.kotlinx.multik.ndarray.data.set
 import kotlin.math.absoluteValue
 import kotlin.math.abs
 import kotlin.math.pow
@@ -29,7 +29,9 @@ public object JvmLinAlg : LinAlg {
         } else {
             dot(mat, pow(mat, n - 1))
         }
+
     }
+
 
 
     override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
@@ -128,21 +130,95 @@ public object JvmLinAlg : LinAlg {
 //----------------- end of cases for norm method ----------------------
 
 //------------------section devoted to linear system solving-----------
+    /**
+     * computes alpha * a * b + beta * c and stores result is c
+     * @param alpha scalar
+     * @param beta scalar
+     * @param a matrix
+     * @param b matrix
+     * @param c matrix
+     *
+     * blas / lapack: dgemm
+     */
+    public fun gemm(a: D2Array<Double>, shifta0: Int, shifta1: Int, ma: Int, na: Int, alpha: Double,
+                     b: D2Array<Double>, shiftb0: Int, shiftb1: Int, mb: Int, nb: Int,
+                     c: D2Array<Double>, shiftc0: Int, shiftc1: Int, mc: Int, nc: Int, beta: Double) {
+        if(mc <= 0 || nc <= 0)
+            return
+
+        if (alpha == 0.0) {
+            if (beta == 0.0) {
+                for (i in shiftc0 until shiftc0 + mc) {
+                    for (j in shiftc1 until shiftc1 + nc) {
+                        c[i, j] = 0.0
+                    }
+                }
+                return
+            }
+            for (i in shiftc0 until shiftc0 + mc) {
+                for (j in shiftc1 until shiftc1 + nc) {
+                    c[i, j] *= beta
+                }
+            }
+            return
+        }
+
+        for (j in 0 until nc) {
+            if (beta == 0.0) {
+                for (i in 0 until mc) {
+                    c[i + shiftc0, j + shiftc1] = 0.0
+                }
+            } else {
+                for (i in 0 until mc) {
+                    c[i + shiftc0, j + shiftc1] *= beta
+                }
+            }
+            for (l in 0 until na) {
+                val temp = alpha * b[shiftb0 + l, shiftb1 + j]
+                for (i in 0 until mc) {
+                    c[shiftc0 + i, shiftc1 + j] += temp * a[shifta0 + i, shifta1 + l]
+                }
+            }
+        }
+    }
 
     /**
      * Solves ax=b equation where @param a lower triangular matrix with units on diagonal,
-     * rewrite @param a with solution x
+     * rewrite @param a with solution
+     *
+     * @param a has na rows and na columns
+     * @param b has na rows and nb columns
+     *
+     * notice: intentionally there is no checks that a[i, i] == 1.0 and a[i, >i] == 0.0,
+     * it is a contract of this method having no such checks
+     *
+     * lapack: dtrsm can do it (and have some extra options)
      * TODO: think of visibility modifier
      */
-    fun solveTriangleInplace(a: D2Array<Double>, shifta0: Int, shifta1: Int, na: Int, b: D2Array<Double>, shiftb0: Int, shiftb1: Int, mb: Int) {
+    fun solveTriangleInplace(a: D2Array<Double>, shifta0: Int, shifta1: Int, na: Int, b: D2Array<Double>, shiftb0: Int, shiftb1: Int, nb: Int) {
         for (i in 0 until na) {
             for (k in i+1 until na) {
-                for (j in 0 until mb) {
+                for (j in 0 until nb) {
                     // array getter have extra two bound checks, maybe better use b.data[...]
                     b[k + shiftb0, j + shiftb1] -= a[k + shifta0, i + shifta1] * b[i + shiftb0, j + shiftb1]
                 }
             }
         }
+    }
+
+    private fun testSquarePLU(a: D2Array<Double>): D2Array<Double> {
+        val l = a.deepCopy()
+        val u = a.deepCopy()
+        for (i in 0 until a.shape[0]) {
+            l[i, i] = 1.0
+            for (j in i + 1 until a.shape[0]){
+                l[i, j] = 0.0
+            }
+            for (j in 0 until i) {
+                u[i, j] = 0.0
+            }
+        }
+        return dotMatrix(l, u)
 
     }
 
@@ -153,14 +229,122 @@ public object JvmLinAlg : LinAlg {
      * l lower triangular matrix with unit diagonal elements
      * u upper triangular matrix
      *
+     *
      * lapack: dgetrf2
      */
-    private fun PLUdecomposition2Inplace(a: MultiArray<Double, D2>): MultiArray<Int, D1> {
-        val (m, n) = a.shape
-        val n1 = min(m, n) / 2
-        val n2 = n - n1
+    public fun PLUdecomposition2Inplace(a: D2Array<Double>, shifta0: Int, shifta1: Int, ma: Int, na: Int, rowPerm: D1Array<Int>) {
+        // this is recursive function, position of current matrix we work with is
+        // a[shifta0 until shifta0 + am, shifta1 until shifta1 + an]
+        println("start call")
+        println(a)
+        println("test a:\n ${testSquarePLU(a)}")
+        println("params: shifta0=$shifta0, shifta1=$shifta1, ma=$ma, na=$na")
+        val n1 = min(na, ma) / 2
+        val n2 = na - n1
 
-        TODO("not implemented yet")
+        // the idea of an algorithm is represent matrix a as
+        // a = [ a11 a12 ]
+        //     [ a21 a22 ]
+        // where aij -- block submatrices
+        // a11.shape = (n1, n1) (others shapes can be calculated using this information)
+        // then recursively apply to [ a11 ] and [ a22 ] parts combining results together
+        //                           [ a21 ]
+
+        // corner cases
+        if(na == 0 || ma == 0) {
+            return
+        }
+        if (ma == 1) {
+            return //because [[1]] * a == a
+        }
+        if (na == 1) {
+            var imax = 0
+            var elemmax = a[shifta0, shifta1]
+            for (i in 1 until ma) {
+                if (abs(a[shifta0 + i, shifta1]) > abs(elemmax)) {
+                    elemmax = a[shifta0 + i, shifta1]
+                    imax = i
+                }
+            }
+
+            if (elemmax != 0.0) {
+                // pivoting
+                a[shifta0, shifta1] = a[shifta0 + imax, shifta1].also {
+                    a[shifta0 + imax, shifta1] = a[shifta0, shifta1]
+                }
+                rowPerm[shifta0] = shifta0 + imax
+
+                for (i in 1 until ma) {
+                    a[shifta0 + i, shifta1] /= elemmax
+                }
+            }
+            println("column case")
+            println(a)
+            println("test a:\n ${testSquarePLU(a)}")
+
+            return
+        }
+
+        // apply recursively to [ a11 ]
+        //                      [ a21 ]
+        PLUdecomposition2Inplace(a, shifta0, shifta1, ma, n1, rowPerm)
+        println("out of recursive call")
+        println(a)
+        println("test a:\n ${testSquarePLU(a)}")
+
+        // change [ a12 ]
+        //        [ a22 ]
+        for (i in 0 until min(ma, rowPerm.size - shifta0)) {
+            if (rowPerm[i + shifta0] != i + shifta0) {
+                for (j in n1 until na) {
+                    a[shifta0 + i, shifta1 + j] = a[rowPerm[i + shifta0], shifta1 + j].also {
+                        a[rowPerm[i + shifta0], shifta1 + j] = a[shifta0 + i, shifta1 + j]
+                    }
+                }
+            }
+        }
+        println("right column perm")
+        println(a)
+        println("test a:\n ${testSquarePLU(a)}")
+
+        // adjust a12
+        solveTriangleInplace(a, shifta0, shifta1, n1, a, shifta0, shifta1 + n1, n2)
+
+        println("solved shifta0=$shifta0, shifta1=$shifta1, na=$n1, shiftb0=$shifta0, shiftb1=${shifta1 + n1}, nb=$n2")
+        println(a)
+        println("test a:\n ${testSquarePLU(a)}")
+
+        // update a22
+        gemm(a, shifta0 + n1, shifta1 + 0, ma - n1, n1, -1.0,
+             a, shifta0 + 0, shifta1 + n1, n1, n2,
+             a, shifta0 + n1, shifta1 + n1, ma - n1, n2, 1.0)
+
+        println("update a22")
+        println(a)
+        println("test a:\n ${testSquarePLU(a)}")
+
+        // factor a22
+        PLUdecomposition2Inplace(a, shifta0 + n1, shifta1 + n1, ma - n1, n2, rowPerm)
+
+        println("factor a22")
+        println(a)
+        println("test a:\n ${testSquarePLU(a)}")
+
+        // apply rowPerm to a21
+        for (i in n1 until min(ma, rowPerm.size)) {
+            if (rowPerm[shifta0 + i] != shifta0 + i) {
+                for (j in 0 until n1) {
+                    a[shifta0 + i, shifta1 + j] = a[rowPerm[shifta0 + i], shifta1 + j].also {
+                        a[rowPerm[shifta0 + i], shifta1 + j] = a[shifta0 + i, shifta1 + j]
+                    }
+                }
+            }
+        }
+
+        println("apply perm to a21")
+        println(a)
+        println("test a:\n ${testSquarePLU(a)}")
+
 
     }
 
