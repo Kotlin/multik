@@ -4,9 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.jvm
 
-import org.jetbrains.kotlinx.multik.api.LinAlg
-import org.jetbrains.kotlinx.multik.api.identity
-import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 import kotlin.math.absoluteValue
@@ -235,10 +233,10 @@ public object JvmLinAlg : LinAlg {
     public fun PLUdecomposition2Inplace(a: D2Array<Double>, shifta0: Int, shifta1: Int, ma: Int, na: Int, rowPerm: D1Array<Int>) {
         // this is recursive function, position of current matrix we work with is
         // a[shifta0 until shifta0 + am, shifta1 until shifta1 + an]
-        println("start call")
-        println(a)
-        println("test a:\n ${testSquarePLU(a)}")
-        println("params: shifta0=$shifta0, shifta1=$shifta1, ma=$ma, na=$na")
+//        println("start call")
+//        println(a)
+//        println("test a:\n ${testSquarePLU(a)}")
+//        println("params: shifta0=$shifta0, shifta1=$shifta1, ma=$ma, na=$na")
         val n1 = min(na, ma) / 2
         val n2 = na - n1
 
@@ -278,9 +276,9 @@ public object JvmLinAlg : LinAlg {
                     a[shifta0 + i, shifta1] /= elemmax
                 }
             }
-            println("column case")
-            println(a)
-            println("test a:\n ${testSquarePLU(a)}")
+//            println("column case")
+//            println(a)
+//            println("test a:\n ${testSquarePLU(a)}")
 
             return
         }
@@ -288,9 +286,9 @@ public object JvmLinAlg : LinAlg {
         // apply recursively to [ a11 ]
         //                      [ a21 ]
         PLUdecomposition2Inplace(a, shifta0, shifta1, ma, n1, rowPerm)
-        println("out of recursive call")
-        println(a)
-        println("test a:\n ${testSquarePLU(a)}")
+//        println("out of recursive call")
+//        println(a)
+//        println("test a:\n ${testSquarePLU(a)}")
 
         // change [ a12 ]
         //        [ a22 ]
@@ -303,35 +301,38 @@ public object JvmLinAlg : LinAlg {
                 }
             }
         }
-        println("right column perm")
-        println(a)
-        println("test a:\n ${testSquarePLU(a)}")
+//        println("right column perm")
+//        println(a)
+//        println("test a:\n ${testSquarePLU(a)}")
 
         // adjust a12
         solveTriangleInplace(a, shifta0, shifta1, n1, a, shifta0, shifta1 + n1, n2)
 
-        println("solved shifta0=$shifta0, shifta1=$shifta1, na=$n1, shiftb0=$shifta0, shiftb1=${shifta1 + n1}, nb=$n2")
-        println(a)
-        println("test a:\n ${testSquarePLU(a)}")
+//        println("solved shifta0=$shifta0, shifta1=$shifta1, na=$n1, shiftb0=$shifta0, shiftb1=${shifta1 + n1}, nb=$n2")
+//        println(a)
+//        println("test a:\n ${testSquarePLU(a)}")
 
         // update a22
         gemm(a, shifta0 + n1, shifta1 + 0, ma - n1, n1, -1.0,
              a, shifta0 + 0, shifta1 + n1, n1, n2,
              a, shifta0 + n1, shifta1 + n1, ma - n1, n2, 1.0)
 
-        println("update a22")
-        println(a)
-        println("test a:\n ${testSquarePLU(a)}")
+//        println("update a22")
+//        println(a)
+//        println("test a:\n ${testSquarePLU(a)}")
 
         // factor a22
         PLUdecomposition2Inplace(a, shifta0 + n1, shifta1 + n1, ma - n1, n2, rowPerm)
 
-        println("factor a22")
-        println(a)
-        println("test a:\n ${testSquarePLU(a)}")
+//        println("factor a22")
+//        println(a)
+//        println("test a:\n ${testSquarePLU(a)}")
 
         // apply rowPerm to a21
-        for (i in n1 until min(ma, rowPerm.size)) {
+        for (i in n1 until ma) {
+            if(shifta0 + i >= rowPerm.size) {
+                break
+            }
             if (rowPerm[shifta0 + i] != shifta0 + i) {
                 for (j in 0 until n1) {
                     a[shifta0 + i, shifta1 + j] = a[rowPerm[shifta0 + i], shifta1 + j].also {
@@ -341,13 +342,52 @@ public object JvmLinAlg : LinAlg {
             }
         }
 
-        println("apply perm to a21")
-        println(a)
-        println("test a:\n ${testSquarePLU(a)}")
+//        println("apply perm to a21")
+//        println(a)
+//        println("test a:\n ${testSquarePLU(a)}")
 
 
     }
 
+    fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Double>> {
+        val _a = a.deepCopy()
+        val perm = mk.d1array<Int>(min(_a.shape[0], _a.shape[1])){ 0 }
+        for (i in perm.indices) perm[i] = i
+
+        PLUdecomposition2Inplace(_a, 0, 0, _a.shape[0], _a.shape[1], perm)
+        // since previous call _a contains answer
+
+        val L = mk.d2array(_a.shape[0], min(_a.shape[0], _a.shape[1])) {0.0}
+        val U = mk.d2array(min(_a.shape[0], _a.shape[1]), _a.shape[1]) {0.0}
+
+        for (i in 0 until L.shape[1]) {
+            L[i, i] = 1.0
+            for (j in 0 until i) {
+                L[i, j] = _a[i, j]
+            }
+        }
+        for (i in L.shape[1] until L.shape[0]) {
+            for (j in 0 until L.shape[1]) {
+                L[i, j] = _a[i, j]
+            }
+        }
+
+        for (i in 0 until U.shape[0]) {
+            for (j in i until U.shape[1]) {
+                U[i, j] = _a[i, j]
+            }
+        }
+
+
+        val P = mk.identity<Double>(_a.shape[0])
+
+        for (i in perm.indices.reversed()) {
+            if(perm[i] != i) {
+                P[i] = P[perm[i]].deepCopy().also { P[perm[i]] = P[i].deepCopy() }
+            }
+        }
+        return Triple(P, L, U)
+    }
 
     override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         TODO("Not yet implemented")
