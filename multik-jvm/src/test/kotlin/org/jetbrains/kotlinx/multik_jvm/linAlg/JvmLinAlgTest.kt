@@ -7,6 +7,7 @@ package org.jetbrains.kotlinx.multik_jvm.linAlg
 
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg
+import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.PLU
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.PLUdecomposition2Inplace
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.gemm
@@ -21,6 +22,7 @@ import kotlin.random.Random
 import kotlin.system.measureNanoTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 
 class JvmLinAlgTest {
 
@@ -119,48 +121,52 @@ class JvmLinAlgTest {
 
     }
 
-    private fun testSquarePLU(a: D2Array<Double>): D2Array<Double> {
-        val l = a.deepCopy()
-        val u = a.deepCopy()
-        for (i in 0 until a.shape[0]) {
-            l[i, i] = 1.0
-            for (j in i + 1 until a.shape[0]){
-                l[i, j] = 0.0
+
+
+    @Test
+    fun `test plu`() {
+
+        val procedurePrecision = 1e-5
+
+        for (all in 0..10000) {
+
+            val rnd = Random(System.currentTimeMillis())
+            val m = rnd.nextInt(1, 100)
+            val n = rnd.nextInt(1, 100)
+
+
+            val a = mk.d2array<Double>(m, n) { rnd.nextDouble() }
+
+            val (P, L, U) = PLU(a)
+
+            val diff = a - dot(P, dot(L, U))
+            val maxdiff = max(diff)
+            val mindiff = min(diff)
+
+            val ok = maxdiff < procedurePrecision && maxdiff - mindiff < procedurePrecision
+
+
+            if(!ok) {
+                println("wrong on:")
+                println(a)
+                println("PLU gives:")
+                println(P)
+                println(L)
+                println(U)
+                println("P*L*U = ")
+                println(dot(P, dot(L, U)))
+                assert(false)
+
             }
-            for (j in 0 until i) {
-                u[i, j] = 0.0
-            }
+
         }
-        return dot(l, u)
+
+
 
     }
 
     @Test
     fun whatever() {
-
-//        val aaa =  mk.ndarray(mk[mk[10.0, 3.0, 12.0], mk[1.0, 5.0, 2.0], mk[20.0, 1.0, 40.0]])
-//        val permaaa = mk.ndarray(mk[0, 1, 2])
-//        PLUdecomposition2Inplace(aaa, 0, 0, 3, 3, permaaa)
-//        println(aaa)
-//        println("test:")
-//        println(testSquarePLU(aaa))
-//        return
-
-
-
-        val aa = mk.ndarray(mk[mk[1.0, 2.0, 0.0, 0.0], mk[1.0, 5.0, 0.0, 0.0], mk[8.0, 8.0, 1.0, 2.0], mk[10.0, 10.0, 5.0, 0.0]])
-        val permaa = mk.ndarray(mk[0, 1, 2, 3])
-        val p = mk.identity<Double>(4)
-        PLUdecomposition2Inplace(aa, 0, 0, 4, 4, permaa)
-        for (i in 0 until 4) {
-            if (permaa[i] != i) {
-                p[i] = p[permaa[i]].deepCopy().also {p[permaa[i]] = p[i].deepCopy()}
-            }
-        }
-        println(dot(p, testSquarePLU(aa)))
-
-        return;
-
-
+        assert(true)
     }
 }
