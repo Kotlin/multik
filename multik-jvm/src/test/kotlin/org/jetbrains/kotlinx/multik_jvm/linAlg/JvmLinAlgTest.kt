@@ -5,16 +5,15 @@
 package org.jetbrains.kotlinx.multik_jvm.linAlg
 
 
-import org.jetbrains.kotlinx.multik.api.d2array
-import org.jetbrains.kotlinx.multik.api.empty
-import org.jetbrains.kotlinx.multik.api.mk
-import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg
+import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.PLUdecomposition2Inplace
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
+import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.gemm
+import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solveTriangleInplace
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.max
-import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
-import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
-import org.jetbrains.kotlinx.multik.ndarray.data.set
+import org.jetbrains.kotlinx.multik.jvm.JvmMath.min
+import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.minus
 import org.jetbrains.kotlinx.multik.ndarray.operations.times
 
@@ -94,6 +93,74 @@ class JvmLinAlgTest {
         JvmLinAlg.solveTriangleInplace(a, 0, 0, n, b, 0, 0, m)
 
         //check equality up to precision
-        assert(max(dot(a, b) - saveB) < procedurePrecision)
+        assert(max(dot(a, b) - saveB) < procedurePrecision && min(dot(a, b) - saveB) > -procedurePrecision)
+    }
+
+    @Test
+    fun `gemm test`() {
+        val procedurePrecision = 1e-5
+
+        val a = mk.ndarray(mk[mk[1.0, 2.0, 3.0, 2.0, 1.0], mk[4.0, 5.0, 6.0, 5.0, 4.0]])
+        val b = mk.ndarray(mk[mk[7.0, 8.0], mk[9.0, 10.0], mk[11.0, 12.0], mk[13.0, 14.0], mk[15.0, 16.0]])
+        val c = mk.ndarray(mk[mk[11.0, 13.0], mk[15.0, 17.0]])
+        val adotb = mk.ndarray(mk[mk[110.0, 121.0], mk[279.0, 305.0]])
+
+        //        proof: numpy
+        //
+        //        a = np.array([[1.0, 2.0, 3.0, 2.0, 1.0], [4.0, 5.0, 6.0, 5.0, 4.0]])
+        //        b = np.array([[7.0, 8.0], [9.0, 10.0], [11.0, 12.0], [13.0, 14.0], [15.0, 16.0]])
+        //        print(a @ b + c)
+
+        gemm(a, 0, 0, 2, 5, 1.0,
+             b, 0, 0, 5, 2,
+             c, 0, 0, 2, 2, 1.0)
+
+        assert(c == adotb)
+
+    }
+
+    private fun testSquarePLU(a: D2Array<Double>): D2Array<Double> {
+        val l = a.deepCopy()
+        val u = a.deepCopy()
+        for (i in 0 until a.shape[0]) {
+            l[i, i] = 1.0
+            for (j in i + 1 until a.shape[0]){
+                l[i, j] = 0.0
+            }
+            for (j in 0 until i) {
+                u[i, j] = 0.0
+            }
+        }
+        return dot(l, u)
+
+    }
+
+    @Test
+    fun whatever() {
+
+//        val aaa =  mk.ndarray(mk[mk[10.0, 3.0, 12.0], mk[1.0, 5.0, 2.0], mk[20.0, 1.0, 40.0]])
+//        val permaaa = mk.ndarray(mk[0, 1, 2])
+//        PLUdecomposition2Inplace(aaa, 0, 0, 3, 3, permaaa)
+//        println(aaa)
+//        println("test:")
+//        println(testSquarePLU(aaa))
+//        return
+
+
+
+        val aa = mk.ndarray(mk[mk[1.0, 2.0, 0.0, 0.0], mk[1.0, 5.0, 0.0, 0.0], mk[8.0, 8.0, 1.0, 2.0], mk[10.0, 10.0, 5.0, 0.0]])
+        val permaa = mk.ndarray(mk[0, 1, 2, 3])
+        val p = mk.identity<Double>(4)
+        PLUdecomposition2Inplace(aa, 0, 0, 4, 4, permaa)
+        for (i in 0 until 4) {
+            if (permaa[i] != i) {
+                p[i] = p[permaa[i]].deepCopy().also {p[permaa[i]] = p[i].deepCopy()}
+            }
+        }
+        println(dot(p, testSquarePLU(aa)))
+
+        return;
+
+
     }
 }
