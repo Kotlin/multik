@@ -11,6 +11,8 @@ import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.PLU
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.PLUdecomposition2Inplace
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.gemm
+import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solveDouble
+import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solveTriangle
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solveTriangleInplace
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.max
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.min
@@ -160,13 +162,15 @@ class JvmLinAlgTest {
             }
 
         }
-
-
-
     }
 
     @Test
     fun whatever() {
-        assert(true)
+        val a = mk.ndarray(mk[mk[1.0, 2.0, 3.0], mk[4.0, 5.0, 7.0], mk[10.0, 11.0, 13.0]])
+        val b = mk.ndarray(mk[mk[7.0, 10.0], mk[8.0, 11.0], mk[9.0, 12.0]])
+        println(solveDouble(a, mk.identity<Double>(3)))
+        println(dot(a, solveDouble(a, mk.identity<Double>(3))))
+        println(dot(solveDouble(a, mk.identity<Double>(3)), a))
+
     }
 }
