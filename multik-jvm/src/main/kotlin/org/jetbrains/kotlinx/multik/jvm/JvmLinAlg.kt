@@ -7,6 +7,7 @@ package org.jetbrains.kotlinx.multik.jvm
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
+import java.lang.ArithmeticException
 import kotlin.math.absoluteValue
 import kotlin.math.abs
 import kotlin.math.pow
@@ -127,7 +128,7 @@ public object JvmLinAlg : LinAlg {
     }
 //----------------- end of cases for norm method ----------------------
 
-//------------------section devoted to linear system solving-----------
+//-------------------------------start of LU-everything----------------------------------
     /**
      * computes alpha * a * b + beta * c and stores result is c
      * @param alpha scalar
@@ -204,21 +205,6 @@ public object JvmLinAlg : LinAlg {
         }
     }
 
-    private fun testSquarePLU(a: D2Array<Double>): D2Array<Double> {
-        val l = a.deepCopy()
-        val u = a.deepCopy()
-        for (i in 0 until a.shape[0]) {
-            l[i, i] = 1.0
-            for (j in i + 1 until a.shape[0]){
-                l[i, j] = 0.0
-            }
-            for (j in 0 until i) {
-                u[i, j] = 0.0
-            }
-        }
-        return dotMatrix(l, u)
-
-    }
 
     /**
      *
@@ -389,9 +375,105 @@ public object JvmLinAlg : LinAlg {
         return Triple(P, L, U)
     }
 
+    fun PLUCompressed(a: D2Array<Double>): Triple<D1Array<Int>, D2Array<Double>, D2Array<Double>> {
+        val _a = a.deepCopy()
+        val perm = mk.d1array<Int>(min(_a.shape[0], _a.shape[1])){ 0 }
+        for (i in perm.indices) perm[i] = i
+
+        PLUdecomposition2Inplace(_a, 0, 0, _a.shape[0], _a.shape[1], perm)
+        // since previous call _a contains answer
+
+        val L = mk.d2array(_a.shape[0], min(_a.shape[0], _a.shape[1])) {0.0}
+        val U = mk.d2array(min(_a.shape[0], _a.shape[1]), _a.shape[1]) {0.0}
+
+        for (i in 0 until L.shape[1]) {
+            L[i, i] = 1.0
+            for (j in 0 until i) {
+                L[i, j] = _a[i, j]
+            }
+        }
+        for (i in L.shape[1] until L.shape[0]) {
+            for (j in 0 until L.shape[1]) {
+                L[i, j] = _a[i, j]
+            }
+        }
+
+        for (i in 0 until U.shape[0]) {
+            for (j in i until U.shape[1]) {
+                U[i, j] = _a[i, j]
+            }
+        }
+
+
+        val P = mk.identity<Double>(_a.shape[0])
+
+        return Triple(perm.deepCopy(), L, U)
+    }
+
+
+    //-------------------------------end of LU-everything----------------------------------
+
+
+
+    //-------------------------------solve linear system-----------------------------------
+    /**
+     * solves a*x = b where a lower or upper triangle square matrix
+     */
+    public fun solveTriangle(a: D2Array<Double>, b: D2Array<Double>, isLowerTriangle: Boolean = true): D2Array<Double> {
+        require(a.shape[1] == b.shape[0]) { "invalid arguments, a.shape[1] = ${a.shape[1]} != b.shape[0]=${b.shape[0]}" }
+        require(a.shape[0] == a.shape[1]) { "a should be a square matrix, matrix with shape (${a.shape[0]}, ${a.shape[1]}) given" }
+        val x = b.deepCopy()
+        for (i in 0 until x.shape[0]) {
+            for (j in 0 until x.shape[1]) {
+                x[i, j] /= a[i, i]
+            }
+        }
+        if (isLowerTriangle) {
+            for (i in 0 until x.shape[0]) {
+                for (k in i + 1 until x.shape[0]) {
+                    for (j in 0 until x.shape[1]) {
+                        x[k, j] -= a[k, i] * x[i, j] / a[k, k]
+                    }
+                }
+            }
+        } else {
+            for (i in x.shape[0] - 1 downTo 0) {
+                for (k in i - 1 downTo 0) {
+                    for (j in 0 until x.shape[1]) {
+                        x[k, j] -= a[k, i] * x[i, j] / a[k, k]
+                    }
+                }
+            }
+
+        }
+        return x
+    }
+
+    fun solveDouble(a: D2Array<Double>, b: D2Array<Double>, singularityErrorLevel: Double = 1e-7): D2Array<Double> {
+        require(a.shape[0] == a.shape[1] && a.shape[1] == b.shape[0])
+        val (P, L, U) = PLUCompressed(a)
+        val _b = b.deepCopy()
+        for (i in 0 until P.size) {
+            if(P[i] != i) {
+                _b[i] = _b[P[i]].deepCopy().also { _b[P[i]] = _b[i].deepCopy() }
+            }
+        }
+        for (i in 0 until U.shape[0]) {
+            if (abs(U[i, i]) < singularityErrorLevel) {
+                throw ArithmeticException("matrix a is almost singular")
+            }
+        }
+
+        return solveTriangle(U, solveTriangle(L, _b), false)
+    }
+
     override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         TODO("Not yet implemented")
     }
+
+    //--------------------------end of solve linear system-----------------------------------
+
+
 
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         require(a.shape[1] == b.shape[0]) {
