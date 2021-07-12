@@ -4,6 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.jvm
 
+import com.sun.org.apache.xalan.internal.xsltc.trax.DOM2SAX
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
@@ -504,11 +505,18 @@ public object JvmLinAlg : LinAlg {
         }
 
     }
-
-
-
     //--------------------------end of solve linear system-----------------------------------
 
+    fun <T : Number> inv(a : D2Array<T>): D2Array<Double> {
+        require(a.shape[0] == a.shape[1]) { "a must be square matrix, matrix with shape (${a.shape[0]}, ${a.shape[1]}) was given" }
+        val aDouble = mk.d2array<Double>(a.shape[0], a.shape[0]) { 0.0 }
+        for (i in 0 until a.shape[0]) {
+            for (j in 0 until a.shape[1]) {
+                aDouble[i, j] = a[i, j].toDouble()
+            }
+        }
+        return solveDouble(aDouble, mk.identity(a.shape[0]))
+    }
 
 
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
