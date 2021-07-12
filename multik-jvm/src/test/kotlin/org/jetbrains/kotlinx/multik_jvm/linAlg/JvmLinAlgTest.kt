@@ -8,25 +8,19 @@ package org.jetbrains.kotlinx.multik_jvm.linAlg
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.PLU
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.PLUdecomposition2Inplace
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.gemm
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.inv
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solve
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solveDouble
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solveTriangle
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solveTriangleInplace
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.max
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.min
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.minus
-import org.jetbrains.kotlinx.multik.ndarray.operations.times
+import kotlin.math.abs
 
 import kotlin.random.Random
-import kotlin.system.measureNanoTime
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
 
 class JvmLinAlgTest {
 
@@ -165,6 +159,45 @@ class JvmLinAlgTest {
 
         }
     }
+
+    @Test
+    fun `solve test`() {
+        val procedurePrecision = 1e-5
+        val rnd = Random(System.currentTimeMillis())
+        for (iteration in 0 until 1000) {
+            //test when second argument is d2 array
+            val maxlen = 100
+            val n = rnd.nextInt(1, maxlen)
+            val m = rnd.nextInt(1, maxlen)
+            val a = mk.d2array<Double>(n, n) { rnd.nextDouble() }
+            val b = mk.d2array<Double>(n, m) { rnd.nextDouble() }
+            var solDelta = dot(a, solve(a, b)) - b
+            var solDeltamax = max(solDelta)
+            var solDeltamin = min(solDelta)
+            assert(abs(solDeltamax) < procedurePrecision && abs(solDeltamin) < procedurePrecision)
+
+            //test when second argument is d1 vector
+            val bd1 = mk.d1array(n) { rnd.nextDouble() }
+            val bd1Transpose = mk.d2array(bd1.size, 1) { 0.0 }
+            for (i in 0 until bd1.size) {
+                bd1Transpose[i, 0] = bd1[i]
+            }
+
+            val sol = solve(a, bd1)
+            val solTranspose = mk.d2array<Double>(sol.size, 1) { 0.0 }
+            for (i in 0 until sol.size) {
+                solTranspose[i, 0] = sol[i]
+            }
+
+            solDelta = dot(a, solTranspose) - bd1Transpose
+            solDeltamax = max(solDelta)
+            solDeltamin = min(solDelta)
+            assert(abs(solDeltamax) < procedurePrecision && abs(solDeltamin) < procedurePrecision)
+
+
+        }
+    }
+
 
     @Test
     fun whatever() {
