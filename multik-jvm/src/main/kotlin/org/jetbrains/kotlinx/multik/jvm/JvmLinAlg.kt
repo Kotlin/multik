@@ -453,6 +453,7 @@ public object JvmLinAlg : LinAlg {
         require(a.shape[0] == a.shape[1] && a.shape[1] == b.shape[0])
         val (P, L, U) = PLUCompressed(a)
         val _b = b.deepCopy()
+
         for (i in 0 until P.size) {
             if(P[i] != i) {
                 _b[i] = _b[P[i]].deepCopy().also { _b[P[i]] = _b[i].deepCopy() }
@@ -460,16 +461,51 @@ public object JvmLinAlg : LinAlg {
         }
         for (i in 0 until U.shape[0]) {
             if (abs(U[i, i]) < singularityErrorLevel) {
-                throw ArithmeticException("matrix a is almost singular")
+                throw ArithmeticException("matrix a is singular or almost singular")
             }
         }
 
         return solveTriangle(U, solveTriangle(L, _b), false)
     }
 
-    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
-        TODO("Not yet implemented")
+    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> {
+        val aDouble = mk.d2array<Double>(a.shape[0], a.shape[1]) { 0.0 }
+        for (i in 0 until a.shape[0]) {
+            for (j in 0 until a.shape[1]) {
+                aDouble[i, j] = a[i, j].toDouble()
+            }
+        }
+        val bDouble: D2Array<Double>
+        if (b.dim.d == 2) {
+            b as D2Array<Double>
+            bDouble = mk.d2array(b.shape[0], b.shape[1]) { 0.0 }
+            for (i in 0 until b.shape[0]) {
+                for (j in 0 until b.shape[1]) {
+                    bDouble[i, j] = b[i, j].toDouble()
+                }
+            }
+        } else {
+            b as D1Array<Double>
+            bDouble = mk.d2array(b.shape[0], 1) { 0.0 }
+            for (i in 0 until b.shape[0]) {
+                bDouble[i, 0] = b[i]
+            }
+
+        }
+        val ans = solveDouble(aDouble, bDouble)
+        if (b.dim.d == 2) {
+            return ans as NDArray<Double, D>
+        } else {
+            val ansd1 = mk.d1array<Double>(ans.shape[0]) { 0.0 }
+            for (i in 0 until ans.shape[0]) {
+                ansd1[i] = ans[i, 0]
+            }
+            return ansd1 as NDArray<Double, D>
+        }
+
     }
+
+
 
     //--------------------------end of solve linear system-----------------------------------
 
