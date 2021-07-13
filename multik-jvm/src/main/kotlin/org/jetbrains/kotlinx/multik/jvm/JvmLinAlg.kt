@@ -172,8 +172,8 @@ public object JvmLinAlg : LinAlg {
         val _b = b.deepCopy()
 
         for (i in 0 until P.size) {
-            if(P[i] != i) {
-                _b[i] = _b[P[i]].deepCopy().also { _b[P[i]] = _b[i].deepCopy() }
+            if(P[i] != 0) {
+                _b[i] = _b[i + P[i]].deepCopy().also { _b[i + P[i]] = _b[i].deepCopy() }
             }
         }
         for (i in 0 until U.shape[0]) {
