@@ -20,14 +20,6 @@ private fun dotThenPlusInplace(a: D2Array<Double>, b: D2Array<Double>, c: D2Arra
     if(c.shape[0] <= 0 || c.shape[1] <= 0) return
 
     if (alpha == 0.0) {
-        if (beta == 0.0) {
-            for (i in 0 until c.shape[0]) {
-                for (j in 0 until c.shape[1]) {
-                    c[i, j] = 0.0 //TODO: *= beta
-                }
-            }
-            return
-        }
         for (i in 0 until c.shape[0]) {
             for (j in 0 until c.shape[1]) {
                 c[i, j] *= beta
@@ -37,15 +29,10 @@ private fun dotThenPlusInplace(a: D2Array<Double>, b: D2Array<Double>, c: D2Arra
     }
 
     for (j in 0 until c.shape[1]) {
-        if (beta == 0.0) {
-            for (i in 0 until c.shape[0]) {
-                c[i, j] = 0.0
-            }
-        } else {
-            for (i in 0 until c.shape[0]) {
-                c[i, j] *= beta
-            }
+        for (i in 0 until c.shape[0]) {
+            c[i, j] *= beta
         }
+
         for (l in 0 until a.shape[1]) {
             val temp = alpha * b[l, j]
             for (i in 0 until c.shape[0]) {
@@ -54,8 +41,6 @@ private fun dotThenPlusInplace(a: D2Array<Double>, b: D2Array<Double>, c: D2Arra
         }
     }
 }
-
-
 
 /**
  * Solves ax=b equation where @param a lower triangular matrix with units on diagonal,
@@ -69,12 +54,12 @@ private fun dotThenPlusInplace(a: D2Array<Double>, b: D2Array<Double>, c: D2Arra
  *
  * lapack: dtrsm can do it (and have some extra options)
  */
-private fun solveTriangleInplace(a: D2Array<Double>, offseta0: Int, offseta1: Int, na: Int, b: D2Array<Double>, offsetb0: Int, offsetb1: Int, nb: Int) {
-    for (i in 0 until na) {
-        for (k in i+1 until na) {
-            for (j in 0 until nb) {
+private fun solveLowerTriangleSystemInplace(a: D2Array<Double>, b: D2Array<Double>) {
+    for (i in 0 until a.shape[1]) {
+        for (k in i+1 until a.shape[1]) {
+            for (j in 0 until b.shape[1]) {
                 // array getter have extra two bound checks, maybe better use b.data[...]
-                b[k + offsetb0, j + offsetb1] -= a[k + offseta0, i + offseta1] * b[i + offsetb0, j + offsetb1] //TODO: move k + offset0 to prev loop
+                b[k, j] -= a[k, i] * b[i, j]
             }
         }
     }
@@ -152,7 +137,10 @@ private fun PLUdecomposition2Inplace(a: D2Array<Double>, offseta0: Int, offseta1
     }
 
     // adjust a12
-    solveTriangleInplace(a, offseta0, offseta1, n1, a, offseta0, offseta1 + n1, n2)
+    solveLowerTriangleSystemInplace(
+        a[offseta0 .. offseta0 + n1, offseta1      .. offseta1 + n1     ] as D2Array<Double>,
+        a[offseta0 .. offseta0 + n1, offseta1 + n1 .. offseta1 + n1 + n2] as D2Array<Double>
+    )
 
     // update a22
     dotThenPlusInplace(
