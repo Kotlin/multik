@@ -30,18 +30,6 @@ public object CudaLinAlg : LinAlg {
         TODO("Not yet implemented")
     }
 
-    private fun <T : Number, D: Dim2> isTransposedConsistent(x: MultiArray<T, D>): Boolean {
-        return x.transpose().consistent
-    }
-
-    private fun <T : Number, D: Dim2> getConsistentOrTransposedConsistent(x: MultiArray<T, D>): Pair<MultiArray<T, D>, Boolean> {
-        return when {
-            x.consistent -> x to false
-            x.dim.d == 2 && isTransposedConsistent(x) -> x to true
-            else -> x.deepCopy() to false
-        }
-    }
-
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         require(a.shape[1] == b.shape[0]) {
             "Shapes mismatch: shapes " +
@@ -182,4 +170,26 @@ public object CudaLinAlg : LinAlg {
         return result as T
     }
 
+    // Note: NDArray.transpose() only creates a lightweight view
+    private fun <T : Number, D: Dim2> isTransposedConsistent(x: MultiArray<T, D>): Boolean =
+        x.transpose().consistent
+
+
+    /**
+     * Helper function used to get consistent data from [MultiArray]
+     *
+     * First value in returned pair - [MultiArray] that is consistent or
+     * consistent when transposed
+     *
+     * Second value in returned pair - transposition flag - indicates whether
+     * returned [MultiArray] should be transposed in order to be consistent
+     *
+     * @return pair of [MultiArray] and transposition flag
+     */
+    private fun <T : Number, D: Dim2> getConsistentOrTransposedConsistent(x: MultiArray<T, D>): Pair<MultiArray<T, D>, Boolean> =
+        when {
+            x.consistent -> x to false
+            x.dim.d == 2 && isTransposedConsistent(x) -> x to true
+            else -> x.deepCopy() to false
+        }
 }
