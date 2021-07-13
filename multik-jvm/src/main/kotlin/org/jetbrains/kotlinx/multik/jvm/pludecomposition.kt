@@ -65,7 +65,6 @@ private fun solveLowerTriangleSystemInplace(a: D2Array<Double>, b: D2Array<Doubl
     }
 }
 
-
 /**
  *
  * computes an LU factorization of a matrix @param a
@@ -76,44 +75,43 @@ private fun solveLowerTriangleSystemInplace(a: D2Array<Double>, b: D2Array<Doubl
  *
  * lapack: dgetrf2
  */
-//TODO: a = slice?
-private fun PLUdecomposition2Inplace(a: D2Array<Double>, offseta0: Int, offseta1: Int, ma: Int, na: Int, rowPerm: D1Array<Int>) {
-    // this is recursive function, position of current matrix we work with is
-    // a[offseta0 until offseta0 + am, offseta1 until offseta1 + an]
-    val n1 = min(na, ma) / 2
-    val n2 = na - n1
+private fun PLUdecomposition2Inplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
+    // this is recursive function, position of current mtrrix we work with is
+    // a[0 until am, 0 until an]
+    val n1 = min(a.shape[1], a.shape[0] ) / 2
+    val n2 = a.shape[1] - n1
 
-    // the idea of an algorithm is represent matrix a as
+    // the idea of an algorithm is represent mtrrix a as
     // a = [ a11 a12 ]
     //     [ a21 a22 ]
-    // where aij -- block submatrices
-    // a11.shape = (n1, n1) (others shapes can be calculated using this information)
+    // where aij -- block submtrrices
+    // a11.shape = (n1, n1) (others shapes can be calculated using this informtrion)
     // then recursively apply to [ a11 ] and [ a22 ] parts combining results together
     //                           [ a21 ]
 
     // corner cases
-    if(na == 0 || ma == 0) return
-    if (ma == 1) return //because [[1]] * a == a
+    if(a.shape[1] == 0 || a.shape[0] == 0) return
+    if (a.shape[0] == 1) return //because [[1]] * a == a
 
-    if (na == 1) {
+    if (a.shape[1] == 1) {
         var imax = 0
-        var elemmax = a[offseta0, offseta1]
-        for (i in 1 until ma) { // TODO: maxBy
-            if (abs(a[offseta0 + i, offseta1]) > abs(elemmax)) {
-                elemmax = a[offseta0 + i, offseta1]
+        var elemmax = a[0, 0]
+        for (i in 1 until a.shape[0] ) {
+            if (abs(a[i, 0]) > abs(elemmax)) {
+                elemmax = a[i, 0]
                 imax = i
             }
         }
 
         if (elemmax != 0.0) {
             // pivoting
-            a[offseta0, offseta1] = a[offseta0 + imax, offseta1].also {
-                a[offseta0 + imax, offseta1] = a[offseta0, offseta1]
+            a[0, 0] = a[imax, 0].also {
+                a[imax, 0] = a[0, 0]
             }
-            rowPerm[offseta0] = offseta0 + imax
+            rowPerm[0] = imax
 
-            for (i in 1 until ma) {
-                a[offseta0 + i, offseta1] /= elemmax
+            for (i in 1 until a.shape[0] ) {
+                a[i, 0] /= elemmax
             }
         }
 
@@ -122,47 +120,47 @@ private fun PLUdecomposition2Inplace(a: D2Array<Double>, offseta0: Int, offseta1
 
     // apply recursively to [ a11 ]
     //                      [ a21 ]
-    PLUdecomposition2Inplace(a, offseta0, offseta1, ma, n1, rowPerm)
+    PLUdecomposition2Inplace(a[0..a.shape[0], 0..n1] as D2Array<Double>, rowPerm[0..min(a.shape[0], n1)] as D1Array<Int>)
 
     // change [ a12 ]
     //        [ a22 ]
-    for (i in 0 until min(ma, rowPerm.size - offseta0)) {
-        if (rowPerm[i + offseta0] != i + offseta0) {
-            for (j in n1 until na) {
-                a[offseta0 + i, offseta1 + j] = a[rowPerm[i + offseta0], offseta1 + j].also {
-                    a[rowPerm[i + offseta0], offseta1 + j] = a[offseta0 + i, offseta1 + j]
+    for (i in 0 until min(a.shape[0] , rowPerm.size - 0)) {
+        if (rowPerm[i] != 0) {
+            for (j in n1 until a.shape[1]) {
+                a[i, j] = a[i + rowPerm[i], j].also {
+                    a[i + rowPerm[i], j] = a[i, j]
                 }
             }
         }
     }
 
-    // adjust a12
+    // change a12
     solveLowerTriangleSystemInplace(
-        a[offseta0 .. offseta0 + n1, offseta1      .. offseta1 + n1     ] as D2Array<Double>,
-        a[offseta0 .. offseta0 + n1, offseta1 + n1 .. offseta1 + n1 + n2] as D2Array<Double>
+        a[0 .. n1, 0  .. n1     ] as D2Array<Double>,
+        a[0 .. n1, n1 .. n1 + n2] as D2Array<Double>
     )
 
     // update a22
     dotThenPlusInplace(
-        a[(offseta0 + n1) .. (offseta0 + n1) + ma - n1, (offseta1 + 0)  .. (offseta1 + 0)  + n1] as D2Array<Double>,
-        a[(offseta0 + 0)  .. (offseta0 + 0)  + n1     , (offseta1 + n1) .. (offseta1 + n1) + n2] as D2Array<Double>,
-        a[(offseta0 + n1) .. (offseta0 + n1) + ma - n1, (offseta1 + n1) .. (offseta1 + n1) + n2] as D2Array<Double>,
+        a[n1 .. n1 + a.shape[0] - n1, 0  .. 0  + n1] as D2Array<Double>,
+        a[0  .. 0  + n1             , n1 .. n1 + n2] as D2Array<Double>,
+        a[n1 .. n1 + a.shape[0] - n1, n1 .. n1 + n2] as D2Array<Double>,
         -1.0,
         1.0
     )
 
     // factor a22
-    PLUdecomposition2Inplace(a, offseta0 + n1, offseta1 + n1, ma - n1, n2, rowPerm)
+    PLUdecomposition2Inplace(a[n1 .. a.shape[0], n1 .. a.shape[1]] as D2Array<Double>,  rowPerm[n1 .. min(a.shape[0], a.shape[1])] as D1Array<Int>)
 
     // apply rowPerm to a21
-    for (i in n1 until ma) {
-        if(offseta0 + i >= rowPerm.size) {
+    for (i in n1 until a.shape[0] ) {
+        if(i >= rowPerm.size) {
             break
         }
-        if (rowPerm[offseta0 + i] != offseta0 + i) {
+        if (rowPerm[i] != 0) {
             for (j in 0 until n1) {
-                a[offseta0 + i, offseta1 + j] = a[rowPerm[offseta0 + i], offseta1 + j].also {
-                    a[rowPerm[offseta0 + i], offseta1 + j] = a[offseta0 + i, offseta1 + j]
+                a[i, j] = a[i + rowPerm[i], j].also {
+                    a[i + rowPerm[i], j] = a[i, j]
                 }
             }
         }
@@ -170,12 +168,13 @@ private fun PLUdecomposition2Inplace(a: D2Array<Double>, offseta0: Int, offseta1
 
 }
 
+
 fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Double>> {
     val _a = a.deepCopy()
     val perm = mk.d1array<Int>(min(_a.shape[0], _a.shape[1])){ 0 }
-    for (i in perm.indices) perm[i] = i
 
-    PLUdecomposition2Inplace(_a, 0, 0, _a.shape[0], _a.shape[1], perm)
+
+    PLUdecomposition2Inplace(_a, perm)
     // since previous call _a contains answer
 
     val L = mk.d2array(_a.shape[0], min(_a.shape[0], _a.shape[1])) { 0.0 }
@@ -203,8 +202,8 @@ fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Do
     val P = mk.identity<Double>(_a.shape[0])
 
     for (i in perm.indices.reversed()) {
-        if(perm[i] != i) {
-            P[i] = P[perm[i]].deepCopy().also { P[perm[i]] = P[i].deepCopy() }
+        if(perm[i] != 0) {
+            P[i] = P[i + perm[i]].deepCopy().also { P[i + perm[i]] = P[i].deepCopy() }
         }
     }
     return Triple(P, L, U)
@@ -213,9 +212,9 @@ fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Do
 fun PLUCompressed(a: D2Array<Double>): Triple<D1Array<Int>, D2Array<Double>, D2Array<Double>> {
     val _a = a.deepCopy()
     val perm = mk.d1array<Int>(min(_a.shape[0], _a.shape[1])){ 0 }
-    for (i in perm.indices) perm[i] = i
 
-    PLUdecomposition2Inplace(_a, 0, 0, _a.shape[0], _a.shape[1], perm)
+
+    PLUdecomposition2Inplace(_a, perm)
     // since previous call _a contains answer
 
     val L = mk.d2array(_a.shape[0], min(_a.shape[0], _a.shape[1])) {0.0}
@@ -238,9 +237,6 @@ fun PLUCompressed(a: D2Array<Double>): Triple<D1Array<Int>, D2Array<Double>, D2A
             U[i, j] = _a[i, j]
         }
     }
-
-
-    val P = mk.identity<Double>(_a.shape[0])
 
     return Triple(perm.deepCopy(), L, U)
 }
