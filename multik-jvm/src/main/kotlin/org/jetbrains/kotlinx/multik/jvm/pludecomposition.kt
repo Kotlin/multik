@@ -46,9 +46,6 @@ private fun dotThenPlusInplace(a: D2Array<Double>, b: D2Array<Double>, c: D2Arra
  * Solves ax=b equation where @param a lower triangular matrix with units on diagonal,
  * rewrite @param b with solution
  *
- * @param a has na rows and na columns
- * @param b has na rows and nb columns
- *
  * notice: intentionally there is no checks that a[i, i] == 1.0 and a[i, >i] == 0.0,
  * it is a contract of this method having no such checks
  *
@@ -67,25 +64,43 @@ private fun solveLowerTriangleSystemInplace(a: D2Array<Double>, b: D2Array<Doubl
 
 /**
  *
- * computes an LU factorization of a matrix @param a
- * Where u is permutation matrix,
- * l lower triangular matrix with unit diagonal elements
- * u upper triangular matrix
+ * computes an PLU factorization of a matrix @param a
+ * Where p is permutation,
+ * L lower triangular matrix with unit diagonal elements
+ * U upper triangular matrix
  *
+ * Stores result in a in such way:
+ * a[i, <i] contains L matrix (without units on main diagonal)
+ * a[i, >=i] contains U matrix
+ *
+ * rowPerm is permutation such that: rowPerm ⚬ a = LU, so
+ * a = rowPerm^(-1) ⚬ (LU)
+ *
+ * rowPerm ⚬ array is defined in following way:
+ * for (i in rowPerm.indices) {
+ *     swap(array[i], array[i + rowPerm[i]])
+ * }
+ * rowPerm^(-1) ⚬ array is defined as:
+ * for (i in rowPerm.indices.reversed()) {
+ *     swap(array[i], array[i + rowPerm[i]])
+ * }
+ *
+ * it's not hard to proof that
+ * rowPerm ⚬ (rowPerm^(-1) ⚬ array) = rowPerm^(-1) ⚬ (rowPerm ⚬ array) = array
  *
  * lapack: dgetrf2
  */
 private fun PLUdecomposition2Inplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
-    // this is recursive function, position of current mtrrix we work with is
+    // this is recursive function, position of current matrix we work with is
     // a[0 until am, 0 until an]
     val n1 = min(a.shape[1], a.shape[0] ) / 2
     val n2 = a.shape[1] - n1
 
-    // the idea of an algorithm is represent mtrrix a as
+    // the idea of an algorithm is represent matrix a as
     // a = [ a11 a12 ]
     //     [ a21 a22 ]
-    // where aij -- block submtrrices
-    // a11.shape = (n1, n1) (others shapes can be calculated using this informtrion)
+    // where aij -- block submatrices
+    // a11.shape = (n1, n1) (others shapes can be calculated using this information)
     // then recursively apply to [ a11 ] and [ a22 ] parts combining results together
     //                           [ a21 ]
 
@@ -124,7 +139,7 @@ private fun PLUdecomposition2Inplace(a: D2Array<Double>, rowPerm: D1Array<Int>) 
 
     // change [ a12 ]
     //        [ a22 ]
-    for (i in 0 until min(a.shape[0] , rowPerm.size - 0)) {
+    for (i in rowPerm.indices) {
         if (rowPerm[i] != 0) {
             for (j in n1 until a.shape[1]) {
                 a[i, j] = a[i + rowPerm[i], j].also {
@@ -142,8 +157,8 @@ private fun PLUdecomposition2Inplace(a: D2Array<Double>, rowPerm: D1Array<Int>) 
 
     // update a22
     dotThenPlusInplace(
-        a[n1 .. n1 + a.shape[0] - n1, 0  .. 0  + n1] as D2Array<Double>,
-        a[0  .. 0  + n1             , n1 .. n1 + n2] as D2Array<Double>,
+        a[n1 .. n1 + a.shape[0] - n1, 0  .. n1     ] as D2Array<Double>,
+        a[0  .. n1                  , n1 .. n1 + n2] as D2Array<Double>,
         a[n1 .. n1 + a.shape[0] - n1, n1 .. n1 + n2] as D2Array<Double>,
         -1.0,
         1.0

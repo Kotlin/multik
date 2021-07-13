@@ -171,7 +171,7 @@ public object JvmLinAlg : LinAlg {
         val (P, L, U) = PLUCompressed(a)
         val _b = b.deepCopy()
 
-        for (i in 0 until P.size) {
+        for (i in P.indices) {
             if(P[i] != 0) {
                 _b[i] = _b[i + P[i]].deepCopy().also { _b[i + P[i]] = _b[i].deepCopy() }
             }
@@ -185,7 +185,10 @@ public object JvmLinAlg : LinAlg {
         return solveTriangle(U, solveTriangle(L, _b), false)
     }
 
-    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> {
+    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
+        if(a.dtype != DataType.DoubleDataType) {
+            throw UnsupportedOperationException()
+        }
         val aDouble = mk.d2array<Double>(a.shape[0], a.shape[1]) { 0.0 }
         for (i in 0 until a.shape[0]) {
             for (j in 0 until a.shape[1]) {
@@ -211,13 +214,13 @@ public object JvmLinAlg : LinAlg {
         }
         val ans = solveDouble(aDouble, bDouble)
         if (b.dim.d == 2) {
-            return ans as NDArray<Double, D>
+            return ans as NDArray<T, D>
         } else {
             val ansd1 = mk.d1array<Double>(ans.shape[0]) { 0.0 }
             for (i in 0 until ans.shape[0]) {
                 ansd1[i] = ans[i, 0]
             }
-            return ansd1 as NDArray<Double, D>
+            return ansd1 as NDArray<T, D>
         }
 
     }
