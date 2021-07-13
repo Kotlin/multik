@@ -7,18 +7,19 @@ package org.jetbrains.kotlinx.multik_jvm.linAlg
 
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.PLU
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.gemm
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.inv
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solve
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.max
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.min
+import org.jetbrains.kotlinx.multik.jvm.PLU
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.minus
 import kotlin.math.abs
+import kotlin.math.max
 
 import kotlin.random.Random
+import kotlin.system.measureTimeMillis
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -64,60 +65,60 @@ class JvmLinAlgTest {
 
     }
 
-    @Test
-    fun `test solveTriangleInplace`() {
-        val procedurePrecision = 1e-5
+//    @Test
+//    fun `test solveTriangleInplace`() {
+//        val procedurePrecision = 1e-5
+//
+//        val rnd = Random(123)
+//        val n = 18
+//        val m = 100
+//
+//        val a = mk.d2array<Double>(n, n) {0.0}
+//        for (i in 0 until n) {
+//            for (j in 0 .. i) {
+//                if (j == i) {
+//                    a[i, j] = 1.0
+//                } else {
+//                    a[i, j] = rnd.nextDouble()
+//                }
+//            }
+//        }
+//
+//        val b = mk.d2array<Double>(n, m) {0.0}
+//        for (i in 0 until n)
+//            for (j in 0 until m)
+//                b[i, j] = rnd.nextDouble()
+//
+//        val saveB = b.deepCopy()
+//
+//        JvmLinAlg.solveTriangleInplace(a, 0, 0, n, b, 0, 0, m)
+//
+//        //check equality up to precision
+//        assert(max(dot(a, b) - saveB) < procedurePrecision && min(dot(a, b) - saveB) > -procedurePrecision)
+//    }
 
-        val rnd = Random(123)
-        val n = 18
-        val m = 100
-
-        val a = mk.d2array<Double>(n, n) {0.0}
-        for (i in 0 until n) {
-            for (j in 0 .. i) {
-                if (j == i) {
-                    a[i, j] = 1.0
-                } else {
-                    a[i, j] = rnd.nextDouble()
-                }
-            }
-        }
-
-        val b = mk.d2array<Double>(n, m) {0.0}
-        for (i in 0 until n)
-            for (j in 0 until m)
-                b[i, j] = rnd.nextDouble()
-
-        val saveB = b.deepCopy()
-
-        JvmLinAlg.solveTriangleInplace(a, 0, 0, n, b, 0, 0, m)
-
-        //check equality up to precision
-        assert(max(dot(a, b) - saveB) < procedurePrecision && min(dot(a, b) - saveB) > -procedurePrecision)
-    }
-
-    @Test
-    fun `gemm test`() {
-        val procedurePrecision = 1e-5
-
-        val a = mk.ndarray(mk[mk[1.0, 2.0, 3.0, 2.0, 1.0], mk[4.0, 5.0, 6.0, 5.0, 4.0]])
-        val b = mk.ndarray(mk[mk[7.0, 8.0], mk[9.0, 10.0], mk[11.0, 12.0], mk[13.0, 14.0], mk[15.0, 16.0]])
-        val c = mk.ndarray(mk[mk[11.0, 13.0], mk[15.0, 17.0]])
-        val adotb = mk.ndarray(mk[mk[110.0, 121.0], mk[279.0, 305.0]])
-
-        //        proof: numpy
-        //
-        //        a = np.array([[1.0, 2.0, 3.0, 2.0, 1.0], [4.0, 5.0, 6.0, 5.0, 4.0]])
-        //        b = np.array([[7.0, 8.0], [9.0, 10.0], [11.0, 12.0], [13.0, 14.0], [15.0, 16.0]])
-        //        print(a @ b + c)
-
-        gemm(a, 0, 0, 2, 5, 1.0,
-             b, 0, 0, 5, 2,
-             c, 0, 0, 2, 2, 1.0)
-
-        assert(c == adotb)
-
-    }
+//    @Test
+//    fun `gemm test`() {
+//        val procedurePrecision = 1e-5
+//
+//        val a = mk.ndarray(mk[mk[1.0, 2.0, 3.0, 2.0, 1.0], mk[4.0, 5.0, 6.0, 5.0, 4.0]])
+//        val b = mk.ndarray(mk[mk[7.0, 8.0], mk[9.0, 10.0], mk[11.0, 12.0], mk[13.0, 14.0], mk[15.0, 16.0]])
+//        val c = mk.ndarray(mk[mk[11.0, 13.0], mk[15.0, 17.0]])
+//        val adotb = mk.ndarray(mk[mk[110.0, 121.0], mk[279.0, 305.0]])
+//
+//        //        proof: numpy
+//        //
+//        //        a = np.array([[1.0, 2.0, 3.0, 2.0, 1.0], [4.0, 5.0, 6.0, 5.0, 4.0]])
+//        //        b = np.array([[7.0, 8.0], [9.0, 10.0], [11.0, 12.0], [13.0, 14.0], [15.0, 16.0]])
+//        //        print(a @ b + c)
+//
+//        gemm(a, 0, 0, 2, 5, 1.0,
+//             b, 0, 0, 5, 2,
+//             c, 0, 0, 2, 2, 1.0)
+//
+//        assert(c == adotb)
+//
+//    }
 
 
 
@@ -126,11 +127,14 @@ class JvmLinAlgTest {
 
         val procedurePrecision = 1e-5
 
-        for (all in 0..10000) {
+        val iters = 10000
+        val sideFrom = 1
+        val sideUntil = 100
+        for (all in 0 until iters) {
 
             val rnd = Random(System.currentTimeMillis())
-            val m = rnd.nextInt(1, 100)
-            val n = rnd.nextInt(1, 100)
+            val m = rnd.nextInt(sideFrom, sideUntil)
+            val n = rnd.nextInt(sideFrom, sideUntil)
 
 
             val a = mk.d2array<Double>(m, n) { rnd.nextDouble() }
@@ -159,6 +163,37 @@ class JvmLinAlgTest {
 
         }
     }
+
+    @Test
+    fun `plu benchmark`() {
+        val rnd = Random(424242)
+        val iters = 1000
+        val maxSideLen = 400
+        var avgTime = 0.0
+        var maxTime = 0.0
+        var minTime = Double.POSITIVE_INFINITY
+
+
+        for (all in 0 until iters) {
+
+            val m = rnd.nextInt(maxSideLen / 2, maxSideLen + 1)
+            val n = rnd.nextInt(maxSideLen / 2, maxSideLen + 1)
+
+
+            val a = mk.d2array<Double>(m, n) { rnd.nextDouble() }
+
+            val newtime = measureTimeMillis {
+                val (P, L, U) = PLU(a)
+            }.toDouble()
+            maxTime = kotlin.math.max(maxTime, newtime)
+            minTime = kotlin.math.min(minTime, newtime)
+            avgTime += newtime
+        }
+        avgTime /= iters
+        println("On $iters iteration on random matrices with random side in range [${maxSideLen / 2}, $maxSideLen]:\n" +
+                "avgTime: $avgTime ms\nmaxTime: $maxTime ms\nminTime: $minTime ms")
+    }
+
 
     @Test
     fun `solve test`() {
@@ -198,13 +233,22 @@ class JvmLinAlgTest {
         }
     }
 
-
     @Test
     fun whatever() {
-        val a = mk.ndarray(mk[mk[-1.0, 2.0, 3.0], mk[4.0, 5.0, 6.0], mk[7.0, 8.0, 10.0]])
-        val b = mk.ndarray(mk[mk[7.0], mk[6.0], mk[5.0]])
-        println(dot(a, solve(a, b)))
-        println(inv(a))
+        val b = mk.ndarray(mk[
+                mk[1.5, 2.1, 3.0],
+                mk[4.0, 5.0, 6.0],
+                mk[7.0, 8.0, 9.0]
+            ])
+        val bslice = b[1..2, 1..2] as D2Array<Double>
+        println(bslice)
+        bslice[0, 0] = .0
+        println(b)
+
+    //        val a = mk.ndarray(mk[mk[-1.0, 2.0, 3.0], mk[4.0, 5.0, 6.0], mk[7.0, 8.0, 10.0]])
+//        val b = mk.ndarray(mk[mk[7.0], mk[6.0], mk[5.0]])
+//        println(dot(a, solve(a, b)))
+//        println(inv(a))
 
     }
 }
