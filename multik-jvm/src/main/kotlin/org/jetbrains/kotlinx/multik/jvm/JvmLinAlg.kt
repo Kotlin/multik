@@ -4,14 +4,15 @@
 
 package org.jetbrains.kotlinx.multik.jvm
 
-import com.sun.org.apache.xalan.internal.xsltc.trax.DOM2SAX
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
+import org.jetbrains.kotlinx.multik.ndarray.operations.map
+import org.jetbrains.kotlinx.multik.ndarray.operations.maxBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.maxWith
 import java.lang.ArithmeticException
-import kotlin.math.absoluteValue
+import java.lang.UnsupportedOperationException
 import kotlin.math.abs
-import kotlin.math.pow
 import kotlin.math.min
 
 public object JvmLinAlg : LinAlg {
@@ -36,7 +37,7 @@ public object JvmLinAlg : LinAlg {
 
     override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
 
-        require(p > 0) { "power $p must be positive" }
+        require(p > 0) { "Power $p must be positive" }
 
         return when (mat.dtype) {
             DataType.DoubleDataType -> {
@@ -46,88 +47,10 @@ public object JvmLinAlg : LinAlg {
                 norm(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
             }
             else -> {
-                normGeneral(mat.data, mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+                norm(mat.data, mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
             }
         }
-
     }
-
-    //----------------- start cases for norm method ----------------------
-    private fun norm(
-        mat: FloatArray, matOffset: Int, matStrides: IntArray,
-        n: Int, m: Int, power: Int,
-        consistent: Boolean
-    ): Double {
-        var result = 0.0
-
-        val (matStride_0, matStride_1) = matStrides
-
-        if (consistent) {
-            for (element in mat) {
-                result += (element.absoluteValue.toDouble()).pow(power)
-            }
-        } else {
-            for (i in 0 until n) {
-                val matInd = i * matStride_0 + matOffset
-                for (k in 0 until m) {
-                    val elementDoubleAbsValue = mat[matInd + k * matStride_1].absoluteValue.toDouble()
-                    result += (elementDoubleAbsValue).pow(power)
-                }
-            }
-        }
-
-        return result.pow(1 / power.toDouble())
-    }
-
-    private fun norm(
-        mat: DoubleArray, matOffset: Int, matStrides: IntArray,
-        n: Int, m: Int, power: Int,
-        consistent: Boolean
-    ): Double {
-        //most common case of matrix elements
-        var result = 0.0
-
-        val (matStride_0, matStride_1) = matStrides
-
-        if (consistent) {
-            result = mat.sumOf { abs(it).pow(power) }
-        } else {
-            for (i in 0 until n) {
-                val matInd = i * matStride_0 + matOffset
-                for (k in 0 until m) {
-                    val elementDoubleAbsValue = abs(mat[matInd + k * matStride_1])
-                    result += (elementDoubleAbsValue).pow(power)
-                }
-            }
-        }
-
-        return result.pow(1 / power.toDouble())
-    }
-
-    private fun <T : Number> normGeneral(
-        mat: ImmutableMemoryView<T>, matOffset: Int, matStrides: IntArray,
-        n: Int, m: Int, power: Int,
-        consistent: Boolean
-    ): Double {
-        var result = 0.0
-
-        val (matStride_0, matStride_1) = matStrides
-
-        if (consistent) {
-            result = mat.sumOf { abs(it.toDouble()).pow(power) }
-        } else {
-            for (i in 0 until n) {
-                val matInd = i * matStride_0 + matOffset
-                for (k in 0 until m) {
-                    val elementDoubleAbsValue = abs(mat[matInd + k * matStride_1].toDouble())
-                    result += (elementDoubleAbsValue).pow(power)
-                }
-            }
-        }
-
-        return result.pow(1 / power.toDouble())
-    }
-//----------------- end of cases for norm method ----------------------
 
 
 
@@ -136,9 +59,9 @@ public object JvmLinAlg : LinAlg {
     /**
      * solves a*x = b where a lower or upper triangle square matrix
      */
-    public fun solveTriangle(a: D2Array<Double>, b: D2Array<Double>, isLowerTriangle: Boolean = true): D2Array<Double> {
+    private fun solveTriangle(a: D2Array<Double>, b: D2Array<Double>, isLowerTriangle: Boolean = true): D2Array<Double> {
         require(a.shape[1] == b.shape[0]) { "invalid arguments, a.shape[1] = ${a.shape[1]} != b.shape[0]=${b.shape[0]}" }
-        require(a.shape[0] == a.shape[1]) { "a should be a square matrix, matrix with shape (${a.shape[0]}, ${a.shape[1]}) given" }
+        requireSquare(a)
         val x = b.deepCopy()
         for (i in 0 until x.shape[0]) {
             for (j in 0 until x.shape[1]) {
@@ -166,8 +89,9 @@ public object JvmLinAlg : LinAlg {
         return x
     }
 
-    fun solveDouble(a: D2Array<Double>, b: D2Array<Double>, singularityErrorLevel: Double = 1e-7): D2Array<Double> {
-        require(a.shape[0] == a.shape[1] && a.shape[1] == b.shape[0])
+    private fun solveDouble(a: D2Array<Double>, b: D2Array<Double>, singularityErrorLevel: Double = 1e-7): D2Array<Double> {
+        requireSquare(a)
+        require( a.shape[1] == b.shape[0]) { "Shapes of arguments are incompatible: expected a.shape[1] = ${a.shape[1]} to be equal to the b.shape[0] = ${b.shape[0]}" }
         val (P, L, U) = PLUCompressed(a)
         val _b = b.deepCopy()
 
@@ -178,18 +102,22 @@ public object JvmLinAlg : LinAlg {
         }
         for (i in 0 until U.shape[0]) {
             if (abs(U[i, i]) < singularityErrorLevel) {
-                throw ArithmeticException("matrix a is singular or almost singular")
+                throw ArithmeticException("Matrix a is singular or almost singular")
             }
         }
 
         return solveTriangle(U, solveTriangle(L, _b), false)
     }
 
+    private fun <T : Number> requireSquare(a: MultiArray<T, D2>) {
+        require(a.shape[0] == a.shape[1]) { "Square matrix expected, shape=(${a.shape[0]}, ${a.shape[1]}) given" }
+    }
+
     override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         if(a.dtype != DataType.DoubleDataType) {
             throw UnsupportedOperationException()
         }
-        val aDouble = mk.d2array<Double>(a.shape[0], a.shape[1]) { 0.0 }
+        val aDouble = mk.empty<Double, D2>(a.shape[0], a.shape[1])
         for (i in 0 until a.shape[0]) {
             for (j in 0 until a.shape[1]) {
                 aDouble[i, j] = a[i, j].toDouble()
@@ -197,18 +125,12 @@ public object JvmLinAlg : LinAlg {
         }
         val bDouble: D2Array<Double>
         if (b.dim.d == 2) {
-            b as D2Array<Double>
-            bDouble = mk.d2array(b.shape[0], b.shape[1]) { 0.0 }
-            for (i in 0 until b.shape[0]) {
-                for (j in 0 until b.shape[1]) {
-                    bDouble[i, j] = b[i, j].toDouble()
-                }
-            }
+            bDouble = (b as D2Array<T>).map { it.toDouble() }
         } else {
-            b as D1Array<Double>
-            bDouble = mk.d2array(b.shape[0], 1) { 0.0 }
+            b as D1Array<T>
+            bDouble = mk.empty<Double, D2>(b.shape[0], 1)
             for (i in 0 until b.shape[0]) {
-                bDouble[i, 0] = b[i]
+                bDouble[i, 0] = b[i].toDouble()
             }
 
         }
@@ -216,24 +138,19 @@ public object JvmLinAlg : LinAlg {
         if (b.dim.d == 2) {
             return ans as NDArray<T, D>
         } else {
-            val ansd1 = mk.d1array<Double>(ans.shape[0]) { 0.0 }
+            val ansd1 = mk.empty<Double, D1>(ans.shape[0])
             for (i in 0 until ans.shape[0]) {
                 ansd1[i] = ans[i, 0]
             }
             return ansd1 as NDArray<T, D>
         }
-
     }
     //--------------------------end of solve linear system-----------------------------------
 
     fun <T : Number> inv(a : D2Array<T>): D2Array<Double> {
         require(a.shape[0] == a.shape[1]) { "a must be square matrix, matrix with shape (${a.shape[0]}, ${a.shape[1]}) was given" }
-        val aDouble = mk.d2array<Double>(a.shape[0], a.shape[0]) { 0.0 }
-        for (i in 0 until a.shape[0]) {
-            for (j in 0 until a.shape[1]) {
-                aDouble[i, j] = a[i, j].toDouble()
-            }
-        }
+        val aDouble = a.map { it.toDouble() }
+
         return solveDouble(aDouble, mk.identity(a.shape[0]))
     }
 
