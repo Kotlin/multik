@@ -11,6 +11,12 @@ val gccPath: String? = System.getenv("MinGW_x64_Bin_Path")
 library {
     source.from(file("src/main/cpp"))
 
+    toolChains.configureEach {
+        if (this is Gcc && gccPath != null) {
+            this.path(gccPath)
+        }
+    }
+
     targetMachines.set(
         listOf(
             machines.linux.x86_64,
@@ -22,9 +28,6 @@ library {
     linkage.set(listOf(Linkage.SHARED))
 
     binaries.configureEach {
-        if (gccPath != null) {
-            (toolChain as Gcc).path(gccPath)
-        }
         compileTask.get().compilerArgs.addAll(compileTask.get().targetPlatform.map {
             listOf(
                 "-std=c++14", "-O3", "-fno-exceptions", "-ffast-math",
