@@ -118,16 +118,11 @@ class JvmLinAlgTest {
         val procedurePrecision = 1e-5
         val rnd = Random(System.currentTimeMillis())
 
-//        val a = mk.ndarray(mk[mk[1.0]])
-//        val b = mk.ndarray(mk[mk[2.0]])
-//        val sol = solve(a, b)
-//        assert(abs(sol[0, 0] - 0.5) < procedurePrecision)
-
         for (iteration in 0 until 1000) {
             //test when second argument is d2 array
             val maxlen = 100
-            val n = rnd.nextInt(2, maxlen)
-            val m = rnd.nextInt(2, maxlen)
+            val n = rnd.nextInt(1, maxlen)
+            val m = rnd.nextInt(1, maxlen)
             val a = mk.d2array<Double>(n, n) { rnd.nextDouble() }
             val b = mk.d2array<Double>(n, m) { rnd.nextDouble() }
             var solDelta = dot(a, solve(a, b)) - b
@@ -157,15 +152,5 @@ class JvmLinAlgTest {
         }
     }
 
-    @Test
-    fun multiIndicesTest() {
-        val a = mk.ndarray(mk[mk[1.0]])
-        var imInside = 0
-        for (i in a.multiIndices) {
-            imInside++
-        }
-        println(imInside)
-        //prints 0
-    }
 
 }
