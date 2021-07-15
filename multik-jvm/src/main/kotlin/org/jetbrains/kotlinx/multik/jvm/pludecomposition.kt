@@ -1,46 +1,12 @@
 package org.jetbrains.kotlinx.multik.jvm
 
 import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 import kotlin.math.abs
 import kotlin.math.min
 
-/**
- * computes alpha * a * b + beta * c and stores result is c
- * @param alpha scalar
- * @param beta scalar
- * @param a matrix
- * @param b matrix
- * @param c matrix
- *
- * blas / lapack: dgemm
- */
-private fun dotThenPlusInplace(a: D2Array<Double>, b: D2Array<Double>, c: D2Array<Double>, alpha: Double, beta: Double) {
-    if(c.shape[0] <= 0 || c.shape[1] <= 0) return
-
-    if (alpha == 0.0) {
-        for (i in 0 until c.shape[0]) {
-            for (j in 0 until c.shape[1]) {
-                c[i, j] *= beta
-            }
-        }
-        return
-    }
-
-    for (j in 0 until c.shape[1]) {
-        for (i in 0 until c.shape[0]) {
-            c[i, j] *= beta
-        }
-
-        for (l in 0 until a.shape[1]) {
-            val temp = alpha * b[l, j]
-            for (i in 0 until c.shape[0]) {
-                c[i, j] += temp * a[i, l]
-            }
-        }
-    }
-}
 
 /**
  * Solves ax=b equation where @param a lower triangular matrix with units on diagonal,
@@ -55,7 +21,6 @@ private fun solveLowerTriangleSystemInplace(a: D2Array<Double>, b: D2Array<Doubl
     for (i in 0 until a.shape[1]) {
         for (k in i+1 until a.shape[1]) {
             for (j in 0 until b.shape[1]) {
-                // array getter have extra two bound checks, maybe better use b.data[...]
                 b[k, j] -= a[k, i] * b[i, j]
             }
         }
@@ -151,21 +116,23 @@ private fun PLUdecomposition2Inplace(a: D2Array<Double>, rowPerm: D1Array<Int>) 
 
     // change a12
     solveLowerTriangleSystemInplace(
-        a[0 .. n1, 0  .. n1     ] as D2Array<Double>,
-        a[0 .. n1, n1 .. n1 + n2] as D2Array<Double>
+        a[0..n1, 0..n1] as D2Array<Double>,
+        a[0..n1, n1..n1 + n2] as D2Array<Double>
     )
 
     // update a22
-    dotThenPlusInplace(
-        a[n1 .. n1 + a.shape[0] - n1, 0  .. n1     ] as D2Array<Double>,
-        a[0  .. n1                  , n1 .. n1 + n2] as D2Array<Double>,
-        a[n1 .. n1 + a.shape[0] - n1, n1 .. n1 + n2] as D2Array<Double>,
-        -1.0,
-        1.0
-    )
+    val update = dot(a[n1..n1 + a.shape[0] - n1, 0..n1], a[0..n1, n1..n1 + n2])
+    for (i in n1 until n1 + a.shape[0] - n1) {
+        for (j in n1 until n1 + n2) {
+            a[i, j] -= update[i - n1, j - n1]
+        }
+    }
 
     // factor a22
-    PLUdecomposition2Inplace(a[n1 .. a.shape[0], n1 .. a.shape[1]] as D2Array<Double>,  rowPerm[n1 .. min(a.shape[0], a.shape[1])] as D1Array<Int>)
+    PLUdecomposition2Inplace(
+        a[n1..a.shape[0], n1..a.shape[1]] as D2Array<Double>,
+        rowPerm[n1..min(a.shape[0], a.shape[1])] as D1Array<Int>
+    )
 
     // apply rowPerm to a21
     for (i in n1 until a.shape[0] ) {
@@ -184,7 +151,7 @@ private fun PLUdecomposition2Inplace(a: D2Array<Double>, rowPerm: D1Array<Int>) 
 }
 
 
-fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Double>> {
+internal fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Double>> {
     val _a = a.deepCopy()
     val perm = mk.d1array<Int>(min(_a.shape[0], _a.shape[1])){ 0 }
 
@@ -224,7 +191,7 @@ fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Do
     return Triple(P, L, U)
 }
 
-fun PLUCompressed(a: D2Array<Double>): Triple<D1Array<Int>, D2Array<Double>, D2Array<Double>> {
+internal fun PLUCompressed(a: D2Array<Double>): Triple<D1Array<Int>, D2Array<Double>, D2Array<Double>> {
     val _a = a.deepCopy()
     val perm = mk.d1array<Int>(min(_a.shape[0], _a.shape[1])){ 0 }
 
