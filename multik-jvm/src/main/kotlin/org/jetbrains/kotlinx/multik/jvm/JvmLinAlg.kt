@@ -4,13 +4,23 @@
 
 package org.jetbrains.kotlinx.multik.jvm
 
-import org.jetbrains.kotlinx.multik.api.LinAlg
-import org.jetbrains.kotlinx.multik.api.identity
-import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import kotlin.math.pow
+import org.jetbrains.kotlinx.multik.ndarray.data.set
+import org.jetbrains.kotlinx.multik.ndarray.operations.map
+import org.jetbrains.kotlinx.multik.ndarray.operations.maxBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.maxWith
+import java.lang.ArithmeticException
+import java.lang.UnsupportedOperationException
+import kotlin.math.abs
+import kotlin.math.min
 
 public object JvmLinAlg : LinAlg {
+
+    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
+        TODO("Not yet implemented")
+    }
+
     override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> {
         if (n == 0) return mk.identity(mat.shape[0], mat.dtype)
 
@@ -20,29 +30,138 @@ public object JvmLinAlg : LinAlg {
         } else {
             dot(mat, pow(mat, n - 1))
         }
+
     }
+
+
 
     override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
-        var n = 0.0
-        for (element in mat) {
-            n += element.toDouble().pow(p)
+
+        require(p > 0) { "Power $p must be positive" }
+
+        return when (mat.dtype) {
+            DataType.DoubleDataType -> {
+                norm(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+            }
+            DataType.FloatDataType -> {
+                norm(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+            }
+            else -> {
+                norm(mat.data, mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+            }
         }
-        return n.pow(1 / p.toDouble())
     }
 
-    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
+
+
+
+    //-------------------------------solve linear system-----------------------------------
+    /**
+     * solves a*x = b where a lower or upper triangle square matrix
+     */
+    private fun solveTriangle(a: D2Array<Double>, b: D2Array<Double>, isLowerTriangle: Boolean = true): D2Array<Double> {
+        require(a.shape[1] == b.shape[0]) { "invalid arguments, a.shape[1] = ${a.shape[1]} != b.shape[0]=${b.shape[0]}" }
+        requireSquare(a)
+        val x = b.deepCopy()
+        for (i in 0 until x.shape[0]) {
+            for (j in 0 until x.shape[1]) {
+                x[i, j] /= a[i, i]
+            }
+        }
+        if (isLowerTriangle) {
+            for (i in 0 until x.shape[0]) {
+                for (k in i + 1 until x.shape[0]) {
+                    for (j in 0 until x.shape[1]) {
+                        x[k, j] -= a[k, i] * x[i, j] / a[k, k]
+                    }
+                }
+            }
+        } else {
+            for (i in x.shape[0] - 1 downTo 0) {
+                for (k in i - 1 downTo 0) {
+                    for (j in 0 until x.shape[1]) {
+                        x[k, j] -= a[k, i] * x[i, j] / a[k, k]
+                    }
+                }
+            }
+
+        }
+        return x
     }
 
-    override fun <T : Number, D: Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
-        TODO("Not yet implemented")
+    private fun solveDouble(a: D2Array<Double>, b: D2Array<Double>, singularityErrorLevel: Double = 1e-7): D2Array<Double> {
+        requireSquare(a)
+        require( a.shape[1] == b.shape[0]) { "Shapes of arguments are incompatible: expected a.shape[1] = ${a.shape[1]} to be equal to the b.shape[0] = ${b.shape[0]}" }
+        val (P, L, U) = PLUCompressed(a)
+        val _b = b.deepCopy()
+
+        for (i in P.indices) {
+            if(P[i] != 0) {
+                _b[i] = _b[i + P[i]].deepCopy().also { _b[i + P[i]] = _b[i].deepCopy() }
+            }
+        }
+        for (i in 0 until U.shape[0]) {
+            if (abs(U[i, i]) < singularityErrorLevel) {
+                throw ArithmeticException("Matrix a is singular or almost singular")
+            }
+        }
+
+        return solveTriangle(U, solveTriangle(L, _b), false)
     }
+
+    private fun <T : Number> requireSquare(a: MultiArray<T, D2>) {
+        require(a.shape[0] == a.shape[1]) { "Square matrix expected, shape=(${a.shape[0]}, ${a.shape[1]}) given" }
+    }
+
+    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
+        if(a.dtype != DataType.DoubleDataType) {
+            throw UnsupportedOperationException()
+        }
+        val aDouble = mk.empty<Double, D2>(a.shape[0], a.shape[1])
+        for (i in 0 until a.shape[0]) {
+            for (j in 0 until a.shape[1]) {
+                aDouble[i, j] = a[i, j].toDouble()
+            }
+        }
+        val bDouble: D2Array<Double>
+        if (b.dim.d == 2) {
+            bDouble = (b as D2Array<T>).map { it.toDouble() }
+        } else {
+            b as D1Array<T>
+            bDouble = mk.empty<Double, D2>(b.shape[0], 1)
+            for (i in 0 until b.shape[0]) {
+                bDouble[i, 0] = b[i].toDouble()
+            }
+
+        }
+        val ans = solveDouble(aDouble, bDouble)
+        if (b.dim.d == 2) {
+            return ans as NDArray<T, D>
+        } else {
+            val ansd1 = mk.empty<Double, D1>(ans.shape[0])
+            for (i in 0 until ans.shape[0]) {
+                ansd1[i] = ans[i, 0]
+            }
+            return ansd1 as NDArray<T, D>
+        }
+    }
+    //--------------------------end of solve linear system-----------------------------------
+
+    fun <T : Number> inv(a : D2Array<T>): D2Array<Double> {
+        require(a.shape[0] == a.shape[1]) { "a must be square matrix, matrix with shape (${a.shape[0]}, ${a.shape[1]}) was given" }
+        val aDouble = a.map { it.toDouble() }
+
+        return solveDouble(aDouble, mk.identity(a.shape[0]))
+    }
+
 
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
-        require(a.shape[1] == b.shape[0]) { "Shapes mismatch: shapes " +
-                "${a.shape.joinToString(prefix = "(", postfix = ")")} and " +
-                "${b.shape.joinToString(prefix = "(", postfix = ")")} not aligned: " +
-                "${a.shape[1]} (dim 1) != ${b.shape[0]} (dim 0)"}
+        require(a.shape[1] == b.shape[0]) {
+            "Shapes mismatch: shapes " +
+                    "${a.shape.joinToString(prefix = "(", postfix = ")")} and " +
+                    "${b.shape.joinToString(prefix = "(", postfix = ")")} not aligned: " +
+                    "${a.shape[1]} (dim 1) != ${b.shape[0]} (dim 0)"
+        }
 
         return if (b.dim.d == 2) {
             dotMatrix(a, b as D2Array<T>) as NDArray<T, D>
@@ -51,7 +170,7 @@ public object JvmLinAlg : LinAlg {
         }
     }
 
-    private fun <T: Number> dotMatrix(a: MultiArray<T, D2>, b: MultiArray<T, D2>): D2Array<T> {
+    private fun <T : Number> dotMatrix(a: MultiArray<T, D2>, b: MultiArray<T, D2>): D2Array<T> {
         val newShape = intArrayOf(a.shape[0], b.shape[1])
         return when (a.dtype) {
             DataType.FloatDataType -> {
@@ -224,7 +343,13 @@ public object JvmLinAlg : LinAlg {
 
         return when (a.dtype) {
             DataType.FloatDataType -> {
-                val ret = D1Array(MemoryViewFloatArray(FloatArray(newShape[0])), 0, newShape, dtype = DataType.FloatDataType, dim = D1)
+                val ret = D1Array(
+                    MemoryViewFloatArray(FloatArray(newShape[0])),
+                    0,
+                    newShape,
+                    dtype = DataType.FloatDataType,
+                    dim = D1
+                )
                 dotVector(a.data.getFloatArray(), a.offset, a.strides, b.data.getFloatArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getFloatArray())
                 ret
             }
@@ -259,7 +384,8 @@ public object JvmLinAlg : LinAlg {
     private fun dotVector(
         left: FloatArray, leftOffset: Int, leftStrides: IntArray,
         right: FloatArray, rightOffset: Int, rStride: Int,
-        n: Int, m: Int, destination: FloatArray): FloatArray {
+        n: Int, m: Int, destination: FloatArray
+    ): FloatArray {
         val (lStride_0, lStride_1) = leftStrides
         for (i in 0 until n) {
             val lInd = i * lStride_0 + leftOffset
@@ -315,12 +441,14 @@ public object JvmLinAlg : LinAlg {
     private fun dotVector(
         left: ShortArray, leftOffset: Int, leftStrides: IntArray,
         right: ShortArray, rightOffset: Int, rStride: Int,
-        n: Int, m: Int, destination: ShortArray): ShortArray {
+        n: Int, m: Int, destination: ShortArray
+    ): ShortArray {
         val (lStride_0, lStride_1) = leftStrides
         for (i in 0 until n) {
             val lInd = i * lStride_0 + leftOffset
             for (j in 0 until m) {
-                destination[i] = (destination[i] + left[lInd + j * lStride_1] * right[j * rStride + rightOffset]).toShort()
+                destination[i] =
+                    (destination[i] + left[lInd + j * lStride_1] * right[j * rStride + rightOffset]).toShort()
             }
         }
         return destination
@@ -329,19 +457,21 @@ public object JvmLinAlg : LinAlg {
     private fun dotVector(
         left: ByteArray, leftOffset: Int, leftStrides: IntArray,
         right: ByteArray, rightOffset: Int, rStride: Int,
-        n: Int, m: Int, destination: ByteArray): ByteArray {
+        n: Int, m: Int, destination: ByteArray
+    ): ByteArray {
         val (lStride_0, lStride_1) = leftStrides
         for (i in 0 until n) {
             val lInd = i * lStride_0 + leftOffset
             for (j in 0 until m) {
-                destination[i] = (destination[i] + left[lInd + j * lStride_1] * right[j * rStride + rightOffset]).toByte()
+                destination[i] =
+                    (destination[i] + left[lInd + j * lStride_1] * right[j * rStride + rightOffset]).toByte()
             }
         }
         return destination
     }
 
     override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
-        require(a.size == b.size) { "Sizes a and b don't match: a.size(${a.size}) != b.size(${b.size})"}
+        require(a.size == b.size) { "Sizes a and b don't match: a.size(${a.size}) != b.size(${b.size})" }
         return when (a.dtype) {
             DataType.FloatDataType -> {
                 dotVecToVec(a.data.getFloatArray(), a.offset, a.strides[0], b.data.getFloatArray(), b.offset, b.strides[0], a.size)
@@ -367,7 +497,8 @@ public object JvmLinAlg : LinAlg {
     private fun dotVecToVec(
         left: FloatArray, leftOffset: Int, lStride: Int,
         right: FloatArray, rightOffset: Int, rStride: Int,
-        n: Int): Float {
+        n: Int
+    ): Float {
         var ret = 0f
         for (i in 0 until n) {
             ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
@@ -378,7 +509,8 @@ public object JvmLinAlg : LinAlg {
     private fun dotVecToVec(
         left: IntArray, leftOffset: Int, lStride: Int,
         right: IntArray, rightOffset: Int, rStride: Int,
-        n: Int): Int {
+        n: Int
+    ): Int {
         var ret = 0
         for (i in 0 until n) {
             ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
@@ -389,7 +521,8 @@ public object JvmLinAlg : LinAlg {
     private fun dotVecToVec(
         left: DoubleArray, leftOffset: Int, lStride: Int,
         right: DoubleArray, rightOffset: Int, rStride: Int,
-        n: Int): Double {
+        n: Int
+    ): Double {
         var ret = 0.0
         for (i in 0 until n) {
             ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
@@ -400,7 +533,8 @@ public object JvmLinAlg : LinAlg {
     private fun dotVecToVec(
         left: LongArray, leftOffset: Int, lStride: Int,
         right: LongArray, rightOffset: Int, rStride: Int,
-        n: Int): Long {
+        n: Int
+    ): Long {
         var ret = 0L
         for (i in 0 until n) {
             ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
@@ -411,7 +545,8 @@ public object JvmLinAlg : LinAlg {
     private fun dotVecToVec(
         left: ShortArray, leftOffset: Int, lStride: Int,
         right: ShortArray, rightOffset: Int, rStride: Int,
-        n: Int): Short {
+        n: Int
+    ): Short {
         var ret = 0
         for (i in 0 until n) {
             ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
@@ -422,7 +557,8 @@ public object JvmLinAlg : LinAlg {
     private fun dotVecToVec(
         left: ByteArray, leftOffset: Int, lStride: Int,
         right: ByteArray, rightOffset: Int, rStride: Int,
-        n: Int): Byte {
+        n: Int
+    ): Byte {
         var ret = 0
         for (i in 0 until n) {
             ret += left[leftOffset + lStride * i] * right[rightOffset + rStride * i]
