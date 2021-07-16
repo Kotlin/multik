@@ -24,7 +24,7 @@ public interface LinAlg {
 
     public fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2>
 
-    public fun <T : Number, D: Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D>
+    public fun <T : Number, D: Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D>
 
     /**
      * Dot products of two arrays. Matrix product.
