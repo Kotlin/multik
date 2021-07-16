@@ -5,15 +5,15 @@
 package org.jetbrains.kotlinx.multik.cuda
 
 import jcuda.Pointer
-import jcuda.jcublas.JCublas
+import jcuda.jcublas.JCublas2
+import jcuda.jcublas.cublasGemmAlgo.CUBLAS_GEMM_DEFAULT
+import jcuda.jcublas.cublasOperation
+import jcuda.runtime.JCuda
 import org.jetbrains.kotlinx.multik.api.LinAlg
+import org.jetbrains.kotlinx.multik.cuda.CudaEngine.contextHandle
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object CudaLinAlg : LinAlg {
-    init {
-        CudaEngine
-    }
-
     override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> {
         TODO("Not yet implemented")
     }
@@ -75,47 +75,54 @@ public object CudaLinAlg : LinAlg {
             phC = Pointer.to(hC.getDoubleArray())
         }
 
-        JCublas.cublasAlloc(a.size, elemSize, dA)
-        JCublas.cublasAlloc(b.size, elemSize, dB)
-        JCublas.cublasAlloc(cSize, elemSize, dC)
+        JCuda.cudaMalloc(dA, elemSize.toLong() * a.size)
+        JCuda.cudaMalloc(dB, elemSize.toLong() * b.size)
+        JCuda.cudaMalloc(dC, elemSize.toLong() * cSize)
 
-        JCublas.cublasSetVector(a.size, elemSize, phA, 1, dA, 1)
-        JCublas.cublasSetVector(b.size, elemSize, phB, 1, dB, 1)
+        JCublas2.cublasSetVector(a.size, elemSize, phA, 1, dA, 1)
+        JCublas2.cublasSetVector(b.size, elemSize, phB, 1, dB, 1)
+
+        val zeroPtr = a.dtype.getZeroPointer()
+        val onePtr = a.dtype.getOnePointer()
 
         if (matrixMatrix) {
             val m = a.shape[0]
             val n = b.shape[1]
             val k = a.shape[1]
 
-            val transA = if (transposedA) 't' else 'n'
-            val transB = if (transposedB) 't' else 'n'
+            val transA = if (transposedA) cublasOperation.CUBLAS_OP_T else cublasOperation.CUBLAS_OP_N
+            val transB = if (transposedB) cublasOperation.CUBLAS_OP_T else cublasOperation.CUBLAS_OP_N
 
             val lda = if (transposedA) m else k
             val ldb = if (transposedB) k else n
 
+            val type = a.dtype.getCudaType()
+            val computeType = a.dtype.getDefaultComputeType()
+
             // multiplication order is swapped because cublas uses column-major storage
-            if (a.dtype == DataType.FloatDataType)
-                JCublas.cublasSgemm(transB, transA, n, m, k, 1f, dB, ldb, dA, lda, 0f, dC, n)
-            else
-                JCublas.cublasDgemm(transB, transA, n, m, k, 1.0, dB, ldb, dA, lda, 0.0, dC, n)
+            JCublas2.cublasGemmEx_new(
+                contextHandle, transB, transA, n, m, k,
+                onePtr, dB, type, ldb, dA, type, lda, zeroPtr, dC, type, n,
+                computeType, CUBLAS_GEMM_DEFAULT
+            )
         } else {
-            val transA = if (transposedA) 'n' else 't'
+            val transA = if (transposedA) cublasOperation.CUBLAS_OP_N else cublasOperation.CUBLAS_OP_T
 
             var (m, n) = a.shape
             if (!transposedA)
                 m = n.also { n = m }
 
             if (a.dtype == DataType.FloatDataType)
-                JCublas.cublasSgemv(transA, m, n, 1f, dA, m, dB, 1, 0f, dC, 1)
+                JCublas2.cublasSgemv(contextHandle, transA, m, n, onePtr, dA, m, dB, 1, zeroPtr, dC, 1)
             else
-                JCublas.cublasDgemv(transA, m, n, 1.0, dA, m, dB, 1, 0.0, dC, 1)
+                JCublas2.cublasDgemv(contextHandle, transA, m, n, onePtr, dA, m, dB, 1, zeroPtr, dC, 1)
         }
 
-        JCublas.cublasGetVector(cSize, elemSize, dC, 1, phC, 1)
+        JCublas2.cublasGetVector(cSize, elemSize, dC, 1, phC, 1)
 
-        JCublas.cublasFree(dA)
-        JCublas.cublasFree(dB)
-        JCublas.cublasFree(dC)
+        JCuda.cudaFree(dA)
+        JCuda.cudaFree(dB)
+        JCuda.cudaFree(dC)
 
         return NDArray(hC, shape = shape, dtype = a.dtype, dim = b.dim)
     }
@@ -140,38 +147,42 @@ public object CudaLinAlg : LinAlg {
 
         val phA: Pointer
         val phB: Pointer
+        val resultPtr: Pointer
 
         val (consistentA, _) = getConsistentOrTransposedConsistent(a)
         val (consistentB, _) = getConsistentOrTransposedConsistent(b)
 
+        val result = initMemoryView<T>(1, a.dtype)
+
         if (a.dtype == DataType.FloatDataType) {
             phA = Pointer.to(consistentA.data.getFloatArray())
             phB = Pointer.to(consistentB.data.getFloatArray())
+            resultPtr = Pointer.to(result.getFloatArray())
         } else {
             phA = Pointer.to(consistentA.data.getDoubleArray())
             phB = Pointer.to(consistentB.data.getDoubleArray())
+            resultPtr = Pointer.to(result.getDoubleArray())
         }
 
-        JCublas.cublasAlloc(a.size, elemSize, dA)
-        JCublas.cublasAlloc(b.size, elemSize, dB)
+        JCuda.cudaMalloc(dA, elemSize.toLong() * a.size)
+        JCuda.cudaMalloc(dB, elemSize.toLong() * b.size)
 
-        JCublas.cublasSetVector(a.size, elemSize, phA, 1, dA, 1)
-        JCublas.cublasSetVector(b.size, elemSize, phB, 1, dB, 1)
+        JCublas2.cublasSetVector(a.size, elemSize, phA, 1, dA, 1)
+        JCublas2.cublasSetVector(b.size, elemSize, phB, 1, dB, 1)
 
-        val result = if (a.dtype == DataType.FloatDataType)
-            JCublas.cublasSdot(a.shape[0], dA, 1, dB, 1)
-        else
-            JCublas.cublasDdot(a.shape[0], dA, 1, dB, 1)
+        val type = a.dtype.getCudaType()
 
-        JCublas.cublasFree(dA)
-        JCublas.cublasFree(dB)
-        JCublas.cublasFree(dC)
+        JCublas2.cublasDotEx(contextHandle, a.shape[0], dA, type, 1, dB, type, 1, resultPtr, type, type)
 
-        return result as T
+        JCuda.cudaFree(dA)
+        JCuda.cudaFree(dB)
+        JCuda.cudaFree(dC)
+
+        return result[0]
     }
 
     // Note: NDArray.transpose() only creates a lightweight view
-    private fun <T : Number, D: Dim2> isTransposedConsistent(x: MultiArray<T, D>): Boolean =
+    private fun <T : Number, D : Dim2> isTransposedConsistent(x: MultiArray<T, D>): Boolean =
         x.transpose().consistent
 
 
@@ -186,7 +197,7 @@ public object CudaLinAlg : LinAlg {
      *
      * @return pair of [MultiArray] and transposition flag
      */
-    private fun <T : Number, D: Dim2> getConsistentOrTransposedConsistent(x: MultiArray<T, D>): Pair<MultiArray<T, D>, Boolean> =
+    private fun <T : Number, D : Dim2> getConsistentOrTransposedConsistent(x: MultiArray<T, D>): Pair<MultiArray<T, D>, Boolean> =
         when {
             x.consistent -> x to false
             x.dim.d == 2 && isTransposedConsistent(x) -> x to true

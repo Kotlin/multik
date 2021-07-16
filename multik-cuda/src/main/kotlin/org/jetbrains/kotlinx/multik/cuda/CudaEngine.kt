@@ -4,7 +4,8 @@
 
 package org.jetbrains.kotlinx.multik.cuda
 
-import jcuda.jcublas.JCublas
+import jcuda.jcublas.JCublas2
+import jcuda.jcublas.cublasHandle
 import org.jetbrains.kotlinx.multik.api.*
 
 
@@ -14,16 +15,13 @@ public class CudaEngineProvider : EngineProvider {
     }
 }
 
-public object CudaEngine : Engine(), AutoCloseable {
+public object CudaEngine : Engine() {
     override val name: String
         get() = type.name
 
     override val type: EngineType
         get() = CudaEngineType
 
-    init {
-        JCublas.cublasInit()
-    }
 
     override fun getMath(): Math {
         return CudaMath
@@ -37,7 +35,28 @@ public object CudaEngine : Engine(), AutoCloseable {
         return CudaStatistics
     }
 
-    override fun close() {
-        JCublas.cublasShutdown()
+    public fun runWithCuda(block: () -> Unit) {
+        initCuda()
+        block()
+        deinitCuda()
     }
+
+    public fun initCuda() {
+        if (contextHandle != null)
+            throw IllegalStateException("CudaEngine is already initialized")
+
+        contextHandle = cublasHandle()
+        JCublas2.cublasCreate(contextHandle)
+    }
+
+    public fun deinitCuda() {
+        if (contextHandle == null)
+            throw IllegalStateException("CudaEngine is already deinitialized")
+
+        JCublas2.cublasDestroy(contextHandle)
+        contextHandle = null
+    }
+
+    internal var contextHandle: cublasHandle? = null
+        private set
 }
