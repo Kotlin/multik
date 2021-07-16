@@ -11,5 +11,6 @@ include(
     ":multik-default",
     ":multik-jvm",
     ":multik-native",
+    ":multik-cuda",
     ":examples"
 )

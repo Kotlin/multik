@@ -15,6 +15,7 @@ public object JvmEngineType : EngineType("JVM")
 
 public object NativeEngineType : EngineType("NATIVE")
 
+public object CudaEngineType : EngineType("CUDA")
 
 /**
  * This class gives access to different implementations of [LinAlg], [Math], [Statistics].
