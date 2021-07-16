@@ -8,10 +8,6 @@ import org.jetbrains.kotlinx.multik.api.Statistics
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object CudaStatistics : Statistics {
-    init {
-        CudaEngine
-    }
-
     override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? {
         TODO("Not yet implemented")
     }

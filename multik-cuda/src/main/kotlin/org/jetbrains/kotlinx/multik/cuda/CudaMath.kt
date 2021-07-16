@@ -8,10 +8,6 @@ import org.jetbrains.kotlinx.multik.api.Math
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object CudaMath : Math {
-    init {
-        CudaEngine
-    }
-
     override fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int {
         TODO("Not yet implemented")
     }

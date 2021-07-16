@@ -20,7 +20,7 @@ class CudaLinAlgTest {
 
         val expected = 29.0
 
-        CudaEngine.use {
+        CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(vec1, vec2)
 
             val diff = kotlin.math.abs(actual - expected)
@@ -28,7 +28,6 @@ class CudaLinAlgTest {
             assertTrue(diff < EPSILON, "Difference between expected and actual: $diff")
         }
     }
-
 
     @Test
     fun `matrix-vector dot transposed consistent D`() {
@@ -43,7 +42,7 @@ class CudaLinAlgTest {
 
         val expected = mk.ndarray(mk[13.0, 17.0, 21.0])
 
-        CudaEngine.use {
+        CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(mat1, vec1)
 
             assertEquals(expected, roundDouble(actual))
@@ -82,7 +81,7 @@ class CudaLinAlgTest {
 
         )
 
-        CudaEngine.use {
+        CudaEngine.runWithCuda {
             val actual1 = CudaLinAlg.dot(mat1, mat2)
             assertEquals(expected1, roundDouble(actual1))
 
@@ -111,7 +110,7 @@ class CudaLinAlgTest {
                     mk[102.0, 150.0]]
         )
 
-        CudaEngine.use {
+        CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(mat1, mat2)
 
             assertEquals(expected, roundDouble(actual))
@@ -139,7 +138,7 @@ class CudaLinAlgTest {
                     mk[0.51, 0.57, 0.68, 0.59]]
         )
 
-        CudaEngine.use {
+        CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(matrix1, matrix2)
 
             assertEquals(expected, roundDouble(actual))
@@ -170,7 +169,7 @@ class CudaLinAlgTest {
                     mk[27f, 47f, 67f]]
         )
 
-        CudaEngine.use {
+        CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(matrix1, matrix2)
 
             assertEquals(expected, roundFloat(actual))
@@ -188,7 +187,7 @@ class CudaLinAlgTest {
         )
         val vector = mk.ndarray(mk[0.08, 0.63, 0.8])
 
-        CudaEngine.use {
+        CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(matrix, vector)
 
             assertEquals(expected, roundDouble(actual))
@@ -206,7 +205,7 @@ class CudaLinAlgTest {
         )
         val vector = mk.ndarray(mk[0.08f, 0.63f, 0.8f])
 
-        CudaEngine.use {
+        CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(matrix, vector)
 
             assertEquals(expected, roundFloat(actual))
@@ -222,7 +221,7 @@ class CudaLinAlgTest {
         val v1 = mk.ndarray(mk[0.875102f, 0.72775528f, 0.82218271f])
         val v2 = mk.ndarray(mk[0.49664201f, 0.98519225f, 0.46336994f])
 
-        CudaEngine.use {
+        CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(v1, v2)
 
             val diff = kotlin.math.abs(actual - expected)
@@ -238,7 +237,7 @@ class CudaLinAlgTest {
         val v1 = mk.ndarray(mk[0.875102, 0.72775528, 0.82218271])
         val v2 = mk.ndarray(mk[0.49664201, 0.98519225, 0.46336994])
 
-        CudaEngine.use {
+        CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(v1, v2)
 
             val diff = kotlin.math.abs(actual - expected)
@@ -246,5 +245,4 @@ class CudaLinAlgTest {
             assertTrue(diff < EPSILON, "Difference between expected and actual: $diff")
         }
     }
-
 }
