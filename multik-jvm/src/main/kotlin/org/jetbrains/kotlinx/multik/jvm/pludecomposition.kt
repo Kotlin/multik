@@ -159,8 +159,8 @@ internal fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D
     PLUdecomposition2Inplace(_a, perm)
     // since previous call _a contains answer
 
-    val L = mk.d2array(_a.shape[0], min(_a.shape[0], _a.shape[1])) { 0.0 }
-    val U = mk.d2array(min(_a.shape[0], _a.shape[1]), _a.shape[1]) {0.0}
+    val L = mk.empty<Double, D2>(_a.shape[0], min(_a.shape[0], _a.shape[1]))
+    val U = mk.empty<Double, D2>(min(_a.shape[0], _a.shape[1]), _a.shape[1])
 
     for (i in 0 until L.shape[1]) {
         L[i, i] = 1.0
@@ -193,14 +193,14 @@ internal fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D
 
 internal fun PLUCompressed(a: D2Array<Double>): Triple<D1Array<Int>, D2Array<Double>, D2Array<Double>> {
     val _a = a.deepCopy()
-    val perm = mk.d1array<Int>(min(_a.shape[0], _a.shape[1])){ 0 }
+    val perm = mk.empty<Int, D1>(min(_a.shape[0], _a.shape[1]))
 
 
     PLUdecomposition2Inplace(_a, perm)
     // since previous call _a contains answer
 
-    val L = mk.d2array(_a.shape[0], min(_a.shape[0], _a.shape[1])) {0.0}
-    val U = mk.d2array(min(_a.shape[0], _a.shape[1]), _a.shape[1]) {0.0}
+    val L = mk.empty<Double, D2>(_a.shape[0], min(_a.shape[0], _a.shape[1]))
+    val U = mk.empty<Double, D2>(min(_a.shape[0], _a.shape[1]), _a.shape[1])
 
     for (i in 0 until L.shape[1]) {
         L[i, i] = 1.0
