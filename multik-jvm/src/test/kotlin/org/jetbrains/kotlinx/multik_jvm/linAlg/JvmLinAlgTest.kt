@@ -6,16 +6,17 @@ package org.jetbrains.kotlinx.multik_jvm.linAlg
 
 
 import org.jetbrains.kotlinx.multik.api.*
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg
+import org.jetbrains.kotlinx.multik.jvm.*
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.inv
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solve
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.max
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.min
-import org.jetbrains.kotlinx.multik.jvm.PLU
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
+import org.jetbrains.kotlinx.multik.ndarray.operations.maxBy
 import org.jetbrains.kotlinx.multik.ndarray.operations.minus
+import org.jetbrains.kotlinx.multik.ndarray.operations.sum
 import java.lang.Math.pow
 import kotlin.math.abs
 import kotlin.math.max
