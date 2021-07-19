@@ -4,28 +4,30 @@
 
 
 ext {
-    openblasBranch = 'v0.3.13'
-    openblasRoot = '0.3.13'
+    openblasBranch = 'v0.3.15'
+    openblasRoot = '0.3.15'
 }
 
 buildscript {
     repositories {
-        mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
 
     dependencies {
-        classpath 'de.undercouch:gradle-download-task:3.4.3'
+        classpath 'de.undercouch:gradle-download-task:4.1.2'
     }
 }
 
-apply plugin: de.undercouch.gradle.tasks.download.DownloadTaskPlugin
+apply plugin: 'de.undercouch.download'
 
 static boolean isWindows() {
     return System.getProperty('os.name').toLowerCase().contains('windows')
 }
 
 
-task downloadOpenBlas(type: de.undercouch.gradle.tasks.download.Download) {
+task downloadOpenBlas(type: Download) {
     if (!isWindows()) {
         src "https://github.com/xianyi/OpenBLAS/archive/${openblasBranch}.zip"
     } else {

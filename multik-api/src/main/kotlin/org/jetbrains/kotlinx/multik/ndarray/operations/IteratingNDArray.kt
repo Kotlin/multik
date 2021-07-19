@@ -272,7 +272,7 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.filter(predicate:
 @JvmName("filterD1Indexed")
 public inline fun <T : Number> MultiArray<T, D1>.filterIndexed(predicate: (index: Int, T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
-    forEachIndexed { index: Int, element -> if (predicate(index, element)) list.add(element) }
+    forEachIndexed { index, element -> if (predicate(index, element)) list.add(element) }
     return list.toNDArray()
 }
 
@@ -281,9 +281,9 @@ public inline fun <T : Number> MultiArray<T, D1>.filterIndexed(predicate: (index
  * Return a new array contains elements matching filter.
  */
 @JvmName("filterDNIndexed")
-public inline fun <T : Number, D : Dimension> MultiArray<T, D>.filterIndexed(predicate: (index: IntArray, T) -> Boolean): D1Array<T> {
+public inline fun <T : Number, D : Dimension> MultiArray<T, D>.filterMultiIndexed(predicate: (index: IntArray, T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
-    forEachIndexed { index: IntArray, element -> if (predicate(index, element)) list.add(element) }
+    forEachMultiIndexed { index, element -> if (predicate(index, element)) list.add(element) }
     return list.toNDArray()
 }
 
@@ -376,7 +376,7 @@ public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.flatMapInde
  * index in this dn ndarray.
  */
 @JvmName("flatMapDNIndexed")
-public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.flatMapIndexed(transform: (index: IntArray, T) -> Iterable<R>): D1Array<R> {
+public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.flatMapMultiIndexed(transform: (index: IntArray, T) -> Iterable<R>): D1Array<R> {
     val indexIter = this.multiIndices.iterator()
     val destination = ArrayList<R>()
     for (element in this) {
@@ -423,7 +423,7 @@ public inline fun <T : Number, R> MultiArray<T, D1>.foldIndexed(
  * and the element itself, and calculates the next accumulator value.
  */
 @JvmName("foldDNIndexed")
-public inline fun <T : Number, D : Dimension, R> MultiArray<T, D>.foldIndexed(
+public inline fun <T : Number, D : Dimension, R> MultiArray<T, D>.foldMultiIndexed(
     initial: R, operation: (index: IntArray, acc: R, T) -> R
 ): R {
     val indexIter = this.multiIndices.iterator()
@@ -461,7 +461,7 @@ public inline fun <T : Number> MultiArray<T, D1>.forEachIndexed(action: (index: 
  * and performs the desired action on the element.
  */
 @JvmName("forEachDNIndexed")
-public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEachIndexed(action: (index: IntArray, T) -> Unit) {
+public inline fun <T : Number, D : Dimension> MultiArray<T, D>.forEachMultiIndexed(action: (index: IntArray, T) -> Unit) {
     val indexIter = this.multiIndices.iterator()
     for (item in this) {
         if (indexIter.hasNext())
@@ -702,10 +702,9 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.lastOrNull(predic
 public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.map(transform: (T) -> R): NDArray<R, D> {
     val newDtype = DataType.of(R::class)
     val data = initMemoryView<R>(size, newDtype)
-    val op = this.asDNArray()
     var count = 0
-    for (i in this.multiIndices)
-        data[count++] = transform(op[i])
+    for (el in this)
+        data[count++] = transform(el)
     return NDArray(data, shape = shape, dtype = newDtype, dim = dim)
 }
 
@@ -726,7 +725,7 @@ public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.mapIndexed(
  * Return a new array contains elements after applying [transform].
  */
 @JvmName("mapDNIndexed")
-public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.mapIndexed(transform: (index: IntArray, T) -> R): NDArray<R, D> {
+public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.mapMultiIndexed(transform: (index: IntArray, T) -> R): NDArray<R, D> {
     val newDtype = DataType.of(R::class)
     val data = initMemoryView<R>(size, newDtype)
     val indexIter = this.multiIndices.iterator()
@@ -749,7 +748,7 @@ public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.mapIndexedN
     val newDtype = DataType.of(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
-    forEachIndexed { index: Int, element -> transform(index, element)?.let { data[count++] = it } }
+    forEachIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
     return D1Array(data, shape = shape, dtype = newDtype, dim = D1)
 }
 
@@ -757,11 +756,11 @@ public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.mapIndexedN
  * Return a new array contains elements after applying [transform].
  */
 @JvmName("mapDNIndexedNotNull")
-public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.mapIndexedNotNull(transform: (index: IntArray, T) -> R?): NDArray<R, D> {
+public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.mapMultiIndexedNotNull(transform: (index: IntArray, T) -> R?): NDArray<R, D> {
     val newDtype = DataType.of(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
-    forEachIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
+    forEachMultiIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
     return NDArray(data, shape = shape.copyOf(), dtype = newDtype, dim = dim)
 }
 
@@ -980,7 +979,7 @@ public inline fun <S : Number, T : S> MultiArray<T, D1>.reduceIndexed(operation:
  * and the element itself and calculates the next accumulator value.
  */
 @JvmName("reduceDNIndexed")
-public inline fun <S : Number, D : Dimension, T : S> MultiArray<T, D>.reduceIndexed(operation: (index: IntArray, acc: S, T) -> S): S {
+public inline fun <S : Number, D : Dimension, T : S> MultiArray<T, D>.reduceMultiIndexed(operation: (index: IntArray, acc: S, T) -> S): S {
     val iterator = this.iterator()
     if (!iterator.hasNext()) throw UnsupportedOperationException("Empty ndarray can't be reduced.")
     val indexIter = this.multiIndices.iterator()
@@ -1055,8 +1054,7 @@ public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.scanIndexed
     var count = 1
     var accumulator = initial
     val ndarrayIter = this.iterator()
-    val indexIter = this.multiIndices.iterator()
-    while (ndarrayIter.hasNext() && indexIter.hasNext()) {
+    while (ndarrayIter.hasNext()) {
         accumulator = operation(count, accumulator, ndarrayIter.next())
         data[count++] = accumulator
     }
@@ -1067,7 +1065,7 @@ public inline fun <T : Number, reified R : Number> MultiArray<T, D1>.scanIndexed
  * Return a flat ndarray containing successive accumulation values generated by applying [operation] from left to right to
  * each element, its multi index in this dn ndarray and current accumulator value that starts with [initial] value.
  */
-public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.scanIndexed(
+public inline fun <T : Number, D : Dimension, reified R : Number> MultiArray<T, D>.scanMultiIndexed(
     initial: R, operation: (index: IntArray, acc: R, T) -> R
 ): NDArray<R, D> {
     val dataType = DataType.of(R::class)
@@ -1127,7 +1125,7 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.sumBy(selector: (
  * Returns the sum of all values produced by [selector] function applied to each element in the collection.
  */
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.sumBy(selector: (T) -> Double): Double {
-    var sum: Double = 0.0
+    var sum = 0.0
     for (element in this) {
         sum += selector(element)
     }

@@ -76,7 +76,7 @@ public fun <D : Dimension> Statistics.abs(a: MultiArray<Short, D>): NDArray<Shor
 }
 
 @JvmName("absInt")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Int, D>): NDArray<Int, D> {
+public fun <D : Dimension> abs(a: MultiArray<Int, D>): NDArray<Int, D> {
     val ret = initMemoryView<Int>(a.size, a.dtype)
     var index = 0
     for (element in a) {
@@ -86,7 +86,7 @@ public fun <D : Dimension> Statistics.abs(a: MultiArray<Int, D>): NDArray<Int, D
 }
 
 @JvmName("absLong")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Long, D>): NDArray<Long, D> {
+public fun <D : Dimension> abs(a: MultiArray<Long, D>): NDArray<Long, D> {
     val ret = initMemoryView<Long>(a.size, a.dtype)
     var index = 0
     for (element in a) {
@@ -96,7 +96,7 @@ public fun <D : Dimension> Statistics.abs(a: MultiArray<Long, D>): NDArray<Long,
 }
 
 @JvmName("absFloat")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Float, D>): NDArray<Float, D> {
+public fun <D : Dimension> abs(a: MultiArray<Float, D>): NDArray<Float, D> {
     val ret = initMemoryView<Float>(a.size, a.dtype)
     var index = 0
     for (element in a) {
@@ -106,7 +106,7 @@ public fun <D : Dimension> Statistics.abs(a: MultiArray<Float, D>): NDArray<Floa
 }
 
 @JvmName("absDouble")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Double, D>): NDArray<Double, D> {
+public fun <D : Dimension> abs(a: MultiArray<Double, D>): NDArray<Double, D> {
     val ret = initMemoryView<Double>(a.size, a.dtype)
     var index = 0
     for (element in a) {
