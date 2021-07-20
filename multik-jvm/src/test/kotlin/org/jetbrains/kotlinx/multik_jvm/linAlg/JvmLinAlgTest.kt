@@ -9,18 +9,14 @@ import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jvm.*
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solve
-import org.jetbrains.kotlinx.multik.jvm.JvmMath.max
-import org.jetbrains.kotlinx.multik.jvm.JvmMath.min
 import kotlin.math.min
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import org.jetbrains.kotlinx.multik.ndarray.operations.minus
 import java.lang.AssertionError
 import java.lang.IllegalArgumentException
 import kotlin.math.abs
 import kotlin.math.max
 
 import kotlin.random.Random
-import kotlin.system.measureTimeMillis
 import kotlin.test.*
 
 class JvmLinAlgTest {
@@ -90,7 +86,7 @@ class JvmLinAlgTest {
         }
     }
 
-    fun <T : Number> assertTriangular(a: MultiArray<T, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
+    private fun <T : Number> assertTriangular(a: MultiArray<T, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
         if (requireUnitsOnDiagonal) {
             for (i in 0 until min(a.shape[0], a.shape[1])) {
                 if (a[i, i].toDouble() != 1.0)  throw AssertionError("element at position [$i, $i] of matrix \n$a\n is not unit")
@@ -148,7 +144,7 @@ class JvmLinAlgTest {
         }
     }
 
-    fun <T : Number, D : Dim2> assertClose(a: MultiArray<T, D>, b: MultiArray<T, D>, precision: Double) {
+    private fun <T : Number, D : Dim2> assertClose(a: MultiArray<T, D>, b: MultiArray<T, D>, precision: Double) {
         assertEquals(a.dim.d, b.dim.d, "matrices have different dimentions")
         assertContentEquals(a.shape, b.shape, "matrices have different shapes")
         var maxabs = 0.0

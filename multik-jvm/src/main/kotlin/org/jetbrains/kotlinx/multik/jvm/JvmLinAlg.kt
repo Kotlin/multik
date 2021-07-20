@@ -19,10 +19,8 @@ public object JvmLinAlg : LinAlg {
     }
 
     fun <T : Number> invDouble(a: MultiArray<T, D2>): D2Array<Double> {
-        require(a.shape[0] == a.shape[1]) { "a must be square matrix, matrix with shape (${a.shape[0]}, ${a.shape[1]}) was given" }
-        val aDouble = a.map { it.toDouble() }
-
-        return solveDouble(aDouble, mk.identity(a.shape[0]))
+        requireSquare(a)
+        return solveDouble(a.map { it.toDouble() }, mk.identity(a.shape[0]))
     }
 
 
