@@ -17,7 +17,7 @@ import kotlin.math.min
  *
  * lapack: dtrsm can do it (and have some extra options)
  */
-private fun solveLowerTriangleSystemInplace(a: D2Array<Double>, b: D2Array<Double>) {
+private fun solveLowerTriangleSystemInplace(a: MultiArray<Double, D2>, b: D2Array<Double>) {
     for (i in 0 until a.shape[1]) {
         for (k in i+1 until a.shape[1]) {
             for (j in 0 until b.shape[1]) {
@@ -55,7 +55,7 @@ private fun solveLowerTriangleSystemInplace(a: D2Array<Double>, b: D2Array<Doubl
  *
  * lapack: dgetrf2
  */
-private fun PLUdecomposition2Inplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
+private fun pluDecompositionInplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
     // this is recursive function, position of current matrix we work with is
     // a[0 until am, 0 until an]
     val n1 = min(a.shape[1], a.shape[0] ) / 2
@@ -117,28 +117,25 @@ private fun PLUdecomposition2Inplace(a: D2Array<Double>, rowPerm: D1Array<Int>) 
     // change a12
     solveLowerTriangleSystemInplace(
         a[0..n1, 0..n1] as D2Array<Double>,
-        a[0..n1, n1..n1 + n2] as D2Array<Double>
+        a[0..n1, n1..(n1 + n2)] as D2Array<Double>
     )
 
     // update a22
-    val update = dot(a[n1..n1 + a.shape[0] - n1, 0..n1], a[0..n1, n1..n1 + n2])
-    for (i in n1 until n1 + a.shape[0] - n1) {
+    val update = dot(a[n1..a.shape[0], 0..n1], a[0..n1, n1..(n1 + n2)])
+    for (i in n1 until a.shape[0]) {
         for (j in n1 until n1 + n2) {
             a[i, j] -= update[i - n1, j - n1]
         }
     }
 
     // factor a22
-    PLUdecomposition2Inplace(
+    pluDecompositionInplace(
         a[n1..a.shape[0], n1..a.shape[1]] as D2Array<Double>,
         rowPerm[n1..min(a.shape[0], a.shape[1])] as D1Array<Int>
     )
 
     // apply rowPerm to a21
-    for (i in n1 until a.shape[0] ) {
-        if(i >= rowPerm.size) {
-            break
-        }
+    for (i in n1 until rowPerm.size ) {
         if (rowPerm[i] != 0) {
             for (j in 0 until n1) {
                 a[i, j] = a[i + rowPerm[i], j].also {
@@ -151,12 +148,11 @@ private fun PLUdecomposition2Inplace(a: D2Array<Double>, rowPerm: D1Array<Int>) 
 }
 
 
-internal fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Double>> {
-    val _a = a.deepCopy()
-    val perm = mk.d1array<Int>(min(_a.shape[0], _a.shape[1])){ 0 }
+internal fun plu(a: MultiArray<Double, D2>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Double>> {
+    val _a: D2Array<Double> = a.map { it }
+    val perm = mk.empty<Int, D1>(min(_a.shape[0], _a.shape[1]))
 
-
-    PLUdecomposition2Inplace(_a, perm)
+    pluDecompositionInplace(_a, perm)
     // since previous call _a contains answer
 
     val L = mk.empty<Double, D2>(_a.shape[0], min(_a.shape[0], _a.shape[1]))
@@ -180,7 +176,6 @@ internal fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D
         }
     }
 
-
     val P = mk.identity<Double>(_a.shape[0])
 
     for (i in perm.indices.reversed()) {
@@ -191,26 +186,23 @@ internal fun PLU(a: D2Array<Double>): Triple<D2Array<Double>, D2Array<Double>, D
     return Triple(P, L, U)
 }
 
-internal fun PLUCompressed(a: D2Array<Double>): Triple<D1Array<Int>, D2Array<Double>, D2Array<Double>> {
-    val _a = a.deepCopy()
+internal fun pluCompressed(a: MultiArray<Double, D2>): Triple<D1Array<Int>, D2Array<Double>, D2Array<Double>> {
+    val _a = a.map { it }
     val perm = mk.empty<Int, D1>(min(_a.shape[0], _a.shape[1]))
 
-
-    PLUdecomposition2Inplace(_a, perm)
+    pluDecompositionInplace(_a, perm)
     // since previous call _a contains answer
 
     val L = mk.empty<Double, D2>(_a.shape[0], min(_a.shape[0], _a.shape[1]))
     val U = mk.empty<Double, D2>(min(_a.shape[0], _a.shape[1]), _a.shape[1])
 
-    for (i in 0 until L.shape[1]) {
-        L[i, i] = 1.0
-        for (j in 0 until i) {
-            L[i, j] = _a[i, j]
-        }
-    }
-    for (i in L.shape[1] until L.shape[0]) {
+    for (i in 0 until L.shape[0]) {
         for (j in 0 until L.shape[1]) {
-            L[i, j] = _a[i, j]
+            L[i, j] = when {
+                j < i -> _a[i, j]
+                i == j -> 1.0
+                else -> 0.0
+            }
         }
     }
 
