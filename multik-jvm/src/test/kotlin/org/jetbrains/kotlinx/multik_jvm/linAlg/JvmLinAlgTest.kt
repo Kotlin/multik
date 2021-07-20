@@ -8,22 +8,14 @@ package org.jetbrains.kotlinx.multik_jvm.linAlg
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jvm.*
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.inv
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solve
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.max
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.min
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import org.jetbrains.kotlinx.multik.ndarray.operations.map
-import org.jetbrains.kotlinx.multik.ndarray.operations.maxBy
 import org.jetbrains.kotlinx.multik.ndarray.operations.minus
-import org.jetbrains.kotlinx.multik.ndarray.operations.sum
-import java.lang.Math.pow
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.pow
 
 import kotlin.random.Random
-import kotlin.system.measureTimeMillis
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -89,7 +81,7 @@ class JvmLinAlgTest {
 
             val a = mk.d2array<Double>(m, n) { rnd.nextDouble() }
 
-            val (P, L, U) = PLU(a)
+            val (P, L, U) = plu(a)
 
             val diff = a - dot(P, dot(L, U))
             val maxdiff = max(diff)
@@ -116,6 +108,7 @@ class JvmLinAlgTest {
 
     @Test
     fun `solve test`() {
+
         val procedurePrecision = 1e-5
         val rnd = Random(System.currentTimeMillis())
 

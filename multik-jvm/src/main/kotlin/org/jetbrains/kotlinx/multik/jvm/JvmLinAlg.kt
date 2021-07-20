@@ -8,18 +8,23 @@ import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
-import org.jetbrains.kotlinx.multik.ndarray.operations.maxBy
-import org.jetbrains.kotlinx.multik.ndarray.operations.maxWith
 import java.lang.ArithmeticException
 import java.lang.UnsupportedOperationException
 import kotlin.math.abs
-import kotlin.math.min
 
 public object JvmLinAlg : LinAlg {
 
     override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
         TODO("Not yet implemented")
     }
+
+    fun <T : Number> invDouble(a: MultiArray<T, D2>): D2Array<Double> {
+        require(a.shape[0] == a.shape[1]) { "a must be square matrix, matrix with shape (${a.shape[0]}, ${a.shape[1]}) was given" }
+        val aDouble = a.map { it.toDouble() }
+
+        return solveDouble(aDouble, mk.identity(a.shape[0]))
+    }
+
 
     override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> {
         if (n == 0) return mk.identity(mat.shape[0], mat.dtype)
@@ -54,15 +59,50 @@ public object JvmLinAlg : LinAlg {
 
 
 
+    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
+        if(a.dtype != DataType.DoubleDataType) {
+            throw UnsupportedOperationException()
+        }
 
-    //-------------------------------solve linear system-----------------------------------
+        val aDouble = a.map { it.toDouble() }
+        val bDouble: MultiArray<Double, D2> = if (b.dim.d == 2) { b } else { b.reshape(b.shape[0], 1) } as MultiArray<Double, D2>
+
+        val ans = solveDouble(aDouble, bDouble)
+        return if (b.dim.d == 2) { ans } else { ans.reshape(ans.shape[0]) } as NDArray<T, D>
+    }
+
+    private fun solveDouble(a: D2Array<Double>, b: D2Array<Double>, singularityErrorLevel: Double = 1e-7): D2Array<Double> {
+        requireSquare(a)
+        require( a.shape[1] == b.shape[0])
+            { "Shapes of arguments are incompatible: expected a.shape[1] = ${a.shape[1]} to be equal to the b.shape[0] = ${b.shape[0]}" }
+        val (P, L, U) = pluCompressed(a)
+        val _b: D2Array<Double> = (b as D2Array<Double>).deepCopy()
+
+        for (i in P.indices) {
+            if(P[i] != 0) {
+                _b[i] = _b[i + P[i]].deepCopy().also { _b[i + P[i]] = _b[i].deepCopy() }
+            }
+        }
+        for (i in 0 until U.shape[0]) {
+            if (abs(U[i, i]) < singularityErrorLevel) {
+                throw ArithmeticException("Matrix a is singular or almost singular")
+            }
+        }
+
+        return solveTriangle(U, solveTriangle(L, _b), false)
+    }
+
+    private fun <T : Number> requireSquare(a: MultiArray<T, D2>) {
+        require(a.shape[0] == a.shape[1]) { "Square matrix expected, shape=(${a.shape[0]}, ${a.shape[1]}) given" }
+    }
+
     /**
      * solves a*x = b where a lower or upper triangle square matrix
      */
-    private fun solveTriangle(a: D2Array<Double>, b: D2Array<Double>, isLowerTriangle: Boolean = true): D2Array<Double> {
+    private fun solveTriangle(a: MultiArray<Double, D2>, b: MultiArray<Double, D2>, isLowerTriangle: Boolean = true): D2Array<Double> {
         require(a.shape[1] == b.shape[0]) { "invalid arguments, a.shape[1] = ${a.shape[1]} != b.shape[0]=${b.shape[0]}" }
         requireSquare(a)
-        val x = b.deepCopy()
+        val x = b.map { it }
         for (i in 0 until x.shape[0]) {
             for (j in 0 until x.shape[1]) {
                 x[i, j] /= a[i, i]
@@ -84,75 +124,11 @@ public object JvmLinAlg : LinAlg {
                     }
                 }
             }
-
         }
         return x
     }
 
-    private fun solveDouble(a: D2Array<Double>, b: D2Array<Double>, singularityErrorLevel: Double = 1e-7): D2Array<Double> {
-        requireSquare(a)
-        require( a.shape[1] == b.shape[0]) { "Shapes of arguments are incompatible: expected a.shape[1] = ${a.shape[1]} to be equal to the b.shape[0] = ${b.shape[0]}" }
-        val (P, L, U) = PLUCompressed(a)
-        val _b = b.deepCopy()
 
-        for (i in P.indices) {
-            if(P[i] != 0) {
-                _b[i] = _b[i + P[i]].deepCopy().also { _b[i + P[i]] = _b[i].deepCopy() }
-            }
-        }
-        for (i in 0 until U.shape[0]) {
-            if (abs(U[i, i]) < singularityErrorLevel) {
-                throw ArithmeticException("Matrix a is singular or almost singular")
-            }
-        }
-
-        return solveTriangle(U, solveTriangle(L, _b), false)
-    }
-
-    private fun <T : Number> requireSquare(a: MultiArray<T, D2>) {
-        require(a.shape[0] == a.shape[1]) { "Square matrix expected, shape=(${a.shape[0]}, ${a.shape[1]}) given" }
-    }
-
-    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
-        if(a.dtype != DataType.DoubleDataType) {
-            throw UnsupportedOperationException()
-        }
-        val aDouble = mk.empty<Double, D2>(a.shape[0], a.shape[1])
-        for (i in 0 until a.shape[0]) {
-            for (j in 0 until a.shape[1]) {
-                aDouble[i, j] = a[i, j].toDouble()
-            }
-        }
-        val bDouble: D2Array<Double>
-        if (b.dim.d == 2) {
-            bDouble = (b as D2Array<T>).map { it.toDouble() }
-        } else {
-            b as D1Array<T>
-            bDouble = mk.empty<Double, D2>(b.shape[0], 1)
-            for (i in 0 until b.shape[0]) {
-                bDouble[i, 0] = b[i].toDouble()
-            }
-
-        }
-        val ans = solveDouble(aDouble, bDouble)
-        if (b.dim.d == 2) {
-            return ans as NDArray<T, D>
-        } else {
-            val ansd1 = mk.empty<Double, D1>(ans.shape[0])
-            for (i in 0 until ans.shape[0]) {
-                ansd1[i] = ans[i, 0]
-            }
-            return ansd1 as NDArray<T, D>
-        }
-    }
-    //--------------------------end of solve linear system-----------------------------------
-
-    fun <T : Number> inv(a : D2Array<T>): D2Array<Double> {
-        require(a.shape[0] == a.shape[1]) { "a must be square matrix, matrix with shape (${a.shape[0]}, ${a.shape[1]}) was given" }
-        val aDouble = a.map { it.toDouble() }
-
-        return solveDouble(aDouble, mk.identity(a.shape[0]))
-    }
 
 
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
