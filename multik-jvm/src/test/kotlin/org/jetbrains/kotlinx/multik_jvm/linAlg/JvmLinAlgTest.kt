@@ -11,14 +11,17 @@ import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solve
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.max
 import org.jetbrains.kotlinx.multik.jvm.JvmMath.min
+import kotlin.math.min
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.minus
+import java.lang.AssertionError
+import java.lang.IllegalArgumentException
 import kotlin.math.abs
+import kotlin.math.max
 
 import kotlin.random.Random
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import kotlin.system.measureTimeMillis
+import kotlin.test.*
 
 class JvmLinAlgTest {
 
@@ -63,17 +66,16 @@ class JvmLinAlgTest {
 
     }
 
-
     @Test
     fun `test plu`() {
 
         val procedurePrecision = 1e-5
 
-        val iters = 10000
+        val iters = 1000
         val sideFrom = 1
         val sideUntil = 100
         for (all in 0 until iters) {
-
+            println(all)
             val rnd = Random(System.currentTimeMillis())
             val m = rnd.nextInt(sideFrom, sideUntil)
             val n = rnd.nextInt(sideFrom, sideUntil)
@@ -82,25 +84,30 @@ class JvmLinAlgTest {
             val a = mk.d2array<Double>(m, n) { rnd.nextDouble() }
 
             val (P, L, U) = plu(a)
+            assertTriangular(L, isLowerTriangular = true, requireUnitsOnDiagonal = true)
+            assertTriangular(U, isLowerTriangular = false, requireUnitsOnDiagonal = false)
+            assertClose(dot(P, dot(L, U)), a, procedurePrecision)
+        }
+    }
 
-            val diff = a - dot(P, dot(L, U))
-            val maxdiff = max(diff)
-            val mindiff = min(diff)
-
-            val ok = abs(maxdiff) < procedurePrecision && abs(mindiff) < procedurePrecision
-
-            assert(ok){
-                "wrong on:\n" +
-                        "$a\n" +
-                        "PLU gives:\n" +
-                        "$P\n" +
-                        "$L\n" +
-                        "$U\n" +
-                        "P*L*U = \n" +
-                        "${dot(P, dot(L, U))}\n"
-
+    fun <T : Number> assertTriangular(a: MultiArray<T, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
+        if (requireUnitsOnDiagonal) {
+            for (i in 0 until min(a.shape[0], a.shape[1])) {
+                if (a[i, i].toDouble() != 1.0)  throw AssertionError("element at position [$i, $i] of matrix \n$a\n is not unit")
             }
-
+        }
+        if (isLowerTriangular) {
+            for (i in 0 until min(a.shape[0], a.shape[1])) {
+                for (j in i + 1 until a.shape[1]) {
+                    if(a[i, j].toDouble() != 0.0) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+                }
+            }
+        } else {
+            for (i in 0 until min(a.shape[0], a.shape[1])) {
+                for (j in 0 until i) {
+                    if(a[i, j].toDouble() != 0.0) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+                }
+            }
         }
     }
 
@@ -110,7 +117,18 @@ class JvmLinAlgTest {
     fun `solve test`() {
 
         val procedurePrecision = 1e-5
-        val rnd = Random(System.currentTimeMillis())
+        val rnd = Random(424242)
+
+        // corner cases
+        val a11 = mk.ndarray(mk[mk[4.0]])
+        val b11 = mk.ndarray(mk[mk[3.0]])
+        val b1 = mk.ndarray(mk[5.0])
+        val b3 = mk.ndarray(mk[3.0, 4.0, 5.0])
+        val b13 = mk.ndarray(mk[mk[3.0, 4.0, 5.0]])
+        assertClose(solve(a11, b11), mk.ndarray(mk[mk[0.75]]), procedurePrecision)
+        assertClose(solve(a11, b1), mk.ndarray(mk[1.25]), procedurePrecision)
+        assertFailsWith<IllegalArgumentException>{solve(a11, b3)}
+        assertClose(solve(a11, b13), mk.ndarray(mk[mk[0.75, 1.0, 1.25]]), procedurePrecision)
 
         for (iteration in 0 until 1000) {
             //test when second argument is d2 array
@@ -119,32 +137,34 @@ class JvmLinAlgTest {
             val m = rnd.nextInt(1, maxlen)
             val a = mk.d2array<Double>(n, n) { rnd.nextDouble() }
             val b = mk.d2array<Double>(n, m) { rnd.nextDouble() }
-            var solDelta = dot(a, solve(a, b)) - b
-            var solDeltamax = max(solDelta)
-            var solDeltamin = min(solDelta)
-            assert(abs(solDeltamax) < procedurePrecision && abs(solDeltamin) < procedurePrecision) //{"solDeltamin = $solDeltamin, solDeltamax = $solDeltamax,\n a=$a\nb=$b\nsol=${solve(a, b)}"}
+            assertClose(b, dot(a, solve(a, b)), procedurePrecision)
+
 
             //test when second argument is d1 vector
             val bd1 = mk.d1array(n) { rnd.nextDouble() }
-            val bd1Transpose = mk.d2array(bd1.size, 1) { 0.0 }
-            for (i in 0 until bd1.size) {
-                bd1Transpose[i, 0] = bd1[i]
-            }
-
             val sol = solve(a, bd1)
-            val solTranspose = mk.d2array<Double>(sol.size, 1) { 0.0 }
-            for (i in 0 until sol.size) {
-                solTranspose[i, 0] = sol[i]
-            }
-
-            solDelta = dot(a, solTranspose) - bd1Transpose
-            solDeltamax = max(solDelta)
-            solDeltamin = min(solDelta)
-            assertTrue(abs(solDeltamax) < procedurePrecision && abs(solDeltamin) < procedurePrecision)
-
+            assertClose(dot(a, sol.reshape(sol.shape[0], 1)).reshape(a.shape[0]), bd1, procedurePrecision)
 
         }
     }
 
-
+    fun <T : Number, D : Dim2> assertClose(a: MultiArray<T, D>, b: MultiArray<T, D>, precision: Double) {
+        assertEquals(a.dim.d, b.dim.d, "matrices have different dimentions")
+        assertContentEquals(a.shape, b.shape, "matrices have different shapes")
+        var maxabs = 0.0
+        if (a.dim.d == 1) {
+            a as D1Array<*>
+            b as D1Array<*>
+            for (i in 0 until a.size) maxabs = max(abs(a[i].toDouble() - b[i].toDouble()), maxabs)
+        } else {
+            a as D2Array<*>
+            b as D2Array<*>
+            for (i in 0 until a.shape[0]) {
+                for (j in 0 until a.shape[1]) {
+                    maxabs = max(abs(a[i, j].toDouble() - b[i, j].toDouble()), maxabs)
+                }
+            }
+        }
+        assertTrue(maxabs < precision, "matrices not close")
+    }
 }
