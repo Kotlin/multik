@@ -71,7 +71,7 @@ public object JvmLinAlg : LinAlg {
         return if (b.dim.d == 2) { ans } else { ans.reshape(ans.shape[0]) } as NDArray<T, D>
     }
 
-    private fun solveDouble(a: D2Array<Double>, b: D2Array<Double>, singularityErrorLevel: Double = 1e-7): D2Array<Double> {
+    private fun solveDouble(a: MultiArray<Double, D2>, b: MultiArray<Double, D2>, singularityErrorLevel: Double = 1e-7): D2Array<Double> {
         requireSquare(a)
         require( a.shape[1] == b.shape[0])
             { "Shapes of arguments are incompatible: expected a.shape[1] = ${a.shape[1]} to be equal to the b.shape[0] = ${b.shape[0]}" }

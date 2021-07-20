@@ -4,6 +4,8 @@ import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
+import org.jetbrains.kotlinx.multik.ndarray.operations.map
+import org.jetbrains.kotlinx.multik.ndarray.operations.mapMultiIndexed
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -85,9 +87,7 @@ private fun pluDecompositionInplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
 
         if (elemmax != 0.0) {
             // pivoting
-            a[0, 0] = a[imax, 0].also {
-                a[imax, 0] = a[0, 0]
-            }
+            a[0, 0] = a[imax, 0].also { a[imax, 0] = a[0, 0] }
             rowPerm[0] = imax
 
             for (i in 1 until a.shape[0] ) {
@@ -100,16 +100,15 @@ private fun pluDecompositionInplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
 
     // apply recursively to [ a11 ]
     //                      [ a21 ]
-    PLUdecomposition2Inplace(a[0..a.shape[0], 0..n1] as D2Array<Double>, rowPerm[0..min(a.shape[0], n1)] as D1Array<Int>)
+    pluDecompositionInplace(a[0..a.shape[0], 0..n1] as D2Array<Double>, rowPerm[0..min(a.shape[0], n1)] as D1Array<Int>)
+
 
     // change [ a12 ]
     //        [ a22 ]
     for (i in rowPerm.indices) {
         if (rowPerm[i] != 0) {
             for (j in n1 until a.shape[1]) {
-                a[i, j] = a[i + rowPerm[i], j].also {
-                    a[i + rowPerm[i], j] = a[i, j]
-                }
+                a[i, j] = a[i + rowPerm[i], j].also { a[i + rowPerm[i], j] = a[i, j] }
             }
         }
     }
@@ -138,9 +137,7 @@ private fun pluDecompositionInplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
     for (i in n1 until rowPerm.size ) {
         if (rowPerm[i] != 0) {
             for (j in 0 until n1) {
-                a[i, j] = a[i + rowPerm[i], j].also {
-                    a[i + rowPerm[i], j] = a[i, j]
-                }
+                a[i, j] = a[i + rowPerm[i], j].also { a[i + rowPerm[i], j] = a[i, j] }
             }
         }
     }
@@ -158,15 +155,13 @@ internal fun plu(a: MultiArray<Double, D2>): Triple<D2Array<Double>, D2Array<Dou
     val L = mk.empty<Double, D2>(_a.shape[0], min(_a.shape[0], _a.shape[1]))
     val U = mk.empty<Double, D2>(min(_a.shape[0], _a.shape[1]), _a.shape[1])
 
-    for (i in 0 until L.shape[1]) {
-        L[i, i] = 1.0
-        for (j in 0 until i) {
-            L[i, j] = _a[i, j]
-        }
-    }
-    for (i in L.shape[1] until L.shape[0]) {
+    for (i in 0 until L.shape[0]) {
         for (j in 0 until L.shape[1]) {
-            L[i, j] = _a[i, j]
+            L[i, j] = when {
+                j < i -> _a[i, j]
+                i == j -> 1.0
+                else -> 0.0
+            }
         }
     }
 
@@ -212,7 +207,7 @@ internal fun pluCompressed(a: MultiArray<Double, D2>): Triple<D1Array<Int>, D2Ar
         }
     }
 
-    return Triple(perm.deepCopy(), L, U)
+    return Triple(perm, L, U)
 }
 
 
