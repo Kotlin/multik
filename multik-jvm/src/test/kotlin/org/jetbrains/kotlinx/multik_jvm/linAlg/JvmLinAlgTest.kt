@@ -64,18 +64,15 @@ class JvmLinAlgTest {
 
     @Test
     fun `test plu`() {
-
         val procedurePrecision = 1e-5
+        val rnd = Random(424242)
 
         val iters = 1000
         val sideFrom = 1
         val sideUntil = 100
         for (all in 0 until iters) {
-            println(all)
-            val rnd = Random(System.currentTimeMillis())
             val m = rnd.nextInt(sideFrom, sideUntil)
             val n = rnd.nextInt(sideFrom, sideUntil)
-
 
             val a = mk.d2array<Double>(m, n) { rnd.nextDouble() }
 
@@ -145,7 +142,7 @@ class JvmLinAlgTest {
     }
 
     private fun <T : Number, D : Dim2> assertClose(a: MultiArray<T, D>, b: MultiArray<T, D>, precision: Double) {
-        assertEquals(a.dim.d, b.dim.d, "matrices have different dimentions")
+        assertEquals(a.dim.d, b.dim.d, "matrices have different dimensions")
         assertContentEquals(a.shape, b.shape, "matrices have different shapes")
         var maxabs = 0.0
         if (a.dim.d == 1) {
