@@ -4,6 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.api
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.plusAssign
 import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
@@ -16,7 +17,7 @@ import kotlin.math.ceil
  * @return [NDArray] of [D] dimension
  * @sample samples.NDArrayTest.empty
  */
-public inline fun <reified T : Number, reified D : Dimension> Multik.empty(vararg dims: Int): NDArray<T, D> {
+public inline fun <reified T : Any, reified D : Dimension> Multik.empty(vararg dims: Int): NDArray<T, D> {
     val dim = dimensionClassOf<D>(dims.size)
     requireDimension(dim, dims.size)
     val dtype = DataType.of(T::class)
@@ -35,7 +36,7 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.empty(varar
  * @return [NDArray] of [D] dimension.
  * @sample samples.NDArrayTest.emptyWithDtype
  */
-public fun <T : Number, D : Dimension> Multik.empty(dims: IntArray, dtype: DataType): NDArray<T, D> {
+public fun <T, D : Dimension> Multik.empty(dims: IntArray, dtype: DataType): NDArray<T, D> {
     // TODO check data type
     val dim = dimensionOf<D>(dims.size)
     requireDimension(dim, dims.size) // TODO (mk.empty<Float, D2>(intArrayOf(3), DataType.FloatDataType))
@@ -51,7 +52,7 @@ public fun <T : Number, D : Dimension> Multik.empty(dims: IntArray, dtype: DataT
  * @return [D2Array].
  * @sample samples.NDArrayTest.identity
  */
-public inline fun <reified T : Number> Multik.identity(n: Int): D2Array<T> {
+public inline fun <reified T : Any> Multik.identity(n: Int): D2Array<T> {
     val dtype = DataType.of(T::class)
     return identity(n, dtype)
 }
@@ -66,17 +67,18 @@ public inline fun <reified T : Number> Multik.identity(n: Int): D2Array<T> {
  * @return [D2Array]
  * @sample samples.NDArrayTest.identityWithDtype
  */
-public fun <T : Number> Multik.identity(n: Int, dtype: DataType): D2Array<T> {
+public fun <T> Multik.identity(n: Int, dtype: DataType): D2Array<T> {
     val shape = intArrayOf(n, n)
     val ret = D2Array(initMemoryView<T>(n * n, dtype), shape = shape, dtype = dtype, dim = D2)
-    val one: Number = when (dtype.nativeCode) {
-        1 -> 1.toByte()
-        2 -> 1.toShort()
-        3 -> 1
-        4 -> 1L
-        5 -> 1f
-        6 -> 1.0
-        else -> throw Exception("Type not defined.")
+    val one: Any = when (dtype) {
+        DataType.ByteDataType -> 1.toByte()
+        DataType.ShortDataType -> 1.toShort()
+        DataType.IntDataType -> 1
+        DataType.LongDataType -> 1L
+        DataType.FloatDataType -> 1f
+        DataType.DoubleDataType -> 1.0
+        DataType.ComplexFloatDataType -> ComplexFloat.one
+        DataType.ComplexDoubleDataType -> ComplexDouble.one
     }
     for (i in 0 until n) {
         @Suppress("UNCHECKED_CAST")
@@ -86,7 +88,7 @@ public fun <T : Number> Multik.identity(n: Int, dtype: DataType): D2Array<T> {
 }
 
 /**
- * Creates the 1-dimension array from [arg].
+ * Creates the 1-dimension array from [arg] of Number type.
  *
  * Example:
  * ```
@@ -97,26 +99,56 @@ public fun <T : Number> Multik.identity(n: Int, dtype: DataType): D2Array<T> {
  * @sample samples.NDArrayTest.ndarray1D
  */
 @JvmName("ndarray1D")
-public inline fun <reified T : Number> Multik.ndarray(arg: List<T>): D1Array<T> {
+public inline fun <reified T : Number> Multik.ndarray(arg: List<T>): D1Array<T> = ndarrayCommon1D(arg)
+
+/**
+ * Creates the 1-dimension array from [arg] of Complex type.
+ *
+ * Example:
+ * ```
+ * mk.ndarray(mk[1, 2, 3]
+ * ```
+ * @param arg list of elements.
+ * @return [D1Array].
+ * @sample samples.NDArrayTest.ndarray1D
+ */
+@JvmName("ndarrayComplex1D")
+public inline fun <reified T : Complex> Multik.ndarray(arg: List<T>): D1Array<T> = ndarrayCommon1D(arg)
+
+@PublishedApi
+internal inline fun <reified T : Any> ndarrayCommon1D(arg: List<T>): D1Array<T> {
     val dtype = DataType.of(T::class)
-    listOf(1, 2)
     val data = arg.toViewPrimitiveArray(dtype)
     return D1Array(data, 0, intArrayOf(arg.size), dtype = dtype, dim = D1)
 }
 
 /**
- * Creates the 2-dimension array from [arg].
+ * Creates the 2-dimension array from [arg] of Number type.
  *
  * @param arg list of rows.
  * @return [D2Array].
  * @sample samples.NDArrayTest.ndarray2D
  */
 @JvmName("ndarray2D")
-public inline fun <reified T : Number> Multik.ndarray(arg: List<List<T>>): D2Array<T> {
+public inline fun <reified T : Number> Multik.ndarray(arg: List<List<T>>): D2Array<T> = ndarrayCommon2D(arg)
+
+/**
+ * Creates the 2-dimension array from [arg] of Complex type.
+ *
+ * @param arg list of rows.
+ * @return [D2Array].
+ * @sample samples.NDArrayTest.ndarray2D
+ */
+@JvmName("ndarrayComplex2D")
+public inline fun <reified T : Complex> Multik.ndarray(arg: List<List<T>>): D2Array<T> = ndarrayCommon2D(arg)
+
+@PublishedApi
+internal inline fun <reified T : Any> ndarrayCommon2D(arg: List<List<T>>): D2Array<T> {
     val dtype = DataType.of(T::class)
-    val size = IntArray(2)
-    size[0] = arg.size
-    size[1] = arg.first().size
+    val size = IntArray(2).apply {
+        this[0] = arg.size
+        this[1] = arg.first().size
+    }
     val res = ArrayList<T>()
     for (ax0 in arg) {
         require(size[1] == ax0.size) { "The size of the incoming array $ax0 does not match the rest" }
@@ -127,19 +159,33 @@ public inline fun <reified T : Number> Multik.ndarray(arg: List<List<T>>): D2Arr
 }
 
 /**
- * Creates the 3-dimension array from [arg].
+ * Creates the 3-dimension array from [arg] of Number type.
  *
  * @param arg elements.
  * @return [D3Array].
  * @sample samples.NDArrayTest.ndarray3D
  */
 @JvmName("ndarray3D")
-public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<T>>>): D3Array<T> {
+public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<T>>>): D3Array<T> = ndarrayCommon3D(arg)
+
+/**
+ * Creates the 3-dimension array from [arg] of Complex type.
+ *
+ * @param arg elements.
+ * @return [D3Array].
+ * @sample samples.NDArrayTest.ndarray3D
+ */
+@JvmName("ndarrayComplex3D")
+public inline fun <reified T : Complex> Multik.ndarray(arg: List<List<List<T>>>): D3Array<T> = ndarrayCommon3D(arg)
+
+@PublishedApi
+internal inline fun <reified T : Any> ndarrayCommon3D(arg: List<List<List<T>>>): D3Array<T> {
     val dtype = DataType.of(T::class)
-    val size = IntArray(3)
-    size[0] = arg.size
-    size[1] = arg.first().size
-    size[2] = arg.first().first().size
+    val size = IntArray(3).apply {
+        this[0] = arg.size
+        this[1] = arg.first().size
+        this[2] = arg.first().first().size
+    }
     val res = ArrayList<T>()
     for (ax0 in arg) {
         require(size[1] == ax0.size) { "The size of the incoming array $ax0 does not match the rest" }
@@ -153,20 +199,34 @@ public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<T>>>):
 }
 
 /**
- * Creates the 4-dimension array from [arg].
+ * Creates the 4-dimension array from [arg] of Number type.
  *
  * @param arg elements.
  * @return [D4Array].
  * @sample samples.NDArrayTest.ndarray4D
  */
 @JvmName("ndarray4D")
-public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<List<T>>>>): D4Array<T> {
+public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<List<T>>>>): D4Array<T> = ndarrayCommon4D(arg)
+
+/**
+ * Creates the 4-dimension array from [arg] of Complex type.
+ *
+ * @param arg elements.
+ * @return [D4Array].
+ * @sample samples.NDArrayTest.ndarray4D
+ */
+@JvmName("ndarrayComplex4D")
+public inline fun <reified T : Complex> Multik.ndarray(arg: List<List<List<List<T>>>>): D4Array<T> = ndarrayCommon4D(arg)
+
+@PublishedApi
+internal inline fun <reified T : Any> ndarrayCommon4D(arg: List<List<List<List<T>>>>): D4Array<T> {
     val dtype = DataType.of(T::class)
-    val size = IntArray(4)
-    size[0] = arg.size
-    size[1] = arg.first().size
-    size[2] = arg.first().first().size
-    size[3] = arg.first().first().first().size
+    val size = IntArray(4).apply {
+        this[0] = arg.size
+        this[1] = arg.first().size
+        this[2] = arg.first().first().size
+        this[3] = arg.first().first().first().size
+    }
     val res = ArrayList<T>()
     for (ax0 in arg) {
         check(size[1] == ax0.size) { "The size of the incoming array $ax0 does not match the rest" }
@@ -191,14 +251,20 @@ public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<List<T
  * @return [NDArray] of [D] dimension.
  * @sample samples.NDArrayTest.ndarrayCollections
  */
-public inline fun <T : Number, reified D : Dimension> Multik.ndarray(
-    elements: Collection<T>, shape: IntArray
-): NDArray<T, D> {
-    requireShapeEmpty(shape)
-    val dim = dimensionClassOf<D>(shape.size)
-    requireDimension(dim, shape.size)
-    return ndarray(elements, shape, dim)
-}
+public inline fun <T : Number, reified D : Dimension> Multik.ndarray(elements: Collection<T>, shape: IntArray): NDArray<T, D> =
+    ndarrayCommon(elements, shape, dimensionClassOf<D>(shape.size))
+
+/**
+ * Returns a new array given [shape] from collection.
+ *
+ * @param elements collection of elements.
+ * @param shape array shape.
+ * @return [NDArray] of [D] dimension.
+ * @sample samples.NDArrayTest.ndarrayCollections
+ */
+@JvmName("ndarrayComplex")
+public inline fun <T : Complex, reified D : Dimension> Multik.ndarray(elements: Collection<T>, shape: IntArray): NDArray<T, D> =
+    ndarrayCommon(elements, shape, dimensionClassOf<D>(shape.size))
 
 /**
  * Returns a new array given shape and dimension from collection.
@@ -211,7 +277,26 @@ public inline fun <T : Number, reified D : Dimension> Multik.ndarray(
  * @return [NDArray] of [D] dimension.
  * @sample samples.NDArrayTest.ndarrayCollectionsWithDim
  */
-public fun <T : Number, D : Dimension> Multik.ndarray(elements: Collection<T>, shape: IntArray, dim: D): NDArray<T, D> {
+public fun <T : Number, D : Dimension> Multik.ndarray(elements: Collection<T>, shape: IntArray, dim: D): NDArray<T, D> =
+    ndarrayCommon(elements, shape, dim)
+
+/**
+ * Returns a new array given shape and dimension from collection.
+ *
+ * Note: Generic type of dimension [D] must match dim.
+ *
+ * @param elements collection of elements.
+ * @param shape array shape.
+ * @param dim array dimension.
+ * @return [NDArray] of [D] dimension.
+ * @sample samples.NDArrayTest.ndarrayCollectionsWithDim
+ */
+@JvmName("ndarrayComplex")
+public fun <T : Complex, D : Dimension> Multik.ndarray(elements: Collection<T>, shape: IntArray, dim: D): NDArray<T, D> =
+    ndarrayCommon(elements, shape, dim)
+
+@PublishedApi
+internal fun <T, D : Dimension> ndarrayCommon(elements: Collection<T>, shape: IntArray, dim: D): NDArray<T, D> {
     requireShapeEmpty(shape)
     requireDimension(dim, shape.size)
     requireElementsWithShape(elements.size, shape.fold(1, Int::times))
@@ -230,13 +315,23 @@ public fun <T : Number, D : Dimension> Multik.ndarray(elements: Collection<T>, s
 /**
  * Returns a new 1-dimension array given shape from a collection.
  *
- * @param elements collection of elements.
+ * @param elements collection of number elements.
  * @return [D1Array]
  * @sample samples.NDArrayTest.ndarrayCollections1D
  */
-public fun <T : Number> Multik.ndarray(elements: Collection<T>): D1Array<T> {
-    return ndarray(elements, intArrayOf(elements.size), D1)
-}
+public fun <T : Number> Multik.ndarray(elements: Collection<T>): D1Array<T> =
+    ndarray(elements, intArrayOf(elements.size), D1)
+
+/**
+ * Returns a new 1-dimension array given shape from a collection.
+ *
+ * @param elements collection of complex elements.
+ * @return [D1Array]
+ * @sample samples.NDArrayTest.ndarrayCollections1D
+ */
+@JvmName("ndarrayComplex")
+public fun <T : Complex> Multik.ndarray(elements: Collection<T>): D1Array<T> =
+    ndarray(elements, intArrayOf(elements.size), D1)
 
 /**
  * Returns a new 1-dimension array from [ByteArray].
@@ -310,6 +405,28 @@ public fun Multik.ndarray(args: DoubleArray): D1Array<Double> {
     return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.DoubleDataType, dim = D1)
 }
 
+/**
+ * Returns a new 1-dimension array from [ComplexFloatArray].
+ *
+ * @param args [ComplexFloatArray] of elements.
+ * @return [D1Array]
+ */
+public fun Multik.ndarray(args: ComplexFloatArray): D1Array<ComplexFloat> {
+    val data = MemoryViewComplexFloatArray(args)
+    return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.ComplexFloatDataType, dim = D1)
+}
+
+/**
+ * Returns a new 1-dimension array from [ComplexDoubleArray].
+ *
+ * @param args [ComplexDoubleArray] of elements.
+ * @return [D1Array]
+ */
+public fun Multik.ndarray(args: ComplexDoubleArray): D1Array<ComplexDouble> {
+    val data = MemoryViewComplexDoubleArray(args)
+    return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.ComplexDoubleDataType, dim = D1)
+}
+
 //_________________________________________________D2___________________________________________________________________
 
 /**
@@ -321,9 +438,21 @@ public fun Multik.ndarray(args: DoubleArray): D1Array<Double> {
  * @return [D2Array].
  * @sample samples.NDArrayTest.ndarrayCollections2D
  */
-public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int): D2Array<T> {
-    return ndarray(elements, intArrayOf(dim1, dim2), D2)
-}
+public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int): D2Array<T> =
+    ndarray(elements, intArrayOf(dim1, dim2), D2)
+
+/**
+ * Returns a new 2-dimensions array given shape from a collection.
+ *
+ * @param elements collection of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 1-dimension.
+ * @return [D2Array].
+ * @sample samples.NDArrayTest.ndarrayCollections2D
+ */
+@JvmName("ndarrayComplex")
+public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int): D2Array<T> =
+    ndarray(elements, intArrayOf(dim1, dim2), D2)
 
 /**
  * Returns a new 2-dimensions array from [ByteArray].
@@ -415,6 +544,34 @@ public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int): D2Array<Doub
     return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.DoubleDataType, dim = D2)
 }
 
+/**
+ * Returns a new 2-dimensions array from [ComplexFloatArray].
+ *
+ * @param args [ComplexFloatArray] of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 1-dimension.
+ * @return [D2Array].
+ */
+public fun Multik.ndarray(args: ComplexFloatArray, dim1: Int, dim2: Int): D2Array<ComplexFloat> {
+    requireElementsWithShape(args.size, dim1 * dim2)
+    val data = MemoryViewComplexFloatArray(args)
+    return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.ComplexFloatDataType, dim = D2)
+}
+
+/**
+ * Returns a new 2-dimensions array from [ComplexDoubleArray].
+ *
+ * @param args [ComplexDoubleArray] of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 1-dimension.
+ * @return [D2Array].
+ */
+public fun Multik.ndarray(args: ComplexDoubleArray, dim1: Int, dim2: Int): D2Array<ComplexDouble> {
+    requireElementsWithShape(args.size, dim1 * dim2)
+    val data = MemoryViewComplexDoubleArray(args)
+    return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.ComplexDoubleDataType, dim = D2)
+}
+
 //_________________________________________________D3___________________________________________________________________
 
 /**
@@ -427,9 +584,22 @@ public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int): D2Array<Doub
  * @return [D3Array].
  * @sample samples.NDArrayTest.ndarrayCollections3D
  */
-public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int): D3Array<T> {
-    return ndarray(elements, intArrayOf(dim1, dim2, dim3), D3)
-}
+public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
+    ndarray(elements, intArrayOf(dim1, dim2, dim3), D3)
+
+/**
+ * Returns a new 3-dimensions array given shape from a collection.
+ *
+ * @param elements collection of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 2-dimension.
+ * @param dim3 value of 3-dimension.
+ * @return [D3Array].
+ * @sample samples.NDArrayTest.ndarrayCollections3D
+ */
+@JvmName("ndarrayComplex")
+public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
+    ndarray(elements, intArrayOf(dim1, dim2, dim3), D3)
 
 /**
  * Returns a new 3-dimensions array from [ByteArray].
@@ -527,6 +697,36 @@ public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int, dim3: Int): D
     return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.DoubleDataType, dim = D3)
 }
 
+/**
+ * Returns a new 3-dimensions array from [ComplexFloatArray].
+ *
+ * @param args [ComplexFloatArray] of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 2-dimension.
+ * @param dim3 value of 3-dimension.
+ * @return [D3Array].
+ */
+public fun Multik.ndarray(args: ComplexFloatArray, dim1: Int, dim2: Int, dim3: Int): D3Array<ComplexFloat> {
+    requireElementsWithShape(args.size, dim1 * dim2 * dim3)
+    val data = MemoryViewComplexFloatArray(args)
+    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.ComplexFloatDataType, dim = D3)
+}
+
+/**
+ * Returns a new 3-dimensions array from [ComplexDoubleArray].
+ *
+ * @param args [ComplexDoubleArray] of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 2-dimension.
+ * @param dim3 value of 3-dimension.
+ * @return [D3Array].
+ */
+public fun Multik.ndarray(args: ComplexDoubleArray, dim1: Int, dim2: Int, dim3: Int): D3Array<ComplexDouble> {
+    requireElementsWithShape(args.size, dim1 * dim2 * dim3)
+    val data = MemoryViewComplexDoubleArray(args)
+    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.ComplexDoubleDataType, dim = D3)
+}
+
 //_________________________________________________D4___________________________________________________________________
 
 /**
@@ -540,11 +740,23 @@ public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int, dim3: Int): D
  * @return [D4Array].
  * @sample samples.NDArrayTest.ndarrayCollections4D
  */
-public fun <T : Number> Multik.ndarray(
-    elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int, dim4: Int
-): D4Array<T> {
-    return ndarray(elements, intArrayOf(dim1, dim2, dim3, dim4), D4)
-}
+public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<T> =
+    ndarray(elements, intArrayOf(dim1, dim2, dim3, dim4), D4)
+
+/**
+ * Returns a new 4-dimensions array given shape from a collection.
+ *
+ * @param elements collection of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 2-dimension.
+ * @param dim3 value of 3-dimension.
+ * @param dim4 value of 4-dimension.
+ * @return [D4Array].
+ * @sample samples.NDArrayTest.ndarrayCollections4D
+ */
+@JvmName("ndarrayComplex")
+public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<T> =
+    ndarray(elements, intArrayOf(dim1, dim2, dim3, dim4), D4)
 
 /**
  * Returns a new 4-dimensions array from [ByteArray].
@@ -648,6 +860,38 @@ public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int, dim3: Int, di
     return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.DoubleDataType, dim = D4)
 }
 
+/**
+ * Returns a new 4-dimensions array from [ComplexFloatArray].
+ *
+ * @param args [ComplexFloatArray] of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 2-dimension.
+ * @param dim3 value of 3-dimension.
+ * @param dim4 value of 4-dimension.
+ * @return [D4Array].
+ */
+public fun Multik.ndarray(args: ComplexFloatArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<ComplexFloat> {
+    requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
+    val data = MemoryViewComplexFloatArray(args)
+    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.ComplexFloatDataType, dim = D4)
+}
+
+/**
+ * Returns a new 4-dimensions array from [ComplexDoubleArray].
+ *
+ * @param args [ComplexDoubleArray] of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 2-dimension.
+ * @param dim3 value of 3-dimension.
+ * @param dim4 value of 4-dimension.
+ * @return [D4Array].
+ */
+public fun Multik.ndarray(args: ComplexDoubleArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<ComplexDouble> {
+    requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
+    val data = MemoryViewComplexDoubleArray(args)
+    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.ComplexDoubleDataType, dim = D4)
+}
+
 //_________________________________________________DN___________________________________________________________________
 
 /**
@@ -663,6 +907,26 @@ public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int, dim3: Int, di
  * @sample samples.NDArrayTest.ndarrayCollectionsDN
  */
 public fun <T : Number> Multik.ndarray(
+    elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
+): NDArray<T, DN> {
+    val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
+    return ndarray(elements, shape, DN(shape.size))
+}
+
+/**
+ * Returns a new n-dimension array given shape from a collection.
+ *
+ * @param elements collection of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 2-dimension.
+ * @param dim3 value of 3-dimension.
+ * @param dim4 value of 4-dimension.
+ * @param dims values of other dimensions.
+ * @return [NDArray] of [DN] dimension.
+ * @sample samples.NDArrayTest.ndarrayCollectionsDN
+ */
+@JvmName("ndarrayComplex")
+public fun <T : Complex> Multik.ndarray(
     elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
 ): NDArray<T, DN> {
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
@@ -795,6 +1059,46 @@ public fun Multik.ndarray(
     return NDArray(data, shape = shape, dtype = DataType.DoubleDataType, dim = dimensionOf(shape.size))
 }
 
+/**
+ * Returns a new n-dimension array from [ComplexFloatArray].
+ *
+ * @param args [ComplexFloatArray] of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 2-dimension.
+ * @param dim3 value of 3-dimension.
+ * @param dim4 value of 4-dimension.
+ * @param dims values of other dimensions.
+ * @return [NDArray] of [DN] dimension.
+ */
+public fun Multik.ndarray(
+    args: ComplexFloatArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
+): NDArray<ComplexFloat, DN> {
+    val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
+    requireElementsWithShape(args.size, shape.fold(1, Int::times))
+    val data = MemoryViewComplexFloatArray(args)
+    return NDArray(data, shape = shape, dtype = DataType.ComplexFloatDataType, dim = dimensionOf(shape.size))
+}
+
+/**
+ * Returns a new n-dimension array from [ComplexDoubleArray].
+ *
+ * @param args [ComplexDoubleArray] of elements.
+ * @param dim1 value of 1-dimension.
+ * @param dim2 value of 2-dimension.
+ * @param dim3 value of 3-dimension.
+ * @param dim4 value of 4-dimension.
+ * @param dims values of other dimensions.
+ * @return [NDArray] of [DN] dimension.
+ */
+public fun Multik.ndarray(
+    args: ComplexDoubleArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
+): NDArray<ComplexDouble, DN> {
+    val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
+    requireElementsWithShape(args.size, shape.fold(1, Int::times))
+    val data = MemoryViewComplexDoubleArray(args)
+    return NDArray(data, shape = shape, dtype = DataType.ComplexDoubleDataType, dim = dimensionOf(shape.size))
+}
+
 //______________________________________________________________________________________________________________________
 /**
  * Returns a 1-dimension array.
@@ -804,7 +1108,22 @@ public fun Multik.ndarray(
  * @return [D1Array].
  * @sample samples.NDArrayTest.d1array
  */
-public inline fun <reified T : Number> Multik.d1array(sizeD1: Int, noinline init: (Int) -> T): D1Array<T> {
+public inline fun <reified T : Number> Multik.d1array(sizeD1: Int, noinline init: (Int) -> T): D1Array<T> =
+    d1arrayCommon(sizeD1, init)
+
+/**
+ * Returns a 1-dimension array.
+ *
+ * @param sizeD1 value of 1-dimension.
+ * @param init initialization function
+ * @return [D1Array].
+ * @sample samples.NDArrayTest.d1array
+ */
+public inline fun <reified T : Complex> Multik.d1arrayComplex(sizeD1: Int, noinline init: (Int) -> T): D1Array<T> =
+    d1arrayCommon(sizeD1, init)
+
+@PublishedApi
+internal inline fun <reified T: Any> d1arrayCommon(sizeD1: Int, noinline init: (Int) -> T): D1Array<T> {
     require(sizeD1 > 0) { "Dimension must be positive." }
     val dtype = DataType.of(T::class)
     val shape = intArrayOf(sizeD1)
@@ -821,7 +1140,23 @@ public inline fun <reified T : Number> Multik.d1array(sizeD1: Int, noinline init
  * @return [D2Array].
  * @sample samples.NDArrayTest.d2array
  */
-public inline fun <reified T : Number> Multik.d2array(sizeD1: Int, sizeD2: Int, noinline init: (Int) -> T): D2Array<T> {
+public inline fun <reified T : Number> Multik.d2array(sizeD1: Int, sizeD2: Int, noinline init: (Int) -> T): D2Array<T> =
+    d2arrayCommon(sizeD1, sizeD2, init)
+
+/**
+ * Returns a 2-dimensions array.
+ *
+ * @param sizeD1 value of 1-dimension.
+ * @param sizeD2 value of 2-dimension.
+ * @param init initialization function.
+ * @return [D2Array].
+ * @sample samples.NDArrayTest.d2array
+ */
+public inline fun <reified T : Complex> Multik.d2arrayComplex(sizeD1: Int, sizeD2: Int, noinline init: (Int) -> T): D2Array<T> =
+    d2arrayCommon(sizeD1, sizeD2, init)
+
+@PublishedApi
+internal inline fun <reified T : Any> d2arrayCommon(sizeD1: Int, sizeD2: Int, noinline init: (Int) -> T): D2Array<T> {
     val dtype = DataType.of(T::class)
     val shape = intArrayOf(sizeD1, sizeD2)
     for (i in shape.indices) {
@@ -842,6 +1177,25 @@ public inline fun <reified T : Number> Multik.d2array(sizeD1: Int, sizeD2: Int, 
  * @sample samples.NDArrayTest.d3array
  */
 public inline fun <reified T : Number> Multik.d3array(
+    sizeD1: Int, sizeD2: Int, sizeD3: Int, noinline init: (Int) -> T
+): D3Array<T> = d3arrayCommon(sizeD1, sizeD2, sizeD3, init)
+
+/**
+ * Returns a 3-dimensions array.
+ *
+ * @param sizeD1 value of 1-dimension.
+ * @param sizeD2 value of 2-dimension.
+ * @param sizeD3 value of 3-dimension.
+ * @param init initialization function.
+ * @return [D3Array].
+ * @sample samples.NDArrayTest.d3array
+ */
+public inline fun <reified T : Complex> Multik.d3arrayComplex(
+    sizeD1: Int, sizeD2: Int, sizeD3: Int, noinline init: (Int) -> T
+): D3Array<T> = d3arrayCommon(sizeD1, sizeD2, sizeD3, init)
+
+@PublishedApi
+internal inline fun <reified T : Any> d3arrayCommon(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, noinline init: (Int) -> T
 ): D3Array<T> {
     val dtype = DataType.of(T::class)
@@ -865,6 +1219,26 @@ public inline fun <reified T : Number> Multik.d3array(
  * @sample samples.NDArrayTest.d4array
  */
 public inline fun <reified T : Number> Multik.d4array(
+    sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, noinline init: (Int) -> T
+): D4Array<T> = d4arrayCommon(sizeD1, sizeD2, sizeD3, sizeD4, init)
+
+/**
+ * Returns a 4-dimensions array.
+ *
+ * @param sizeD1 value of 1-dimension.
+ * @param sizeD2 value of 2-dimension.
+ * @param sizeD3 value of 3-dimension.
+ * @param sizeD4 value of 4-dimension.
+ * @param init initialization function.
+ * @return [D4Array].
+ * @sample samples.NDArrayTest.d4array
+ */
+public inline fun <reified T : Complex> Multik.d4arrayComplex(
+    sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, noinline init: (Int) -> T
+): D4Array<T> = d4arrayCommon(sizeD1, sizeD2, sizeD3, sizeD4, init)
+
+@PublishedApi
+internal inline fun <reified T : Any> d4arrayCommon(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, noinline init: (Int) -> T
 ): D4Array<T> {
     val dtype = DataType.of(T::class)
@@ -891,16 +1265,24 @@ public inline fun <reified T : Number> Multik.d4array(
  */
 public inline fun <reified T : Number> Multik.dnarray(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, vararg dims: Int, noinline init: (Int) -> T
-): NDArray<T, DN> {
-    val dtype = DataType.of(T::class)
-    val shape = intArrayOf(sizeD1, sizeD2, sizeD3, sizeD4) + dims
-    for (i in shape.indices) {
-        require(shape[i] > 0) { "Dimension $i must be positive." }
-    }
-    val size = shape.fold(1, Int::times)
-    val data = initMemoryView(size, dtype, init)
-    return NDArray(data, shape = shape, dtype = dtype, dim = dimensionOf(shape.size))
-}
+): NDArray<T, DN> = dnarrayCommon(intArrayOf(sizeD1, sizeD2, sizeD3, sizeD4, *dims), init)
+
+/**
+ * Returns a new array with the specified shape, where each element is calculated by calling the specified
+ * [init] function.
+ *
+ * @param sizeD1 value of 1-dimension.
+ * @param sizeD2 value of 2-dimension.
+ * @param sizeD3 value of 3-dimension.
+ * @param sizeD4 value of 4-dimension.
+ * @param dims values other dimensions.
+ * @param init initialization function.
+ * @return [NDArray] of [DN] dimension.
+ * @sample samples.NDArrayTest.dnarray
+ */
+public inline fun <reified T : Complex> Multik.dnarrayComplex(
+    sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, vararg dims: Int, noinline init: (Int) -> T
+): NDArray<T, DN> = dnarrayCommon(intArrayOf(sizeD1, sizeD2, sizeD3, sizeD4, *dims), init)
 
 /**
  * Returns a new array with the specified shape [dims], where each element is calculated by calling the specified
@@ -912,18 +1294,36 @@ public inline fun <reified T : Number> Multik.dnarray(
  * @sample samples.NDArrayTest.dnarrayWithDims
  */
 public inline fun <reified T : Number, reified D : Dimension> Multik.dnarray(
-    dims: IntArray,
-    noinline init: (Int) -> T
+    shape: IntArray, noinline init: (Int) -> T
+): NDArray<T, D> = dnarrayCommon(shape, init)
+
+/**
+ * Returns a new array with the specified shape [dims], where each element is calculated by calling the specified
+ * [init] function.
+ *
+ * @param dims array shape.
+ * @param init initialization function.
+ * @return [NDArray] of [DN] dimension.
+ * @sample samples.NDArrayTest.dnarrayWithDims
+ */
+@JvmName("dnarrayComplex")
+public inline fun <reified T : Complex, reified D : Dimension> Multik.dnarray(
+    shape: IntArray, noinline init: (Int) -> T
+): NDArray<T, D> = dnarrayCommon(shape, init)
+
+@PublishedApi
+internal inline fun <reified T : Any, reified D: Dimension> dnarrayCommon(
+    shape: IntArray, noinline init: (Int) -> T
 ): NDArray<T, D> {
-    for (i in dims.indices) {
-        require(dims[i] > 0) { "Dimension $i must be positive." }
-    }
-    val dim = dimensionClassOf<D>(dims.size)
-    requireDimension(dim, dims.size)
     val dtype = DataType.of(T::class)
-    val size = dims.fold(1, Int::times)
+    val dim = dimensionClassOf<D>(shape.size)
+    requireDimension(dim, shape.size)
+    for (i in shape.indices) {
+        require(shape[i] > 0) { "Dimension $i must be positive." }
+    }
+    val size = shape.fold(1, Int::times)
     val data = initMemoryView(size, dtype, init)
-    return NDArray(data, shape = dims, dtype = dtype, dim = dim)
+    return NDArray(data, shape = shape, dtype = dtype, dim = dimensionOf(shape.size))
 }
 
 /**
@@ -933,7 +1333,19 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.dnarray(
  * @return [D1Array].
  * @sample samples.NDArrayTest.ndarrayOf
  */
-public fun <T : Number> Multik.ndarrayOf(vararg items: T): D1Array<T> {
+public fun <T : Number> Multik.ndarrayOf(vararg items: T): D1Array<T> = ndarrayOfCommon(items)
+
+/**
+ * Returns a new 1-dimension array from [items].
+ *
+ * @param items specified elements.
+ * @return [D1Array].
+ * @sample samples.NDArrayTest.ndarrayOf
+ */
+@JvmName("ndarrayOfComplex")
+public fun <T : Complex> Multik.ndarrayOf(vararg items: T): D1Array<T> = ndarrayOfCommon(items)
+
+private fun <T> ndarrayOfCommon(items: Array<out T>): D1Array<T> {
     val dtype = DataType.of(items.first())
     val shape = intArrayOf(items.size)
     val data = initMemoryView(items.size, dtype) { items[it] }
@@ -1044,13 +1456,23 @@ public inline fun <reified T : Number> Multik.linspace(start: Double, stop: Doub
  * Returns [D1Array] containing all elements.
  * @sample samples.NDArrayTest.toNDArray
  */
-public fun <T : Number> Iterable<T>.toNDArray(): D1Array<T> {
+public fun <T : Number> Iterable<T>.toNDArray(): D1Array<T> = this.toCommonNDArray()
+
+/**
+ * Returns [D1Array] containing all elements.
+ * @sample samples.NDArrayTest.toNDArray
+ */
+@JvmName("toComplexNDArray")
+public fun <T : Complex> Iterable<T>.toNDArray(): D1Array<T> = this.toCommonNDArray()
+
+@PublishedApi
+internal fun <T> Iterable<T>.toCommonNDArray(): D1Array<T> {
     if (this is Collection<T>)
-        return Multik.ndarray(this, intArrayOf(this.size), D1)
+        return ndarrayCommon(this, intArrayOf(this.size), D1)
 
     val tmp = ArrayList<T>()
     for (item in this) {
         tmp.add(item)
     }
-    return Multik.ndarray(tmp, intArrayOf(tmp.size), D1)
+    return ndarrayCommon(tmp, intArrayOf(tmp.size), D1)
 }

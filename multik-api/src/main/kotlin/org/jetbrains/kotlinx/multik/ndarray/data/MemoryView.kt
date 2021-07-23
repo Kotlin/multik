@@ -4,12 +4,14 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.*
+
 /**
  * View for storing data in a [NDArray] and working them in a uniform style.
  *
  * @property data one of the primitive arrays.
  */
-public interface ImmutableMemoryView<T : Number> : Iterable<T> {
+public interface ImmutableMemoryView<T> : Iterable<T> {
     public val data: Any
 
     /**
@@ -52,13 +54,27 @@ public interface ImmutableMemoryView<T : Number> : Iterable<T> {
 
     /**
      * Returns [FloatArray] if it is [MemoryViewFloatArray].
+     *
+     * Note: For [MemoryViewComplexFloatArray], an array will be returned storing real and imaginary parts continuously.
      */
     public fun getFloatArray(): FloatArray
 
     /**
-     * Returns [DoubleArray] if it is [MemoryViewDoubleArray].
+     * Returns [DoubleArray].
+     *
+     * Note: For [MemoryViewComplexDoubleArray], an array will be returned storing real and imaginary parts continuously.
      */
     public fun getDoubleArray(): DoubleArray
+
+    /**
+     * Returns [ComplexFloatArray] if it is [MemoryViewFloatArray].
+     */
+    public fun getComplexFloatArray(): ComplexFloatArray
+
+    /**
+     * Returns [ComplexDoubleArray] if it is [MemoryViewComplexDoubleArray].
+     */
+    public fun getComplexDoubleArray(): ComplexDoubleArray
 }
 
 /**
@@ -68,7 +84,7 @@ public interface ImmutableMemoryView<T : Number> : Iterable<T> {
  * @property indices indices of [data].
  * @property lastIndex last index in [data].
  */
-public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
+public sealed class MemoryView<T> : ImmutableMemoryView<T> {
     public abstract var size: Int
 
     public abstract var indices: IntRange
@@ -96,6 +112,10 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
 
     public override fun getDoubleArray(): DoubleArray = throw UnsupportedOperationException()
 
+    public override fun getComplexFloatArray(): ComplexFloatArray = throw UnsupportedOperationException()
+
+    public override fun getComplexDoubleArray(): ComplexDoubleArray = throw UnsupportedOperationException()
+
     public operator fun plusAssign(other: MemoryView<T>) {
         when {
             this is MemoryViewFloatArray && other is MemoryViewFloatArray -> this += other
@@ -104,6 +124,8 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
             this is MemoryViewLongArray && other is MemoryViewLongArray -> this += other
             this is MemoryViewShortArray && other is MemoryViewShortArray -> this += other
             this is MemoryViewByteArray && other is MemoryViewByteArray -> this += other
+            this is MemoryViewComplexFloatArray && other is MemoryViewComplexFloatArray -> this += other
+            this is MemoryViewComplexDoubleArray && other is MemoryViewComplexDoubleArray -> this += other
         }
     }
 
@@ -115,6 +137,8 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
             this is MemoryViewLongArray && other is Long -> this += other
             this is MemoryViewShortArray && other is Short -> this += other
             this is MemoryViewByteArray && other is Byte -> this += other
+            this is MemoryViewComplexFloatArray && other is ComplexFloat -> this += other
+            this is MemoryViewComplexDoubleArray && other is ComplexDouble -> this += other
         }
     }
 
@@ -126,6 +150,8 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
             this is MemoryViewLongArray && other is MemoryViewLongArray -> this -= other
             this is MemoryViewShortArray && other is MemoryViewShortArray -> this -= other
             this is MemoryViewByteArray && other is MemoryViewByteArray -> this -= other
+            this is MemoryViewComplexFloatArray && other is MemoryViewComplexFloatArray -> this -= other
+            this is MemoryViewComplexDoubleArray && other is MemoryViewComplexDoubleArray -> this -= other
         }
     }
 
@@ -137,6 +163,8 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
             this is MemoryViewLongArray && other is Long -> this -= other
             this is MemoryViewShortArray && other is Short -> this -= other
             this is MemoryViewByteArray && other is Byte -> this -= other
+            this is MemoryViewComplexFloatArray && other is ComplexFloat -> this -= other
+            this is MemoryViewComplexDoubleArray && other is ComplexDouble -> this -= other
         }
     }
 
@@ -148,6 +176,8 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
             this is MemoryViewLongArray && other is MemoryViewLongArray -> this *= other
             this is MemoryViewShortArray && other is MemoryViewShortArray -> this *= other
             this is MemoryViewByteArray && other is MemoryViewByteArray -> this *= other
+            this is MemoryViewComplexFloatArray && other is MemoryViewComplexFloatArray -> this *= other
+            this is MemoryViewComplexDoubleArray && other is MemoryViewComplexDoubleArray -> this *= other
         }
     }
 
@@ -159,6 +189,8 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
             this is MemoryViewLongArray && other is Long -> this *= other
             this is MemoryViewShortArray && other is Short -> this *= other
             this is MemoryViewByteArray && other is Byte -> this *= other
+            this is MemoryViewComplexFloatArray && other is ComplexFloat -> this *= other
+            this is MemoryViewComplexDoubleArray && other is ComplexDouble -> this *= other
         }
     }
 
@@ -170,6 +202,8 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
             this is MemoryViewLongArray && other is MemoryViewLongArray -> this /= other
             this is MemoryViewShortArray && other is MemoryViewShortArray -> this /= other
             this is MemoryViewByteArray && other is MemoryViewByteArray -> this /= other
+            this is MemoryViewComplexFloatArray && other is MemoryViewComplexFloatArray -> this /= other
+            this is MemoryViewComplexDoubleArray && other is MemoryViewComplexDoubleArray -> this /= other
         }
     }
 
@@ -181,6 +215,8 @@ public sealed class MemoryView<T : Number> : ImmutableMemoryView<T> {
             this is MemoryViewLongArray && other is Long -> this /= other
             this is MemoryViewShortArray && other is Short -> this /= other
             this is MemoryViewByteArray && other is Byte -> this /= other
+            this is MemoryViewComplexFloatArray && other is ComplexFloat -> this /= other
+            this is MemoryViewComplexDoubleArray && other is ComplexDouble -> this /= other
         }
     }
 }
@@ -207,14 +243,12 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
 
     override fun copyOf(): MemoryView<Byte> = MemoryViewByteArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            javaClass != other?.javaClass -> false
-            other !is MemoryViewByteArray -> false
-            size != other.size -> false
-            else -> (0 until size).all { this.data[it] == other.data[it] }
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        javaClass != other?.javaClass -> false
+        other !is MemoryViewByteArray -> false
+        size != other.size -> false
+        else -> (0 until size).all { this.data[it] == other.data[it] }
     }
 
     override fun hashCode(): Int =
@@ -293,14 +327,12 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
 
     override fun copyOf(): MemoryView<Short> = MemoryViewShortArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            javaClass != other?.javaClass -> false
-            other !is MemoryViewShortArray -> false
-            size != other.size -> false
-            else -> (0 until size).all { this.data[it] == other.data[it] }
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        javaClass != other?.javaClass -> false
+        other !is MemoryViewShortArray -> false
+        size != other.size -> false
+        else -> this.data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int =
@@ -379,15 +411,14 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
 
     override fun copyOf(): MemoryView<Int> = MemoryViewIntArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            javaClass != other?.javaClass -> false
-            other !is MemoryViewIntArray -> false
-            size != other.size -> false
-            else -> (0 until size).all { this.data[it] == other.data[it] }
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        javaClass != other?.javaClass -> false
+        other !is MemoryViewIntArray -> false
+        size != other.size -> false
+        else -> (0 until size).all { this.data[it] == other.data[it] }
     }
+
 
     override fun hashCode(): Int =
         (0 until size).fold(1) { acc, r ->
@@ -465,14 +496,12 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
 
     override fun copyOf(): MemoryView<Long> = MemoryViewLongArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            javaClass != other?.javaClass -> false
-            other !is MemoryViewLongArray -> false
-            size != other.size -> false
-            else -> (0 until size).all { this.data[it] == other.data[it] }
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        javaClass != other?.javaClass -> false
+        other !is MemoryViewLongArray -> false
+        size != other.size -> false
+        else -> this.data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int =
@@ -551,14 +580,12 @@ public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Fl
 
     override fun copyOf(): MemoryView<Float> = MemoryViewFloatArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            javaClass != other?.javaClass -> false
-            other !is MemoryViewFloatArray -> false
-            size != other.size -> false
-            else -> (0 until size).all { this.data[it] == other.data[it] }
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        javaClass != other?.javaClass -> false
+        other !is MemoryViewFloatArray -> false
+        size != other.size -> false
+        else -> this.data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int =
@@ -637,14 +664,12 @@ public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<
 
     override fun copyOf(): MemoryView<Double> = MemoryViewDoubleArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            javaClass != other?.javaClass -> false
-            other !is MemoryViewDoubleArray -> false
-            size != other.size -> false
-            else -> (0 until size).all { this.data[it] == other.data[it] }
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        javaClass != other?.javaClass -> false
+        other !is MemoryViewDoubleArray -> false
+        size != other.size -> false
+        else -> this.data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int =
@@ -702,17 +727,190 @@ public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<
 }
 
 /**
+ * View for [ComplexFloatArray].
+ */
+public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) : MemoryView<ComplexFloat>() {
+    override var size: Int = data.size
+
+    override var indices: IntRange = data.indices
+
+    override var lastIndex: Int = data.lastIndex
+
+    override fun get(index: Int): ComplexFloat = data[index]
+
+    override fun set(index: Int, value: ComplexFloat) {
+        data[index] = value
+    }
+
+    override fun getFloatArray(): FloatArray = data.getFlatArray()
+
+    override fun getComplexFloatArray(): ComplexFloatArray = data
+
+    override fun iterator(): Iterator<ComplexFloat> = data.iterator()
+
+    override fun copyOf(): MemoryView<ComplexFloat> = MemoryViewComplexFloatArray(data.copyOf())
+
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        javaClass != other?.javaClass -> false
+        other !is MemoryViewComplexFloatArray -> false
+        size != other.size -> false
+        else -> this.data == other.data
+    }
+
+    override fun hashCode(): Int =
+        (0 until size).fold(1) { acc, r ->
+            31 * acc + data[r].hashCode()
+        }
+
+    public operator fun plusAssign(other: MemoryViewComplexFloatArray) {
+        for (i in this.indices) {
+            this.data[i] += other.data[i]
+        }
+    }
+
+    public override operator fun plusAssign(other: ComplexFloat) {
+        for (i in this.indices) {
+            this.data[i] += other
+        }
+    }
+
+    public operator fun minusAssign(other: MemoryViewComplexFloatArray) {
+        for (i in this.indices) {
+            this.data[i] -= other.data[i]
+        }
+    }
+
+    public override operator fun minusAssign(other: ComplexFloat) {
+        for (i in this.indices) {
+            this.data[i] -= other
+        }
+    }
+
+    public operator fun timesAssign(other: MemoryViewComplexFloatArray) {
+        for (i in this.indices) {
+            this.data[i] *= other.data[i]
+        }
+    }
+
+    public override operator fun timesAssign(other: ComplexFloat) {
+        for (i in this.indices) {
+            this.data[i] *= other
+        }
+    }
+
+    public operator fun divAssign(other: MemoryViewComplexFloatArray) {
+        for (i in this.indices) {
+            this.data[i] /= other.data[i]
+        }
+    }
+
+    public override operator fun divAssign(other: ComplexFloat) {
+        for (i in this.indices) {
+            this.data[i] /= other
+        }
+    }
+}
+
+/**
+ * View for [ComplexDoubleArray].
+ */
+public class MemoryViewComplexDoubleArray(override val data: ComplexDoubleArray) : MemoryView<ComplexDouble>() {
+    override var size: Int = data.size
+
+    override var indices: IntRange = data.indices
+
+    override var lastIndex: Int = data.lastIndex
+
+    override fun get(index: Int): ComplexDouble = data[index]
+
+    override fun set(index: Int, value: ComplexDouble) {
+        data[index] = value
+    }
+
+    override fun getDoubleArray(): DoubleArray = data.getFlatArray()
+
+    override fun getComplexDoubleArray(): ComplexDoubleArray = data
+
+    override fun iterator(): Iterator<ComplexDouble> = data.iterator()
+
+    override fun copyOf(): MemoryView<ComplexDouble> = MemoryViewComplexDoubleArray(data.copyOf())
+
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        javaClass != other?.javaClass -> false
+        other !is MemoryViewComplexDoubleArray -> false
+        size != other.size -> false
+        else -> this.data == other.data
+    }
+
+    override fun hashCode(): Int =
+        (0 until size).fold(1) { acc, r ->
+            31 * acc + data[r].hashCode()
+        }
+
+    public operator fun plusAssign(other: MemoryViewComplexDoubleArray) {
+        for (i in this.indices) {
+            this.data[i] += other.data[i]
+        }
+    }
+
+    public override operator fun plusAssign(other: ComplexDouble) {
+        for (i in this.indices) {
+            this.data[i] += other
+        }
+    }
+
+    public operator fun minusAssign(other: MemoryViewComplexDoubleArray) {
+        for (i in this.indices) {
+            this.data[i] -= other.data[i]
+        }
+    }
+
+    public override operator fun minusAssign(other: ComplexDouble) {
+        for (i in this.indices) {
+            this.data[i] -= other
+        }
+    }
+
+    public operator fun timesAssign(other: MemoryViewComplexDoubleArray) {
+        for (i in this.indices) {
+            this.data[i] *= other.data[i]
+        }
+    }
+
+    public override operator fun timesAssign(other: ComplexDouble) {
+        for (i in this.indices) {
+            this.data[i] *= other
+        }
+    }
+
+    public operator fun divAssign(other: MemoryViewComplexDoubleArray) {
+        for (i in this.indices) {
+            this.data[i] /= other.data[i]
+        }
+    }
+
+    public override operator fun divAssign(other: ComplexDouble) {
+        for (i in this.indices) {
+            this.data[i] /= other
+        }
+    }
+}
+
+/**
  * Creates a [MemoryView] based [size] and [dataType].
  */
-public fun <T : Number> initMemoryView(size: Int, dataType: DataType): MemoryView<T> {
-    val t = when (dataType.nativeCode) {
-        1 -> MemoryViewByteArray(ByteArray(size))
-        2 -> MemoryViewShortArray(ShortArray(size))
-        3 -> MemoryViewIntArray(IntArray(size))
-        4 -> MemoryViewLongArray(LongArray(size))
-        5 -> MemoryViewFloatArray(FloatArray(size))
-        6 -> MemoryViewDoubleArray(DoubleArray(size))
-        else -> throw Exception("Unknown datatype: ${dataType.name}")
+public fun <T> initMemoryView(size: Int, dataType: DataType): MemoryView<T> {
+    val t = when (dataType) {
+        DataType.ByteDataType -> MemoryViewByteArray(ByteArray(size))
+        DataType.ShortDataType -> MemoryViewShortArray(ShortArray(size))
+        DataType.IntDataType -> MemoryViewIntArray(IntArray(size))
+        DataType.LongDataType -> MemoryViewLongArray(LongArray(size))
+        DataType.FloatDataType -> MemoryViewFloatArray(FloatArray(size))
+        DataType.DoubleDataType -> MemoryViewDoubleArray(DoubleArray(size))
+        DataType.ComplexFloatDataType -> MemoryViewComplexFloatArray(ComplexFloatArray(size))
+        DataType.ComplexDoubleDataType -> MemoryViewComplexDoubleArray(ComplexDoubleArray(size))
     }
     @Suppress("UNCHECKED_CAST")
     return t as MemoryView<T>
@@ -723,29 +921,31 @@ public fun <T : Number> initMemoryView(size: Int, dataType: DataType): MemoryVie
  * to the given [init] function.
  */
 @Suppress("UNCHECKED_CAST")
-public fun <T : Number> initMemoryView(size: Int, dataType: DataType, init: (Int) -> T): MemoryView<T> {
-    val t = when (dataType.nativeCode) {
-        1 -> MemoryViewByteArray(ByteArray(size, init as (Int) -> Byte))
-        2 -> MemoryViewShortArray(ShortArray(size, init as (Int) -> Short))
-        3 -> MemoryViewIntArray(IntArray(size, init as (Int) -> Int))
-        4 -> MemoryViewLongArray(LongArray(size, init as (Int) -> Long))
-        5 -> MemoryViewFloatArray(FloatArray(size, init as (Int) -> Float))
-        6 -> MemoryViewDoubleArray(DoubleArray(size, init as (Int) -> Double))
-        else -> throw Exception("Unknown datatype: ${dataType.name}")
+public fun <T> initMemoryView(size: Int, dataType: DataType, init: (Int) -> T): MemoryView<T> {
+    val t = when (dataType) {
+        DataType.ByteDataType -> MemoryViewByteArray(ByteArray(size, init as (Int) -> Byte))
+        DataType.ShortDataType -> MemoryViewShortArray(ShortArray(size, init as (Int) -> Short))
+        DataType.IntDataType -> MemoryViewIntArray(IntArray(size, init as (Int) -> Int))
+        DataType.LongDataType -> MemoryViewLongArray(LongArray(size, init as (Int) -> Long))
+        DataType.FloatDataType -> MemoryViewFloatArray(FloatArray(size, init as (Int) -> Float))
+        DataType.DoubleDataType -> MemoryViewDoubleArray(DoubleArray(size, init as (Int) -> Double))
+        DataType.ComplexFloatDataType -> MemoryViewComplexFloatArray(ComplexFloatArray(size, init as (Int) -> ComplexFloat))
+        DataType.ComplexDoubleDataType -> MemoryViewComplexDoubleArray(ComplexDoubleArray(size, init as (Int) -> ComplexDouble))
     }
     return t as MemoryView<T>
 }
 
 @Suppress("UNCHECKED_CAST")
-public fun <T : Number> List<T>.toViewPrimitiveArray(dataType: DataType): MemoryView<T> {
-    val t = when (dataType.nativeCode) {
-        1 -> MemoryViewByteArray((this as List<Byte>).toByteArray())
-        2 -> MemoryViewShortArray((this as List<Short>).toShortArray())
-        3 -> MemoryViewIntArray((this as List<Int>).toIntArray())
-        4 -> MemoryViewLongArray((this as List<Long>).toLongArray())
-        5 -> MemoryViewFloatArray((this as List<Float>).toFloatArray())
-        6 -> MemoryViewDoubleArray((this as List<Double>).toDoubleArray())
-        else -> throw Exception("Unknown datatype: ${dataType.name}")
+public fun <T> List<T>.toViewPrimitiveArray(dataType: DataType): MemoryView<T> {
+    val t = when (dataType) {
+        DataType.ByteDataType -> MemoryViewByteArray((this as List<Byte>).toByteArray())
+        DataType.ShortDataType -> MemoryViewShortArray((this as List<Short>).toShortArray())
+        DataType.IntDataType -> MemoryViewIntArray((this as List<Int>).toIntArray())
+        DataType.LongDataType -> MemoryViewLongArray((this as List<Long>).toLongArray())
+        DataType.FloatDataType -> MemoryViewFloatArray((this as List<Float>).toFloatArray())
+        DataType.DoubleDataType -> MemoryViewDoubleArray((this as List<Double>).toDoubleArray())
+        DataType.ComplexFloatDataType -> MemoryViewComplexFloatArray((this as List<ComplexFloat>).toComplexFloatArray())
+        DataType.ComplexDoubleDataType -> MemoryViewComplexDoubleArray((this as List<ComplexDouble>).toComplexDoubleArray())
     }
     return t as MemoryView<T>
 }

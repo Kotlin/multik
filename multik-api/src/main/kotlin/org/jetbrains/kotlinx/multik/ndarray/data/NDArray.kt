@@ -19,7 +19,7 @@ public typealias D4Array<T> = NDArray<T, D4>
  * @param T type of stored values.
  * @param D dimension.
  */
-public class NDArray<T : Number, D : Dimension> constructor(
+public class NDArray<T, D : Dimension> constructor(
     data: ImmutableMemoryView<T>,
     public override val offset: Int = 0,
     public override val shape: IntArray,

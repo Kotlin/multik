@@ -4,25 +4,30 @@
 
 package org.jetbrains.kotlinx.multik.jvm
 
-import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.identity
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
-import java.lang.ArithmeticException
-import java.lang.UnsupportedOperationException
 import kotlin.math.abs
 
 public object JvmLinAlg : LinAlg {
 
-    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
-    }
+    override val linAlgEx: LinAlgEx
+        get() = JvmLinAlgEx
+
+
+//    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
+//        TODO("Not yet implemented")
+//    }
 
     fun <T : Number> invDouble(a: MultiArray<T, D2>): D2Array<Double> {
         requireSquare(a)
         return solveDouble(a.map { it.toDouble() }, mk.identity(a.shape[0]))
     }
-
 
     override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> {
         if (n == 0) return mk.identity(mat.shape[0], mat.dtype)
@@ -57,17 +62,17 @@ public object JvmLinAlg : LinAlg {
 
 
 
-    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
-        if(a.dtype != DataType.DoubleDataType) {
-            throw UnsupportedOperationException()
-        }
-
-        val aDouble = a.map { it.toDouble() }
-        val bDouble: MultiArray<Double, D2> = if (b.dim.d == 2) { b } else { b.reshape(b.shape[0], 1) } as MultiArray<Double, D2>
-
-        val ans = solveDouble(aDouble, bDouble)
-        return if (b.dim.d == 2) { ans } else { ans.reshape(ans.shape[0]) } as NDArray<T, D>
-    }
+//    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
+//        if(a.dtype != DataType.DoubleDataType) {
+//            throw UnsupportedOperationException()
+//        }
+//
+//        val aDouble = a.map { it.toDouble() }
+//        val bDouble: MultiArray<Double, D2> = if (b.dim.d == 2) { b } else { b.reshape(b.shape[0], 1) } as MultiArray<Double, D2>
+//
+//        val ans = solveDouble(aDouble, bDouble)
+//        return if (b.dim.d == 2) { ans } else { ans.reshape(ans.shape[0]) } as NDArray<T, D>
+//    }
 
     private fun solveDouble(a: MultiArray<Double, D2>, b: MultiArray<Double, D2>, singularityErrorLevel: Double = 1e-7): D2Array<Double> {
         requireSquare(a)
@@ -177,6 +182,7 @@ public object JvmLinAlg : LinAlg {
                 dotMatrix(a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getByteArray(), ret.strides[0])
                 ret
             }
+            else -> TODO("Complex numbers")
         } as D2Array<T>
     }
 
@@ -352,6 +358,7 @@ public object JvmLinAlg : LinAlg {
                 dotVector(a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getByteArray())
                 ret
             }
+            else -> TODO("Complex numbers")
         } as D1Array<T>
     }
 
@@ -465,6 +472,7 @@ public object JvmLinAlg : LinAlg {
             DataType.ByteDataType -> {
                 dotVecToVec(a.data.getByteArray(), a.offset, a.strides[0], b.data.getByteArray(), b.offset, b.strides[0], a.size)
             }
+            else -> TODO("Complex numbers")
         } as T
     }
 
@@ -539,4 +547,31 @@ public object JvmLinAlg : LinAlg {
         }
         return ret.toByte()
     }
+}
+
+public object JvmLinAlgEx: LinAlgEx {
+    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> {
+        TODO("Not yet implemented")
+    }
+
+    override fun invF(mat: MultiArray<Float, D2>): NDArray<Float, D2> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Complex> invC(mat: MultiArray<T, D2>): NDArray<T, D2> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <D : Dim2> solveF(a: MultiArray<Float, D2>, b: MultiArray<Float, D>): NDArray<Float, D> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Complex, D : Dim2> solveC(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
+        TODO("Not yet implemented")
+    }
+
 }

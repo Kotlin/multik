@@ -5,6 +5,7 @@
 package org.jetbrains.kotlinx.multik.jvm
 
 import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 
 
 public class JvmEngineProvider : EngineProvider {

@@ -4,13 +4,18 @@
 
 package org.jetbrains.kotlinx.multik.jni
 
-import org.jetbrains.kotlinx.multik.api.LinAlg
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
+import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object NativeLinAlg : LinAlg {
     init {
         NativeEngine
     }
+
+    override val linAlgEx: LinAlgEx
+        get() = NativeLinAlgEx
 
     override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> {
         TODO("Not yet implemented")
@@ -20,47 +25,47 @@ public object NativeLinAlg : LinAlg {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        require(mat.shape[0] == mat.shape[1]) { "Ndarray must be square: mat.shape = ${mat.shape.joinToString(",", "(", ")")}"}
+//    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
+//        require(mat.shape[0] == mat.shape[1]) { "Ndarray must be square: mat.shape = ${mat.shape.joinToString(",", "(", ")")}"}
+//
+//        val ret = if (mat.consistent) (mat.clone() as NDArray) else (mat.deepCopy() as NDArray)
+//        val info: Int = when (mat.dtype) {
+//            DataType.FloatDataType -> JniLinAlg.inv(ret.shape.first(), ret.data.getFloatArray(), ret.strides.first())
+//            DataType.DoubleDataType -> JniLinAlg.inv(ret.shape.first(), ret.data.getDoubleArray(), ret.strides.first())
+//            else -> throw UnsupportedOperationException()
+//        }
+//
+//        when {
+//            info < 0 -> throw IllegalArgumentException("${-info} argument had illegal value. ")
+//            info > 0 -> throw Exception("U($info, $info) is exactly zero. Matrix is singular and its inverse could not be computed")
+//        }
+//
+//        return ret
+//    }
 
-        val ret = if (mat.consistent) (mat.clone() as NDArray) else (mat.deepCopy() as NDArray)
-        val info: Int = when (mat.dtype) {
-            DataType.FloatDataType -> JniLinAlg.inv(ret.shape.first(), ret.data.getFloatArray(), ret.strides.first())
-            DataType.DoubleDataType -> JniLinAlg.inv(ret.shape.first(), ret.data.getDoubleArray(), ret.strides.first())
-            else -> throw UnsupportedOperationException()
-        }
-
-        when {
-            info < 0 -> throw IllegalArgumentException("${-info} argument had illegal value. ")
-            info > 0 -> throw Exception("U($info, $info) is exactly zero. Matrix is singular and its inverse could not be computed")
-        }
-
-        return ret
-    }
-
-    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
-        require(a.shape[0] == a.shape[1]) { "Ndarray must be square: a.shape = ${a.shape.joinToString(",", "(", ")")}" }
-        require(a.shape[0] == b.shape[0]) { "The first dimensions of the ndarrays a and b must be match: ${a.shape[0]}(a.shape[0]) != ${b.shape[0]}(b.shape[0]" }
-        val ret = if (b.consistent) (b as NDArray).clone() else (b as NDArray).deepCopy()
-        val nhrs = if (ret.dim.d == 1) ret.shape[0] else ret.shape[1]
-
-        val info: Int = when (a.dtype) {
-            DataType.FloatDataType -> JniLinAlg.solve(
-                a.shape.first(), nhrs, a.data.getFloatArray().copyOf(), a.strides.first(),
-                ret.data.getFloatArray(), ret.strides.first()
-            )
-            DataType.DoubleDataType -> JniLinAlg.solve(
-                a.shape.first(), nhrs, a.data.getDoubleArray().copyOf(), a.strides.first(),
-                ret.data.getDoubleArray(), ret.strides.first()
-            )
-            else -> throw UnsupportedOperationException()
-        }
-        if (info > 0) {
-            throw Exception("The diagonal element of the triangular factor of a is zero, so that A is singular. The solution could not be computed.")
-        }
-
-        return ret
-    }
+//    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
+//        require(a.shape[0] == a.shape[1]) { "Ndarray must be square: a.shape = ${a.shape.joinToString(",", "(", ")")}" }
+//        require(a.shape[0] == b.shape[0]) { "The first dimensions of the ndarrays a and b must be match: ${a.shape[0]}(a.shape[0]) != ${b.shape[0]}(b.shape[0]" }
+//        val ret = if (b.consistent) (b as NDArray).clone() else (b as NDArray).deepCopy()
+//        val nhrs = if (ret.dim.d == 1) ret.shape[0] else ret.shape[1]
+//
+//        val info: Int = when (a.dtype) {
+//            DataType.FloatDataType -> JniLinAlg.solve(
+//                a.shape.first(), nhrs, a.data.getFloatArray().copyOf(), a.strides.first(),
+//                ret.data.getFloatArray(), ret.strides.first()
+//            )
+//            DataType.DoubleDataType -> JniLinAlg.solve(
+//                a.shape.first(), nhrs, a.data.getDoubleArray().copyOf(), a.strides.first(),
+//                ret.data.getDoubleArray(), ret.strides.first()
+//            )
+//            else -> throw UnsupportedOperationException()
+//        }
+//        if (info > 0) {
+//            throw Exception("The diagonal element of the triangular factor of a is zero, so that A is singular. The solution could not be computed.")
+//        }
+//
+//        return ret
+//    }
 
     //TODO (Double and Number type)
     override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
@@ -128,6 +133,33 @@ public object NativeLinAlg : LinAlg {
             else -> throw UnsupportedOperationException()
         } as T
     }
+}
+
+public object NativeLinAlgEx: LinAlgEx {
+    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> {
+        TODO("Not yet implemented")
+    }
+
+    override fun invF(mat: MultiArray<Float, D2>): NDArray<Float, D2> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Complex> invC(mat: MultiArray<T, D2>): NDArray<T, D2> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <D : Dim2> solveF(a: MultiArray<Float, D2>, b: MultiArray<Float, D>): NDArray<Float, D> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Complex, D : Dim2> solveC(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
+        TODO("Not yet implemented")
+    }
+
 }
 
 private object JniLinAlg {
