@@ -8,7 +8,7 @@ import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.jni.NativeLinAlg
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg
+import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlg
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 

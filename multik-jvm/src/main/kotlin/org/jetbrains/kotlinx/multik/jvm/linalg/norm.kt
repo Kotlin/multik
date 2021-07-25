@@ -1,4 +1,4 @@
-package org.jetbrains.kotlinx.multik.jvm
+package org.jetbrains.kotlinx.multik.jvm.linalg
 
 import org.jetbrains.kotlinx.multik.ndarray.data.ImmutableMemoryView
 import kotlin.math.abs

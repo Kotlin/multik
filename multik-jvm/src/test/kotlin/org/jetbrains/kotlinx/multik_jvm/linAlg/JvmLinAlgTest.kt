@@ -5,17 +5,17 @@
 package org.jetbrains.kotlinx.multik_jvm.linAlg
 
 
-import org.jetbrains.kotlinx.multik.api.*
-import org.jetbrains.kotlinx.multik.jvm.*
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.dot
-import org.jetbrains.kotlinx.multik.jvm.JvmLinAlg.solve
-import kotlin.math.min
+import org.jetbrains.kotlinx.multik.api.d1array
+import org.jetbrains.kotlinx.multik.api.d2array
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlg.dot
+import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solve
+import org.jetbrains.kotlinx.multik.jvm.linalg.plu
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import java.lang.AssertionError
-import java.lang.IllegalArgumentException
 import kotlin.math.abs
 import kotlin.math.max
-
+import kotlin.math.min
 import kotlin.random.Random
 import kotlin.test.*
 
@@ -146,14 +146,15 @@ class JvmLinAlgTest {
         assertContentEquals(a.shape, b.shape, "matrices have different shapes")
         var maxabs = 0.0
         if (a.dim.d == 1) {
-            a as D1Array<*>
-            b as D1Array<*>
+            a as D1Array<T>
+            b as D1Array<T>
             for (i in 0 until a.size) maxabs = max(abs(a[i].toDouble() - b[i].toDouble()), maxabs)
         } else {
-            a as D2Array<*>
-            b as D2Array<*>
+            a as D2Array<T>
+            b as D2Array<T>
             for (i in 0 until a.shape[0]) {
                 for (j in 0 until a.shape[1]) {
+                    val t = a[i, j].toDouble()
                     maxabs = max(abs(a[i, j].toDouble() - b[i, j].toDouble()), maxabs)
                 }
             }
