@@ -1166,6 +1166,30 @@ internal inline fun <reified T : Any> d2arrayCommon(sizeD1: Int, sizeD2: Int, no
     return D2Array(data, shape = shape, dtype = dtype, dim = D2)
 }
 
+
+
+///**
+// *
+// */
+//public inline fun <reified T : Number> Multik.d2array(
+//    sizeD1: Int,
+//    sizeD2: Int,
+//    init: (i: Int, j: Int) -> T
+//): D2Array<T> {
+//    val dtype = DataType.of(T::class)
+//    val shape = intArrayOf(sizeD1, sizeD2)
+//    for (i in shape.indices) {
+//        require(shape[i] > 0) { "Dimension $i must be positive." }
+//    }
+//    val ret = D2Array<T>(initMemoryView<T>(sizeD1 * sizeD2, dtype), shape = shape, dtype = dtype, dim = D2)
+//    for (i in 0 until sizeD1) {
+//        for (j in 0 until sizeD2) {
+//            ret[i, j] = init(i, j)
+//        }
+//    }
+//    return ret
+//}
+//
 /**
  * Returns a 3-dimensions array.
  *
@@ -1206,6 +1230,30 @@ internal inline fun <reified T : Any> d3arrayCommon(
     val data = initMemoryView(sizeD1 * sizeD2 * sizeD3, dtype, init)
     return D3Array(data, shape = shape, dtype = dtype, dim = D3)
 }
+
+///**
+// *
+// */
+//public inline fun <reified T : Number> Multik.d3array(
+//    sizeD1: Int, sizeD2: Int, sizeD3: Int, init: (i: Int, j: Int, k: Int) -> T
+//): D3Array<T> {
+//    val dtype = DataType.of(T::class)
+//    val shape = intArrayOf(sizeD1, sizeD2, sizeD3)
+//    for (i in shape.indices) {
+//        require(shape[i] > 0) { "Dimension $i must be positive." }
+//    }
+//
+//    val ret = D3Array<T>(initMemoryView<T>(sizeD1 * sizeD2 * sizeD3, dtype), shape = shape, dtype = dtype, dim = D3)
+//    for (i in 0 until sizeD1) {
+//        for (j in 0 until sizeD2) {
+//            for (k in 0 until sizeD3) {
+//                ret[i, j, k] = init(i, j, k)
+//            }
+//        }
+//    }
+//
+//    return ret
+//}
 
 /**
  * Returns a 4-dimensions array.
@@ -1249,6 +1297,30 @@ internal inline fun <reified T : Any> d4arrayCommon(
     val data = initMemoryView(sizeD1 * sizeD2 * sizeD3 * sizeD4, dtype, init)
     return D4Array(data, shape = shape, dtype = dtype, dim = D4)
 }
+
+//public inline fun <reified T : Number> Multik.d4array(
+//    sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, init: (i: Int, j: Int, k: Int, m: Int) -> T
+//): D4Array<T> {
+//    val dtype = DataType.of(T::class)
+//    val shape = intArrayOf(sizeD1, sizeD2, sizeD3, sizeD4)
+//    for (i in shape.indices) {
+//        require(shape[i] > 0) { "Dimension $i must be positive." }
+//    }
+//
+//    val ret =
+//        D4Array<T>(initMemoryView<T>(sizeD1 * sizeD2 * sizeD3 * sizeD4, dtype), shape = shape, dtype = dtype, dim = D4)
+//    for (i in 0 until sizeD1) {
+//        for (j in 0 until sizeD2) {
+//            for (k in 0 until sizeD3) {
+//                for (m in 0 until sizeD4) {
+//                    ret[i, j, k, m] = init(i, j, k, m)
+//                }
+//            }
+//        }
+//    }
+//
+//    return ret
+//}
 
 /**
  * Returns a new array with the specified shape, where each element is calculated by calling the specified
