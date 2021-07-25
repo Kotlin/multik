@@ -9,24 +9,21 @@ import jcuda.jcublas.JCublas2
 import jcuda.jcublas.cublasGemmAlgo.CUBLAS_GEMM_DEFAULT
 import jcuda.jcublas.cublasOperation
 import jcuda.runtime.JCuda
-import org.jetbrains.kotlinx.multik.api.LinAlg
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.cuda.CudaEngine.contextHandle
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object CudaLinAlg : LinAlg {
+
+    override val linAlgEx: LinAlgEx
+        get() = CudaLinAlgEx
+
     override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> {
         TODO("Not yet implemented")
     }
 
     override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
-        TODO("Not yet implemented")
-    }
-
-    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
-    }
-
-    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
         TODO("Not yet implemented")
     }
 

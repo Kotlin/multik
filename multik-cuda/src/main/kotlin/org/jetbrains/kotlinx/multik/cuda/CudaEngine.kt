@@ -7,6 +7,7 @@ package org.jetbrains.kotlinx.multik.cuda
 import jcuda.jcublas.JCublas2
 import jcuda.jcublas.cublasHandle
 import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 
 
 public class CudaEngineProvider : EngineProvider {
