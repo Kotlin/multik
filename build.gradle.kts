@@ -19,7 +19,7 @@ plugins {
 
 val kotlinVersion: String by System.getProperties()
 val multikVersion: String by project
-val unpublished = listOf("multik", "examples")
+val unpublished = listOf("multik", "examples", "multik_jni")
 
 allprojects {
     repositories {
@@ -35,11 +35,13 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "kotlin")
+    if (!this.name.contains("jni")) {
+        apply(plugin = "kotlin")
 
-    dependencies {
-        testImplementation(kotlin("test"))
-        testImplementation(kotlin("test-junit"))
+        dependencies {
+            testImplementation(kotlin("test"))
+            testImplementation(kotlin("test-junit"))
+        }
     }
 }
 

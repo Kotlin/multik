@@ -4,6 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.api
 
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 

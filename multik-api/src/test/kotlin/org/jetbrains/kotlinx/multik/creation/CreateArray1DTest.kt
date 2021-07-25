@@ -5,6 +5,7 @@
 package org.jetbrains.kotlinx.multik.creation
 
 import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.ndarray.complex.*
 import org.jetbrains.kotlinx.multik.ndarray.data.D1
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
@@ -77,6 +78,30 @@ class CreateArray1DTest {
     @Test
     fun createDoubleArrayTest() {
         val inputArr = DoubleArray(10) { it.toDouble() }
+        val a = mk.ndarray(inputArr)
+
+        // check dimension
+        assertEquals(1, a.dim.d)
+
+        //check data
+        assertEquals(inputArr.asList(), a.toList())
+    }
+
+    @Test
+    fun createComplexFloatArrayTest() {
+        val inputArr = ComplexFloatArray(10) { ComplexFloat(it.toFloat(), it.toFloat()) }
+        val a = mk.ndarray(inputArr)
+
+        // check dimension
+        assertEquals(1, a.dim.d)
+
+        //check data
+        assertEquals(inputArr.asList(), a.toList())
+    }
+
+    @Test
+    fun createComplexDoubleArrayTest() {
+        val inputArr = ComplexDoubleArray(10) { ComplexDouble(it.toDouble(), it.toDouble()) }
         val a = mk.ndarray(inputArr)
 
         // check dimension
