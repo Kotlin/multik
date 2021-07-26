@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package org.jetbrains.kotlinx.multik.ndarray.complex
 
 import org.jetbrains.kotlinx.multik.ndarray.operations.mapCapacity
@@ -1535,6 +1539,28 @@ public fun FloatArray.toComplexFloatArray(): ComplexFloatArray =
  */
 public fun DoubleArray.toComplexDoubleArray(): ComplexDoubleArray =
     ComplexDoubleArray(size).apply { this@toComplexDoubleArray.copyInto(this.getFlatArray()) }
+
+/**
+ * Returns an array of ComplexFloat containing all of the elements of this collection.
+ */
+public fun Collection<ComplexFloat>.toComplexFloatArray(): ComplexFloatArray {
+    val result = ComplexFloatArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element
+    return result
+}
+
+/**
+ * Returns an array of ComplexDouble containing all of the elements of this generic array.
+ */
+public fun Collection<ComplexDouble>.toComplexDoubleArray(): ComplexDoubleArray {
+    val result = ComplexDoubleArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element
+    return result
+}
 
 /**
  * Returns a *typed* object array containing all of the elements of this primitive array.

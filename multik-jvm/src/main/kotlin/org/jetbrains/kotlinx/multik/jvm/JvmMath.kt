@@ -351,4 +351,5 @@ private fun <T : Number, D : Dimension> summation(a: MultiArray<T, D>): T = when
         }
         accum
     }
+    else -> TODO("Complex numbers")
 } as T

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package org.jetbrains.kotlinx.multik.ndarray.complex
 
 public class ComplexFloatArray(public val size: Int = 0) {
@@ -30,6 +34,14 @@ public class ComplexFloatArray(public val size: Int = 0) {
 
     /** Creates an iterator over the elements of the array. */
     public operator fun iterator(): ComplexFloatIterator = iterator(this)
+
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        other is ComplexFloatArray -> this.contentEquals(other)
+        else -> false
+    }
+
+    override fun hashCode(): Int = this.contentHashCode()
 
     override fun toString(): String {
         val sb = StringBuilder(2 + _size * 3)
@@ -75,6 +87,14 @@ public class ComplexDoubleArray(public val size: Int = 0) {
 
     /** Creates an iterator over the elements of the array. */
     public operator fun iterator(): ComplexDoubleIterator = iterator(this)
+
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        other is ComplexDoubleArray -> this.contentEquals(other)
+        else -> false
+    }
+
+    override fun hashCode(): Int = this.contentHashCode()
 
     override fun toString(): String {
         floatArrayOf().isEmpty()

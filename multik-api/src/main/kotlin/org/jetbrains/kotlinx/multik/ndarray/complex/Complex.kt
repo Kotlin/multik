@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package org.jetbrains.kotlinx.multik.ndarray.complex
 
 import kotlin.math.abs
@@ -18,6 +22,17 @@ public interface Complex {
 }
 
 public class ComplexFloat(public val re: Float, public val im: Float) : Complex {
+
+    public companion object {
+        public val one: ComplexFloat
+            get() = ComplexFloat(1f, 1f)
+
+        public val zero: ComplexFloat
+            get() = ComplexFloat(0f, 0f)
+
+        public val NaN: ComplexFloat
+            get() = ComplexFloat(Float.NaN, Float.NaN)
+    }
 
     /** Returns complex conjugate value. */
     public fun conjugate(): ComplexFloat = ComplexFloat(re, -im)
@@ -188,6 +203,17 @@ public class ComplexFloat(public val re: Float, public val im: Float) : Complex 
 }
 
 public class ComplexDouble(public val re: Double, public val im: Double) : Complex {
+
+    public companion object {
+        public val one: ComplexDouble
+            get() = ComplexDouble(1.0, 1.0)
+
+        public val zero: ComplexDouble
+            get() = ComplexDouble(0.0, 0.0)
+
+        public val NaN: ComplexDouble
+            get() = ComplexDouble(Double.NaN, Double.NaN)
+    }
 
     /** Returns complex conjugate value. */
     public fun conjugate(): ComplexDouble = ComplexDouble(re, -im)

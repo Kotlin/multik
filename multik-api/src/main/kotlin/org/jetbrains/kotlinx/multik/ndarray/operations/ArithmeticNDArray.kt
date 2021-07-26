@@ -4,19 +4,21 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.operations
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 /**
  * Create a new array as the sum of [this] and [other].
  */
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: MultiArray<T, D>): NDArray<T, D> {
+public operator fun <T, D : Dimension> MultiArray<T, D>.plus(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
     val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
     ret += other
     return ret
 }
 
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: T): NDArray<T, D> {
+public operator fun <T, D : Dimension> MultiArray<T, D>.plus(other: T): NDArray<T, D> {
     val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
     ret += other
     return ret
@@ -25,22 +27,20 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.plus(other: T):
 /**
  * Add [other] to [this]. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: MultiArray<T, D>) {
+public operator fun <T, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: MultiArray<T, D>) {
     requireArraySizes(this.size, other.size)
-    when {
-        this.consistent && other.consistent -> {
-            this.data += (other.data as MemoryView)
-        }
-        this.consistent && !other.consistent -> {
-            val iterRight = other.iterator()
-            for (i in this.indices)
-                this.data[i] += iterRight.next()
-        }
-        else -> {
-            val left = this.asDNArray()
-            val iterRight = other.iterator()
-            for (index in this.multiIndices)
-                left[index] += iterRight.next()
+    if (this.consistent && other.consistent) {
+        this.data += (other.data as MemoryView)
+    } else {
+        when (dtype) {
+            DataType.DoubleDataType -> (this as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> a + b }
+            DataType.FloatDataType -> (this as NDArray<Float, D>).commonAssignOp(other.iterator() as Iterator<Float>) { a, b -> a + b }
+            DataType.IntDataType -> (this as NDArray<Int, D>).commonAssignOp(other.iterator() as Iterator<Int>) { a, b -> a + b }
+            DataType.LongDataType -> (this as NDArray<Long, D>).commonAssignOp(other.iterator() as Iterator<Long>) { a, b -> a + b }
+            DataType.ComplexFloatDataType -> (this as NDArray<ComplexFloat, D>).commonAssignOp(other.iterator() as Iterator<ComplexFloat>) { a, b -> a + b }
+            DataType.ComplexDoubleDataType -> (this as NDArray<ComplexDouble, D>).commonAssignOp(other.iterator() as Iterator<ComplexDouble>) { a, b -> a + b }
+            DataType.ShortDataType -> (this as NDArray<Short, D>).commonAssignOp(other.iterator() as Iterator<Short>) { a, b -> (a + b).toShort() }
+            DataType.ByteDataType -> (this as NDArray<Byte, D>).commonAssignOp(other.iterator() as Iterator<Byte>) { a, b -> (a + b).toByte() }
         }
     }
 }
@@ -49,20 +49,19 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssi
 /**
  * Add [other] element-wise. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: T) {
-    when {
-        this.consistent -> {
-            this.data += other
-        }
-        dim.d == 1 -> {
-            this as MutableMultiArray<T, D1>
-            for (i in this.indices)
-                this[i] += other
-        }
-        else -> {
-            val left = this.asDNArray()
-            for (index in this.multiIndices)
-                left[index] += other
+public operator fun <T, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: T) {
+    if (this.consistent) {
+        this.data += other
+    } else {
+        when (other) {
+            is Double -> (this as NDArray<Double, D>).commonAssignOp(other) { a, b -> a + b }
+            is Float -> (this as NDArray<Float, D>).commonAssignOp(other) { a, b -> a + b }
+            is Int -> (this as NDArray<Int, D>).commonAssignOp(other) { a, b -> a + b }
+            is Long -> (this as NDArray<Long, D>).commonAssignOp(other) { a, b -> a + b }
+            is ComplexFloat -> (this as NDArray<ComplexFloat, D>).commonAssignOp(other) { a, b -> a + b }
+            is ComplexDouble -> (this as NDArray<ComplexDouble, D>).commonAssignOp(other) { a, b -> a + b }
+            is Short -> (this as NDArray<Short, D>).commonAssignOp(other) { a, b -> (a + b).toShort() }
+            is Byte -> (this as NDArray<Byte, D>).commonAssignOp(other) { a, b -> (a + b).toByte() }
         }
     }
 }
@@ -70,14 +69,14 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.plusAssi
 /**
  * Create a new array as difference between [this] and [other].
  */
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: MultiArray<T, D>): NDArray<T, D> {
+public operator fun <T, D : Dimension> MultiArray<T, D>.minus(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
     val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
     ret -= other
     return ret
 }
 
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: T): NDArray<T, D> {
+public operator fun <T, D : Dimension> MultiArray<T, D>.minus(other: T): NDArray<T, D> {
     val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
     ret -= other
     return ret
@@ -86,22 +85,20 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.minus(other: T)
 /**
  * Subtract [other] from [this]. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: MultiArray<T, D>) {
+public operator fun <T, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: MultiArray<T, D>) {
     requireArraySizes(this.size, other.size)
-    when {
-        this.consistent && other.consistent -> {
-            this.data -= (other.data as MemoryView)
-        }
-        this.consistent && !other.consistent -> {
-            val iterRight = other.iterator()
-            for (i in this.indices)
-                this.data[i] -= iterRight.next()
-        }
-        else -> {
-            val left = this.asDNArray()
-            val iterRight = other.iterator()
-            for (index in this.multiIndices)
-                left[index] -= iterRight.next()
+    if (this.consistent && other.consistent) {
+        this.data -= (other.data as MemoryView)
+    } else {
+        when (dtype) {
+            DataType.DoubleDataType -> (this as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> a - b }
+            DataType.FloatDataType -> (this as NDArray<Float, D>).commonAssignOp(other.iterator() as Iterator<Float>) { a, b -> a - b }
+            DataType.IntDataType -> (this as NDArray<Int, D>).commonAssignOp(other.iterator() as Iterator<Int>) { a, b -> a - b }
+            DataType.LongDataType -> (this as NDArray<Long, D>).commonAssignOp(other.iterator() as Iterator<Long>) { a, b -> a - b }
+            DataType.ComplexFloatDataType -> (this as NDArray<ComplexFloat, D>).commonAssignOp(other.iterator() as Iterator<ComplexFloat>) { a, b -> a - b }
+            DataType.ComplexDoubleDataType -> (this as NDArray<ComplexDouble, D>).commonAssignOp(other.iterator() as Iterator<ComplexDouble>) { a, b -> a - b }
+            DataType.ShortDataType -> (this as NDArray<Short, D>).commonAssignOp(other.iterator() as Iterator<Short>) { a, b -> (a - b).toShort() }
+            DataType.ByteDataType -> (this as NDArray<Byte, D>).commonAssignOp(other.iterator() as Iterator<Byte>) { a, b -> (a - b).toByte() }
         }
     }
 }
@@ -109,20 +106,19 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAss
 /**
  * Subtract [other] element-wise. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: T) {
-    when {
-        this.consistent -> {
-            this.data -= other
-        }
-        dim.d == 1 -> {
-            this as MutableMultiArray<T, D1>
-            for (i in this.indices)
-                this[i] -= other
-        }
-        else -> {
-            val left = this.asDNArray()
-            for (index in this.multiIndices)
-                left[index] -= other
+public operator fun <T, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: T) {
+    if (this.consistent) {
+        this.data -= other
+    } else {
+        when (other) {
+            is Double -> (this as NDArray<Double, D>).commonAssignOp(other) { a, b -> a - b }
+            is Float -> (this as NDArray<Float, D>).commonAssignOp(other) { a, b -> a - b }
+            is Int -> (this as NDArray<Int, D>).commonAssignOp(other) { a, b -> a - b }
+            is Long -> (this as NDArray<Long, D>).commonAssignOp(other) { a, b -> a - b }
+            is ComplexFloat -> (this as NDArray<ComplexFloat, D>).commonAssignOp(other) { a, b -> a - b }
+            is ComplexDouble -> (this as NDArray<ComplexDouble, D>).commonAssignOp(other) { a, b -> a - b }
+            is Short -> (this as NDArray<Short, D>).commonAssignOp(other) { a, b -> (a - b).toShort() }
+            is Byte -> (this as NDArray<Byte, D>).commonAssignOp(other) { a, b -> (a - b).toByte() }
         }
     }
 }
@@ -130,14 +126,14 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.minusAss
 /**
  * Create a new array as product of [this] and [other].
  */
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: MultiArray<T, D>): NDArray<T, D> {
+public operator fun <T, D : Dimension> MultiArray<T, D>.times(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
     val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
     ret *= other
     return ret
 }
 
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: T): NDArray<T, D> {
+public operator fun <T, D : Dimension> MultiArray<T, D>.times(other: T): NDArray<T, D> {
     val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
     ret *= other
     return ret
@@ -146,22 +142,20 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.times(other: T)
 /**
  * Multiply [this] by [other]. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: MultiArray<T, D>) {
+public operator fun <T, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: MultiArray<T, D>) {
     requireArraySizes(this.size, other.size)
-    when {
-        this.consistent && other.consistent -> {
-            this.data *= (other.data as MemoryView)
-        }
-        this.consistent && !other.consistent -> {
-            val iterRight = other.iterator()
-            for (i in this.indices)
-                this.data[i] *= iterRight.next()
-        }
-        else -> {
-            val left = this.asDNArray()
-            val iterRight = other.iterator()
-            for (index in this.multiIndices)
-                left[index] *= iterRight.next()
+    if (this.consistent && other.consistent) {
+        this.data *= (other.data as MemoryView)
+    } else {
+        when (dtype) {
+            DataType.DoubleDataType -> (this as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> a * b }
+            DataType.FloatDataType -> (this as NDArray<Float, D>).commonAssignOp(other.iterator() as Iterator<Float>) { a, b -> a * b }
+            DataType.IntDataType -> (this as NDArray<Int, D>).commonAssignOp(other.iterator() as Iterator<Int>) { a, b -> a * b }
+            DataType.LongDataType -> (this as NDArray<Long, D>).commonAssignOp(other.iterator() as Iterator<Long>) { a, b -> a * b }
+            DataType.ComplexFloatDataType -> (this as NDArray<ComplexFloat, D>).commonAssignOp(other.iterator() as Iterator<ComplexFloat>) { a, b -> a * b }
+            DataType.ComplexDoubleDataType -> (this as NDArray<ComplexDouble, D>).commonAssignOp(other.iterator() as Iterator<ComplexDouble>) { a, b -> a * b }
+            DataType.ShortDataType -> (this as NDArray<Short, D>).commonAssignOp(other.iterator() as Iterator<Short>) { a, b -> (a * b).toShort() }
+            DataType.ByteDataType -> (this as NDArray<Byte, D>).commonAssignOp(other.iterator() as Iterator<Byte>) { a, b -> (a * b).toByte() }
         }
     }
 }
@@ -169,20 +163,19 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAss
 /**
  * Multiply [other] element-wise. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: T) {
-    when {
-        this.consistent -> {
-            this.data *= other
-        }
-        dim.d == 1 -> {
-            this as MutableMultiArray<T, D1>
-            for (i in this.indices)
-                this[i] *= other
-        }
-        else -> {
-            val left = this.asDNArray()
-            for (index in this.multiIndices)
-                left[index] *= other
+public operator fun <T, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: T) {
+    if (this.consistent) {
+        this.data *= other
+    } else {
+        when (other) {
+            is Double -> (this as NDArray<Double, D>).commonAssignOp(other) { a, b -> a * b }
+            is Float -> (this as NDArray<Float, D>).commonAssignOp(other) { a, b -> a * b }
+            is Int -> (this as NDArray<Int, D>).commonAssignOp(other) { a, b -> a * b }
+            is Long -> (this as NDArray<Long, D>).commonAssignOp(other) { a, b -> a * b }
+            is ComplexFloat -> (this as NDArray<ComplexFloat, D>).commonAssignOp(other) { a, b -> a * b }
+            is ComplexDouble -> (this as NDArray<ComplexDouble, D>).commonAssignOp(other) { a, b -> a * b }
+            is Short -> (this as NDArray<Short, D>).commonAssignOp(other) { a, b -> (a * b).toShort() }
+            is Byte -> (this as NDArray<Byte, D>).commonAssignOp(other) { a, b -> (a * b).toByte() }
         }
     }
 }
@@ -190,14 +183,14 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.timesAss
 /**
  * Create a new array as division of [this] by [other].
  */
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: MultiArray<T, D>): NDArray<T, D> {
+public operator fun <T, D : Dimension> MultiArray<T, D>.div(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
     val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
     ret /= other
     return ret
 }
 
-public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: T): NDArray<T, D> {
+public operator fun <T, D : Dimension> MultiArray<T, D>.div(other: T): NDArray<T, D> {
     val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
     ret /= other
     return ret
@@ -206,22 +199,20 @@ public operator fun <T : Number, D : Dimension> MultiArray<T, D>.div(other: T): 
 /**
  * Divide [this] by [other]. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssign(other: MultiArray<T, D>) {
+public operator fun <T, D : Dimension> MutableMultiArray<T, D>.divAssign(other: MultiArray<T, D>) {
     requireArraySizes(this.size, other.size)
-    when {
-        this.consistent && other.consistent -> {
-            this.data /= (other.data as MemoryView)
-        }
-        this.consistent && !other.consistent -> {
-            val iterRight = other.iterator()
-            for (i in this.indices)
-                this.data[i] /= iterRight.next()
-        }
-        else -> {
-            val left = this.asDNArray()
-            val iterRight = other.iterator()
-            for (index in this.multiIndices)
-                left[index] /= iterRight.next()
+    if (this.consistent && other.consistent) {
+        this.data /= (other.data as MemoryView)
+    } else {
+        when (dtype) {
+            DataType.DoubleDataType -> (this as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> a / b }
+            DataType.FloatDataType -> (this as NDArray<Float, D>).commonAssignOp(other.iterator() as Iterator<Float>) { a, b -> a / b }
+            DataType.IntDataType -> (this as NDArray<Int, D>).commonAssignOp(other.iterator() as Iterator<Int>) { a, b -> a / b }
+            DataType.LongDataType -> (this as NDArray<Long, D>).commonAssignOp(other.iterator() as Iterator<Long>) { a, b -> a / b }
+            DataType.ComplexFloatDataType -> (this as NDArray<ComplexFloat, D>).commonAssignOp(other.iterator() as Iterator<ComplexFloat>) { a, b -> a / b }
+            DataType.ComplexDoubleDataType -> (this as NDArray<ComplexDouble, D>).commonAssignOp(other.iterator() as Iterator<ComplexDouble>) { a, b -> a / b }
+            DataType.ShortDataType -> (this as NDArray<Short, D>).commonAssignOp(other.iterator() as Iterator<Short>) { a, b -> (a / b).toShort() }
+            DataType.ByteDataType -> (this as NDArray<Byte, D>).commonAssignOp(other.iterator() as Iterator<Byte>) { a, b -> (a / b).toByte() }
         }
     }
 }
@@ -229,65 +220,64 @@ public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssig
 /**
  * Divide by [other] element-wise. Inplace operator.
  */
-public operator fun <T : Number, D : Dimension> MutableMultiArray<T, D>.divAssign(other: T) {
-    when {
-        this.consistent -> {
-            this.data /= other
-        }
-        dim.d == 1 -> {
-            this as MutableMultiArray<T, D1>
-            for (i in this.indices)
-                this[i] /= other
-        }
-        else -> {
-            val left = this.asDNArray()
-            for (index in this.multiIndices)
-                left[index] /= other
+public operator fun <T, D : Dimension> MutableMultiArray<T, D>.divAssign(other: T) {
+    if (this.consistent) {
+        this.data /= other
+    } else {
+        when (other) {
+            is Double -> (this as NDArray<Double, D>).commonAssignOp(other) { a, b -> a / b }
+            is Float -> (this as NDArray<Float, D>).commonAssignOp(other) { a, b -> a / b }
+            is Int -> (this as NDArray<Int, D>).commonAssignOp(other) { a, b -> a / b }
+            is Long -> (this as NDArray<Long, D>).commonAssignOp(other) { a, b -> a / b }
+            is ComplexFloat -> (this as NDArray<ComplexFloat, D>).commonAssignOp(other) { a, b -> a / b }
+            is ComplexDouble -> (this as NDArray<ComplexDouble, D>).commonAssignOp(other) { a, b -> a / b }
+            is Short -> (this as NDArray<Short, D>).commonAssignOp(other) { a, b -> (a / b).toShort() }
+            is Byte -> (this as NDArray<Byte, D>).commonAssignOp(other) { a, b -> (a / b).toByte() }
         }
     }
 }
 
-//TODO(create module utils)
-@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-/*internal*/ public inline operator fun <T : Number> Number.plus(other: T): T = when (this) {
-    is Byte -> (this.toByte() + other.toByte()).toByte()
-    is Short -> (this.toShort() + other.toShort()).toShort()
-    is Int -> (this.toInt() + other.toInt())
-    is Long -> (this.toLong() + other.toLong())
-    is Float -> (this.toFloat() + other.toFloat())
-    is Double -> (this.toDouble() + other.toDouble())
-    else -> throw Exception("Type not defined.")
-} as T
 
-@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-/*internal*/ public inline operator fun <T : Number> Number.minus(other: T): T = when (this) {
-    is Byte -> (this.toByte() - other.toByte()).toByte()
-    is Short -> (this.toShort() - other.toShort()).toShort()
-    is Int -> (this.toInt() - other.toInt())
-    is Long -> (this.toLong() - other.toLong())
-    is Float -> (this.toFloat() - other.toFloat())
-    is Double -> (this.toDouble() - other.toDouble())
-    else -> throw Exception("Type not defined.")
-} as T
+private inline fun <T : Any, D : Dimension> MutableMultiArray<T, D>.commonAssignOp(
+    other: Iterator<T>,
+    op: (T, T) -> T
+) {
+    if (this.consistent) {
+        for (i in this.indices)
+            this.data[i] = op(this.data[i], other.next())
+    } else {
+        val left = this.asDNArray()
+        for (index in this.multiIndices)
+            left[index] = op(left[index], other.next())
+    }
+}
 
-@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-/*internal*/ public inline operator fun <T : Number> Number.times(other: T): T = when (this) {
-    is Byte -> (this.toByte() * other.toByte()).toByte()
-    is Short -> (this.toShort() * other.toShort()).toShort()
-    is Int -> (this.toInt() * other.toInt())
-    is Long -> (this.toLong() * other.toLong())
-    is Float -> (this.toFloat() * other.toFloat())
-    is Double -> (this.toDouble() * other.toDouble())
-    else -> throw Exception("Type not defined.")
-} as T
-
-@Suppress("NOTHING_TO_INLINE", "UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
-/*internal*/ public inline operator fun <T : Number> Number.div(other: T): T = when (this) {
-    is Byte -> (this.toByte() / other.toByte()).toByte()
-    is Short -> (this.toShort() / other.toShort()).toShort()
-    is Int -> (this.toInt() / other.toInt())
-    is Long -> (this.toLong() / other.toLong())
-    is Float -> (this.toFloat() / other.toFloat())
-    is Double -> (this.toDouble() / other.toDouble())
-    else -> throw Exception("Type not defined.")
-} as T
+private inline fun <T : Any, D : Dimension> MutableMultiArray<T, D>.commonAssignOp(other: T, op: (T, T) -> T) {
+    when (dim.d) {
+        1 -> {
+            this as MutableMultiArray<T, D1>
+            for (i in this.indices)
+                this[i] = op(this[i], other)
+        }
+        2 -> {
+            this as MutableMultiArray<T, D2>
+            for (i in this.multiIndices)
+                this[i[0], i[1]] = op(this[i[0], i[1]], other)
+        }
+        3 -> {
+            this as MutableMultiArray<T, D3>
+            for (i in this.multiIndices)
+                this[i[0], i[1], i[2]] = op(this[i[0], i[1], i[2]], other)
+        }
+        4 -> {
+            this as MutableMultiArray<T, D4>
+            for (i in this.multiIndices)
+                this[i[0], i[1], i[2], i[3]] = op(this[i[0], i[1], i[2], i[3]], other)
+        }
+        else -> {
+            val left = this.asDNArray()
+            for (index in this.multiIndices)
+                left[index] = op(left[index], other)
+        }
+    }
+}
