@@ -44,7 +44,7 @@ fun DataType.getOnePointer(): Pointer =
         else -> throw UnsupportedOperationException()
     }
 
-fun <T: Number> DataType.getDataPointer(data: ImmutableMemoryView<T>): Pointer =
+fun <T> DataType.getDataPointer(data: ImmutableMemoryView<T>): Pointer =
     when (this) {
         DataType.FloatDataType -> Pointer.to(data.getFloatArray())
         DataType.DoubleDataType -> Pointer.to(data.getDoubleArray())

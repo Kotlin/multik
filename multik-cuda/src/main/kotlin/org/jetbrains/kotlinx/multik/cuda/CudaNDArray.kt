@@ -6,6 +6,7 @@ import jcuda.runtime.cudaMemcpyKind.cudaMemcpyDeviceToHost
 import jcuda.runtime.cudaMemcpyKind.cudaMemcpyHostToDevice
 import mu.KotlinLogging
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType
+import org.jetbrains.kotlinx.multik.ndarray.data.ImmutableMemoryView
 import org.jetbrains.kotlinx.multik.ndarray.data.MemoryView
 import java.util.*
 
@@ -175,7 +176,7 @@ internal class MemoryLocation(val hostDataPtr: Pointer, val size: Int) {
     }
 }
 
-class CudaMemoryView<T : Number>(private val baseView: MemoryView<T>) : MemoryView<T>() {
+class CudaMemoryView<T>(private val baseView: MemoryView<T>) : MemoryView<T>() {
     init {
         require(baseView.dtype == DataType.FloatDataType || baseView.dtype == DataType.DoubleDataType)
     }
@@ -206,6 +207,15 @@ class CudaMemoryView<T : Number>(private val baseView: MemoryView<T>) : MemoryVi
 
     override fun finalize() {
 
+    }
+
+    override fun copyInto(
+        destination: ImmutableMemoryView<T>,
+        destinationOffset: Int,
+        startIndex: Int,
+        endIndex: Int
+    ): MemoryView<T> {
+        TODO("Not yet implemented")
     }
 }
 

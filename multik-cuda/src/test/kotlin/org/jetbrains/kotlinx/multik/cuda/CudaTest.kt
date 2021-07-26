@@ -20,7 +20,7 @@ object CudaTest {
         val heapFreeSize = Runtime.getRuntime().freeMemory() / MB
         logger.info {"heapFreeSize $heapFreeSize MB"}
 
-        val size = 10 * MB / 4
+        val size = 1000 * MB / 4
 
         CudaEngine.runWithCuda {
             for (i in 0 until 10) {

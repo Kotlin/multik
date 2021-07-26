@@ -20,6 +20,7 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.*
 public interface ImmutableMemoryView<T> : Iterable<T> {
     public val data: Any
     public var size: Int
+    public val dtype: DataType
 
     /**
      * Returns the value at [index].
@@ -87,11 +88,7 @@ public interface ImmutableMemoryView<T> : Iterable<T> {
      */
     public fun getComplexDoubleArray(): ComplexDoubleArray
 
-    public var __onFinalizeFunc: ((ImmutableMemoryView<T>) -> Unit)? = null
-
-    protected open fun finalize() {
-        __onFinalizeFunc?.invoke(this)
-    }
+    public var __onFinalizeFunc: ((ImmutableMemoryView<T>) -> Unit)?
 }
 
 /**
@@ -101,7 +98,7 @@ public interface ImmutableMemoryView<T> : Iterable<T> {
  * @property indices indices of [data].
  * @property lastIndex last index in [data].
  */
-public sealed class MemoryView<T> : ImmutableMemoryView<T> {
+public abstract class MemoryView<T> : ImmutableMemoryView<T> {
     public abstract var indices: IntRange
 
     public abstract var lastIndex: Int
@@ -238,13 +235,19 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
             this is MemoryViewComplexDoubleArray && other is ComplexDouble -> this /= other
         }
     }
+
+    override var __onFinalizeFunc: ((ImmutableMemoryView<T>) -> Unit)? = null
+
+    protected open fun finalize() {
+        __onFinalizeFunc?.invoke(this)
+    }
 }
 
 /**
  * View for [ByteArray].
  */
 public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte>() {
-//    override val dtype: DataType = DataType.ByteDataType
+    override val dtype: DataType = DataType.ByteDataType
 
     override var size: Int = data.size
 
@@ -337,7 +340,7 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
  * View for [ShortArray].
  */
 public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Short>() {
-//    override val dtype: DataType = DataType.ShortDataType
+    override val dtype: DataType = DataType.ShortDataType
 
     override var size: Int = data.size
 
@@ -430,7 +433,7 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
  * View for [IntArray].
  */
 public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>() {
-//    override val dtype: DataType = DataType.IntDataType
+    override val dtype: DataType = DataType.IntDataType
 
     override var size: Int = data.size
 
@@ -524,7 +527,7 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
  * View for [LongArray].
  */
 public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long>() {
-//    override val dtype: DataType = DataType.LongDataType
+    override val dtype: DataType = DataType.LongDataType
 
     override var size: Int = data.size
 
@@ -617,7 +620,7 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
  * View for [FloatArray].
  */
 open public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Float>() {
-//    override val dtype: DataType = DataType.FloatDataType
+    override val dtype: DataType = DataType.FloatDataType
 
     override var size: Int = data.size
 
@@ -710,7 +713,7 @@ open public class MemoryViewFloatArray(override val data: FloatArray) : MemoryVi
  * View for [DoubleArray].
  */
 open public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<Double>() {
-//    override val dtype: DataType = DataType.DoubleDataType
+    override val dtype: DataType = DataType.DoubleDataType
 
     override var size: Int = data.size
 
@@ -803,6 +806,8 @@ open public class MemoryViewDoubleArray(override val data: DoubleArray) : Memory
  * View for [ComplexFloatArray].
  */
 public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) : MemoryView<ComplexFloat>() {
+    override val dtype: DataType = DataType.ComplexFloatDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -896,6 +901,8 @@ public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) :
  * View for [ComplexDoubleArray].
  */
 public class MemoryViewComplexDoubleArray(override val data: ComplexDoubleArray) : MemoryView<ComplexDouble>() {
+    override val dtype: DataType = DataType.ComplexDoubleDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
