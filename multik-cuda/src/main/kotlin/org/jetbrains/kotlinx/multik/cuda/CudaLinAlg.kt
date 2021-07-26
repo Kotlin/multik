@@ -4,13 +4,13 @@
 
 package org.jetbrains.kotlinx.multik.cuda
 
-import jcuda.Pointer
 import jcuda.jcublas.JCublas2
 import jcuda.jcublas.cublasGemmAlgo.CUBLAS_GEMM_DEFAULT
 import jcuda.jcublas.cublasOperation
 import jcuda.runtime.JCuda
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
+import org.jetbrains.kotlinx.multik.api.LinAlg
 import org.jetbrains.kotlinx.multik.cuda.CudaEngine.contextHandle
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
@@ -41,43 +41,23 @@ public object CudaLinAlg : LinAlg {
 
         val matrixMatrix = b.dim.d == 2
 
-        val elemSize = a.dtype.itemSize
-
         val shape = if (matrixMatrix)
             intArrayOf(a.shape[0], b.shape[1])
         else
             intArrayOf(a.shape[0])
 
-        val dA = Pointer()
-        val dB = Pointer()
-        val dC = Pointer()
-
         val cSize = shape.reduce(Int::times)
-        val phA: Pointer
-        val phB: Pointer
-        val phC: Pointer
-
-        val hC = initMemoryView<T>(cSize, a.dtype)
 
         val (consistentA, transposedA) = getConsistentOrTransposedConsistent(a)
         val (consistentB, transposedB) = getConsistentOrTransposedConsistent(b)
 
-        if (a.dtype == DataType.FloatDataType) {
-            phA = Pointer.to(consistentA.data.getFloatArray())
-            phB = Pointer.to(consistentB.data.getFloatArray())
-            phC = Pointer.to(hC.getFloatArray())
-        } else {
-            phA = Pointer.to(consistentA.data.getDoubleArray())
-            phB = Pointer.to(consistentB.data.getDoubleArray())
-            phC = Pointer.to(hC.getDoubleArray())
-        }
+//        val hC = initMemoryView<T>(cSize, a.dtype)
 
-        JCuda.cudaMalloc(dA, elemSize.toLong() * a.size)
-        JCuda.cudaMalloc(dB, elemSize.toLong() * b.size)
-        JCuda.cudaMalloc(dC, elemSize.toLong() * cSize)
+        val gA = GpuArray.getOrAlloc(consistentA)
+        val gB = GpuArray.getOrAlloc(consistentB)
 
-        JCublas2.cublasSetVector(a.size, elemSize, phA, 1, dA, 1)
-        JCublas2.cublasSetVector(b.size, elemSize, phB, 1, dB, 1)
+        val result = NDArray(initMemoryView<T>(cSize, a.dtype), shape = shape, dtype = a.dtype, dim = b.dim)
+        val gC = GpuArray.getOrAlloc(result, setMemory = false)
 
         val zeroPtr = a.dtype.getZeroPointer()
         val onePtr = a.dtype.getOnePointer()
@@ -99,7 +79,7 @@ public object CudaLinAlg : LinAlg {
             // multiplication order is swapped because cublas uses column-major storage
             JCublas2.cublasGemmEx_new(
                 contextHandle, transB, transA, n, m, k,
-                onePtr, dB, type, ldb, dA, type, lda, zeroPtr, dC, type, n,
+                onePtr, gB.deviceDataPtr, type, ldb, gA.deviceDataPtr, type, lda, zeroPtr, gC.deviceDataPtr, type, n,
                 computeType, CUBLAS_GEMM_DEFAULT
             )
         } else {
@@ -110,18 +90,14 @@ public object CudaLinAlg : LinAlg {
                 m = n.also { n = m }
 
             if (a.dtype == DataType.FloatDataType)
-                JCublas2.cublasSgemv(contextHandle, transA, m, n, onePtr, dA, m, dB, 1, zeroPtr, dC, 1)
+                JCublas2.cublasSgemv(contextHandle, transA, m, n, onePtr, gA.deviceDataPtr, m, gB.deviceDataPtr, 1, zeroPtr, gC.deviceDataPtr, 1)
             else
-                JCublas2.cublasDgemv(contextHandle, transA, m, n, onePtr, dA, m, dB, 1, zeroPtr, dC, 1)
+                JCublas2.cublasDgemv(contextHandle, transA, m, n, onePtr, gA.deviceDataPtr, m, gB.deviceDataPtr, 1, zeroPtr, gC.deviceDataPtr, 1)
         }
 
-        JCublas2.cublasGetVector(cSize, elemSize, dC, 1, phC, 1)
+        JCublas2.cublasGetVector(cSize, a.dtype.itemSize, gC.deviceDataPtr, 1, gC.hostDataPtr, 1)
 
-        JCuda.cudaFree(dA)
-        JCuda.cudaFree(dB)
-        JCuda.cudaFree(dC)
-
-        return NDArray(hC, shape = shape, dtype = a.dtype, dim = b.dim)
+        return result
     }
 
     override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
@@ -136,44 +112,17 @@ public object CudaLinAlg : LinAlg {
             throw UnsupportedOperationException("Unsupported data type: ${a.dtype}")
         }
 
-        val elemSize = a.dtype.itemSize
-
-        val dA = Pointer()
-        val dB = Pointer()
-        val dC = Pointer()
-
-        val phA: Pointer
-        val phB: Pointer
-        val resultPtr: Pointer
-
         val (consistentA, _) = getConsistentOrTransposedConsistent(a)
         val (consistentB, _) = getConsistentOrTransposedConsistent(b)
 
+        val gA = GpuArray.getOrAlloc(consistentA)
+        val gB = GpuArray.getOrAlloc(consistentB)
+
         val result = initMemoryView<T>(1, a.dtype)
-
-        if (a.dtype == DataType.FloatDataType) {
-            phA = Pointer.to(consistentA.data.getFloatArray())
-            phB = Pointer.to(consistentB.data.getFloatArray())
-            resultPtr = Pointer.to(result.getFloatArray())
-        } else {
-            phA = Pointer.to(consistentA.data.getDoubleArray())
-            phB = Pointer.to(consistentB.data.getDoubleArray())
-            resultPtr = Pointer.to(result.getDoubleArray())
-        }
-
-        JCuda.cudaMalloc(dA, elemSize.toLong() * a.size)
-        JCuda.cudaMalloc(dB, elemSize.toLong() * b.size)
-
-        JCublas2.cublasSetVector(a.size, elemSize, phA, 1, dA, 1)
-        JCublas2.cublasSetVector(b.size, elemSize, phB, 1, dB, 1)
-
+        val resultPtr = a.dtype.getDataPointer(result)
         val type = a.dtype.getCudaType()
 
-        JCublas2.cublasDotEx(contextHandle, a.shape[0], dA, type, 1, dB, type, 1, resultPtr, type, type)
-
-        JCuda.cudaFree(dA)
-        JCuda.cudaFree(dB)
-        JCuda.cudaFree(dC)
+        JCublas2.cublasDotEx(contextHandle, a.shape[0], gA.deviceDataPtr, type, 1, gB.deviceDataPtr, type, 1, resultPtr, type, type)
 
         return result[0]
     }

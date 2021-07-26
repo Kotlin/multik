@@ -11,6 +11,12 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.*
  *
  * @property data one of the primitive arrays.
  */
+
+//public abstract class ImmutableMemoryView<T : Number> : Iterable<T> {
+//    public abstract val data: Any
+//
+//    public abstract val dtype: DataType
+
 public interface ImmutableMemoryView<T> : Iterable<T> {
     public val data: Any
     public var size: Int
@@ -80,6 +86,12 @@ public interface ImmutableMemoryView<T> : Iterable<T> {
      * Returns [ComplexDoubleArray] if it is [MemoryViewComplexDoubleArray].
      */
     public fun getComplexDoubleArray(): ComplexDoubleArray
+
+    public var __onFinalizeFunc: ((ImmutableMemoryView<T>) -> Unit)? = null
+
+    protected open fun finalize() {
+        __onFinalizeFunc?.invoke(this)
+    }
 }
 
 /**
@@ -232,6 +244,8 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
  * View for [ByteArray].
  */
 public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte>() {
+//    override val dtype: DataType = DataType.ByteDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -323,6 +337,8 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
  * View for [ShortArray].
  */
 public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Short>() {
+//    override val dtype: DataType = DataType.ShortDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -414,6 +430,8 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
  * View for [IntArray].
  */
 public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>() {
+//    override val dtype: DataType = DataType.IntDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -506,6 +524,8 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
  * View for [LongArray].
  */
 public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long>() {
+//    override val dtype: DataType = DataType.LongDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -596,7 +616,9 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
 /**
  * View for [FloatArray].
  */
-public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Float>() {
+open public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Float>() {
+//    override val dtype: DataType = DataType.FloatDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -687,7 +709,9 @@ public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Fl
 /**
  * View for [DoubleArray].
  */
-public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<Double>() {
+open public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<Double>() {
+//    override val dtype: DataType = DataType.DoubleDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices

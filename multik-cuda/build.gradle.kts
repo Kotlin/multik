@@ -12,6 +12,9 @@ configurations {
 dependencies {
     api(project(":multik-api"))
 
+    implementation("io.github.microutils:kotlin-logging:+")
+    implementation("org.slf4j:slf4j-simple:+")
+
     val jCudaVersion = "11.2.0"
 
     jcudaLibs(group = "org.jcuda", name = "jcuda", version = jCudaVersion) {

@@ -1,9 +1,14 @@
 package org.jetbrains.kotlinx.multik.cuda
 
+import jcuda.CudaException
 import jcuda.Pointer
 import jcuda.cudaDataType
 import jcuda.jcublas.cublasComputeType
+import jcuda.runtime.cudaError
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType
+import org.jetbrains.kotlinx.multik.ndarray.data.ImmutableMemoryView
+
+internal const val BYTES_IN_MB = 1024L * 1024
 
 internal val DZeroPointer = Pointer.to(doubleArrayOf(0.0))
 internal val DOnePointer = Pointer.to(doubleArrayOf(1.0))
@@ -38,3 +43,15 @@ fun DataType.getOnePointer(): Pointer =
         DataType.DoubleDataType -> DOnePointer
         else -> throw UnsupportedOperationException()
     }
+
+fun <T: Number> DataType.getDataPointer(data: ImmutableMemoryView<T>): Pointer =
+    when (this) {
+        DataType.FloatDataType -> Pointer.to(data.getFloatArray())
+        DataType.DoubleDataType -> Pointer.to(data.getDoubleArray())
+        else -> throw UnsupportedOperationException("Unsupported data type: $this")
+    }
+
+internal fun checkResult(result: Int) {
+    if (result != cudaError.cudaSuccess)
+        throw CudaException(cudaError.stringFor(result))
+}
