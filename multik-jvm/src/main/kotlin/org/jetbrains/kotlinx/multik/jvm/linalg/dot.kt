@@ -1,6 +1,29 @@
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
+import org.jetbrains.kotlinx.multik.api.empty
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+
+internal fun dotComplexDouble(a: MultiArray<ComplexDouble, D2>, b: MultiArray<ComplexDouble, D2>): D2Array<ComplexDouble> {
+    require(a.shape[1] == b.shape[0]) { "Can't multiply shapes ${a.shape} and ${b.shape}" }
+
+    val destination = mk.empty<ComplexDouble, D2>(a.shape[0], b.shape[1])
+    val n = a.shape[0]
+    val m = b.shape[1]
+    val t = a.shape[1]
+
+    for (i in 0 until n) {
+        for (k in 0 until t) {
+            val ceil = a[i, k]
+            for (j in 0 until m) {
+                destination[i, j] += ceil * b[k, j]
+            }
+        }
+    }
+    return destination
+
+}
 
 internal fun <T : Number> dotMatrix(a: MultiArray<T, D2>, b: MultiArray<T, D2>): D2Array<T> {
     val newShape = intArrayOf(a.shape[0], b.shape[1])

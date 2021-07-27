@@ -206,7 +206,7 @@ public class ComplexDouble(public val re: Double, public val im: Double) : Compl
 
     public companion object {
         public val one: ComplexDouble
-            get() = ComplexDouble(1.0, 1.0)
+            get() = ComplexDouble(1.0, 0.0)
 
         public val zero: ComplexDouble
             get() = ComplexDouble(0.0, 0.0)
