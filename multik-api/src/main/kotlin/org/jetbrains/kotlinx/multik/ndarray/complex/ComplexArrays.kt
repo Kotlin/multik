@@ -21,13 +21,15 @@ public class ComplexFloatArray(public val size: Int = 0) {
 
     public operator fun get(index: Int): ComplexFloat {
         checkElementIndex(index, size)
-        return ComplexFloat(data[index], data[index + 1])
+        val i = index shl 1
+        return ComplexFloat(data[i], data[i + 1])
     }
 
     public operator fun set(index: Int, value: ComplexFloat): Unit {
         checkElementIndex(index, size)
-        data[index] = value.re
-        data[index + 1] = value.im
+        val i = index shl 1
+        data[i] = value.re
+        data[i + 1] = value.im
     }
 
     public fun getFlatArray(): FloatArray = data
@@ -49,7 +51,7 @@ public class ComplexFloatArray(public val size: Int = 0) {
         var i = 0
         while (i < _size) {
             if (i > 0) sb.append(", ")
-            sb.append("${data[i]} + ${data[i++]}i")
+            sb.append("${data[i]} + ${data[++i]}i")
             i++
         }
         sb.append("]")
@@ -74,13 +76,15 @@ public class ComplexDoubleArray(public val size: Int = 0) {
 
     public operator fun get(index: Int): ComplexDouble {
         checkElementIndex(index, size)
-        return ComplexDouble(data[index], data[index + 1])
+        val i = index shl 1
+        return ComplexDouble(data[i], data[i + 1])
     }
 
     public operator fun set(index: Int, value: ComplexDouble): Unit {
         checkElementIndex(index, size)
-        data[index] = value.re
-        data[index + 1] = value.im
+        val i = index shl 1
+        data[i] = value.re
+        data[i + 1] = value.im
     }
 
     public fun getFlatArray(): DoubleArray = data
@@ -97,13 +101,12 @@ public class ComplexDoubleArray(public val size: Int = 0) {
     override fun hashCode(): Int = this.contentHashCode()
 
     override fun toString(): String {
-        floatArrayOf().isEmpty()
         val sb = StringBuilder(2 + _size * 3)
         sb.append("[")
         var i = 0
         while (i < _size) {
             if (i > 0) sb.append(", ")
-            sb.append("${data[i]} + ${data[i++]}i")
+            sb.append("${data[i]} + ${data[++i]}i")
             i++
         }
         sb.append("]")
