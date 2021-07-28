@@ -1265,7 +1265,7 @@ public fun ComplexDoubleArray?.contentHashCode(): Int = java.util.Arrays.hashCod
  * @return the [destination] array.
  */
 public fun ComplexFloatArray.copyInto(destination: ComplexFloatArray, destinationOffset: Int = 0, startIndex: Int = 0, endIndex: Int = size): ComplexFloatArray {
-    System.arraycopy(this.getFlatArray(), startIndex, destination.getFlatArray(), destinationOffset, endIndex - startIndex)
+    System.arraycopy(this.getFlatArray(), startIndex * 2, destination.getFlatArray(), destinationOffset * 2, (endIndex - startIndex) * 2)
     return destination
 }
 
@@ -1286,7 +1286,7 @@ public fun ComplexFloatArray.copyInto(destination: ComplexFloatArray, destinatio
  * @return the [destination] array.
  */
 public fun ComplexDoubleArray.copyInto(destination: ComplexDoubleArray, destinationOffset: Int = 0, startIndex: Int = 0, endIndex: Int = size): ComplexDoubleArray {
-    System.arraycopy(this.getFlatArray(), startIndex, destination.getFlatArray(), destinationOffset, endIndex - startIndex)
+    System.arraycopy(this.getFlatArray(), startIndex * 2, destination.getFlatArray(), destinationOffset * 2, (endIndex - startIndex) * 2)
     return destination
 }
 
