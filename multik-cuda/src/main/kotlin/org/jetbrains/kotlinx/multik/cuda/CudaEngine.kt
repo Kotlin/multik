@@ -61,6 +61,10 @@ public object CudaEngine : Engine() {
         }
 
         logger.info { "Deinitializing cuda engine" }
+
+        logger.debug { "Memory cleanup" }
+        GpuArray.fullCleanup()
+
         JCublas2.cublasDestroy(contextHandle)
         contextHandle = null
     }

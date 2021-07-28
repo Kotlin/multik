@@ -7,6 +7,7 @@ import jcuda.jcublas.cublasComputeType
 import jcuda.runtime.cudaError
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 import org.jetbrains.kotlinx.multik.ndarray.data.ImmutableMemoryView
+import kotlin.math.pow
 
 internal const val BYTES_IN_MB = 1024L * 1024
 
@@ -54,4 +55,12 @@ fun <T> DataType.getDataPointer(data: ImmutableMemoryView<T>): Pointer =
 internal fun checkResult(result: Int) {
     if (result != cudaError.cudaSuccess)
         throw CudaException(cudaError.stringFor(result))
+}
+
+internal fun byteSizeToString(bytes: Long): String {
+    val unit = 1024
+    if (bytes < unit) return "$bytes B"
+    val exp = (Math.log(bytes.toDouble()) / Math.log(unit.toDouble())).toInt()
+    val pre = "KMGTPE"[exp - 1].toString() + "i"
+    return String.format("%.1f %sB", bytes / unit.toDouble().pow(exp.toDouble()), pre)
 }

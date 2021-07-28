@@ -87,8 +87,6 @@ public interface ImmutableMemoryView<T> : Iterable<T> {
      * Returns [ComplexDoubleArray] if it is [MemoryViewComplexDoubleArray].
      */
     public fun getComplexDoubleArray(): ComplexDoubleArray
-
-    public var __onFinalizeFunc: ((ImmutableMemoryView<T>) -> Unit)?
 }
 
 /**
@@ -234,12 +232,6 @@ public abstract class MemoryView<T> : ImmutableMemoryView<T> {
             this is MemoryViewComplexFloatArray && other is ComplexFloat -> this /= other
             this is MemoryViewComplexDoubleArray && other is ComplexDouble -> this /= other
         }
-    }
-
-    override var __onFinalizeFunc: ((ImmutableMemoryView<T>) -> Unit)? = null
-
-    protected open fun finalize() {
-        __onFinalizeFunc?.invoke(this)
     }
 }
 
@@ -619,7 +611,7 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
 /**
  * View for [FloatArray].
  */
-open public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Float>() {
+public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Float>() {
     override val dtype: DataType = DataType.FloatDataType
 
     override var size: Int = data.size
@@ -712,7 +704,7 @@ open public class MemoryViewFloatArray(override val data: FloatArray) : MemoryVi
 /**
  * View for [DoubleArray].
  */
-open public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<Double>() {
+public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<Double>() {
     override val dtype: DataType = DataType.DoubleDataType
 
     override var size: Int = data.size

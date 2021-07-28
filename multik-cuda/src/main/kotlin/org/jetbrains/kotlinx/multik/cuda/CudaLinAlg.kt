@@ -57,6 +57,8 @@ public object CudaLinAlg : LinAlg {
         val result = NDArray(initMemoryView<T>(cSize, a.dtype), shape = shape, dtype = a.dtype, dim = b.dim)
         val gC = GpuArray.getOrAlloc(result, setMemory = false)
 
+        //TODO check if all arrays are loaded
+
         val zeroPtr = a.dtype.getZeroPointer()
         val onePtr = a.dtype.getOnePointer()
 
@@ -115,6 +117,8 @@ public object CudaLinAlg : LinAlg {
 
         val gA = GpuArray.getOrAlloc(consistentA)
         val gB = GpuArray.getOrAlloc(consistentB)
+
+        //TODO check if all arrays are loaded
 
         val result = initMemoryView<T>(1, a.dtype)
         val resultPtr = a.dtype.getDataPointer(result)

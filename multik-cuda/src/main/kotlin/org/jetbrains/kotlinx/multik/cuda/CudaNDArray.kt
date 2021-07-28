@@ -8,116 +8,11 @@ import mu.KotlinLogging
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 import org.jetbrains.kotlinx.multik.ndarray.data.ImmutableMemoryView
 import org.jetbrains.kotlinx.multik.ndarray.data.MemoryView
-import java.util.*
 
 private val logger = KotlinLogging.logger {}
 
-private class MyLinkedList<T> : Iterable<T> {
-    sealed class Tag<T> {
-        abstract val parent: MyLinkedList<T>?
-    }
-
-    val isEmpty
-        get() = size == 0
-
-    val first
-        get() = head!!.value
-
-    fun add(value: T): Tag<T> {
-        return addNode(Node(value))
-    }
-
-    fun popFirst(): T {
-        return removeNode(head!!).value
-    }
-
-    fun placeLast(tag: Tag<T>) {
-        @Suppress("UNCHECKED_CAST")
-        addNode(removeNode(tag as Node<T>))
-    }
-
-    override fun iterator(): Iterator<T> {
-        return object : Iterator<T> {
-            var current = head
-
-            override fun hasNext(): Boolean = current != null
-
-            override fun next(): T {
-                val result = current!!.value
-                current = current!!.next
-
-                return result
-            }
-        }
-    }
-
-    override fun toString(): String {
-        val builder = StringJoiner(", ", "[", "]")
-
-        for (x in this)
-            builder.add(x.toString())
-
-        return builder.toString()
-    }
-
-    private class Node<T>(var value: T) : Tag<T>() {
-        var next: Node<T>? = null
-        var prev: Node<T>? = null
-
-        override var parent: MyLinkedList<T>? = null
-    }
-
-    private var head: Node<T>? = null
-    private var tail: Node<T>? = null
-
-    private var size: Int = 0
-
-    private fun addNode(node: Node<T>) : Node<T> {
-        require(node.parent == null)
-
-        if (size == 0) {
-            head = node
-        } else {
-            tail!!.next = node
-            node.prev = tail
-            tail = node
-        }
-
-        tail = node
-        node.parent = this
-
-        size++
-
-        return node
-    }
-
-    private fun removeNode(node: Node<T>): Node<T> {
-        require(node.parent == this)
-
-        if (node == head)
-            head = node.next
-
-        if (node == tail)
-            tail = node.prev
-
-        node.apply {
-            prev?.next = next
-            next?.prev = prev
-
-            prev = null
-            next = null
-        }
-
-        node.parent = null
-
-        size -= 1
-
-        return node
-    }
-}
-
-fun main() {
-    val list = MyLinkedList<Int>()
+/*fun main() {
+    val list = LinkedCache<Int>()
 
     println(list.toString())
 
@@ -137,17 +32,18 @@ fun main() {
 //    list.placeLast(second)
 
     println(list.toString())
-}
+}*/
 
-private object CudaCache {
-    val cache = MyLinkedList<MemoryLocation>()
-}
+private val GpuMemoryCache = LinkedCache<MemoryLocation>()
 
-internal class MemoryLocation(val hostDataPtr: Pointer, val size: Int) {
+internal class MemoryLocation(
+    val hostDataPtr: Pointer,
+    val size: Int
+) {
     val deviceDataPtr = Pointer()
+    var cacheTag : LinkedCache.Tag<MemoryLocation>? = null
 
-    var isLoaded: Boolean = false
-        private set
+    val isLoaded: Boolean = cacheTag != null
 
     fun alloc(set: Boolean = true) {
         if (isLoaded) {
@@ -159,6 +55,8 @@ internal class MemoryLocation(val hostDataPtr: Pointer, val size: Int) {
         if (set) {
             checkResult(JCuda.cudaMemcpy(deviceDataPtr, hostDataPtr, size.toLong(), cudaMemcpyHostToDevice))
         }
+
+        cacheTag = GpuMemoryCache.add(this)
     }
 
     fun copyFromGpu() {
@@ -172,7 +70,10 @@ internal class MemoryLocation(val hostDataPtr: Pointer, val size: Int) {
         }
 
         checkResult(JCuda.cudaFree(deviceDataPtr))
-        isLoaded = false
+
+        if (cacheTag!!.parent != null) {
+            GpuMemoryCache.remove(cacheTag!!)
+        }
     }
 }
 
@@ -193,21 +94,18 @@ class CudaMemoryView<T>(private val baseView: MemoryView<T>) : MemoryView<T>() {
     override fun iterator(): Iterator<T> = baseView.iterator()
 
     override fun set(index: Int, value: T) {
-//        throw UnsupportedOperationException()
+        throw UnsupportedOperationException()
     }
 
     override fun copyOf(): MemoryView<T> {
         return CudaMemoryView(baseView.copyOf())
     }
 
-    internal val memoryLocation = MemoryLocation(getHostDataPointer(), size)
+    internal val memoryLocation = MemoryLocation(dtype.getDataPointer(this), size)
 
-    internal fun getHostDataPointer() =
-        dtype.getDataPointer(this)
-
-    override fun finalize() {
-
-    }
+    /*override fun finalize() {
+        memoryLocation.free()
+    }*/
 
     override fun copyInto(
         destination: ImmutableMemoryView<T>,
@@ -215,29 +113,6 @@ class CudaMemoryView<T>(private val baseView: MemoryView<T>) : MemoryView<T>() {
         startIndex: Int,
         endIndex: Int
     ): MemoryView<T> {
-        TODO("Not yet implemented")
+        return baseView.copyInto(destination, destinationOffset, startIndex, endIndex)
     }
 }
-
-//class CudaFloatMemoryView(data: FloatArray) : MemoryViewFloatArray(data) {
-//    internal val memoryLocation = MemoryLocation()
-//
-//    override fun copyOf(): MemoryView<Float> {
-//        return CudaFloatMemoryView(data.copyOf())
-//    }
-//}
-
-//class CudaNDArray<T: Number, V: Dimension> : NDArray<T, V>() {
-//    class ArrayInfo {
-//        val deviceDataPtr: Pointer? = null
-//    }
-//
-//    private val arrayInfo = ArrayInfo()
-//
-//
-//    companion object {
-//        fun ababca() {
-//            LinkedList<ArrayInfo>()
-//        }
-//    }
-//}
