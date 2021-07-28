@@ -23,9 +23,13 @@ public interface Complex {
 
 public class ComplexFloat(public val re: Float, public val im: Float) : Complex {
 
+    public constructor(re: Number, im: Number): this(re.toFloat(), im.toFloat())
+
+    public constructor(re: Number): this(re.toFloat(), 0f)
+
     public companion object {
         public val one: ComplexFloat
-            get() = ComplexFloat(1f, 1f)
+            get() = ComplexFloat(1f, 0f)
 
         public val zero: ComplexFloat
             get() = ComplexFloat(0f, 0f)
@@ -204,9 +208,13 @@ public class ComplexFloat(public val re: Float, public val im: Float) : Complex 
 
 public class ComplexDouble(public val re: Double, public val im: Double) : Complex {
 
+    public constructor(re: Number, im: Number): this(re.toDouble(), im.toDouble())
+
+    public constructor(re: Number): this(re.toDouble(), 0.0)
+
     public companion object {
         public val one: ComplexDouble
-            get() = ComplexDouble(1.0, 1.0)
+            get() = ComplexDouble(1.0, 0.0)
 
         public val zero: ComplexDouble
             get() = ComplexDouble(0.0, 0.0)
