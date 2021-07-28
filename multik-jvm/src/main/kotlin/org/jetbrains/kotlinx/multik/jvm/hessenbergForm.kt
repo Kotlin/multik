@@ -1,35 +1,75 @@
 package org.jetbrains.kotlinx.multik.jvm
 
+import org.jetbrains.kotlinx.multik.api.d2array
 import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.math.sqrt
 
-internal data class MatrixPair(val a: NDArray<Double, D2>, val b: NDArray<Double, D2>)
-
-internal data class VectorPair(val a: NDArray<Double, D1>, val b: NDArray<Double, D1>)
 
 
-
-internal fun getReflector(x: VectorPair): Pair<Double, VectorPair> {
-    val alpha: ComplexDouble = ComplexDouble(x.a[0], x.b[0])
-
-    var xnorm = 0.0;
-    for (i in 1 until x.a.size) {
-        xnorm += x.a[i] * x.a[i] + x.b[i] * x.b[i]
+internal fun upperHessenberg(a: NDArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
+    var id = mk.empty<ComplexDouble, D2>(a.shape[0], a.shape[0])
+    for (i in 0 until a.shape[0]) {
+        id[i, i] = ComplexDouble(1.0, 0.0)
     }
-    xnorm = sqrt(xnorm)
 
-    var v: VectorPair = VectorPair(mk.empty<Double, D1>(x.a.size), mk.empty<Double, D1>(x.a.size))
-    v.a[0] = 1.0
 
-    if(xnorm == 0.0) {
-        return Pair(0.0, Object() as VectorPair)
+
+    var ans = deepCopyMatrixTmp(a)
+
+    for (i in 1 until ans.shape[0] - 1) {
+        val (tau, v) = householderTransformComplexDouble(ans[i..ans.shape[0], (i - 1)..ans.shape[1]])
+
+
+        var submatrix = deepCopyMatrixTmp(ans[i..ans.shape[0], (i - 1)..ans.shape[1]])
+        submatrix = applyHouseholderComplexDouble(submatrix, tau, v)
+        //copy
+        for (i1 in i until ans.shape[0]) {
+            for (j1 in i - 1 until ans.shape[1]) {
+                ans[i1, j1] = submatrix[i1 - i, j1 - (i - 1)]
+            }
+        }
+
+        ans = deepCopyMatrixTmp(ans.transpose())
+        for (i1 in 0 until ans.shape[0]) {
+            for (j1 in 0 until ans.shape[1]) {
+                ans[i1, j1] = ans[i1, j1].conjugate()
+            }
+        }
+
+        submatrix = deepCopyMatrixTmp(ans[i..ans.shape[0], (i - 1)..ans.shape[1]])
+        submatrix = applyHouseholderComplexDouble(submatrix, tau, v)
+
+        //copy
+        for (i1 in i until ans.shape[0]) {
+            for (j1 in i - 1 until ans.shape[1]) {
+                ans[i1, j1] = submatrix[i1 - i, j1 - (i - 1)]
+            }
+        }
+
+        ans = deepCopyMatrixTmp(ans.transpose())
+        for (i1 in 0 until ans.shape[0]) {
+            for (j1 in 0 until ans.shape[1]) {
+                ans[i1, j1] = ans[i1, j1].conjugate()
+            }
+        }
+
+
+        submatrix = applyHouseholderComplexDouble(id[i..id.shape[0], (i - 1)..id.shape[1]], tau, v)
+        for (i1 in i until id.shape[0]) {
+            for (j1 in (i - 1) until id.shape[1]) {
+                id[i1, j1] = submatrix[i1 - i, j1 - (i - 1)]
+            }
+        }
     }
-    TODO()
-}
+    id = deepCopyMatrixTmp(id.transpose())
+    for (i in 0 until a.shape[0]) {
+        for (j in 0 until a.shape[1]) {
+            id[i, j] = id[i, j].conjugate()
+        }
+    }
 
-internal fun upperHessenberg(a: MatrixPair): Pair<MatrixPair, MatrixPair> {
-    TODO();
+    return Pair(id, ans)
 }

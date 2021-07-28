@@ -79,7 +79,7 @@ fun qrDouble(mat: D2Array<Double>): Pair<D2Array<Double>, D2Array<Double>> {
 
 
 
-fun householderTransformComplexDouble(x: D2Array<ComplexDouble>): Pair<ComplexDouble, D1Array<ComplexDouble>> {
+fun householderTransformComplexDouble(x: MultiArray<ComplexDouble, D2>): Pair<ComplexDouble, D1Array<ComplexDouble>> {
     val alpha = x[0, 0]
 //    val xnorm: Double = sqrt(x[1..x.shape[0], 0].map { it * it }.sum())
     var xnorm = 0.0
@@ -102,7 +102,7 @@ fun householderTransformComplexDouble(x: D2Array<ComplexDouble>): Pair<ComplexDo
    return Pair(tau.conjugate(), v)
 }
 
-fun applyHouseholderComplexDouble(x: D2Array<ComplexDouble>, tau: ComplexDouble, v: D1Array<ComplexDouble>): D2Array<ComplexDouble> {
+fun applyHouseholderComplexDouble(x: MultiArray<ComplexDouble, D2>, tau: ComplexDouble, v: MultiArray<ComplexDouble, D1>): D2Array<ComplexDouble> {
     //x - tau * np.sum(v * x) * v
     val applied = deepCopyMatrixTmp(x)
 
@@ -118,7 +118,7 @@ fun applyHouseholderComplexDouble(x: D2Array<ComplexDouble>, tau: ComplexDouble,
     return applied
 }
 
-fun qrComplexDouble(mat: D2Array<ComplexDouble>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
+fun qrComplexDouble(mat: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
 
     var q = mk.identity<ComplexDouble>(mat.shape[0])
     val r = deepCopyMatrixTmp(mat)
