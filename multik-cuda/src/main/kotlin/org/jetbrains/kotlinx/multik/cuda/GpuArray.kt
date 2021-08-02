@@ -2,45 +2,69 @@ package org.jetbrains.kotlinx.multik.cuda
 
 import jcuda.CudaException
 import jcuda.Pointer
-import jcuda.jcublas.JCublas2
 import jcuda.runtime.JCuda
-import jcuda.runtime.cudaError
 import jcuda.runtime.cudaError.cudaErrorMemoryAllocation
-import jcuda.runtime.cudaError.cudaSuccess
 import jcuda.runtime.cudaMemcpyKind
 import mu.KotlinLogging
 import org.jetbrains.kotlinx.multik.ndarray.data.Dimension
 import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import java.lang.ref.Cleaner
+import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
-import kotlin.math.pow
 
 
 private val logger = KotlinLogging.logger {}
 
 internal class GpuArray private constructor(
-    val rawData : Any,
+    private val rawData : Any,
     val hostDataPtr : Pointer,
     val deviceDataPtr : Pointer,
     val byteSize : Long
 ) {
-    private fun free() {
-        logger.debug { "Freeing GPU memory. Data: $rawData, size: ${byteSizeToString(byteSize)}" }
-        checkResult(JCuda.cudaFree(deviceDataPtr))
-    }
+    var isLoaded = true
+        private set
 
     fun copyFromGpu() {
         checkResult(JCuda.cudaMemcpy(hostDataPtr, deviceDataPtr, byteSize, cudaMemcpyKind.cudaMemcpyDeviceToHost))
+    }
+
+    private fun free() {
+        if (!isLoaded)
+            throw IllegalStateException("Trying to free memory that it is already freed")
+
+        logger.debug { "Freeing GPU memory. Data: $rawData, size: ${byteSizeToString(byteSize)}" }
+        checkResult(JCuda.cudaFree(deviceDataPtr))
+
+        isLoaded = false
     }
 
     companion object {
         private const val CACHE_INITIAL_CAPACITY = 16
         private const val CACHE_LOAD_FACTOR = 0.75f
 
-        private val cache = LinkedHashMap<Any, GpuArray>(CACHE_INITIAL_CAPACITY, CACHE_LOAD_FACTOR, true)
-        private val deleteQueue = LinkedBlockingQueue<Any>()
+        private val cache = Collections.synchronizedMap(
+            LinkedHashMap<Any, GpuArray>(CACHE_INITIAL_CAPACITY, CACHE_LOAD_FACTOR, true)
+        )
 
+        private val deleteQueue = LinkedBlockingQueue<Any>()
         private val cleaner = Cleaner.create()
+
+        fun assertAllLoaded(vararg arrays: GpuArray) {
+            if (!arrays.all { it.isLoaded })
+                throw OutOfMemoryError("Not all arrays have are loaded in the GPU memory")
+        }
+
+        fun fullCleanup() {
+            cache.forEach { it.value.free() }
+            cache.clear()
+
+            deleteQueue.clear()
+        }
+
+        fun <T : Number, D : Dimension> getOrAlloc(array: MultiArray<T, D>, setMemory: Boolean = true): GpuArray {
+            cleanup()
+            return cache.getOrPut(array.data.data) { allocMemory(array, setMemory) }
+        }
 
         private fun getGpuMemInfo(): String {
             val free = LongArray(1)
@@ -96,18 +120,6 @@ internal class GpuArray private constructor(
                 val data = deleteQueue.poll()
                 cache.remove(data)?.free()
             }
-        }
-
-        fun fullCleanup() {
-            cache.forEach { it.value.free() }
-            cache.clear()
-
-            deleteQueue.clear()
-        }
-
-        fun <T : Number, D : Dimension> getOrAlloc(array: MultiArray<T, D>, setMemory: Boolean = true): GpuArray {
-            cleanup()
-            return cache.getOrPut(array.data.data) { allocMemory(array, setMemory) }
         }
     }
 }

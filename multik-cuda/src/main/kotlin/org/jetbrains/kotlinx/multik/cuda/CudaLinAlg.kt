@@ -49,15 +49,13 @@ public object CudaLinAlg : LinAlg {
         val (consistentA, transposedA) = getConsistentOrTransposedConsistent(a)
         val (consistentB, transposedB) = getConsistentOrTransposedConsistent(b)
 
-//        val hC = initMemoryView<T>(cSize, a.dtype)
-
         val gA = GpuArray.getOrAlloc(consistentA)
         val gB = GpuArray.getOrAlloc(consistentB)
 
         val result = NDArray(initMemoryView<T>(cSize, a.dtype), shape = shape, dtype = a.dtype, dim = b.dim)
         val gC = GpuArray.getOrAlloc(result, setMemory = false)
 
-        //TODO check if all arrays are loaded
+        GpuArray.assertAllLoaded(gA, gB, gC)
 
         val zeroPtr = a.dtype.getZeroPointer()
         val onePtr = a.dtype.getOnePointer()
@@ -95,7 +93,7 @@ public object CudaLinAlg : LinAlg {
                 JCublas2.cublasDgemv(contextHandle, transA, m, n, onePtr, gA.deviceDataPtr, m, gB.deviceDataPtr, 1, zeroPtr, gC.deviceDataPtr, 1)
         }
 
-        JCublas2.cublasGetVector(cSize, a.dtype.itemSize, gC.deviceDataPtr, 1, gC.hostDataPtr, 1)
+        gC.copyFromGpu()
 
         return result
     }
@@ -118,7 +116,7 @@ public object CudaLinAlg : LinAlg {
         val gA = GpuArray.getOrAlloc(consistentA)
         val gB = GpuArray.getOrAlloc(consistentB)
 
-        //TODO check if all arrays are loaded
+        GpuArray.assertAllLoaded(gA, gB)
 
         val result = initMemoryView<T>(1, a.dtype)
         val resultPtr = a.dtype.getDataPointer(result)
