@@ -5,7 +5,6 @@
 package org.jetbrains.kotlinx.multik.ndarray.complex
 
 import kotlin.math.abs
-import kotlin.math.atan
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
@@ -24,9 +23,13 @@ public interface Complex {
 
 public class ComplexFloat(public val re: Float, public val im: Float) : Complex {
 
+    public constructor(re: Number, im: Number): this(re.toFloat(), im.toFloat())
+
+    public constructor(re: Number): this(re.toFloat(), 0f)
+
     public companion object {
         public val one: ComplexFloat
-            get() = ComplexFloat(1f, 1f)
+            get() = ComplexFloat(1f, 0f)
 
         public val zero: ComplexFloat
             get() = ComplexFloat(0f, 0f)
@@ -42,7 +45,7 @@ public class ComplexFloat(public val re: Float, public val im: Float) : Complex 
     public fun abs(): Float = sqrt(re * re + im * im)
 
     /** Returns angle of complex number. */
-    public fun angle(): Float = atan(im / re)
+    public fun angle(): Float = atan2(im, re)
 
     /** Adds the other value to this value. */
     public operator fun plus(other: Byte): ComplexFloat = ComplexFloat(re + other, im)
@@ -204,6 +207,10 @@ public class ComplexFloat(public val re: Float, public val im: Float) : Complex 
 }
 
 public class ComplexDouble(public val re: Double, public val im: Double) : Complex {
+
+    public constructor(re: Number, im: Number): this(re.toDouble(), im.toDouble())
+
+    public constructor(re: Number): this(re.toDouble(), 0.0)
 
     public companion object {
         public val one: ComplexDouble
