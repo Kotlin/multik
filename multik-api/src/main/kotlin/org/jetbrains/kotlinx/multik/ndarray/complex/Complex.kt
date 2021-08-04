@@ -6,6 +6,7 @@ package org.jetbrains.kotlinx.multik.ndarray.complex
 
 import kotlin.math.abs
 import kotlin.math.atan
+import kotlin.math.atan2
 import kotlin.math.sqrt
 
 public interface Complex {
@@ -222,7 +223,7 @@ public class ComplexDouble(public val re: Double, public val im: Double) : Compl
     public fun abs(): Double = sqrt(re * re + im * im)
 
     /** Returns angle of complex number. */
-    public fun angle(): Double = atan(im / re)
+    public fun angle(): Double = atan2(im, re)
 
     /** Adds the other value to this value. */
     public operator fun plus(other: Byte): ComplexDouble = ComplexDouble(re + other, im)

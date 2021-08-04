@@ -79,7 +79,7 @@ fun qrDouble(mat: D2Array<Double>): Pair<D2Array<Double>, D2Array<Double>> {
 
 
 
-fun householderTransformComplexDouble(x: MultiArray<ComplexDouble, D2>): Pair<ComplexDouble, D1Array<ComplexDouble>> {
+internal fun householderTransformComplexDouble(x: MultiArray<ComplexDouble, D2>): Pair<ComplexDouble, D1Array<ComplexDouble>> {
     val alpha = x[0, 0]
 //    val xnorm: Double = sqrt(x[1..x.shape[0], 0].map { it * it }.sum())
     var xnorm = 0.0
