@@ -6,6 +6,8 @@ package org.jetbrains.kotlinx.multik.cuda
 
 import jcuda.jcublas.JCublas2
 import jcuda.jcublas.cublasHandle
+import jcuda.runtime.JCuda
+import jcuda.runtime.cudaStream_t
 import mu.KotlinLogging
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
@@ -15,6 +17,24 @@ private val logger = KotlinLogging.logger {}
 public class CudaEngineProvider : EngineProvider {
     override fun getEngine(): Engine {
         return CudaEngine
+    }
+}
+
+internal class CudaContext {
+    val handle = cublasHandle()
+    val cache = GpuCache()
+    private val stream = cudaStream_t()
+
+    init {
+        checkResult(JCublas2.cublasCreate(handle))
+        checkResult(JCuda.cudaStreamCreate(stream))
+
+        checkResult(JCublas2.cublasSetStream(handle, stream))
+    }
+
+    fun deinit() {
+        checkResult(JCublas2.cublasDestroy(handle))
+        checkResult(JCuda.cudaStreamDestroy(stream))
     }
 }
 
@@ -44,31 +64,31 @@ public object CudaEngine : Engine() {
     }
 
     public fun initCuda() {
-        if (contextHandle != null) {
+        if (context.get() != null) {
             logger.warn { "Trying to initialize the CudaEngine when it is already initialized" }
             return
         }
 
         logger.info { "Initializing cuda engine" }
-        contextHandle = cublasHandle()
-        JCublas2.cublasCreate(contextHandle)
+        context.set(CudaContext())
     }
 
     public fun deinitCuda() {
-        if (contextHandle == null) {
-            logger.warn { "Trying to deinitialize the CudaEngine when it is already deinitialized" }
+        if (context.get() == null) {
+            logger.warn { "Trying to deinitialize the CudaEngine when it is not initialized" }
             return
         }
 
         logger.info { "Deinitializing cuda engine" }
 
         logger.debug { "Memory cleanup" }
-        GpuArray.fullCleanup()
+        getContext().cache.fullCleanup()
 
-        JCublas2.cublasDestroy(contextHandle)
-        contextHandle = null
+        context.get()!!.deinit()
+        context.set(null)
     }
 
-    internal var contextHandle: cublasHandle? = null
-        private set
+    private var context: ThreadLocal<CudaContext?> = ThreadLocal()
+
+    internal fun getContext(): CudaContext = context.get()!!
 }

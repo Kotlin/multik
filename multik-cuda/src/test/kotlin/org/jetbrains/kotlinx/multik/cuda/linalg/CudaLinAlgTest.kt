@@ -14,6 +14,41 @@ import kotlin.test.assertTrue
 
 class CudaLinAlgTest {
     @Test
+    fun `matrix-matrix add consistent`() {
+        val mat1 = mk.ndarray(
+            mk[
+                    mk[1.0, 2.0, 3.0],
+                    mk[4.0, 5.0, 6.0],
+            ]
+        )
+
+        val mat2 = mk.ndarray(
+            mk[
+                    mk[3.0, 4.0, 5.0],
+                    mk[100.0, 110.0, 120.0]]
+        )
+
+        val expected = mk.ndarray(
+            mk[
+                    mk[4.0, 6.0, 8.0],
+                    mk[104.0, 115.0, 126.0]]
+        )
+
+        CudaEngine.runWithCuda {
+            val res1 = CudaLinAlg.add(mat1, mat2)
+
+            val mat3 = mat2.transpose().deepCopy()
+
+            val res2 = CudaLinAlg.add(mat3.transpose(), mat1)
+            val res3 = CudaLinAlg.add(mat1.transpose(), mat2.transpose())
+
+            assertEquals(expected, roundDouble(res1))
+            assertEquals(expected, roundDouble(res2))
+            assertEquals(expected.transpose(), roundDouble(res3))
+        }
+    }
+
+    @Test
     fun `vector-vector dot inconsistent D`() {
         val vec1 = mk.ndarray(mk[1.0, 2.0, 3.0])[0..3..2]
         val vec2 = mk.ndarray(mk[4.0, 5.0, 6.0, 7.0, 8.0])[1..5..3]

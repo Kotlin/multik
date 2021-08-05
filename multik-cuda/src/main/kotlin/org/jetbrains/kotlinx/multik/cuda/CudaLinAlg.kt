@@ -9,7 +9,6 @@ import jcuda.jcublas.cublasGemmAlgo.CUBLAS_GEMM_DEFAULT
 import jcuda.jcublas.cublasOperation
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
-import org.jetbrains.kotlinx.multik.cuda.CudaEngine.contextHandle
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object CudaLinAlg : LinAlg {
@@ -49,13 +48,15 @@ public object CudaLinAlg : LinAlg {
         val (consistentA, transposedA) = getConsistentOrTransposedConsistent(a)
         val (consistentB, transposedB) = getConsistentOrTransposedConsistent(b)
 
-        val gA = GpuArray.getOrAlloc(consistentA)
-        val gB = GpuArray.getOrAlloc(consistentB)
+        val context = CudaEngine.getContext()
+
+        val gA = context.cache.getOrAlloc(consistentA)
+        val gB = context.cache.getOrAlloc(consistentB)
 
         val result = NDArray(initMemoryView<T>(cSize, a.dtype), shape = shape, dtype = a.dtype, dim = b.dim)
-        val gC = GpuArray.getOrAlloc(result, setMemory = false)
+        val gC = context.cache.getOrAlloc(result, setMemory = false)
 
-        GpuArray.assertAllLoaded(gA, gB, gC)
+        context.cache.assertAllLoaded(gA, gB, gC)
 
         val zeroPtr = a.dtype.getZeroPointer()
         val onePtr = a.dtype.getOnePointer()
@@ -76,7 +77,7 @@ public object CudaLinAlg : LinAlg {
 
             // multiplication order is swapped because cublas uses column-major storage
             JCublas2.cublasGemmEx_new(
-                contextHandle, transB, transA, n, m, k,
+                context.handle, transB, transA, n, m, k,
                 onePtr, gB.deviceDataPtr, type, ldb, gA.deviceDataPtr, type, lda, zeroPtr, gC.deviceDataPtr, type, n,
                 computeType, CUBLAS_GEMM_DEFAULT
             )
@@ -88,9 +89,9 @@ public object CudaLinAlg : LinAlg {
                 m = n.also { n = m }
 
             if (a.dtype == DataType.FloatDataType)
-                JCublas2.cublasSgemv(contextHandle, transA, m, n, onePtr, gA.deviceDataPtr, m, gB.deviceDataPtr, 1, zeroPtr, gC.deviceDataPtr, 1)
+                JCublas2.cublasSgemv(context.handle, transA, m, n, onePtr, gA.deviceDataPtr, m, gB.deviceDataPtr, 1, zeroPtr, gC.deviceDataPtr, 1)
             else
-                JCublas2.cublasDgemv(contextHandle, transA, m, n, onePtr, gA.deviceDataPtr, m, gB.deviceDataPtr, 1, zeroPtr, gC.deviceDataPtr, 1)
+                JCublas2.cublasDgemv(context.handle, transA, m, n, onePtr, gA.deviceDataPtr, m, gB.deviceDataPtr, 1, zeroPtr, gC.deviceDataPtr, 1)
         }
 
         gC.copyFromGpu()
@@ -113,18 +114,56 @@ public object CudaLinAlg : LinAlg {
         val (consistentA, _) = getConsistentOrTransposedConsistent(a)
         val (consistentB, _) = getConsistentOrTransposedConsistent(b)
 
-        val gA = GpuArray.getOrAlloc(consistentA)
-        val gB = GpuArray.getOrAlloc(consistentB)
+        val context = CudaEngine.getContext()
 
-        GpuArray.assertAllLoaded(gA, gB)
+        val gA = context.cache.getOrAlloc(consistentA)
+        val gB = context.cache.getOrAlloc(consistentB)
+
+        context.cache.assertAllLoaded(gA, gB)
 
         val result = initMemoryView<T>(1, a.dtype)
         val resultPtr = a.dtype.getDataPointer(result)
         val type = a.dtype.getCudaType()
 
-        JCublas2.cublasDotEx(contextHandle, a.shape[0], gA.deviceDataPtr, type, 1, gB.deviceDataPtr, type, 1, resultPtr, type, type)
+        JCublas2.cublasDotEx(context.handle, a.shape[0], gA.deviceDataPtr, type, 1, gB.deviceDataPtr, type, 1, resultPtr, type, type)
 
         return result[0]
+    }
+
+    fun <T : Number, D : Dim2> add(a: MultiArray<T, D>, b: MultiArray<T, D>): NDArray<T, D> {
+        require(a.shape contentEquals b.shape)
+
+        if (!(a.dtype == DataType.DoubleDataType || a.dtype == DataType.FloatDataType)) {
+            throw UnsupportedOperationException("Unsupported data type: ${a.dtype}")
+        }
+
+        val context = CudaEngine.getContext()
+
+        val aIsConsistent = a.consistent
+        val bIsConsistent = b.consistent
+
+        val (x: MultiArray<T, D>, y: MultiArray<T, D>) =
+            if (aIsConsistent && !bIsConsistent)
+                a to b.deepCopy()
+            else if (!aIsConsistent && bIsConsistent)
+                b to a.deepCopy()
+            else if (!aIsConsistent && !bIsConsistent)
+                a.deepCopy() to b.deepCopy()
+            else
+                a to b.deepCopy()
+
+        val gX = context.cache.getOrAlloc(x)
+        val gY = context.cache.getOrAlloc(y)
+
+        val type = a.dtype.getCudaType()
+
+        JCublas2.cublasAxpyEx(context.handle, a.size, a.dtype.getOnePointer(), type,
+            gX.deviceDataPtr, type, 1,
+            gY.deviceDataPtr, type, 1, type)
+
+        gY.copyFromGpu()
+
+        return y as NDArray<T, D>
     }
 
     // Note: NDArray.transpose() only creates a lightweight view
