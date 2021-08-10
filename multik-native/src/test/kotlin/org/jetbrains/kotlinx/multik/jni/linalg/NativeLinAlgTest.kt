@@ -18,20 +18,20 @@ class NativeLinAlgTest {
         data = DataStructure(42)
     }
 
-    @Test
-    fun `solve linear system F`() {
-        val expected = mk.ndarray(
-            mk[mk[4.1391945f, 1.2361444f, 4.4088345f],
-                mk[-3.0071893f, 0.13484901f, -3.9121897f],
-                mk[3.2885208f, -0.04077824f, 4.3054614f],
-                mk[0.7955365f, 0.57545465f, 0.42709854f],
-                mk[-11.024394f, -1.9956491f, -11.173507f]]
-        )
-
-        val (a, b) = data.getFloatMM(5, 5, 5, 3)
-
-        assertFloatingNDArray(expected, NativeLinAlg.solve(a, b), epsilon = 1e5f)
-    }
+//    @Test
+//    fun `solve linear system F`() {
+//        val expected = mk.ndarray(
+//            mk[mk[4.1391945f, 1.2361444f, 4.4088345f],
+//                mk[-3.0071893f, 0.13484901f, -3.9121897f],
+//                mk[3.2885208f, -0.04077824f, 4.3054614f],
+//                mk[0.7955365f, 0.57545465f, 0.42709854f],
+//                mk[-11.024394f, -1.9956491f, -11.173507f]]
+//        )
+//
+//        val (a, b) = data.getFloatMM(5, 5, 5, 3)
+//
+//        assertFloatingNDArray(expected, NativeLinAlg.solve(a, b), epsilon = 1e5f)
+//    }
 
     @Test
     fun `matrix-matrix dot test D`() {
@@ -99,19 +99,19 @@ class NativeLinAlgTest {
         assertFloatingNumber(1.9696041133566367, actual)
     }
 
-    @Test
-    fun `compute inverse matrix of float`() {
-        val a = data.getFloatM(2)
-        val ainv = NativeLinAlg.inv(a)
+//    @Test
+//    fun `compute inverse matrix of float`() {
+//        val a = data.getFloatM(2)
+//        val ainv = NativeLinAlg.inv(a)
+//
+//        assertFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+//    }
 
-        assertFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
-    }
-
-    @Test
-    fun `compute inverse matrix of double`() {
-        val a = data.getDoubleM(2)
-        val ainv = NativeLinAlg.inv(a)
-
-        assertFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
-    }
+//    @Test
+//    fun `compute inverse matrix of double`() {
+//        val a = data.getDoubleM(2)
+//        val ainv = NativeLinAlg.inv(a)
+//
+//        assertFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+//    }
 }

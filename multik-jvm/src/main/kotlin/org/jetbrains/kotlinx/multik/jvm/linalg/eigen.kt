@@ -2,88 +2,49 @@ package org.jetbrains.kotlinx.multik.jvm
 
 import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.jvm.linalg.csqrt
+import org.jetbrains.kotlinx.multik.jvm.linalg.tempDot
+import org.jetbrains.kotlinx.multik.jvm.linalg.toComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.operations.mapMultiIndexed
 import kotlin.math.*
 
+/**
+ * computes eigenvalues of matrix a
+ */
+internal fun eigenvalues(a: MultiArray<ComplexDouble, D2>): MultiArray<ComplexDouble, D1> {
+    val (L, H) = upperHessenberg((a as NDArray<ComplexDouble, D2>))
+    val (upperTriangular, _) = qrShifted(H)
 
-fun signum(x: Double): Double {
-    return if(x >= 0) 1.0 else -1.0
+    val diagonal = mk.empty<ComplexDouble, D1>(upperTriangular.shape[0])
+    for (i in 0 until upperTriangular.shape[0]) {
+        diagonal[i] = upperTriangular[i, i]
+    }
+    return diagonal
+
 }
 
-// return (alpha, tau), mute x
-fun zlarfg(n: Int, _alpha: ComplexDouble, x: D1Array<ComplexDouble>): Pair<ComplexDouble, ComplexDouble> {
-    var alpha = _alpha
-    if (n <= 0) {
-        return Pair(alpha, ComplexDouble.zero)
-    }
-    var xnorm = 0.0
-    for (i in 0 until n - 1) {
-        xnorm += (x[i] * x[i].conjugate()).re
-    }
-    xnorm = sqrt(max(xnorm, 0.0))
-    var alphr = _alpha.re
-    var alphi = _alpha.im
 
-    if (xnorm == 0.0 && alphi == 0.0) {
-        return Pair(alpha, ComplexDouble.zero)
-    }
-
-    var beta = -signum(alphr) * sqrt(alphr * alphr + alphi * alphi + xnorm * xnorm)
-    val safmin = 2e-300
-    val rsafmn = 1.0 / safmin
-
-    var knt = 0
-    while (abs(beta) < safmin) {
-        knt++
-        // CALL zdscal( n-1, rsafmn, x, incx )
-        for (ii in 0 until n - 1) {
-            x[ii] *= rsafmn.toComplexDouble()
-        }
-        beta *= rsafmn
-        alphi *= rsafmn
-        alphr *= safmin
-
-        if (abs(beta) < safmin && knt < 20) {
-            continue
-        }
-
-        xnorm = 0.0
-        for (i in 0 until n - 1) {
-            xnorm += (x[i] * x[i].conjugate()).re
-        }
-        xnorm = sqrt(max(xnorm, 0.0))
-        alpha = ComplexDouble(alphr, alphi)
-        beta = -signum(alphr) * sqrt(alphr * alphr + alphi * alphi + xnorm * xnorm)
-    }
-
-    val tau = ComplexDouble((beta - alphr) / beta, -alphi / beta)
-    alpha = 1.0.toComplexDouble() / (alpha - beta)
-
-    for (ii in 0 until n - 1) {
-        x[ii] *= alpha
-    }
-    for (j in 1..knt) {
-        beta *= safmin
-    }
-    alpha = beta.toComplexDouble()
-
-    //println("x from zlarfg = \n$x")
-
-    return Pair(alpha, tau)
+/**
+ * returns Schur decomplosition:
+ * Q, R matrices: Q * R * Q.H = a
+ *
+ * Q is unitary: Q * Q.H = Id
+ * R is upper triangular
+ * where _.H is hermitian transpose
+ */
+internal fun schurDecomposition(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
+    val (L, H) = upperHessenberg((a as NDArray<ComplexDouble, D2>))
+    val (upperTriangular, L1) = qrShifted(H)
+    return Pair(tempDot(L, L1), upperTriangular)
 }
 
-fun cabs1(a: ComplexDouble): Double {
-    return a.re.absoluteValue + a.im.absoluteValue
-}
-
-fun csqrt(a: ComplexDouble): ComplexDouble {
-    val arg = a.angle()
-    val absval = a.abs()
-    return ComplexDouble(sqrt(absval) * cos(arg / 2), sqrt(absval) * sin(arg / 2))
-}
-
-fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> {
+/** implementation of qr algorithm
+ *
+ * matrix a must be in upper Hesenberg form
+ */
+fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
 
     val TRANS = -1
 
@@ -93,53 +54,23 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
         z[i, i] = 1.0.toComplexDouble()
     }
     val v = mk.empty<ComplexDouble, D1>(2)
-
     val dat1 = 3.0 / 4.0
     val kexsh = 10
     val n = a.shape[0]
-    val h = deepCopyMatrixTmp(a)
-
-    // *     .. Local Arrays ..
-    //       COMPLEX*16         V( 2 )
-    // *     .. Statement Function definitions ..
-    //       cabs1( cdum ) = abs( dble( cdum ) ) + abs( dimag( cdum ) )
-
-    // TODO: corner case
-    //       IF( ilo.EQ.ihi ) THEN
-    //          w( ilo ) = h( ilo, ilo )
-    //          RETURN
-    //       END IF
-
+    val h = a.deepCopy() as D2Array<ComplexDouble>
     val jlo = 1
     val jhi = n
-
     val ilo = 1
     val ihi = n
     val iloz = 1
     val ihiz = n
     val ldz = n
 
-    //       DO 20 I = ILO + 1, IHI
-    //         IF( DIMAG( H( I, I-1 ) ).NE.RZERO ) THEN
-    //*           ==== The following redundant normalization
-    //*           .    avoids problems with both gradual and
-    //*           .    sudden underflow in ABS(H(I,I-1)) ====
-    //            SC = H( I, I-1 ) / CABS1( H( I, I-1 ) )
-    //            SC = DCONJG( SC ) / ABS( SC )
-    //            H( I, I-1 ) = ABS( H( I, I-1 ) )
-    //            CALL ZSCAL( JHI-I+1, SC, H( I, I ), LDH )
-    //            CALL ZSCAL( MIN( JHI, I+1 )-JLO+1, DCONJG( SC ),
-    //     $                  H( JLO, I ), 1 )
-    //            IF( WANTZ )
-    //     $         CALL ZSCAL( IHIZ-ILOZ+1, DCONJG( SC ), Z( ILOZ, I ), 1 )
-    //         END IF
-    //   20 CONTINUE
 
     for (i in (ilo + 1)..ihi) {
         if (h[i + TRANS, i - 1 + TRANS].im != 0.0) {
             var sc = h[i + TRANS, i - 1 + TRANS] / cabs1(h[i + TRANS, i - 1 + TRANS])
             sc = sc.conjugate() / sc.abs()
-            //println(sc)
             h[i + TRANS, i - 1 + TRANS] = h[i + TRANS, i - 1 + TRANS].abs().toComplexDouble()
             for (ii in 0 until (jhi - i + 1)) {
                 h[i + TRANS, i + ii + TRANS] *= sc
@@ -152,11 +83,6 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
             }
         }
     }
-
-    //println("after normalization:")
-    //println(h)
-    //println("z = ")
-    //println(z)
 
     val nh = ihi - ilo + 1
     val nz = ihiz - iloz + 1
@@ -172,7 +98,6 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
     val i2 = n
     val itmax = 30 * max( 10, nh )
     var kdefl = 0
-//
 
 
     var i = ihi
@@ -184,10 +109,6 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
 
 
         for (its in 0..itmax) { // Look for a single small subdiagonal element
-            //println("its = ${its}")
-            //println(h)
-            //println("z = ")
-            //println(z)
             if(its == itmax) {
                 break
             }
@@ -222,8 +143,6 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
             }
             l = foundk
 
-            //println("l = $l")
-
             if (l > ilo) {
                 h[l + TRANS, l - 1 + TRANS] = ComplexDouble.zero
             }
@@ -237,26 +156,18 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
             var t = ComplexDouble.zero
             var u = ComplexDouble.zero
 
-            //println("          i = $i")
-
             when {
                 kdefl % (2 * kexsh) == 0 -> {
-                    //println("perform exceptional shift-1")
                     s = dat1*abs(h[i + TRANS, i - 1 + TRANS].re)
                     t = s.toComplexDouble() + h[i + TRANS, i + TRANS]
                 }
                 kdefl % kexsh == 0 -> {
-                    //println("perform exceptional shift-2")
                     s = dat1 * abs(h[l + 1 + TRANS, l + TRANS].re)
                     t = s.toComplexDouble() + h[l + TRANS, l + TRANS]
                 }
                 else -> {
-                    //println("perform wilkinson shift")
                     t = h[i + TRANS, i + TRANS]
                     u = csqrt(h[i - 1 + TRANS, i + TRANS]) * csqrt(h[i + TRANS, i - 1 + TRANS])
-                    //println("H[i - 1, i] = ${h[i - 1 + TRANS, i + TRANS]}")
-                    //println("sqrt(H[i - 1, i]) = ${csqrt(h[i - 1 + TRANS, i + TRANS])}")
-                    //println("FUUUUUUCKING SQRT U = $u")
                     s = cabs1(u)
                     if (s != 0.0) {
                         val x = 0.5.toComplexDouble() * (h[i - 1 + TRANS, i - 1 + TRANS] - t)
@@ -272,8 +183,6 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
                     }
                 }
             }
-            //println("found S = $s")
-            //println("found T = $t")
 
             // Look for two consecutive small subdiagonal elements
             var h11: ComplexDouble = 0.0.toComplexDouble()
@@ -297,33 +206,13 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
                 v[2 + TRANS] = h21
                 val h10 = h[m + TRANS, m - 1 + TRANS]
 
-                //             print *, 'now M = ', M
-                //            print *, 'looking for two small'
-                //            print *, 'checking condition'
-                //            print *, 'that', ABS( H10 )*ABS( H21 )
-                //            print *, 'less that', ULP*( CABS1( H11S )*
-                //     $          ( CABS1( H11 )+CABS1( H22 ) ) )
-                //            ! print *, 'less that', ULP * ( CABS1( H11S ) * ( CABS1(H11)+CABS1(H22)))
-                //            IF( ABS( H10 )*ABS( H21 ).LE.ULP*( CABS1( H11S )*
-                //     $          ( CABS1( H11 )+CABS1( H22 ) ) ) ) THEN
-                //                  print *, 'condition true'
-                //            ELSE
-                //                  print *, 'its not true'
-                //            END IF
-
-                //println("now M = $m\nloocking for small\nchecking condition\nthat ${h10.abs() * h21.abs() }")
-                //println("less that ${ulp*( cabs1( h11s )*( cabs1( h11 )+cabs1( h22 ) ) )}")
-
-
                 if (h10.abs() * h21.abs() <= ulp * (cabs1(h11s) * (cabs1(h11) + cabs1(h22)))) {
-                    //println("condition is true")
                     isFound = true
                     foundm = m
                     break
                 }
             }
             if (!isFound) {
-                //println("not found-482")
                 h11 = h[l + TRANS, l + TRANS]
                 h22 = h[l + 1 + TRANS, l + 1 + TRANS]
                 h11s = h11 - t
@@ -336,45 +225,20 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
                 v[2 + TRANS] = h21
                 foundm = l
             }
-            //println("foundm = $foundm")
-            //println("h11 = $h11")
-            //println("h11s = $h11s")
-            //println("h22 = $h22")
-            //println("h21 = $h21")
 
             // single-shift qr step
-            //println("###########################################################")
-            //println("applying single-shift qr step")
             for (k in foundm..(i - 1)) {
-                //println("---------------------------------------")
                 if (k > foundm) {
                     v[1 + TRANS] = h[k + TRANS, k - 1 + TRANS]
                     v[2 + TRANS] = h[k + 1 + TRANS, k - 1 + TRANS] //not sure!!!
                 }
-//                val vtranspose = mk.empty<ComplexDouble, D2>(2, 1)
-//                val extractBeta = mk.empty<ComplexDouble, D2>(2, 1)
-//                vtranspose[0, 0] = v[1 + TRANS]
-//                vtranspose[1, 0] = v[2 + TRANS]
-//                extractBeta[0, 0] = v[1 + TRANS]
-//                extractBeta[1, 0] = v[2 + TRANS]
 
                 // zlarfg( 2, v( 1 ), v( 2 ), 1, t1 )
-                val (v1, t1) = zlarfg(2, v[1 + TRANS], v[2 + TRANS..3 + TRANS] as D1Array<ComplexDouble>)
+                val (v1, t1) = computeHouseholderReflectorInline(2, v[1 + TRANS], v[2 + TRANS..3 + TRANS] as D1Array<ComplexDouble>)
                 v[1 + TRANS] = v1
 
-/*
-                var (tau, vec) = householderTransformComplexDouble(vtranspose) // tau.conj() is t1
-                var beta = applyHouseholderComplexDouble(extractBeta, tau, vec)[0, 0] //beta is v(1)
-                tau = tau.conjugate()
-*/
 
 
-
-
-                //println("K =  ${k}")
-                //println("TAU =  ${t1}")
-                //println("BETA =  ${v[1 + TRANS]}")
-                //println("V( 2 ) =  ${v[2 + TRANS]}")
 
                 if (k > foundm) {
                     h[k + TRANS, k - 1 + TRANS] = v[1 + TRANS]
@@ -383,41 +247,27 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
                 // t1 is tau
 
                 val v2 = v[2 + TRANS]
-                val t2 = (t1 * v2).re // not shure in not conjugate
+                val t2 = (t1 * v2).re
 
                 //  *           Apply G from the left to transform the rows of the matrix
                 // *           in columns K to I2.
-                //println("---INTER 100.0:\n$h")
-                //println("z = ")
-                //println(z)
                 for (j in k..i2) {
                     val sum = t1.conjugate() * h[k + TRANS, j + TRANS] + t2.toComplexDouble() * h[k + 1 + TRANS, j + TRANS]
                     h[k + TRANS, j + TRANS] = h[k + TRANS, j + TRANS] - sum
                     h[k + 1 + TRANS, j + TRANS] = h[k + 1 + TRANS, j + TRANS] - sum * v2
                 }
-                //println("---INTER 100.1:\n$h")
-                //println("z = ")
-                //println(z)
 
                 for (j in i1..min(k + 2, i)) {
                     val sum = t1 * h[j + TRANS, k + TRANS] + t2.toComplexDouble() * h[j + TRANS, k + 1 + TRANS]
                     h[j + TRANS, k + TRANS] -= sum
                     h[j + TRANS, k + 1 + TRANS] -= sum * v2.conjugate()
                 }
-                //println("---INTER 100.2:\n$h")
-                //println("z = ")
-                //println(z)
-                //println("before inter 100 Z = \n$z")
 
                 for (j in iloz..ihiz) {
                     val sum = t1 * z[j + TRANS, k + TRANS] + t2.toComplexDouble() * z[j + TRANS, k + 1 + TRANS]
                     z[j + TRANS, k + TRANS] -= sum
                     z[j + TRANS, k + 1 + TRANS] -= sum * v2.conjugate()
-                    //println("J, K, SUM, Z[J, k], Z[J, K + 1], v2, $j, $k, $sum, ${z[j + TRANS, k + TRANS]}, ${z[j + TRANS, k + 1 + TRANS]}, ${v2}")
                 }
-                //println("INTER 100:\n$h")
-                //println("z = ")
-                //println(z)
 
                 if (k == foundm && foundm > l) {
                     var temp = 1.0.toComplexDouble() - t1
@@ -445,19 +295,12 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
 
                 }
             }
-            //println("###########################################################")
-            //println(h)
-            //println("z = ")
-            //println(z)
             // Ensure that H(I,I-1) is real.
             var temp = h[i + TRANS, i - 1 + TRANS]
             if (temp.im != 0.0) {
-                //println("DOING NORMALIZATION")
-                //println("1) TEMP = ${temp}")
                 val rtemp = temp.abs().toComplexDouble()
                 h[i + TRANS, i - 1 + TRANS] = rtemp
                 temp /= rtemp
-                //println("2) TEMP = ${temp}")
                 if (i2 > i) {
                     for (ii in 0 until (i2 - i)) {
                         h[i + TRANS, i + 1 + ii + TRANS] *= temp.conjugate()
@@ -470,29 +313,89 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
                     z[iloz + ii + TRANS, i + TRANS] *= temp
                 }
             }
-            //println("AFTER NORMALIZATION:")
-            //println(h)
-            //println("z = ")
-            //println(z)
-
         }
 
         w[i + TRANS] = h[i + TRANS, i + TRANS]
         kdefl = 0
-        //println("current at 587 L = $l")
         i = l - 1
     }
 
-    //println("fact")
-    //println(tempDot(tempDot(z, h), z.conjTranspose()))
 
-    return Pair(w, z)
+    return Pair(h, z)
+}
+
+// return (alpha, tau), mute x
+fun computeHouseholderReflectorInline(n: Int, _alpha: ComplexDouble, x: D1Array<ComplexDouble>): Pair<ComplexDouble, ComplexDouble> {
+    var alpha = _alpha
+    if (n <= 0) {
+        return Pair(alpha, ComplexDouble.zero)
+    }
+    var xnorm = 0.0
+    for (i in 0 until n - 1) {
+        xnorm += (x[i] * x[i].conjugate()).re
+    }
+    xnorm = sqrt(max(xnorm, 0.0))
+    var alphr = _alpha.re
+    var alphi = _alpha.im
+
+    if (xnorm == 0.0 && alphi == 0.0) {
+        return Pair(alpha, ComplexDouble.zero)
+    }
+
+    var beta = -signum(alphr) * sqrt(alphr * alphr + alphi * alphi + xnorm * xnorm)
+    val safmin = 2e-300
+    val rsafmn = 1.0 / safmin
+
+    var knt = 0
+    while (abs(beta) < safmin) {
+        knt++
+        for (ii in 0 until n - 1) {
+            x[ii] *= rsafmn.toComplexDouble()
+        }
+        beta *= rsafmn
+        alphi *= rsafmn
+        alphr *= safmin
+
+        if (abs(beta) < safmin && knt < 20) {
+            continue
+        }
+
+        xnorm = 0.0
+        for (i in 0 until n - 1) {
+            xnorm += (x[i] * x[i].conjugate()).re
+        }
+        xnorm = sqrt(max(xnorm, 0.0))
+        alpha = ComplexDouble(alphr, alphi)
+        beta = -signum(alphr) * sqrt(alphr * alphr + alphi * alphi + xnorm * xnorm)
+    }
+
+    val tau = ComplexDouble((beta - alphr) / beta, -alphi / beta)
+    alpha = 1.0.toComplexDouble() / (alpha - beta)
+
+    for (ii in 0 until n - 1) {
+        x[ii] *= alpha
+    }
+    for (j in 1..knt) {
+        beta *= safmin
+    }
+    alpha = beta.toComplexDouble()
+
+
+    return Pair(alpha, tau)
+}
+
+// complex number L1 norm
+fun cabs1(a: ComplexDouble): Double {
+    return a.re.absoluteValue + a.im.absoluteValue
 }
 
 
-internal fun eig(a: MultiArray<ComplexDouble, D2>): Pair<MultiArray<ComplexDouble, D1>, MultiArray<ComplexDouble, D2>> {
-    val (L, H) = upperHessenberg((a as NDArray<ComplexDouble, D2>))
-
-    val (eigval, eigvec) = qrShifted(H)
-    return Pair(eigval, tempDot(L, eigvec))
+/** sign of number
+ *
+ * differs from builtin sign:
+ * signum(0) = 1
+ * sign(0) = 0
+ */
+fun signum(x: Double): Double {
+    return if(x >= 0) 1.0 else -1.0
 }
