@@ -8,7 +8,7 @@ import kotlin.math.*
 
 
 fun signum(x: Double): Double {
-    return if(x >= 0) 1.0 else -1.0;
+    return if(x >= 0) 1.0 else -1.0
 }
 
 // return (alpha, tau), mute x
@@ -30,7 +30,7 @@ fun zlarfg(n: Int, _alpha: ComplexDouble, x: D1Array<ComplexDouble>): Pair<Compl
     }
 
     var beta = -signum(alphr) * sqrt(alphr * alphr + alphi * alphi + xnorm * xnorm)
-    val safmin = 2e-292
+    val safmin = 2e-300
     val rsafmn = 1.0 / safmin
 
     var knt = 0
@@ -57,7 +57,7 @@ fun zlarfg(n: Int, _alpha: ComplexDouble, x: D1Array<ComplexDouble>): Pair<Compl
         beta = -signum(alphr) * sqrt(alphr * alphr + alphi * alphi + xnorm * xnorm)
     }
 
-    var tau = ComplexDouble((beta - alphr) / beta, -alphi / beta)
+    val tau = ComplexDouble((beta - alphr) / beta, -alphi / beta)
     alpha = 1.0.toComplexDouble() / (alpha - beta)
 
     for (ii in 0 until n - 1) {
@@ -67,6 +67,9 @@ fun zlarfg(n: Int, _alpha: ComplexDouble, x: D1Array<ComplexDouble>): Pair<Compl
         beta *= safmin
     }
     alpha = beta.toComplexDouble()
+
+    //println("x from zlarfg = \n$x")
+
     return Pair(alpha, tau)
 }
 
@@ -86,12 +89,15 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
 
     val w = mk.empty<ComplexDouble, D1>(a.shape[0])
     val z = mk.empty<ComplexDouble, D2>(a.shape[0], a.shape[0])
+    for (i in 0 until z.shape[0]) {
+        z[i, i] = 1.0.toComplexDouble()
+    }
     val v = mk.empty<ComplexDouble, D1>(2)
 
     val dat1 = 3.0 / 4.0
     val kexsh = 10
     val n = a.shape[0]
-    var h = deepCopyMatrixTmp(a)
+    val h = deepCopyMatrixTmp(a)
 
     // *     .. Local Arrays ..
     //       COMPLEX*16         V( 2 )
@@ -133,7 +139,7 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
         if (h[i + TRANS, i - 1 + TRANS].im != 0.0) {
             var sc = h[i + TRANS, i - 1 + TRANS] / cabs1(h[i + TRANS, i - 1 + TRANS])
             sc = sc.conjugate() / sc.abs()
-            println(sc)
+            //println(sc)
             h[i + TRANS, i - 1 + TRANS] = h[i + TRANS, i - 1 + TRANS].abs().toComplexDouble()
             for (ii in 0 until (jhi - i + 1)) {
                 h[i + TRANS, i + ii + TRANS] *= sc
@@ -147,16 +153,17 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
         }
     }
 
-    println("after normalization:")
-    println(h)
-    println()
+    //println("after normalization:")
+    //println(h)
+    //println("z = ")
+    //println(z)
 
     val nh = ihi - ilo + 1
     val nz = ihiz - iloz + 1
 
 
     val safemin = 1e-300
-    val safemax = 1e300 / safemin
+    val safemax = 1.0 / safemin
     val ulp = 1e-16 // precision
     val smlnum = safemin * (nh.toDouble() / ulp)
 
@@ -177,14 +184,15 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
 
 
         for (its in 0..itmax) { // Look for a single small subdiagonal element
-            println("its = ${its}")
-            println(h)
-            println()
+            //println("its = ${its}")
+            //println(h)
+            //println("z = ")
+            //println(z)
             if(its == itmax) {
                 break
             }
 
-            var foundk = 0
+            var foundk = l
             for (k in i downTo l + 1) {
                 foundk = k
                 if (cabs1(h[k + TRANS, k - 1 + TRANS]) < smlnum) {
@@ -214,40 +222,45 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
             }
             l = foundk
 
-            println("l = $l")
+            //println("l = $l")
 
             if (l > ilo) {
                 h[l + TRANS, l - 1 + TRANS] = ComplexDouble.zero
+            }
+            if (l >= i) {
                 break
             }
+
             kdefl++
 
             var s = 0.0
             var t = ComplexDouble.zero
             var u = ComplexDouble.zero
 
+            //println("          i = $i")
+
             when {
                 kdefl % (2 * kexsh) == 0 -> {
-                    println("perform exceptional shift-1")
+                    //println("perform exceptional shift-1")
                     s = dat1*abs(h[i + TRANS, i - 1 + TRANS].re)
                     t = s.toComplexDouble() + h[i + TRANS, i + TRANS]
                 }
                 kdefl % kexsh == 0 -> {
-                    println("perform exceptional shift-2")
+                    //println("perform exceptional shift-2")
                     s = dat1 * abs(h[l + 1 + TRANS, l + TRANS].re)
                     t = s.toComplexDouble() + h[l + TRANS, l + TRANS]
                 }
                 else -> {
-                    println("perform wilkinson shift")
+                    //println("perform wilkinson shift")
                     t = h[i + TRANS, i + TRANS]
                     u = csqrt(h[i - 1 + TRANS, i + TRANS]) * csqrt(h[i + TRANS, i - 1 + TRANS])
-                    println("H[i - 1, i] = ${h[i - 1 + TRANS, i + TRANS]}")
-                    println("sqrt(H[i - 1, i]) = ${csqrt(h[i - 1 + TRANS, i + TRANS])}")
-                    println("FUUUUUUCKING SQRT U = $u")
+                    //println("H[i - 1, i] = ${h[i - 1 + TRANS, i + TRANS]}")
+                    //println("sqrt(H[i - 1, i]) = ${csqrt(h[i - 1 + TRANS, i + TRANS])}")
+                    //println("FUUUUUUCKING SQRT U = $u")
                     s = cabs1(u)
                     if (s != 0.0) {
-                        var x = 0.5.toComplexDouble() * (h[i - 1 + TRANS, i - 1 + TRANS] - t)
-                        var sx = cabs1(x)
+                        val x = 0.5.toComplexDouble() * (h[i - 1 + TRANS, i - 1 + TRANS] - t)
+                        val sx = cabs1(x)
                         s = max(s, cabs1(x))
                         var y = s.toComplexDouble() * csqrt((x / s) * (x / s) + (u / s) * (u / s))
                         if (sx > 0.0) {
@@ -255,12 +268,12 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
                                 y = -y
                             }
                         }
-                        t = t - u * (u / (x + y))
+                        t -= u * (u / (x + y))
                     }
                 }
             }
-            println("found S = $s")
-            println("found T = $t")
+            //println("found S = $s")
+            //println("found T = $t")
 
             // Look for two consecutive small subdiagonal elements
             var h11: ComplexDouble = 0.0.toComplexDouble()
@@ -282,7 +295,7 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
                 h21 /= s
                 v[1 + TRANS] = h11s
                 v[2 + TRANS] = h21
-                var h10 = h[m + TRANS, m - 1 + TRANS]
+                val h10 = h[m + TRANS, m - 1 + TRANS]
 
                 //             print *, 'now M = ', M
                 //            print *, 'looking for two small'
@@ -298,23 +311,24 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
                 //                  print *, 'its not true'
                 //            END IF
 
-                println("now M = $m\nloocking for small\nchecking condition\nthat ${h10.abs() * h21.abs() }")
-                println("less that ${ulp*( cabs1( h11s )*( cabs1( h11 )+cabs1( h22 ) ) )}")
+                //println("now M = $m\nloocking for small\nchecking condition\nthat ${h10.abs() * h21.abs() }")
+                //println("less that ${ulp*( cabs1( h11s )*( cabs1( h11 )+cabs1( h22 ) ) )}")
 
 
                 if (h10.abs() * h21.abs() <= ulp * (cabs1(h11s) * (cabs1(h11) + cabs1(h22)))) {
-                    println("condition is true")
+                    //println("condition is true")
                     isFound = true
                     foundm = m
                     break
                 }
             }
             if (!isFound) {
-                println("not found-482")
+                //println("not found-482")
                 h11 = h[l + TRANS, l + TRANS]
                 h22 = h[l + 1 + TRANS, l + 1 + TRANS]
                 h11s = h11 - t
                 h21 = h[l + 1 + TRANS, l + TRANS].re.toComplexDouble()
+
                 s = cabs1(h11s) + h21.abs()
                 h11s /= s
                 h21 /= s
@@ -322,15 +336,17 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
                 v[2 + TRANS] = h21
                 foundm = l
             }
-            println("foundm = $foundm")
-            println("h11 = $h11")
-            println("h11s = $h11s")
-            println("h22 = $h22")
-            println("h21 = $h21")
+            //println("foundm = $foundm")
+            //println("h11 = $h11")
+            //println("h11s = $h11s")
+            //println("h22 = $h22")
+            //println("h21 = $h21")
 
             // single-shift qr step
-            println("applying single-shift qr step")
+            //println("###########################################################")
+            //println("applying single-shift qr step")
             for (k in foundm..(i - 1)) {
+                //println("---------------------------------------")
                 if (k > foundm) {
                     v[1 + TRANS] = h[k + TRANS, k - 1 + TRANS]
                     v[2 + TRANS] = h[k + 1 + TRANS, k - 1 + TRANS] //not sure!!!
@@ -343,7 +359,7 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
 //                extractBeta[1, 0] = v[2 + TRANS]
 
                 // zlarfg( 2, v( 1 ), v( 2 ), 1, t1 )
-                var (v1, t1) = zlarfg(2, v[1 + TRANS], v[2 + TRANS..3 + TRANS] as D1Array<ComplexDouble>)
+                val (v1, t1) = zlarfg(2, v[1 + TRANS], v[2 + TRANS..3 + TRANS] as D1Array<ComplexDouble>)
                 v[1 + TRANS] = v1
 
 /*
@@ -355,10 +371,10 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
 
 
 
-                println("K =  ${k}")
-                println("TAU =  ${t1}")
-                println("BETA =  ${v[1 + TRANS]}")
-                println("V( 2 ) =  ${v[2 + TRANS]}")
+                //println("K =  ${k}")
+                //println("TAU =  ${t1}")
+                //println("BETA =  ${v[1 + TRANS]}")
+                //println("V( 2 ) =  ${v[2 + TRANS]}")
 
                 if (k > foundm) {
                     h[k + TRANS, k - 1 + TRANS] = v[1 + TRANS]
@@ -371,76 +387,112 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D1Array<ComplexDouble>, D2
 
                 //  *           Apply G from the left to transform the rows of the matrix
                 // *           in columns K to I2.
+                //println("---INTER 100.0:\n$h")
+                //println("z = ")
+                //println(z)
                 for (j in k..i2) {
                     val sum = t1.conjugate() * h[k + TRANS, j + TRANS] + t2.toComplexDouble() * h[k + 1 + TRANS, j + TRANS]
                     h[k + TRANS, j + TRANS] = h[k + TRANS, j + TRANS] - sum
                     h[k + 1 + TRANS, j + TRANS] = h[k + 1 + TRANS, j + TRANS] - sum * v2
                 }
+                //println("---INTER 100.1:\n$h")
+                //println("z = ")
+                //println(z)
 
                 for (j in i1..min(k + 2, i)) {
                     val sum = t1 * h[j + TRANS, k + TRANS] + t2.toComplexDouble() * h[j + TRANS, k + 1 + TRANS]
                     h[j + TRANS, k + TRANS] -= sum
                     h[j + TRANS, k + 1 + TRANS] -= sum * v2.conjugate()
                 }
+                //println("---INTER 100.2:\n$h")
+                //println("z = ")
+                //println(z)
+                //println("before inter 100 Z = \n$z")
+
                 for (j in iloz..ihiz) {
                     val sum = t1 * z[j + TRANS, k + TRANS] + t2.toComplexDouble() * z[j + TRANS, k + 1 + TRANS]
                     z[j + TRANS, k + TRANS] -= sum
                     z[j + TRANS, k + 1 + TRANS] -= sum * v2.conjugate()
+                    //println("J, K, SUM, Z[J, k], Z[J, K + 1], v2, $j, $k, $sum, ${z[j + TRANS, k + TRANS]}, ${z[j + TRANS, k + 1 + TRANS]}, ${v2}")
                 }
+                //println("INTER 100:\n$h")
+                //println("z = ")
+                //println(z)
 
                 if (k == foundm && foundm > l) {
                     var temp = 1.0.toComplexDouble() - t1
                     temp /= temp.abs()
                     h[foundm + 1 + TRANS, foundm + TRANS] = h[foundm + 1 + TRANS, foundm + TRANS] * temp.conjugate()
-                    if (foundm + 2 <= i) {
+                    if (foundm + 2 < i) {
                         h[foundm + 2 + TRANS, foundm + 1 + TRANS] *= temp
-                        for (j in foundm..i) {
-                            if (j != foundm + 1) {
-                                if (i2 > j) {
-                                    //CALL zscal( i2-j, temp, h( j, j+1 ), ldh )
-                                    for (ii in 0 until (i2 - j)) {
-                                        h[j + TRANS, j + 1 + ii + TRANS] *= temp
-                                    }
+                    }
+                    for (j in foundm..i) {
+                        if (j != foundm + 1) {
+                            if (i2 > j) {
+                                //CALL zscal( i2-j, temp, h( j, j+1 ), ldh )
+                                for (ii in 0 until (i2 - j)) {
+                                    h[j + TRANS, j + 1 + ii + TRANS] *= temp
                                 }
-                                for (ii in 0 until (j - i1)) {
-                                    h[i1 + ii + TRANS, j + TRANS] *= temp.conjugate()
-                                }
-                                for (ii in 0 until nz) {
-                                    z[iloz + ii + TRANS, j + TRANS] *= temp.conjugate()
-                                }
+                            }
+                            for (ii in 0 until (j - i1)) {
+                                h[i1 + ii + TRANS, j + TRANS] *= temp.conjugate()
+                            }
+                            for (ii in 0 until nz) {
+                                z[iloz + ii + TRANS, j + TRANS] *= temp.conjugate()
                             }
                         }
                     }
-                }
-                // Ensure that H(I,I-1) is real.
-                var temp = h[i + TRANS, i - 1 + TRANS]
-                if (temp.im != 0.0) {
-                    val rtemp = temp.abs().toComplexDouble()
-                    h[i + TRANS, i - 1 + TRANS] = rtemp
-                    temp /= rtemp
-                    if (i2 > i) {
-                        for (ii in 0 until (i2 - i)) {
-                            h[i + TRANS, i + 1 + ii + TRANS] *= temp.conjugate()
-                        }
-                    }
-                    for (ii in 0 until (i - i1)) {
-                        h[i1 + ii + TRANS, i + TRANS] *= temp
-                    }
-                    for (ii in 0 until nz) {
-                        z[iloz + ii + TRANS, i + TRANS] *= temp
-                    }
+
                 }
             }
-            println(h)
+            //println("###########################################################")
+            //println(h)
+            //println("z = ")
+            //println(z)
+            // Ensure that H(I,I-1) is real.
+            var temp = h[i + TRANS, i - 1 + TRANS]
+            if (temp.im != 0.0) {
+                //println("DOING NORMALIZATION")
+                //println("1) TEMP = ${temp}")
+                val rtemp = temp.abs().toComplexDouble()
+                h[i + TRANS, i - 1 + TRANS] = rtemp
+                temp /= rtemp
+                //println("2) TEMP = ${temp}")
+                if (i2 > i) {
+                    for (ii in 0 until (i2 - i)) {
+                        h[i + TRANS, i + 1 + ii + TRANS] *= temp.conjugate()
+                    }
+                }
+                for (ii in 0 until (i - i1)) {
+                    h[i1 + ii + TRANS, i + TRANS] *= temp
+                }
+                for (ii in 0 until nz) {
+                    z[iloz + ii + TRANS, i + TRANS] *= temp
+                }
+            }
+            //println("AFTER NORMALIZATION:")
+            //println(h)
+            //println("z = ")
+            //println(z)
 
         }
 
         w[i + TRANS] = h[i + TRANS, i + TRANS]
-        println("l = $l")
         kdefl = 0
+        //println("current at 587 L = $l")
         i = l - 1
     }
+
+    //println("fact")
+    //println(tempDot(tempDot(z, h), z.conjTranspose()))
 
     return Pair(w, z)
 }
 
+
+internal fun eig(a: MultiArray<ComplexDouble, D2>): Pair<MultiArray<ComplexDouble, D1>, MultiArray<ComplexDouble, D2>> {
+    val (L, H) = upperHessenberg((a as NDArray<ComplexDouble, D2>))
+
+    val (eigval, eigvec) = qrShifted(H)
+    return Pair(eigval, tempDot(L, eigvec))
+}

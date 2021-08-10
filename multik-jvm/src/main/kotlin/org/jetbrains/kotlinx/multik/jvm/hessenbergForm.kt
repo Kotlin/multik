@@ -32,44 +32,34 @@ internal fun upperHessenberg(a: NDArray<ComplexDouble, D2>): Pair<D2Array<Comple
             }
         }
 
-        ans = deepCopyMatrixTmp(ans.transpose())
-        for (i1 in 0 until ans.shape[0]) {
-            for (j1 in 0 until ans.shape[1]) {
-                ans[i1, j1] = ans[i1, j1].conjugate()
-            }
-        }
+        ans = ans.conjTranspose()
 
-        submatrix = deepCopyMatrixTmp(ans[i..ans.shape[0], (i - 1)..ans.shape[1]])
+        submatrix = deepCopyMatrixTmp(ans[i..ans.shape[0], 0..ans.shape[1]])
         submatrix = applyHouseholderComplexDouble(submatrix, tau, v)
 
         //copy
         for (i1 in i until ans.shape[0]) {
-            for (j1 in i - 1 until ans.shape[1]) {
-                ans[i1, j1] = submatrix[i1 - i, j1 - (i - 1)]
-            }
-        }
-
-        ans = deepCopyMatrixTmp(ans.transpose())
-        for (i1 in 0 until ans.shape[0]) {
             for (j1 in 0 until ans.shape[1]) {
-                ans[i1, j1] = ans[i1, j1].conjugate()
+                ans[i1, j1] = submatrix[i1 - i, j1]
             }
         }
 
+        ans = ans.conjTranspose()
 
-        submatrix = applyHouseholderComplexDouble(id[i..id.shape[0], (i - 1)..id.shape[1]], tau, v)
+
+        submatrix = applyHouseholderComplexDouble(id[i..id.shape[0], 0..id.shape[1]], tau, v)
         for (i1 in i until id.shape[0]) {
-            for (j1 in (i - 1) until id.shape[1]) {
-                id[i1, j1] = submatrix[i1 - i, j1 - (i - 1)]
+            for (j1 in 0 until id.shape[1]) {
+                id[i1, j1] = submatrix[i1 - i, j1]
             }
         }
+        //println("-----------------------------debug ${i}------------------------------------")
+//        //println(ans)
+        //println(tempDot(tempDot(id.conjTranspose(), ans), id))
+        //println("---------------------------------------------------------------------------")
+
     }
-    id = deepCopyMatrixTmp(id.transpose())
-    for (i in 0 until a.shape[0]) {
-        for (j in 0 until a.shape[1]) {
-            id[i, j] = id[i, j].conjugate()
-        }
-    }
+    id = id.conjTranspose()
 
     return Pair(id, ans)
 }
