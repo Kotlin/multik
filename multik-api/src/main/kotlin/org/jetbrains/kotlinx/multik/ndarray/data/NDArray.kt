@@ -73,11 +73,12 @@ public class NDArray<T, D : Dimension> constructor(
         NDArray(this.data.copyOf(), this.offset, this.shape.copyOf(), this.strides.copyOf(), this.dtype, this.dim)
 
     override fun deepCopy(): NDArray<T, D> {
-        val data = initMemoryView<T>(this.size, this.dtype)
+        val data: MemoryView<T>
 
         if (consistent) {
-            this.data.copyInto(data)
+            data = this.data.copyOf()
         } else {
+            data = initMemoryView<T>(this.size, this.dtype)
             var index = 0
             for (el in this)
                 data[index++] = el
