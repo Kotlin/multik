@@ -3,6 +3,7 @@ package org.jetbrains.kotlinx.multik.ndarray.data
 import org.jetbrains.kotlinx.multik.api.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class SliceTest {
@@ -52,5 +53,36 @@ class SliceTest {
         assertEquals(mk.ndarray(mk[mk[mk[5]]]), a[0..1, 1, 0..1, 1..2..1])
         assertEquals(mk.ndarray(mk[mk[7]]), a[0..1, 1, 1, 1..2])
         assertEquals(mk.ndarrayOf(6), a[0..1, 1, 1, 0])
+    }
+
+    @Test
+    fun testBase() {
+        val a = mk.ndarrayOf(0, 1, 2, 3, 4, 5)
+        val b = a[1..5] as NDArray
+        val c = a[1..3] as NDArray
+        assertSame(null, a.base)
+        assertSame(a, b.base)
+        assertSame(a, c.base)
+
+        val a2 = a.reshape(3, 2)
+        val b2 = b.reshape(4, 1)
+        assertSame(a, a2.base)
+        assertSame(a, b2.base)
+
+        val d1 = b2.squeeze()
+        val d2 = d1.unsqueeze()
+        assertSame(a, d1.base)
+        assertSame(a, d2.base)
+
+        val e = b2.transpose()
+        assertSame(a, e.base)
+
+        val f = a2[1]
+        assertSame(a, f.base)
+
+        val x = b2.deepCopy()
+        val y = b2.clone()
+        assertSame(null, x.base)
+        assertSame(null, y.base)
     }
 }
