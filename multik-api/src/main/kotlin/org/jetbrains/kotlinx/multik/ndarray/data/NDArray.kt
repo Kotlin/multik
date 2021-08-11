@@ -25,7 +25,8 @@ public class NDArray<T, D : Dimension> constructor(
     public override val shape: IntArray,
     public override val strides: IntArray = computeStrides(shape),
     public override val dtype: DataType,
-    public override val dim: D
+    public override val dim: D,
+    public override val base: MultiArray<T, out Dimension>? = null
 ) : MutableMultiArray<T, D> {
 
     init {
@@ -107,7 +108,7 @@ public class NDArray<T, D : Dimension> constructor(
         return if (this.dim.d == 1 && this.shape.first() == dim1) {
             this as D1Array<T>
         } else {
-            D1Array(this.data, this.offset, intArrayOf(dim1), dtype = this.dtype, dim = D1)
+            D1Array(this.data, this.offset, intArrayOf(dim1), dtype = this.dtype, dim = D1, base = base ?: this)
         }
     }
 
@@ -119,7 +120,7 @@ public class NDArray<T, D : Dimension> constructor(
         return if (this.shape.contentEquals(newShape)) {
             this as D2Array<T>
         } else {
-            D2Array(this.data, this.offset, newShape, dtype = this.dtype, dim = D2)
+            D2Array(this.data, this.offset, newShape, dtype = this.dtype, dim = D2, base = base ?: this)
         }
     }
 
@@ -131,7 +132,7 @@ public class NDArray<T, D : Dimension> constructor(
         return if (this.shape.contentEquals(newShape)) {
             this as D3Array<T>
         } else {
-            D3Array(this.data, this.offset, newShape, dtype = this.dtype, dim = D3)
+            D3Array(this.data, this.offset, newShape, dtype = this.dtype, dim = D3, base = base ?: this)
         }
     }
 
@@ -143,7 +144,7 @@ public class NDArray<T, D : Dimension> constructor(
         return if (this.shape.contentEquals(newShape)) {
             this as D4Array<T>
         } else {
-            D4Array(this.data, this.offset, newShape, dtype = this.dtype, dim = D4)
+            D4Array(this.data, this.offset, newShape, dtype = this.dtype, dim = D4, base = base ?: this)
         }
     }
 
@@ -157,7 +158,7 @@ public class NDArray<T, D : Dimension> constructor(
         return if (this.shape.contentEquals(newShape)) {
             this as NDArray<T, DN>
         } else {
-            NDArray(this.data, this.offset, newShape, dtype = this.dtype, dim = DN(newShape.size))
+            NDArray(this.data, this.offset, newShape, dtype = this.dtype, dim = DN(newShape.size), base = base ?: this)
         }
     }
 
@@ -179,7 +180,7 @@ public class NDArray<T, D : Dimension> constructor(
                 newStrides[i] = this.strides[axis]
             }
         }
-        return NDArray(this.data, this.offset, newShape, newStrides, this.dtype, this.dim)
+        return NDArray(this.data, this.offset, newShape, newStrides, this.dtype, this.dim, base = base ?: this)
     }
 
     override fun squeeze(vararg axes: Int): NDArray<T, DN> {
@@ -190,7 +191,7 @@ public class NDArray<T, D : Dimension> constructor(
             axes.toList()
         }
         val newShape = this.shape.sliceArray(this.shape.indices - cutAxes)
-        return NDArray(this.data, this.offset, newShape, dtype = this.dtype, dim = DN(newShape.size))
+        return NDArray(this.data, this.offset, newShape, dtype = this.dtype, dim = DN(newShape.size), base = base ?: this)
     }
 
     override fun unsqueeze(vararg axes: Int): NDArray<T, DN> {
@@ -203,7 +204,8 @@ public class NDArray<T, D : Dimension> constructor(
             this.offset,
             newShape.toIntArray(),
             dtype = this.dtype,
-            dim = DN(newShape.size)
+            dim = DN(newShape.size),
+            base = base ?: this
         )
     }
 
@@ -258,7 +260,7 @@ public class NDArray<T, D : Dimension> constructor(
         if (this.dim.d == -1) throw Exception("Array dimension is undefined")
         if (this.dim.d > 4) return this as NDArray<T, DN>
 
-        return NDArray(this.data, this.offset, this.shape, this.strides, this.dtype, DN(this.dim.d))
+        return NDArray(this.data, this.offset, this.shape, this.strides, this.dtype, DN(this.dim.d), base = base ?: this)
     }
 
     override fun equals(other: Any?): Boolean {
