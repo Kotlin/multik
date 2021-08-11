@@ -164,6 +164,7 @@ public class NDArray<T, D : Dimension> constructor(
         require(axes.isEmpty() || axes.size == dim.d) { "All dimensions must be indicated." }
         for (axis in axes) require(axis in 0 until dim.d) { "Dimension must be from 0 to ${dim.d}." }
         require(axes.toSet().size == axes.size) { "The specified dimensions must be unique." }
+        if (dim.d == 1) return NDArray(this.data, this.offset, this.shape, this.strides, this.dtype, this.dim)
         val newShape: IntArray
         val newStrides: IntArray
         if (axes.isEmpty()) {
