@@ -1,0 +1,73 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+
+ext {
+    openblasBranch = 'v0.3.15'
+    openblasRoot = '0.3.15'
+}
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    dependencies {
+        classpath 'de.undercouch:gradle-download-task:4.1.2'
+    }
+}
+
+apply plugin: 'de.undercouch.download'
+
+static boolean isWindows() {
+    return System.getProperty('os.name').toLowerCase().contains('windows')
+}
+
+
+task downloadOpenBlas(type: Download) {
+    if (!isWindows()) {
+        src "https://github.com/xianyi/OpenBLAS/archive/${openblasBranch}.zip"
+    } else {
+        src "https://github.com/xianyi/OpenBLAS/releases/download/${openblasBranch}/OpenBLAS-${openblasRoot}-x64.zip"
+    }
+    dest new File(buildDir, "openblas.${openblasBranch}.zip")
+    overwrite false
+}
+
+task unzipOpenBlas(dependsOn: downloadOpenBlas, type: Copy) {
+    from zipTree(downloadOpenBlas.dest)
+    if (!isWindows()) {
+        into buildDir
+    } else {
+        outputs.dir new File(buildDir as File, "openblas")
+        into "$buildDir/openblas"
+    }
+}
+
+def nullOutputStream = new OutputStream() {
+    @Override
+    void write(int b) {}
+}
+
+task installOpenBlas(dependsOn: unzipOpenBlas) {
+    if (!isWindows()) {
+        def wrkDirOpenBlas = "$buildDir/OpenBLAS-${openblasRoot}"
+        outputs.dir new File(buildDir, 'openblas')
+        doLast {
+            exec {
+                workingDir wrkDirOpenBlas
+                standardOutput = nullOutputStream
+                commandLine("make", "clean")
+                commandLine("make", "DYNAMIC_ARCH=1", "NUM_THREADS=64")
+            }
+            exec {
+                workingDir wrkDirOpenBlas
+                standardOutput = nullOutputStream
+                commandLine("make", "install", "PREFIX=$buildDir/openblas")
+            }
+        }
+    }
+}

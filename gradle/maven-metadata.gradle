@@ -1,0 +1,29 @@
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "JetBrains"
+            name "Jetbrains Team"
+            organization "JetBrains"
+            organizationUrl "https://www.jetbrains.com"
+        }
+    }
+
+    scm {
+        url "https://github.com/Kotlin/multik"
+    }
+}
+
+project.ext.configureMavenCentralMetadata = { pom ->
+    def root = asNode()
+    root.appendNode('name', project.name)
+    root.appendNode('description', 'Multidimensional array library for Kotlin.')
+    root.appendNode('url', 'https://github.com/Kotlin/multik')
+    root.children().last() + pomConfig
+}
