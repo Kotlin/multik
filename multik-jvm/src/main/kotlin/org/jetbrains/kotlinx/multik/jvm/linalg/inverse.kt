@@ -15,3 +15,4 @@ internal fun invFloat(a: MultiArray<Float, D2>): D2Array<Float> {
     requireSquare(a)
     return solveFloat(a, mk.identity(a.shape[0]))
 }
+
