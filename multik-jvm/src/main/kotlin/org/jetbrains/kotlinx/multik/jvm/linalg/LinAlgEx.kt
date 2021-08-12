@@ -40,27 +40,27 @@ public object JvmLinAlgEx : LinAlgEx {
     }
 
     override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
+        return dotMatrix(a, b)
     }
 
     override fun <T : Complex> dotMMComplex(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
+        return dotMatrixComplex(a, b)
     }
 
     override fun <T : Number> dotMV(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> {
-        TODO("Not yet implemented")
+        return dotMatrixToVector(a, b)
     }
 
     override fun <T : Complex> dotMVComplex(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> {
-        TODO("Not yet implemented")
+        return dotMatrixToVectorComplex(a, b)
     }
 
     override fun <T : Number> dotVV(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
-        TODO("Not yet implemented")
+        return dotVecToVec(a, b)
     }
 
     override fun <T : Complex> dotVVComplex(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
-        TODO("Not yet implemented")
+        return dotVecToVecComplex(a, b)
     }
 
 }
