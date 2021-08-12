@@ -15,7 +15,11 @@ public object JvmLinAlgEx : LinAlgEx {
         invFloat(mat)
 
     override fun <T : Complex> invC(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
+        return when(mat.dtype) {
+            DataType.ComplexDoubleDataType -> invComplexDouble(mat as MultiArray<ComplexDouble, D2>)
+            DataType.ComplexFloatDataType -> invComplexFloat(mat as MultiArray<ComplexFloat, D2>)
+            else -> throw UnsupportedOperationException("expected complex matrix")
+        } as NDArray<T, D2>
     }
 
     override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> {
