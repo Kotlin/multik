@@ -58,8 +58,8 @@ class SliceTest {
     @Test
     fun testBase() {
         val a = mk.ndarrayOf(0, 1, 2, 3, 4, 5)
-        val b = a[1..5] as NDArray
-        val c = a[1..3] as NDArray
+        val b = a[1..5]
+        val c = a[1..3]
         assertSame(null, a.base)
         assertSame(a, b.base)
         assertSame(a, c.base)
@@ -84,5 +84,8 @@ class SliceTest {
         val y = b2.clone()
         assertSame(null, x.base)
         assertSame(null, y.base)
+
+        val z = a2.asDNArray()
+        assertSame(a, z.base)
     }
 }
