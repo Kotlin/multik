@@ -89,7 +89,7 @@ public interface ImmutableMemoryView<T> : Iterable<T> {
  * @property indices indices of [data].
  * @property lastIndex last index in [data].
  */
-public sealed class MemoryView<T> : ImmutableMemoryView<T> {
+public abstract class MemoryView<T> : ImmutableMemoryView<T> {
     public abstract var indices: IntRange
 
     public abstract var lastIndex: Int

@@ -8,11 +8,41 @@ import org.jetbrains.kotlinx.multik.cuda.roundDouble
 import org.jetbrains.kotlinx.multik.cuda.roundFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.rangeTo
+import org.junit.BeforeClass
+import org.slf4j.simple.SimpleLogger
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class CudaLinAlgTest {
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun before() {
+            System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE")
+        }
+    }
+
+    @Test
+    fun `slice caching test`() {
+        val mat1 = mk.ndarray(
+            mk[
+                    mk[1.0, 2.0, 3.0],
+                    mk[4.0, 5.0, 6.0],
+                    mk[7.0, 8.0, 9.0],
+            ]
+        )
+
+        val slice1 = mat1[0..2]
+        val slice2 = mat1[1..3].transpose()
+
+        CudaEngine.runWithCuda {
+            repeat(50) {
+                CudaLinAlg.dot(slice1, slice2)
+            }
+        }
+    }
+
     @Test
     fun `matrix-matrix add consistent`() {
         val mat1 = mk.ndarray(
@@ -24,15 +54,17 @@ class CudaLinAlgTest {
 
         val mat2 = mk.ndarray(
             mk[
-                    mk[3.0, 4.0, 5.0],
+                    mk[-1.0, -2.0, -3.0],
                     mk[100.0, 110.0, 120.0]]
         )
 
         val expected = mk.ndarray(
             mk[
-                    mk[4.0, 6.0, 8.0],
+                    mk[0.0, 0.0, 0.0],
                     mk[104.0, 115.0, 126.0]]
         )
+
+        val vecExpected = mk.ndarray(mk[2.0, 4.0, 6.0])
 
         CudaEngine.runWithCuda {
             val res1 = CudaLinAlg.add(mat1, mat2)
@@ -40,11 +72,22 @@ class CudaLinAlgTest {
             val mat3 = mat2.transpose().deepCopy()
 
             val res2 = CudaLinAlg.add(mat3.transpose(), mat1)
-            val res3 = CudaLinAlg.add(mat1.transpose(), mat2.transpose())
+            val res3 = CudaLinAlg.add(mat1, mat3.transpose())
+            val res4 = CudaLinAlg.add(mat1.transpose(), mat2.transpose()).transpose()
 
             assertEquals(expected, roundDouble(res1))
             assertEquals(expected, roundDouble(res2))
-            assertEquals(expected.transpose(), roundDouble(res3))
+            assertEquals(expected, roundDouble(res3))
+            assertEquals(expected, roundDouble(res4))
+
+            val vec1 = mat1[0]
+            val vec2 = vec1[0..3..2]
+            val vecRes1 = CudaLinAlg.add(vec1, vec1)
+            val vecRes2 = CudaLinAlg.add(vec2, vec2)
+
+            assertEquals(vecExpected, roundDouble(vecRes1))
+            assertEquals(vecExpected[0..3..2], roundDouble(vecRes2))
+
         }
     }
 

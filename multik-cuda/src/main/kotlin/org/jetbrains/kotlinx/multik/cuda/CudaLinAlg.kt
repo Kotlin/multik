@@ -7,6 +7,8 @@ package org.jetbrains.kotlinx.multik.cuda
 import jcuda.jcublas.JCublas2
 import jcuda.jcublas.cublasGemmAlgo.CUBLAS_GEMM_DEFAULT
 import jcuda.jcublas.cublasOperation
+import jcuda.runtime.JCuda
+import jcuda.runtime.cudaMemcpyKind
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.ndarray.data.*
@@ -45,16 +47,12 @@ public object CudaLinAlg : LinAlg {
 
         val cSize = shape.reduce(Int::times)
 
-        val (consistentA, transposedA) = getConsistentOrTransposedConsistent(a)
-        val (consistentB, transposedB) = getConsistentOrTransposedConsistent(b)
-
         val context = CudaEngine.getContext()
 
-        val gA = context.cache.getOrAlloc(consistentA)
-        val gB = context.cache.getOrAlloc(consistentB)
+        val gA = context.cache.getOrAlloc(a)
+        val gB = context.cache.getOrAlloc(b)
 
-        val result = NDArray(initMemoryView<T>(cSize, a.dtype), shape = shape, dtype = a.dtype, dim = b.dim)
-        val gC = context.cache.getOrAlloc(result, setMemory = false)
+        val (result, gC) = context.cache.alloc<T, D>(cSize, a.dtype, shape, b.dim)
 
         context.cache.assertAllLoaded(gA, gB, gC)
 
@@ -66,35 +64,32 @@ public object CudaLinAlg : LinAlg {
             val n = b.shape[1]
             val k = a.shape[1]
 
-            val transA = if (transposedA) cublasOperation.CUBLAS_OP_T else cublasOperation.CUBLAS_OP_N
-            val transB = if (transposedB) cublasOperation.CUBLAS_OP_T else cublasOperation.CUBLAS_OP_N
+            val transA = if (gA.transposed) cublasOperation.CUBLAS_OP_T else cublasOperation.CUBLAS_OP_N
+            val transB = if (gB.transposed) cublasOperation.CUBLAS_OP_T else cublasOperation.CUBLAS_OP_N
 
-            val lda = if (transposedA) m else k
-            val ldb = if (transposedB) k else n
+            val lda = if (gA.transposed) m else k
+            val ldb = if (gB.transposed) k else n
 
             val type = a.dtype.getCudaType()
             val computeType = a.dtype.getDefaultComputeType()
 
             // multiplication order is swapped because cublas uses column-major storage
-            JCublas2.cublasGemmEx_new(
+            checkResult(JCublas2.cublasGemmEx_new(
                 context.handle, transB, transA, n, m, k,
                 onePtr, gB.deviceDataPtr, type, ldb, gA.deviceDataPtr, type, lda, zeroPtr, gC.deviceDataPtr, type, n,
                 computeType, CUBLAS_GEMM_DEFAULT
-            )
+            ))
         } else {
-            val transA = if (transposedA) cublasOperation.CUBLAS_OP_N else cublasOperation.CUBLAS_OP_T
+            val transA = if (gA.transposed) cublasOperation.CUBLAS_OP_N else cublasOperation.CUBLAS_OP_T
 
             var (m, n) = a.shape
-            if (!transposedA)
+            if (!gA.transposed)
                 m = n.also { n = m }
 
-            if (a.dtype == DataType.FloatDataType)
-                JCublas2.cublasSgemv(context.handle, transA, m, n, onePtr, gA.deviceDataPtr, m, gB.deviceDataPtr, 1, zeroPtr, gC.deviceDataPtr, 1)
-            else
-                JCublas2.cublasDgemv(context.handle, transA, m, n, onePtr, gA.deviceDataPtr, m, gB.deviceDataPtr, 1, zeroPtr, gC.deviceDataPtr, 1)
-        }
+            val func = if (a.dtype == DataType.DoubleDataType) JCublas2::cublasDgemv else JCublas2::cublasSgemv
 
-        gC.copyFromGpu()
+            checkResult(func(context.handle, transA, m, n, onePtr, gA.deviceDataPtr, m, gB.deviceDataPtr, 1, zeroPtr, gC.deviceDataPtr, 1))
+        }
 
         return result
     }
@@ -111,13 +106,10 @@ public object CudaLinAlg : LinAlg {
             throw UnsupportedOperationException("Unsupported data type: ${a.dtype}")
         }
 
-        val (consistentA, _) = getConsistentOrTransposedConsistent(a)
-        val (consistentB, _) = getConsistentOrTransposedConsistent(b)
-
         val context = CudaEngine.getContext()
 
-        val gA = context.cache.getOrAlloc(consistentA)
-        val gB = context.cache.getOrAlloc(consistentB)
+        val gA = context.cache.getOrAlloc(a)
+        val gB = context.cache.getOrAlloc(b)
 
         context.cache.assertAllLoaded(gA, gB)
 
@@ -125,7 +117,7 @@ public object CudaLinAlg : LinAlg {
         val resultPtr = a.dtype.getDataPointer(result)
         val type = a.dtype.getCudaType()
 
-        JCublas2.cublasDotEx(context.handle, a.shape[0], gA.deviceDataPtr, type, 1, gB.deviceDataPtr, type, 1, resultPtr, type, type)
+        checkResult(JCublas2.cublasDotEx(context.handle, a.shape[0], gA.deviceDataPtr, type, 1, gB.deviceDataPtr, type, 1, resultPtr, type, type))
 
         return result[0]
     }
@@ -139,53 +131,45 @@ public object CudaLinAlg : LinAlg {
 
         val context = CudaEngine.getContext()
 
-        val aIsConsistent = a.consistent
-        val bIsConsistent = b.consistent
+        val gA = context.cache.getOrAlloc(a)
+        val gB = context.cache.getOrAlloc(b)
 
-        val (x: MultiArray<T, D>, y: MultiArray<T, D>) =
-            if (aIsConsistent && !bIsConsistent)
-                a to b.deepCopy()
-            else if (!aIsConsistent && bIsConsistent)
-                b to a.deepCopy()
-            else if (!aIsConsistent && !bIsConsistent)
-                a.deepCopy() to b.deepCopy()
-            else
-                a to b.deepCopy()
+        val (result, gC) = context.cache.alloc<T, D>(a.size, a.dtype, a.shape, a.dim)
 
-        val gX = context.cache.getOrAlloc(x)
-        val gY = context.cache.getOrAlloc(y)
+        context.cache.assertAllLoaded(gA, gB, gC)
 
-        val type = a.dtype.getCudaType()
+        if (a.dim.d == 2) {
+            val transA = if (gA.transposed) cublasOperation.CUBLAS_OP_T else cublasOperation.CUBLAS_OP_N
+            val transB = if (gB.transposed) cublasOperation.CUBLAS_OP_T else cublasOperation.CUBLAS_OP_N
 
-        JCublas2.cublasAxpyEx(context.handle, a.size, a.dtype.getOnePointer(), type,
-            gX.deviceDataPtr, type, 1,
-            gY.deviceDataPtr, type, 1, type)
+            val one = a.dtype.getOnePointer()
 
-        gY.copyFromGpu()
+            val ldA = if (gA.transposed) a.shape[0] else a.shape[1]
+            val ldB = if (gB.transposed) b.shape[0] else b.shape[1]
 
-        return y as NDArray<T, D>
-    }
+            val func = if (a.dtype == DataType.DoubleDataType) JCublas2::cublasDgeam else JCublas2::cublasSgeam
 
-    // Note: NDArray.transpose() only creates a lightweight view
-    private fun <T : Number, D : Dim2> isTransposedConsistent(x: MultiArray<T, D>): Boolean =
-        x.transpose().consistent
+            checkResult(
+                func(
+                    context.handle,
+                    transA, transB, a.shape[1], a.shape[0],
+                    one, gA.deviceDataPtr, ldA,
+                    one, gB.deviceDataPtr, ldB,
+                    gC.deviceDataPtr, a.shape[1]
+                )
+            )
+        } else {
+            val type = a.dtype.getCudaType()
 
+            checkResult(JCuda.cudaMemcpy(gC.deviceDataPtr, gB.deviceDataPtr, gB.byteSize, cudaMemcpyKind.cudaMemcpyDeviceToDevice))
 
-    /**
-     * Helper function used to get consistent data from [MultiArray]
-     *
-     * First value in returned pair - [MultiArray] that is consistent or
-     * consistent when transposed
-     *
-     * Second value in returned pair - transposition flag - indicates whether
-     * returned [MultiArray] should be transposed in order to be consistent
-     *
-     * @return pair of [MultiArray] and transposition flag
-     */
-    private fun <T : Number, D : Dim2> getConsistentOrTransposedConsistent(x: MultiArray<T, D>): Pair<MultiArray<T, D>, Boolean> =
-        when {
-            x.consistent -> x to false
-            x.dim.d == 2 && isTransposedConsistent(x) -> x to true
-            else -> x.deepCopy() to false
+            checkResult(JCublas2.cublasAxpyEx(
+                context.handle, a.size, a.dtype.getOnePointer(), type,
+                gA.deviceDataPtr, type, 1,
+                gC.deviceDataPtr, type, 1, type
+            ))
         }
+
+        return result
+    }
 }
