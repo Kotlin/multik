@@ -6,14 +6,10 @@ package org.jetbrains.kotlinx.multik_jvm.linAlg
 
 
 import org.jetbrains.kotlinx.multik.api.*
-import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.linalg.dot
-import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlg
-import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx
+import org.jetbrains.kotlinx.multik.jvm.linalg.*
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solve
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solveC
-import org.jetbrains.kotlinx.multik.jvm.linalg.plu
-import org.jetbrains.kotlinx.multik.jvm.linalg.solveComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
@@ -25,7 +21,6 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
-import kotlin.system.exitProcess
 import kotlin.test.*
 
 class JvmLinAlgTest {
@@ -72,10 +67,12 @@ class JvmLinAlgTest {
 
     @Test
     fun `test plu`() {
+
+        // Number case
         val procedurePrecision = 1e-5
         val rnd = Random(424242)
 
-        val iters = 1000
+        val iters = 10000
         val sideFrom = 1
         val sideUntil = 100
         for (all in 0 until iters) {
@@ -89,6 +86,39 @@ class JvmLinAlgTest {
             assertTriangular(U, isLowerTriangular = false, requireUnitsOnDiagonal = false)
             assertClose(JvmLinAlg.dot(P, JvmLinAlg.dot(L, U)), a, procedurePrecision)
         }
+
+        // Complex case
+        //ComplexDouble
+        for (all in 0 until iters) {
+            val m = rnd.nextInt(sideFrom, sideUntil)
+            val n = rnd.nextInt(sideFrom, sideUntil)
+
+            val aRe = mk.d2array<Double>(m, n) { rnd.nextDouble() }
+            val aIm = mk.d2array<Double>(m, n) { rnd.nextDouble() }
+            val a = composeComplexDouble(aRe, aIm);
+
+            val (P, L, U) = pluC(a)
+            assertTriangularComplexDouble(L, isLowerTriangular = true, requireUnitsOnDiagonal = true)
+            assertTriangularComplexDouble(U, isLowerTriangular = false, requireUnitsOnDiagonal = false)
+            assertCloseComplex(JvmLinAlgEx.dotMMComplex(P, JvmLinAlgEx.dotMMComplex(L, U)), a, procedurePrecision)
+        }
+        //ComplexFloat
+        for (all in 0 until iters) {
+            val m = rnd.nextInt(sideFrom, sideUntil)
+            val n = rnd.nextInt(sideFrom, sideUntil)
+
+            val aRe = mk.d2array<Float>(m, n) { rnd.nextFloat() }
+            val aIm = mk.d2array<Float>(m, n) { rnd.nextFloat() }
+            val a = composeComplexFloat(aRe, aIm);
+
+            val (P, L, U) = pluC(a)
+
+
+            assertTriangularComplexFloat(L, isLowerTriangular = true, requireUnitsOnDiagonal = true)
+            assertTriangularComplexFloat(U, isLowerTriangular = false, requireUnitsOnDiagonal = false)
+            assertCloseComplex(JvmLinAlgEx.dotMMComplex(P, JvmLinAlgEx.dotMMComplex(L, U)), a, procedurePrecision)
+        }
+
     }
 
     private fun <T : Number> assertTriangular(a: MultiArray<T, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
@@ -112,8 +142,49 @@ class JvmLinAlgTest {
         }
     }
 
+    private fun assertTriangularComplexDouble(a: MultiArray<ComplexDouble, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
+        if (requireUnitsOnDiagonal) {
+            for (i in 0 until min(a.shape[0], a.shape[1])) {
+                if (a[i, i] != ComplexDouble.one)  throw AssertionError("element at position [$i, $i] of matrix \n$a\n is not unit")
+            }
+        }
+        if (isLowerTriangular) {
+            for (i in 0 until min(a.shape[0], a.shape[1])) {
+                for (j in i + 1 until a.shape[1]) {
+                    if(a[i, j] != ComplexDouble.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+                }
+            }
+        } else {
+            for (i in 0 until min(a.shape[0], a.shape[1])) {
+                for (j in 0 until i) {
+                    if(a[i, j] != ComplexDouble.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+                }
+            }
+        }
+    }
 
-
+    private fun assertTriangularComplexFloat(a: MultiArray<ComplexFloat, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
+        if (requireUnitsOnDiagonal) {
+            for (i in 0 until min(a.shape[0], a.shape[1])) {
+                if (a[i, i] != ComplexFloat.one)  throw AssertionError("element at position [$i, $i] of matrix \n$a\n is not unit")
+            }
+        }
+        if (isLowerTriangular) {
+            for (i in 0 until min(a.shape[0], a.shape[1])) {
+                for (j in i + 1 until a.shape[1]) {
+                    if(a[i, j] != ComplexFloat.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+                }
+            }
+        } else {
+            for (i in 0 until min(a.shape[0], a.shape[1])) {
+                for (j in 0 until i) {
+                    if(a[i, j] != ComplexFloat.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+                }
+            }
+        }
+    }
+    
+    
     @Test
     fun `solve test`() {
         // double case
@@ -176,14 +247,14 @@ class JvmLinAlgTest {
 
             val bRe = mk.d2array<Double>(n, m) { rnd.nextDouble() }
             val bIm = mk.d2array<Double>(n, m) { rnd.nextDouble() }
-            val b = constructComplexDouble(bRe, bIm)
+            val b = composeComplexDouble(bRe, bIm)
             assertCloseComplex(b, JvmLinAlg.dot(a, solveC(a, b)), procedurePrecision)
 
 
             //test when second argument is d1 vector
             val bd1Re = mk.d1array(n) { rnd.nextDouble() }
             val bd1Im = mk.d1array(n) { rnd.nextDouble() }
-            val bd1 = constructComplexDouble(bd1Re, bd1Im)
+            val bd1 = composeComplexDouble(bd1Re, bd1Im)
 
             val sol = solveC(a, bd1)
             assertCloseComplex(JvmLinAlg.dot(a, sol.reshape(sol.shape[0], 1)).reshape(a.shape[0]), bd1, procedurePrecision)
@@ -218,14 +289,14 @@ class JvmLinAlgTest {
 
             val bRe = mk.d2array<Float>(n, m) { rnd.nextFloat() }
             val bIm = mk.d2array<Float>(n, m) { rnd.nextFloat() }
-            val b = constructComplexFloat(bRe, bIm)
+            val b = composeComplexFloat(bRe, bIm)
             assertCloseComplex(b, JvmLinAlg.dot(a, solveC(a, b)), 1e-2)
 
 
             //test when second argument is d1ComplexFloat vector
             val bd1ComplexFloatRe = mk.d1array(n) { rnd.nextFloat() }
             val bd1ComplexFloatIm = mk.d1array(n) { rnd.nextFloat() }
-            val bd1ComplexFloat = constructComplexFloat(bd1ComplexFloatRe, bd1ComplexFloatIm)
+            val bd1ComplexFloat = composeComplexFloat(bd1ComplexFloatRe, bd1ComplexFloatIm)
 
             val sol = solveC(a, bd1ComplexFloat)
             assertCloseComplex(JvmLinAlg.dot(a, sol.reshape(sol.shape[0], 1)).reshape(a.shape[0]), bd1ComplexFloat, 1e-2)
@@ -318,29 +389,29 @@ class JvmLinAlgTest {
 
         //ComplexDouble
         assertContentEquals(
-            JvmLinAlgEx.dotMMComplex(constructComplexDouble(mat1, mat2), constructComplexDouble(mat3, mat4)).data,
-            constructComplexDouble(mat1_x_mat3 - mat2_x_mat4, mat1_x_mat4 + mat2_x_mat3).data)
+            JvmLinAlgEx.dotMMComplex(composeComplexDouble(mat1, mat2), composeComplexDouble(mat3, mat4)).data,
+            composeComplexDouble(mat1_x_mat3 - mat2_x_mat4, mat1_x_mat4 + mat2_x_mat3).data)
 
         assertContentEquals(
-            JvmLinAlgEx.dotMVComplex(constructComplexDouble(mat1, mat2), constructComplexDouble(vec1, vec2)).data,
-            constructComplexDouble(mat1_x_vec1 - mat2_x_vec2, mat1_x_vec2 + mat2_x_vec1).data
+            JvmLinAlgEx.dotMVComplex(composeComplexDouble(mat1, mat2), composeComplexDouble(vec1, vec2)).data,
+            composeComplexDouble(mat1_x_vec1 - mat2_x_vec2, mat1_x_vec2 + mat2_x_vec1).data
         )
         assertEquals(
-            JvmLinAlgEx.dotVVComplex(constructComplexDouble(vec1, vec2), constructComplexDouble(vec3, vec4)),
+            JvmLinAlgEx.dotVVComplex(composeComplexDouble(vec1, vec2), composeComplexDouble(vec3, vec4)),
             ComplexDouble(vec1_x_vec3 - vec2_x_vec4, vec1_x_vec4 + vec2_x_vec3)
         )
 
         //ComplexFloat
         assertContentEquals(
-            JvmLinAlgEx.dotMMComplex(constructComplexFloat(mat1, mat2), constructComplexFloat(mat3, mat4)).data,
-            constructComplexFloat(mat1_x_mat3 - mat2_x_mat4, mat1_x_mat4 + mat2_x_mat3).data)
+            JvmLinAlgEx.dotMMComplex(composeComplexFloat(mat1, mat2), composeComplexFloat(mat3, mat4)).data,
+            composeComplexFloat(mat1_x_mat3 - mat2_x_mat4, mat1_x_mat4 + mat2_x_mat3).data)
 
         assertContentEquals(
-            JvmLinAlgEx.dotMVComplex(constructComplexFloat(mat1, mat2), constructComplexFloat(vec1, vec2)).data,
-            constructComplexFloat(mat1_x_vec1 - mat2_x_vec2, mat1_x_vec2 + mat2_x_vec1).data
+            JvmLinAlgEx.dotMVComplex(composeComplexFloat(mat1, mat2), composeComplexFloat(vec1, vec2)).data,
+            composeComplexFloat(mat1_x_vec1 - mat2_x_vec2, mat1_x_vec2 + mat2_x_vec1).data
         )
         assertEquals(
-            JvmLinAlgEx.dotVVComplex(constructComplexFloat(vec1, vec2), constructComplexFloat(vec3, vec4)),
+            JvmLinAlgEx.dotVVComplex(composeComplexFloat(vec1, vec2), composeComplexFloat(vec3, vec4)),
             ComplexFloat(vec1_x_vec3 - vec2_x_vec4, vec1_x_vec4 + vec2_x_vec3)
         )
 
@@ -425,7 +496,7 @@ private fun <T : Complex, D : Dim2> assertCloseComplex(a: MultiArray<T, D>, b: M
 
 
 
-fun<T : Number, D: Dim2> constructComplexDouble(rePart: NDArray<T, D>, imPart: NDArray<T, D>): NDArray<ComplexDouble, D> {
+fun<T : Number, D: Dim2> composeComplexDouble(rePart: NDArray<T, D>, imPart: NDArray<T, D>): NDArray<ComplexDouble, D> {
     if (rePart.dim.d == 1) {
         rePart as D1Array<T>
         imPart as D1Array<T>
@@ -447,7 +518,7 @@ fun<T : Number, D: Dim2> constructComplexDouble(rePart: NDArray<T, D>, imPart: N
     return ans as NDArray<ComplexDouble, D>
 }
 
-fun<T : Number, D: Dim2> constructComplexFloat(rePart: NDArray<T, D>, imPart: NDArray<T, D>): NDArray<ComplexFloat, D> {
+fun<T : Number, D: Dim2> composeComplexFloat(rePart: NDArray<T, D>, imPart: NDArray<T, D>): NDArray<ComplexFloat, D> {
     if (rePart.dim.d == 1) {
         rePart as D1Array<T>
         imPart as D1Array<T>

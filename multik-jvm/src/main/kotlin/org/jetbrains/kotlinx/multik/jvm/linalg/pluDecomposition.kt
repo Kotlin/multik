@@ -9,6 +9,7 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
+import java.lang.UnsupportedOperationException
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -492,6 +493,22 @@ private fun <T: Complex> D2Array<T>.swapLinesComplex(
     }
 }
 
+internal fun <T: Complex> pluC(a: MultiArray<T, D2>): Triple<D2Array<T>, D2Array<T>, D2Array<T>> {
+    return when (a.dtype) {
+        DataType.ComplexDoubleDataType -> {
+            a as MultiArray<ComplexDouble, D2>
+            val (P, L, U) = pluComplexDouble(a)
+            Triple(P, L, U)
+        }
+        DataType.ComplexFloatDataType -> {
+            a as MultiArray<ComplexFloat, D2>
+            val (P, L, U) = pluComplexFloat(a)
+            Triple(P, L, U)
+        }
+        else -> throw UnsupportedOperationException("matrix should be complex")
+        
+    } as Triple<D2Array<T>, D2Array<T>, D2Array<T>>
+}
 
 internal fun pluComplexDouble(a: MultiArray<ComplexDouble, D2>): Triple<D2Array<ComplexDouble>, D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
     val _a: D2Array<ComplexDouble> = a.deepCopy() as D2Array<ComplexDouble>
@@ -528,6 +545,44 @@ internal fun pluComplexDouble(a: MultiArray<ComplexDouble, D2>): Triple<D2Array<
     }
     return Triple(P, L, U)
 }
+
+
+internal fun pluComplexFloat(a: MultiArray<ComplexFloat, D2>): Triple<D2Array<ComplexFloat>, D2Array<ComplexFloat>, D2Array<ComplexFloat>> {
+    val _a: D2Array<ComplexFloat> = a.deepCopy() as D2Array<ComplexFloat>
+    val perm = mk.empty<Int, D1>(min(_a.shape[0], _a.shape[1]))
+
+    pluDecompositionInplaceComplexFloat(_a, perm)
+    // since previous call _a contains answer
+
+    val L = mk.empty<ComplexFloat, D2>(_a.shape[0], min(_a.shape[0], _a.shape[1]))
+    val U = mk.empty<ComplexFloat, D2>(min(_a.shape[0], _a.shape[1]), _a.shape[1])
+
+    for (i in 0 until L.shape[0]) {
+        for (j in 0 until L.shape[1]) {
+            L[i, j] = when {
+                j < i -> _a[i, j]
+                i == j -> ComplexFloat.one
+                else -> ComplexFloat.zero
+            }
+        }
+    }
+
+    for (i in 0 until U.shape[0]) {
+        for (j in i until U.shape[1]) {
+            U[i, j] = _a[i, j]
+        }
+    }
+
+    val P = mk.identity<ComplexFloat>(_a.shape[0])
+
+    for (i in perm.indices.reversed()) {
+        if (perm[i] != 0) {
+            P[i] = P[i + perm[i]].deepCopy().also { P[i + perm[i]] = P[i].deepCopy() }
+        }
+    }
+    return Triple(P, L, U)
+}
+
 
 internal fun pluCompressedComplexDouble(a: MultiArray<ComplexDouble, D2>): Triple<D1Array<Int>, D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
     val _a = a.deepCopy() as NDArray<ComplexDouble, D2>
