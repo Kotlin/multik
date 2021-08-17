@@ -26,6 +26,7 @@ public interface MultiArray<T, D : Dimension> {
     public val strides: IntArray
     public val size: Int
     public val dtype: DataType
+        get() = data.dtype
     public val dim: D
     public val base: MultiArray<T, out Dimension>?
 
