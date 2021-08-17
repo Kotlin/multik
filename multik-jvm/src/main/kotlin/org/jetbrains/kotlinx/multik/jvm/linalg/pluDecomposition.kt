@@ -3,7 +3,6 @@ package org.jetbrains.kotlinx.multik.jvm.linalg
 import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
-import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
@@ -122,7 +121,7 @@ private fun pluDecompositionInplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
     solveLowerTriangleSystemInplace(a[0..n1, 0..n1], a[0..n1, n1..(n1 + n2)] as D2Array<Double>)
 
     // update a22
-    val update = dot(a[n1..a.shape[0], 0..n1], a[0..n1, n1..(n1 + n2)])
+    val update = dotMatrix(a[n1..a.shape[0], 0..n1], a[0..n1, n1..(n1 + n2)]) // TODO
     for (i in n1 until a.shape[0]) {
         for (j in n1 until n1 + n2) {
             a[i, j] -= update[i - n1, j - n1]
@@ -175,7 +174,7 @@ private fun pluDecompositionInplaceF(a: D2Array<Float>, rowPerm: D1Array<Int>) {
 
     solveLowerTriangleSystemInplaceF(a[0..n1, 0..n1], a[0..n1, n1..(n1 + n2)] as D2Array<Float>)
 
-    val update = dot(a[n1..a.shape[0], 0..n1], a[0..n1, n1..(n1 + n2)])
+    val update = dotMatrix(a[n1..a.shape[0], 0..n1], a[0..n1, n1..(n1 + n2)]) // TODO
     for (i in n1 until a.shape[0]) {
         for (j in n1 until n1 + n2) {
             a[i, j] -= update[i - n1, j - n1]

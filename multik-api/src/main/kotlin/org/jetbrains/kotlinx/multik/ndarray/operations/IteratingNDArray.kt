@@ -13,6 +13,13 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.math.abs
 import kotlin.math.min
 
+public fun <T, D : Dimension> MultiArray<T, D>.isTransposed(): Boolean {
+    val x = this as NDArray<T, D>
+    if (x.dim == D1) return false
+    return x.offset == 0 && x.size == x.data.size
+        && x.strides.reversedArray().contentEquals(computeStrides(x.shape.reversedArray()))
+}
+
 
 /**
  * Returns `true` if all elements match the given [predicate].

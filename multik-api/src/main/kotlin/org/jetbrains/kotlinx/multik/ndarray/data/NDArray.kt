@@ -74,11 +74,12 @@ public class NDArray<T, D : Dimension> constructor(
         NDArray(this.data.copyOf(), this.offset, this.shape.copyOf(), this.strides.copyOf(), this.dtype, this.dim)
 
     override fun deepCopy(): NDArray<T, D> {
-        val data = initMemoryView<T>(this.size, this.dtype)
+        val data: MemoryView<T>
 
         if (consistent) {
-            this.data.copyInto(data)
+            data = this.data.copyOf()
         } else {
+            data = initMemoryView<T>(this.size, this.dtype)
             var index = 0
             for (el in this)
                 data[index++] = el
@@ -165,6 +166,7 @@ public class NDArray<T, D : Dimension> constructor(
         require(axes.isEmpty() || axes.size == dim.d) { "All dimensions must be indicated." }
         for (axis in axes) require(axis in 0 until dim.d) { "Dimension must be from 0 to ${dim.d}." }
         require(axes.toSet().size == axes.size) { "The specified dimensions must be unique." }
+        if (dim.d == 1) return NDArray(this.data, this.offset, this.shape, this.strides, this.dtype, this.dim)
         val newShape: IntArray
         val newStrides: IntArray
         if (axes.isEmpty()) {
