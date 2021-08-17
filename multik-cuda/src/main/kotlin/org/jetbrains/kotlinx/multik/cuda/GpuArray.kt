@@ -4,6 +4,7 @@ import jcuda.CudaException
 import jcuda.Pointer
 import jcuda.runtime.JCuda
 import jcuda.runtime.cudaError.cudaErrorMemoryAllocation
+import jcuda.runtime.cudaError.cudaSuccess
 import jcuda.runtime.cudaMemcpyKind
 import mu.KotlinLogging
 import org.jetbrains.kotlinx.multik.ndarray.data.*
@@ -12,8 +13,8 @@ import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.LinkedBlockingQueue
 
-
 private val logger = KotlinLogging.logger {}
+private val cleaner = Cleaner.create()
 
 internal class GpuArray constructor(
     val deviceDataPtr: Pointer,
@@ -48,8 +49,7 @@ internal class GpuArray constructor(
 
 internal class GpuCache {
     fun assertAllLoaded(vararg arrays: GpuArray) {
-        if (!arrays.all { it.isLoaded })
-            throw OutOfMemoryError("Not all arrays are loaded in the GPU memory")
+        check(arrays.all { it.isLoaded }) { "Not all arrays are loaded in the GPU memory" }
     }
 
     fun fullCleanup() {
@@ -120,14 +120,20 @@ internal class GpuCache {
     private val cache = LinkedHashMap<Int, GpuArray>(CACHE_INITIAL_CAPACITY, CACHE_LOAD_FACTOR, true)
 
     private val deleteQueue = LinkedBlockingQueue<Int>()
-    private val cleaner = Cleaner.create()
 
-    private fun getGpuMemInfo(): String {
-        val free = LongArray(1)
-        val total = LongArray(1)
+    private fun getGpuMemInfoString(): String {
+        val (free, total) = getGpuMemInfo()
+        return "free: ${byteSizeToString(free)}, total: ${byteSizeToString(total)} MB"
+    }
 
-        checkResult(JCuda.cudaMemGetInfo(free, total))
-        return "free: ${byteSizeToString(free[0])}, total: ${byteSizeToString(total[0])} MB"
+    private fun freeFirst() {
+        val first = cache.firstNotNullOfOrNull { it }
+        if (first != null) {
+            cache.remove(first.key)
+            first.value.free()
+        }
+        else
+            throw CudaException("Insufficient GPU memory for the array")
     }
 
     private fun <T : Number> allocMemory(
@@ -143,22 +149,21 @@ internal class GpuCache {
 
         logger.debug { "Allocating array on GPU. Size: ${byteSizeToString(byteSize)}" }
 
-        while (true) {
-            val result = JCuda.cudaMalloc(deviceDataPtr, byteSize)
+        while (getGpuMemInfo().first < byteSize) {
+            logger.trace { "Not enough GPU memory for allocation. Trying to free stale memory. Gpu Mem: {${getGpuMemInfoString()}}" }
+            freeFirst()
+        }
+
+        var result: Int
+        do {
+            result = JCuda.cudaMalloc(deviceDataPtr, byteSize)
 
             if (result == cudaErrorMemoryAllocation) {
-                logger.trace { "Not enough GPU memory for allocation. Trying to free stale memory. Gpu Mem: {${getGpuMemInfo()}}" }
+                logger.trace { "Allocation failed. Trying to free stale memory. Gpu Mem: {${getGpuMemInfoString()}}" }
 
-                val iterator = cache.iterator()
-                if (iterator.hasNext()) {
-                    iterator.next().value.free()
-                    iterator.remove()
-                } else {
-                    throw CudaException("Insufficient GPU memory for the array")
-                }
-            } else
-                break
-        }
+                freeFirst()
+            }
+        } while (result != cudaSuccess)
 
         if (setFrom != null) {
             val hostDataPtr = dtype.getDataPointer(setFrom)

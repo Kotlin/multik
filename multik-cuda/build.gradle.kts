@@ -1,3 +1,7 @@
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
+}
+
 repositories {
     mavenCentral()
 }
@@ -13,7 +17,7 @@ dependencies {
     api(project(":multik-api"))
 
     implementation("io.github.microutils:kotlin-logging:+")
-    implementation("org.slf4j:slf4j-simple:+")
+    testImplementation("org.slf4j:slf4j-simple:+")
 
     val jCudaVersion = "11.2.0"
 
