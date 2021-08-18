@@ -68,6 +68,13 @@ internal fun <T> DataType.getDataPointer(data: ImmutableMemoryView<T>): Pointer 
         else -> throw UnsupportedOperationException("Unsupported data type: $this")
     }
 
+internal fun <T : Number> DataType.singleValuePointer(value: T) : Pointer =
+    when (this) {
+        DataType.FloatDataType -> Pointer.to(floatArrayOf(value.toFloat()))
+        DataType.DoubleDataType -> Pointer.to(doubleArrayOf(value.toDouble()))
+        else -> throw UnsupportedOperationException("Unsupported data type: $this")
+    }
+
 internal fun checkResult(result: Int) {
     if (result != cudaError.cudaSuccess)
         throw CudaException(cudaError.stringFor(result))

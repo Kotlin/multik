@@ -122,7 +122,9 @@ public object CudaLinAlg : LinAlg {
         return result[0]
     }
 
-    fun <T : Number, D : Dim2> add(a: MultiArray<T, D>, b: MultiArray<T, D>): NDArray<T, D> {
+    private enum class CombineType { ADD, SUBTRACT }
+
+    private fun <T : Number, D : Dimension> combine(a: MultiArray<T, D>, b: MultiArray<T, D>, combineType: CombineType): NDArray<T, D> {
         require(a.shape contentEquals b.shape)
 
         if (!(a.dtype == DataType.DoubleDataType || a.dtype == DataType.FloatDataType)) {
@@ -137,6 +139,11 @@ public object CudaLinAlg : LinAlg {
         val (result, gC) = context.cache.alloc<T, D>(a.size, a.dtype, a.shape, a.dim)
 
         context.cache.assertAllLoaded(gA, gB, gC)
+
+        val beta = if (combineType == CombineType.ADD)
+            a.dtype.getOnePointer()
+        else
+            a.dtype.singleValuePointer(-1)
 
         if (a.dim.d == 2) {
             val transA = if (gA.transposed) cublasOperation.CUBLAS_OP_T else cublasOperation.CUBLAS_OP_N
@@ -154,22 +161,27 @@ public object CudaLinAlg : LinAlg {
                     context.handle,
                     transA, transB, a.shape[1], a.shape[0],
                     one, gA.deviceDataPtr, ldA,
-                    one, gB.deviceDataPtr, ldB,
+                    beta, gB.deviceDataPtr, ldB,
                     gC.deviceDataPtr, a.shape[1]
                 )
             )
         } else {
             val type = a.dtype.getCudaType()
 
-            checkResult(JCuda.cudaMemcpy(gC.deviceDataPtr, gB.deviceDataPtr, gB.byteSize, cudaMemcpyKind.cudaMemcpyDeviceToDevice))
+            checkResult(JCuda.cudaMemcpy(gC.deviceDataPtr, gA.deviceDataPtr, gA.byteSize, cudaMemcpyKind.cudaMemcpyDeviceToDevice))
 
             checkResult(JCublas2.cublasAxpyEx(
-                context.handle, a.size, a.dtype.getOnePointer(), type,
-                gA.deviceDataPtr, type, 1,
+                context.handle, a.size, beta, type,
+                gB.deviceDataPtr, type, 1,
                 gC.deviceDataPtr, type, 1, type
             ))
         }
 
         return result
     }
+
+    fun <T : Number, D : Dimension> add(a: MultiArray<T, D>, b: MultiArray<T, D>): NDArray<T, D> = combine(a, b, CombineType.ADD)
+
+    fun <T : Number, D : Dimension> subtract(a: MultiArray<T, D>, b: MultiArray<T, D>): NDArray<T, D> = combine(a, b, CombineType.SUBTRACT)
+
 }
