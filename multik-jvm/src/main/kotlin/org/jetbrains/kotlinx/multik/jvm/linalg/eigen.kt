@@ -1,7 +1,6 @@
 package org.jetbrains.kotlinx.multik.jvm
 
-import org.jetbrains.kotlinx.multik.api.empty
-import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jvm.linalg.csqrt
 import org.jetbrains.kotlinx.multik.jvm.linalg.tempDot
 import org.jetbrains.kotlinx.multik.jvm.linalg.toComplexDouble
@@ -14,15 +13,10 @@ import kotlin.math.*
  * computes eigenvalues of matrix a
  */
 internal fun eigenvalues(a: MultiArray<ComplexDouble, D2>): MultiArray<ComplexDouble, D1> {
-    val (L, H) = upperHessenberg((a as NDArray<ComplexDouble, D2>))
+    val (_, H) = upperHessenberg(a)
     val (upperTriangular, _) = qrShifted(H)
 
-    val diagonal = mk.empty<ComplexDouble, D1>(upperTriangular.shape[0])
-    for (i in 0 until upperTriangular.shape[0]) {
-        diagonal[i] = upperTriangular[i, i]
-    }
-    return diagonal
-
+    return mk.d1arrayComplex(upperTriangular.shape[0]) { upperTriangular[it, it] }
 }
 
 
@@ -35,13 +29,16 @@ internal fun eigenvalues(a: MultiArray<ComplexDouble, D2>): MultiArray<ComplexDo
  * where mat.H is hermitian transpose of matrix mat
  */
 internal fun schurDecomposition(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
-    val (L, H) = upperHessenberg((a as NDArray<ComplexDouble, D2>))
+    val (L, H) = upperHessenberg(a)
+    // a = L * H * L.H
+    // H = L1 * UT * L1.H
+    // a = (L * L1) * UT * (L1.H * L.H)
     val (upperTriangular, L1) = qrShifted(H)
     return Pair(tempDot(L, L1), upperTriangular) //TODO change to dot
 }
 
-/** implementation of qr algorithm
- *
+/**
+ * implementation of qr algorithm
  * matrix a must be in upper Hesenberg form
  */
 fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
@@ -298,7 +295,11 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
 }
 
 // return (alpha, tau), mute x
-fun computeHouseholderReflectorInline(n: Int, _alpha: ComplexDouble, x: D1Array<ComplexDouble>): Pair<ComplexDouble, ComplexDouble> {
+fun computeHouseholderReflectorInline(
+    n: Int,
+    _alpha: ComplexDouble,
+    x: D1Array<ComplexDouble>
+): Pair<ComplexDouble, ComplexDouble> {
     var alpha = _alpha
     if (n <= 0) {
         return Pair(alpha, ComplexDouble.zero)
@@ -354,10 +355,7 @@ fun computeHouseholderReflectorInline(n: Int, _alpha: ComplexDouble, x: D1Array<
 }
 
 // complex number L1 norm
-fun cabs1(a: ComplexDouble): Double {
-    return a.re.absoluteValue + a.im.absoluteValue
-}
-
+private fun absL1(a: ComplexDouble): Double = abs(a.re) + abs(a.im)
 
 /** sign of number
  *
@@ -365,6 +363,4 @@ fun cabs1(a: ComplexDouble): Double {
  * signum(0) = 1
  * sign(0) = 0
  */
-fun signum(x: Double): Double {
-    return if(x >= 0) 1.0 else -1.0
-}
+fun signum(x: Double): Double = (if (x == 0.0) 1.0 else sign(x))
