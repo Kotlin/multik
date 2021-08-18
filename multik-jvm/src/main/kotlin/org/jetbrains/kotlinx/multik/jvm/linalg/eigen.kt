@@ -7,7 +7,7 @@ import org.jetbrains.kotlinx.multik.jvm.linalg.tempDot
 import org.jetbrains.kotlinx.multik.jvm.linalg.toComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import org.jetbrains.kotlinx.multik.ndarray.operations.mapMultiIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
 import kotlin.math.*
 
 /**
@@ -27,17 +27,17 @@ internal fun eigenvalues(a: MultiArray<ComplexDouble, D2>): MultiArray<ComplexDo
 
 
 /**
- * returns Schur decomplosition:
+ * returns Schur decomposition:
  * Q, R matrices: Q * R * Q.H = a
  *
  * Q is unitary: Q * Q.H = Id
  * R is upper triangular
- * where _.H is hermitian transpose
+ * where mat.H is hermitian transpose of matrix mat
  */
 internal fun schurDecomposition(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
     val (L, H) = upperHessenberg((a as NDArray<ComplexDouble, D2>))
     val (upperTriangular, L1) = qrShifted(H)
-    return Pair(tempDot(L, L1), upperTriangular)
+    return Pair(tempDot(L, L1), upperTriangular) //TODO change to dot
 }
 
 /** implementation of qr algorithm
@@ -46,136 +46,130 @@ internal fun schurDecomposition(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<
  */
 fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
 
-    val TRANS = -1
 
     val w = mk.empty<ComplexDouble, D1>(a.shape[0])
-    val z = mk.empty<ComplexDouble, D2>(a.shape[0], a.shape[0])
-    for (i in 0 until z.shape[0]) {
-        z[i, i] = 1.0.toComplexDouble()
-    }
+    val z = mk.identity<ComplexDouble>(a.shape[0])
     val v = mk.empty<ComplexDouble, D1>(2)
-    val dat1 = 3.0 / 4.0
-    val kexsh = 10
+
+    val dat1 = 0.75
+    val kExceptionalShift = 10
     val n = a.shape[0]
     val h = a.deepCopy() as D2Array<ComplexDouble>
-    val jlo = 1
-    val jhi = n
-    val ilo = 1
-    val ihi = n
-    val iloz = 1
-    val ihiz = n
-    val ldz = n
 
 
-    for (i in (ilo + 1)..ihi) {
-        if (h[i + TRANS, i - 1 + TRANS].im != 0.0) {
-            var sc = h[i + TRANS, i - 1 + TRANS] / cabs1(h[i + TRANS, i - 1 + TRANS])
+    for (i in 1 until n) {
+        if (h[i, i - 1].im != 0.0) {
+            var sc = h[i, i - 1] / absL1(h[i, i - 1])
             sc = sc.conjugate() / sc.abs()
-            h[i + TRANS, i - 1 + TRANS] = h[i + TRANS, i - 1 + TRANS].abs().toComplexDouble()
-            for (ii in 0 until (jhi - i + 1)) {
-                h[i + TRANS, i + ii + TRANS] *= sc
-            }
-            for (ii in 0 until (min(jhi, i + 1) - jlo + 1)) {
-                h[jlo + ii + TRANS, i + TRANS] *= sc.conjugate()
-            }
-            for (ii in 0 until ihiz - iloz + 1) {
-                z[iloz + ii + TRANS, i + TRANS] *= sc.conjugate()
-            }
+            h[i, i - 1] = h[i, i - 1].abs().toComplexDouble()
+            (h[i, i..n] as D1Array<ComplexDouble>) *= sc
+            (h[0..min(n, i + 2), i] as D1Array<ComplexDouble>) *= sc.conjugate()
+            (z[0..n, i] as D1Array<ComplexDouble>) *= sc.conjugate()
         }
     }
-
-    val nh = ihi - ilo + 1
-    val nz = ihiz - iloz + 1
+    
 
 
     val safemin = 1e-300
-    val safemax = 1.0 / safemin
-    val ulp = 1e-16 // precision
-    val smlnum = safemin * (nh.toDouble() / ulp)
+    val ulp = 1e-16 // precision // todo: look
+    val smlnum = safemin * (n.toDouble() / ulp)
 
 
-    val i1 = 1
-    val i2 = n
-    val itmax = 30 * max( 10, nh )
+    val itmax = 30 * max(10, n)
     var kdefl = 0
 
 
-    var i = ihi
-    while(true) {
-        if (i < ilo) {
+    var i = n
+
+    while (true) {
+        if (i < 1) {
             break
         }
-        var l = ilo
+        var l = 1
 
 
-        for (its in 0..itmax) { // Look for a single small subdiagonal element
-            if(its == itmax) {
-                break
+        for (iteration in 0 until itmax) { // Look for a single small subdiagonal element
+
+            l = run {
+                if (i < l + 1) {
+                    return@run i
+                }
+                for (k in i downTo l + 1) {
+
+                    if (absL1(h[k - 1, k - 2]) < smlnum) {
+                        return@run k
+                    }
+                    var tst = absL1(h[k - 2, k - 2]) + absL1(h[k - 1, k - 1])
+                    if (tst == 0.0) {
+                        if (k - 2 >= 1) {
+                            tst += abs(h[k - 2, k - 3].re)
+                        }
+                        if (k + 1 <= n) {
+                            tst += abs(h[k, k - 1].re)
+                        }
+                    }
+                    if (abs(h[k - 1, k - 2].re) <= ulp * tst) {
+
+                        // ==== The following is a conservative small subdiagonal
+                        // *           .    deflation criterion due to Ahues & Tisseur (LAWN 122,
+                        // *           .    1997). It has better mathematical foundation and
+                        // *           .    improves accuracy in some examples.  ====
+                        val ab = max(absL1(h[k - 1, k - 2]), absL1(h[k - 2, k - 1]))
+                        val ba = min(absL1(h[k - 1, k - 2]), absL1(h[k - 2, k - 1]))
+                        val aa = max(
+                            absL1(h[k - 1, k - 1]),
+                            absL1(h[k - 2, k - 2] - h[k - 1, k - 1])
+                        )
+                        val bb = min(
+                            absL1(h[k - 1, k - 1]),
+                            absL1(h[k - 2, k - 2] - h[k - 1, k - 1])
+                        )
+
+                        val s = aa + ab
+                        if (ba * (ab / s) <= max(smlnum, ulp * (bb * (aa / s)))) {
+                            return@run k
+                        }
+                    }
+                }
+                return@run l
             }
 
-            var foundk = l
-            for (k in i downTo l + 1) {
-                foundk = k
-                if (cabs1(h[k + TRANS, k - 1 + TRANS]) < smlnum) {
-                    break
-                }
-                var tst = cabs1(h[k - 1 + TRANS, k - 1 + TRANS]) + cabs1(h[k + TRANS, k + TRANS])
-                if (tst == 0.0) {
-                    if (k - 2 >= ilo) {
-                        tst += abs(h[k - 1 + TRANS, k - 2 + TRANS].re)
-                    }
-                    if (k + 1 <= ihi) {
-                        tst += abs(h[k + 1 + TRANS, k + TRANS].re)
-                    }
-                }
-                if (abs(h[k + TRANS, k - 1 + TRANS].re) <= ulp * tst) {
-                    val ab = max(cabs1(h[k + TRANS, k - 1 + TRANS] ), cabs1(h[k - 1 + TRANS, k + TRANS]))
-                    val ba = min(cabs1(h[k + TRANS, k - 1 + TRANS]), cabs1(h[k - 1 + TRANS, k + TRANS]))
-                    val aa = max(cabs1(h[k + TRANS, k + TRANS]), cabs1(h[k - 1 + TRANS, k - 1 + TRANS] - h[k + TRANS, k + TRANS]))
-                    val bb = min(cabs1(h[k + TRANS, k + TRANS]), cabs1(h[k - 1 + TRANS, k - 1 + TRANS] - h[k + TRANS, k + TRANS]))
-                    val s = aa + ab
-                    if (ba * (ab / s) <=
-                        max(smlnum, ulp * (bb * (aa / s)))) {
-                        break
-                    }
-                }
-                foundk = k - 1
-            }
-            l = foundk
 
-            if (l > ilo) {
-                h[l + TRANS, l - 1 + TRANS] = ComplexDouble.zero
+            if (l > 1) {
+                h[l - 1, l - 2] = ComplexDouble.zero
             }
+
+            // TODO: is it needed
             if (l >= i) {
                 break
             }
 
             kdefl++
 
-            var s = 0.0
-            var t = ComplexDouble.zero
-            var u = ComplexDouble.zero
+            var s: Double
+            var t: ComplexDouble
+            var u: ComplexDouble
 
             when {
-                kdefl % (2 * kexsh) == 0 -> {
-                    s = dat1*abs(h[i + TRANS, i - 1 + TRANS].re)
-                    t = s.toComplexDouble() + h[i + TRANS, i + TRANS]
+                kdefl % (2 * kExceptionalShift) == 0 -> {
+                    s = dat1 * abs(h[i - 1, i - 2].re)
+                    t = s.toComplexDouble() + h[i - 1, i - 1]
                 }
-                kdefl % kexsh == 0 -> {
-                    s = dat1 * abs(h[l + 1 + TRANS, l + TRANS].re)
-                    t = s.toComplexDouble() + h[l + TRANS, l + TRANS]
+                kdefl % kExceptionalShift == 0 -> {
+                    s = dat1 * abs(h[l, l - 1].re)
+                    t = s.toComplexDouble() + h[l - 1, l - 1]
                 }
                 else -> {
-                    t = h[i + TRANS, i + TRANS]
-                    u = csqrt(h[i - 1 + TRANS, i + TRANS]) * csqrt(h[i + TRANS, i - 1 + TRANS])
-                    s = cabs1(u)
+                    t = h[i - 1, i - 1]
+                    u = csqrt(h[i - 2, i - 1]) * csqrt(h[i - 1, i - 2])
+                    s = absL1(u)
                     if (s != 0.0) {
-                        val x = 0.5.toComplexDouble() * (h[i - 1 + TRANS, i - 1 + TRANS] - t)
-                        val sx = cabs1(x)
-                        s = max(s, cabs1(x))
+                        val x = 0.5.toComplexDouble() * (h[i - 2, i - 2] - t)
+                        val sx = absL1(x)
+                        s = max(s, absL1(x))
                         var y = s.toComplexDouble() * csqrt((x / s) * (x / s) + (u / s) * (u / s))
                         if (sx > 0.0) {
-                            if( (x / sx).re * y.re + (x / sx).im * y.im < 0.0) {
+                            if ((x / sx).re * y.re + (x / sx).im * y.im < 0.0) {
                                 y = -y
                             }
                         }
@@ -185,141 +179,120 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
             }
 
             // Look for two consecutive small subdiagonal elements
-            var h11: ComplexDouble = 0.0.toComplexDouble()
-            var h11s: ComplexDouble = 0.0.toComplexDouble()
-            var h22: ComplexDouble = 0.0.toComplexDouble()
-            var h12: ComplexDouble = 0.0.toComplexDouble()
-            var h21: ComplexDouble = 0.0.toComplexDouble()
+            var h11: ComplexDouble
+            var h11s: ComplexDouble
+            var h22: ComplexDouble
+            var h21: ComplexDouble
 
-            var foundm = 1
-            var isFound = false
 
-            for (m in (i - 1) downTo (l + 1)) {
-                h11 = h[m + TRANS, m + TRANS]
-                h22 = h[m + 1 + TRANS, m + 1 + TRANS]
-                h11s = h11 - t
-                h21 = h[m + 1 + TRANS, m + TRANS].re.toComplexDouble()
-                s = cabs1(h11s) + h21.abs()
-                h11s /= s
-                h21 /= s
-                v[1 + TRANS] = h11s
-                v[2 + TRANS] = h21
-                val h10 = h[m + TRANS, m - 1 + TRANS]
+            val m = run {
+                for (m in (i - 1) downTo (l + 1)) {
+                    h11 = h[m - 1, m - 1]
+                    h22 = h[m, m + 1 - 1]
+                    h11s = h11 - t
+                    h21 = h[m, m - 1].re.toComplexDouble()
+                    s = absL1(h11s) + h21.abs()
+                    h11s /= s
+                    h21 /= s
+                    v[0] = h11s
+                    v[1] = h21
+                    val h10 = h[m - 1, m - 2]
 
-                if (h10.abs() * h21.abs() <= ulp * (cabs1(h11s) * (cabs1(h11) + cabs1(h22)))) {
-                    isFound = true
-                    foundm = m
-                    break
+                    if (h10.abs() * h21.abs() <= ulp * (absL1(h11s) * (absL1(h11) + absL1(h22)))) {
+                        return@run m
+                    }
                 }
-            }
-            if (!isFound) {
-                h11 = h[l + TRANS, l + TRANS]
-                h22 = h[l + 1 + TRANS, l + 1 + TRANS]
-                h11s = h11 - t
-                h21 = h[l + 1 + TRANS, l + TRANS].re.toComplexDouble()
 
-                s = cabs1(h11s) + h21.abs()
+                h11 = h[l - 1, l - 1]
+                h22 = h[l, l]
+                h11s = h11 - t
+                h21 = h[l, l - 1].re.toComplexDouble()
+
+                s = absL1(h11s) + h21.abs()
                 h11s /= s
                 h21 /= s
-                v[1 + TRANS] = h11s
-                v[2 + TRANS] = h21
-                foundm = l
+                v[0] = h11s
+                v[1] = h21
+                return@run l
             }
+
+
 
             // single-shift qr step
-            for (k in foundm..(i - 1)) {
-                if (k > foundm) {
-                    v[1 + TRANS] = h[k + TRANS, k - 1 + TRANS]
-                    v[2 + TRANS] = h[k + 1 + TRANS, k - 1 + TRANS] //not sure!!!
+            for (k in m until i) {
+                if (k > m) {
+                    v[0] = h[k - 1, k - 2]
+                    v[1] = h[k, k - 2]
                 }
 
                 // zlarfg( 2, v( 1 ), v( 2 ), 1, t1 )
-                val (v1, t1) = computeHouseholderReflectorInline(2, v[1 + TRANS], v[2 + TRANS..3 + TRANS] as D1Array<ComplexDouble>)
-                v[1 + TRANS] = v1
+                val (v1, t1) = computeHouseholderReflectorInline(2, v[0], v[1..2] as D1Array<ComplexDouble>)
+                v[0] = v1
 
-
-
-
-                if (k > foundm) {
-                    h[k + TRANS, k - 1 + TRANS] = v[1 + TRANS]
-                    h[k + 1 + TRANS, k - 1 + TRANS] = 0.0.toComplexDouble()
+                if (k > m) {
+                    h[k - 1, k - 2] = v[0]
+                    h[k, k - 2] = 0.0.toComplexDouble()
                 }
-                // t1 is tau
 
-                val v2 = v[2 + TRANS]
+                val v2 = v[1]
                 val t2 = (t1 * v2).re
 
-                //  *           Apply G from the left to transform the rows of the matrix
-                // *           in columns K to I2.
-                for (j in k..i2) {
-                    val sum = t1.conjugate() * h[k + TRANS, j + TRANS] + t2.toComplexDouble() * h[k + 1 + TRANS, j + TRANS]
-                    h[k + TRANS, j + TRANS] = h[k + TRANS, j + TRANS] - sum
-                    h[k + 1 + TRANS, j + TRANS] = h[k + 1 + TRANS, j + TRANS] - sum * v2
+                for (j in k..n) {
+                    val sum = t1.conjugate() * h[k - 1, j - 1] + t2.toComplexDouble() * h[k, j - 1]
+                    h[k - 1, j - 1] = h[k - 1, j - 1] - sum
+                    h[k, j - 1] = h[k, j - 1] - sum * v2
                 }
 
-                for (j in i1..min(k + 2, i)) {
-                    val sum = t1 * h[j + TRANS, k + TRANS] + t2.toComplexDouble() * h[j + TRANS, k + 1 + TRANS]
-                    h[j + TRANS, k + TRANS] -= sum
-                    h[j + TRANS, k + 1 + TRANS] -= sum * v2.conjugate()
+                for (j in 1..min(k + 2, i)) {
+                    val sum = t1 * h[j - 1, k - 1] + t2.toComplexDouble() * h[j - 1, k]
+                    h[j - 1, k - 1] -= sum
+                    h[j - 1, k] -= sum * v2.conjugate()
                 }
 
-                for (j in iloz..ihiz) {
-                    val sum = t1 * z[j + TRANS, k + TRANS] + t2.toComplexDouble() * z[j + TRANS, k + 1 + TRANS]
-                    z[j + TRANS, k + TRANS] -= sum
-                    z[j + TRANS, k + 1 + TRANS] -= sum * v2.conjugate()
+                for (j in 1..n) {
+                    val sum = t1 * z[j - 1, k - 1] + t2.toComplexDouble() * z[j - 1, k]
+                    z[j - 1, k - 1] -= sum
+                    z[j - 1, k] -= sum * v2.conjugate()
                 }
 
-                if (k == foundm && foundm > l) {
+                if (k == m && m > l) {
                     var temp = 1.0.toComplexDouble() - t1
                     temp /= temp.abs()
-                    h[foundm + 1 + TRANS, foundm + TRANS] = h[foundm + 1 + TRANS, foundm + TRANS] * temp.conjugate()
-                    if (foundm + 2 < i) {
-                        h[foundm + 2 + TRANS, foundm + 1 + TRANS] *= temp
+                    h[m, m - 1] = h[m, m - 1] * temp.conjugate()
+                    if (m + 2 < i) {
+                        h[m + 1, m] *= temp
                     }
-                    for (j in foundm..i) {
-                        if (j != foundm + 1) {
-                            if (i2 > j) {
-                                //CALL zscal( i2-j, temp, h( j, j+1 ), ldh )
-                                for (ii in 0 until (i2 - j)) {
-                                    h[j + TRANS, j + 1 + ii + TRANS] *= temp
-                                }
+                    for (j in m..i) {
+                        if (j != m + 1) {
+                            if (n > j) {
+                                (h[j - 1, j..n] as D1Array<ComplexDouble>) *= temp
                             }
-                            for (ii in 0 until (j - i1)) {
-                                h[i1 + ii + TRANS, j + TRANS] *= temp.conjugate()
-                            }
-                            for (ii in 0 until nz) {
-                                z[iloz + ii + TRANS, j + TRANS] *= temp.conjugate()
-                            }
+                            h[0..(j - 1), j - 1] as D1Array<ComplexDouble> *= temp.conjugate()
+                            z[0..n, j - 1] as D1Array<ComplexDouble> *= temp.conjugate()
                         }
                     }
 
                 }
             }
+
             // Ensure that H(I,I-1) is real.
-            var temp = h[i + TRANS, i - 1 + TRANS]
+            var temp = h[i - 1, i - 2]
             if (temp.im != 0.0) {
                 val rtemp = temp.abs().toComplexDouble()
-                h[i + TRANS, i - 1 + TRANS] = rtemp
+                h[i - 1, i - 2] = rtemp
                 temp /= rtemp
-                if (i2 > i) {
-                    for (ii in 0 until (i2 - i)) {
-                        h[i + TRANS, i + 1 + ii + TRANS] *= temp.conjugate()
-                    }
+                if (n > i) {
+                    h[i - 1, i..n] as D1Array<ComplexDouble> *= temp.conjugate()
                 }
-                for (ii in 0 until (i - i1)) {
-                    h[i1 + ii + TRANS, i + TRANS] *= temp
-                }
-                for (ii in 0 until nz) {
-                    z[iloz + ii + TRANS, i + TRANS] *= temp
-                }
+                h[0..(i - 1), i - 1] as D1Array<ComplexDouble> *= temp;
+                z[0..n, i - 1] as D1Array<ComplexDouble> *= temp
             }
         }
 
-        w[i + TRANS] = h[i + TRANS, i + TRANS]
+        w[i - 1] = h[i - 1, i - 1]
         kdefl = 0
         i = l - 1
     }
-
 
     return Pair(h, z)
 }
@@ -349,9 +322,7 @@ fun computeHouseholderReflectorInline(n: Int, _alpha: ComplexDouble, x: D1Array<
     var knt = 0
     while (abs(beta) < safmin) {
         knt++
-        for (ii in 0 until n - 1) {
-            x[ii] *= rsafmn.toComplexDouble()
-        }
+        x[0..(n - 1)] as D1Array<ComplexDouble> *= rsafmn.toComplexDouble()
         beta *= rsafmn
         alphi *= rsafmn
         alphr *= safmin
@@ -372,9 +343,7 @@ fun computeHouseholderReflectorInline(n: Int, _alpha: ComplexDouble, x: D1Array<
     val tau = ComplexDouble((beta - alphr) / beta, -alphi / beta)
     alpha = 1.0.toComplexDouble() / (alpha - beta)
 
-    for (ii in 0 until n - 1) {
-        x[ii] *= alpha
-    }
+    x[0..(n - 1)] as D1Array<ComplexDouble> *= alpha
     for (j in 1..knt) {
         beta *= safmin
     }

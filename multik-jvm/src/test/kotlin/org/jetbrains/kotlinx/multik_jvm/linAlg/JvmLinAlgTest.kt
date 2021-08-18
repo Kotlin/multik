@@ -171,21 +171,23 @@ class JvmLinAlgTest {
 
     @Test
     fun `test Schur decomposition`() {
-        val n = 100
-        val mat = getRandomMatrixComplexDouble(n, n)
-        val (q, r) = schurDecomposition(mat)
+        for (attempt in 0 until 5) {
+            val n = 100
+            val mat = getRandomMatrixComplexDouble(n, n)
+            val (q, r) = schurDecomposition(mat)
 
-        // assert decomposition is valid
-        assertCloseMatrixComplexDouble(tempDot(tempDot(q, r), q.conjTranspose()), mat, 1e-5)
+            // assert decomposition is valid
+            assertCloseMatrixComplexDouble(tempDot(tempDot(q, r), q.conjTranspose()), mat, 1e-5)
 
-        // assert q is unitary
-        assertCloseMatrixComplexDouble(tempDot(q, q.conjTranspose()), idComplexDouble(n), 1e-5)
+            // assert q is unitary
+            assertCloseMatrixComplexDouble(tempDot(q, q.conjTranspose()), idComplexDouble(n), 1e-5)
 
-        // assert r is upper triangular
-        for (i in 1 until r.shape[0]) {
-            for (j in 0 until i) {
-                if (r[i, j] != ComplexDouble.zero) {
-                    assertEquals(r[i, j], ComplexDouble.zero)
+            // assert r is upper triangular
+            for (i in 1 until r.shape[0]) {
+                for (j in 0 until i) {
+                    if (r[i, j] != ComplexDouble.zero) {
+                        assertEquals(r[i, j], ComplexDouble.zero)
+                    }
                 }
             }
         }
@@ -222,6 +224,7 @@ class JvmLinAlgTest {
         for (i in 0 until n) {
             assertTrue("${trueEigavals[i]} =/= ${testedEigenvals[i]}") { (trueEigavals[i] - testedEigenvals[i]).abs() < precision}
         }
+
     }
 
 
