@@ -43,7 +43,6 @@ internal fun schurDecomposition(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<
  */
 fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
 
-
     val w = mk.empty<ComplexDouble, D1>(a.shape[0])
     val z = mk.identity<ComplexDouble>(a.shape[0])
     val v = mk.empty<ComplexDouble, D1>(2)
@@ -52,7 +51,6 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
     val kExceptionalShift = 10
     val n = a.shape[0]
     val h = a.deepCopy() as D2Array<ComplexDouble>
-
 
     for (i in 1 until n) {
         if (h[i, i - 1].im != 0.0) {
@@ -64,26 +62,19 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
             (z[0..n, i] as D1Array<ComplexDouble>) *= sc.conjugate()
         }
     }
-    
-
 
     val safemin = 1e-300
     val ulp = 1e-16 // precision // todo: look
     val smlnum = safemin * (n.toDouble() / ulp)
 
-
     val itmax = 30 * max(10, n)
     var kdefl = 0
 
-
     var i = n
 
-    while (true) {
-        if (i < 1) {
-            break
-        }
-        var l = 1
+    while (i >= 1) {
 
+        var l = 1
 
         for (iteration in 0 until itmax) { // Look for a single small subdiagonal element
 
@@ -92,11 +83,12 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
                     return@run i
                 }
                 for (k in i downTo l + 1) {
-
                     if (absL1(h[k - 1, k - 2]) < smlnum) {
                         return@run k
                     }
+
                     var tst = absL1(h[k - 2, k - 2]) + absL1(h[k - 1, k - 1])
+
                     if (tst == 0.0) {
                         if (k - 2 >= 1) {
                             tst += abs(h[k - 2, k - 3].re)
@@ -105,6 +97,7 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
                             tst += abs(h[k, k - 1].re)
                         }
                     }
+
                     if (abs(h[k - 1, k - 2].re) <= ulp * tst) {
 
                         // ==== The following is a conservative small subdiagonal
@@ -128,15 +121,14 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
                         }
                     }
                 }
+
                 return@run l
             }
-
 
             if (l > 1) {
                 h[l - 1, l - 2] = ComplexDouble.zero
             }
 
-            // TODO: is it needed
             if (l >= i) {
                 break
             }
@@ -165,10 +157,8 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
                         val sx = absL1(x)
                         s = max(s, absL1(x))
                         var y = s.toComplexDouble() * csqrt((x / s) * (x / s) + (u / s) * (u / s))
-                        if (sx > 0.0) {
-                            if ((x / sx).re * y.re + (x / sx).im * y.im < 0.0) {
-                                y = -y
-                            }
+                        if (sx > 0.0 && (x / sx).re * y.re + (x / sx).im * y.im < 0.0) {
+                            y = -y
                         }
                         t -= u * (u / (x + y))
                     }
@@ -180,7 +170,6 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
             var h11s: ComplexDouble
             var h22: ComplexDouble
             var h21: ComplexDouble
-
 
             val m = run {
                 for (m in (i - 1) downTo (l + 1)) {
@@ -212,8 +201,6 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
                 v[1] = h21
                 return@run l
             }
-
-
 
             // single-shift qr step
             for (k in m until i) {
@@ -268,7 +255,6 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
                             z[0..n, j - 1] as D1Array<ComplexDouble> *= temp.conjugate()
                         }
                     }
-
                 }
             }
 
@@ -294,41 +280,41 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
     return Pair(h, z)
 }
 
-// return (alpha, tau), mute x
+// return (beta, tau), mute x
 fun computeHouseholderReflectorInline(
     n: Int,
-    _alpha: ComplexDouble,
+    alpha: ComplexDouble,
     x: D1Array<ComplexDouble>
 ): Pair<ComplexDouble, ComplexDouble> {
-    var alpha = _alpha
+    var tmp = alpha
     if (n <= 0) {
-        return Pair(alpha, ComplexDouble.zero)
+        return Pair(tmp, ComplexDouble.zero)
     }
     var xnorm = 0.0
     for (i in 0 until n - 1) {
         xnorm += (x[i] * x[i].conjugate()).re
     }
     xnorm = sqrt(max(xnorm, 0.0))
-    var alphr = _alpha.re
-    var alphi = _alpha.im
+    var alphr = alpha.re
+    var alphi = alpha.im
 
     if (xnorm == 0.0 && alphi == 0.0) {
-        return Pair(alpha, ComplexDouble.zero)
+        return Pair(tmp, ComplexDouble.zero)
     }
 
     var beta = -signum(alphr) * sqrt(alphr * alphr + alphi * alphi + xnorm * xnorm)
-    val safmin = 2e-300
-    val rsafmn = 1.0 / safmin
+    val safemin = 2e-300
+    val rsafemin = 1.0 / safemin
 
     var knt = 0
-    while (abs(beta) < safmin) {
+    while (abs(beta) < safemin) {
         knt++
-        x[0..(n - 1)] as D1Array<ComplexDouble> *= rsafmn.toComplexDouble()
-        beta *= rsafmn
-        alphi *= rsafmn
-        alphr *= safmin
+        x[0..(n - 1)] as D1Array<ComplexDouble> *= rsafemin.toComplexDouble()
+        beta *= rsafemin
+        alphi *= rsafemin
+        alphr *= safemin
 
-        if (abs(beta) < safmin && knt < 20) {
+        if (abs(beta) < safemin && knt < 20) {
             continue
         }
 
@@ -337,21 +323,20 @@ fun computeHouseholderReflectorInline(
             xnorm += (x[i] * x[i].conjugate()).re
         }
         xnorm = sqrt(max(xnorm, 0.0))
-        alpha = ComplexDouble(alphr, alphi)
+        tmp = ComplexDouble(alphr, alphi)
         beta = -signum(alphr) * sqrt(alphr * alphr + alphi * alphi + xnorm * xnorm)
     }
 
     val tau = ComplexDouble((beta - alphr) / beta, -alphi / beta)
-    alpha = 1.0.toComplexDouble() / (alpha - beta)
+    tmp = 1.0.toComplexDouble() / (tmp - beta)
 
-    x[0..(n - 1)] as D1Array<ComplexDouble> *= alpha
+    x[0..(n - 1)] as D1Array<ComplexDouble> *= tmp
     for (j in 1..knt) {
-        beta *= safmin
+        beta *= safemin
     }
-    alpha = beta.toComplexDouble()
 
 
-    return Pair(alpha, tau)
+    return Pair(beta.toComplexDouble(), tau)
 }
 
 // complex number L1 norm
