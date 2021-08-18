@@ -7,6 +7,7 @@ import org.jetbrains.kotlinx.multik.jvm.linalg.toComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
+import java.lang.ArithmeticException
 import kotlin.math.*
 
 /**
@@ -41,7 +42,7 @@ internal fun schurDecomposition(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<
  * implementation of qr algorithm
  * matrix a must be in upper Hesenberg form
  */
-fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
+fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
 
     val w = mk.empty<ComplexDouble, D1>(a.shape[0])
     val z = mk.identity<ComplexDouble>(a.shape[0])
@@ -67,7 +68,7 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
     val ulp = 1e-16 // precision // todo: look
     val smlnum = safemin * (n.toDouble() / ulp)
 
-    val itmax = 30 * max(10, n)
+    val itmax = trialsNumber * max(10, n)
     var kdefl = 0
 
     var i = n
@@ -75,6 +76,7 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
     while (i >= 1) {
 
         var l = 1
+        var failedToConverge = true
 
         for (iteration in 0 until itmax) { // Look for a single small subdiagonal element
 
@@ -130,6 +132,7 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
             }
 
             if (l >= i) {
+                failedToConverge = false
                 break
             }
 
@@ -271,7 +274,9 @@ fun qrShifted(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2
                 z[0..n, i - 1] as D1Array<ComplexDouble> *= temp
             }
         }
-
+        if (failedToConverge) {
+            throw ArithmeticException("failed to converge, try to increase trialsNumber")
+        }
         w[i - 1] = h[i - 1, i - 1]
         kdefl = 0
         i = l - 1
