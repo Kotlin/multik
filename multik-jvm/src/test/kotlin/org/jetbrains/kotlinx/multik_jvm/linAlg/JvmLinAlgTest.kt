@@ -6,12 +6,10 @@ package org.jetbrains.kotlinx.multik_jvm.linAlg
 
 
 import org.jetbrains.kotlinx.multik.api.*
-import org.jetbrains.kotlinx.multik.jvm.eigenvalues
 import org.jetbrains.kotlinx.multik.jvm.linalg.*
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solve
 import org.jetbrains.kotlinx.multik.jvm.qrComplexDouble
-import org.jetbrains.kotlinx.multik.jvm.schurDecomposition
 import org.jetbrains.kotlinx.multik.jvm.upperHessenberg
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.*
