@@ -7,32 +7,32 @@ internal fun <T : Number> dotMatrix(a: MultiArray<T, D2>, b: MultiArray<T, D2>):
     val size = newShape.reduce(Int::times)
     return when (a.dtype) {
         DataType.FloatDataType -> {
-            val ret = D2Array(MemoryViewFloatArray(FloatArray(size)), 0, newShape, dtype = DataType.FloatDataType, dim = D2)
+            val ret = D2Array(MemoryViewFloatArray(FloatArray(size)), 0, newShape, dim = D2)
             dotMatrix(a.data.getFloatArray(), a.offset, a.strides, b.data.getFloatArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getFloatArray(), ret.strides[0])
             ret
         }
         DataType.IntDataType -> {
-            val ret = D2Array(MemoryViewIntArray(IntArray(size)), 0, newShape, dtype = DataType.IntDataType, dim = D2)
+            val ret = D2Array(MemoryViewIntArray(IntArray(size)), 0, newShape, dim = D2)
             dotMatrix(a.data.getIntArray(), a.offset, a.strides, b.data.getIntArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getIntArray(), ret.strides[0])
             ret
         }
         DataType.DoubleDataType -> {
-            val ret = D2Array(MemoryViewDoubleArray(DoubleArray(size)), 0, newShape, dtype = DataType.DoubleDataType, dim = D2)
+            val ret = D2Array(MemoryViewDoubleArray(DoubleArray(size)), 0, newShape, dim = D2)
             dotMatrix(a.data.getDoubleArray(), a.offset, a.strides, b.data.getDoubleArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getDoubleArray(), ret.strides[0])
             ret
         }
         DataType.LongDataType -> {
-            val ret = D2Array(MemoryViewLongArray(LongArray(size)), 0, newShape, dtype = DataType.LongDataType, dim = D2)
+            val ret = D2Array(MemoryViewLongArray(LongArray(size)), 0, newShape, dim = D2)
             dotMatrix(a.data.getLongArray(), a.offset, a.strides, b.data.getLongArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getLongArray(), ret.strides[0])
             ret
         }
         DataType.ShortDataType -> {
-            val ret = D2Array(MemoryViewShortArray(ShortArray(size)), 0, newShape, dtype = DataType.ShortDataType, dim = D2)
+            val ret = D2Array(MemoryViewShortArray(ShortArray(size)), 0, newShape, dim = D2)
             dotMatrix(a.data.getShortArray(), a.offset, a.strides, b.data.getShortArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getShortArray(), ret.strides[0])
             ret
         }
         DataType.ByteDataType -> {
-            val ret = D2Array(MemoryViewByteArray(ByteArray(size)), 0, newShape, dtype = DataType.ByteDataType, dim = D2)
+            val ret = D2Array(MemoryViewByteArray(ByteArray(size)), 0, newShape, dim = D2)
             dotMatrix(a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getByteArray(), ret.strides[0])
             ret
         }
@@ -177,32 +177,32 @@ internal fun <T : Number> dotVector(a: MultiArray<T, D2>, b: MultiArray<T, D1>):
 
     return when (a.dtype) {
         DataType.FloatDataType -> {
-            val ret = D1Array(MemoryViewFloatArray(FloatArray(newShape[0])), 0, newShape, dtype = DataType.FloatDataType, dim = D1)
+            val ret = D1Array(MemoryViewFloatArray(FloatArray(newShape[0])), 0, newShape, dim = D1)
             dotVector(a.data.getFloatArray(), a.offset, a.strides, b.data.getFloatArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getFloatArray())
             ret
         }
         DataType.IntDataType -> {
-            val ret = D1Array(MemoryViewIntArray(IntArray(newShape[0])), 0, newShape, dtype = DataType.IntDataType, dim = D1)
+            val ret = D1Array(MemoryViewIntArray(IntArray(newShape[0])), 0, newShape, dim = D1)
             dotVector(a.data.getIntArray(), a.offset, a.strides, b.data.getIntArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getIntArray())
             ret
         }
         DataType.DoubleDataType -> {
-            val ret = D1Array(MemoryViewDoubleArray(DoubleArray(newShape[0])), 0, newShape, dtype = DataType.DoubleDataType, dim = D1)
+            val ret = D1Array(MemoryViewDoubleArray(DoubleArray(newShape[0])), 0, newShape, dim = D1)
             dotVector(a.data.getDoubleArray(), a.offset, a.strides, b.data.getDoubleArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getDoubleArray())
             ret
         }
         DataType.LongDataType -> {
-            val ret = D1Array(MemoryViewLongArray(LongArray(newShape[0])), 0, newShape, dtype = DataType.LongDataType, dim = D1)
+            val ret = D1Array(MemoryViewLongArray(LongArray(newShape[0])), 0, newShape, dim = D1)
             dotVector(a.data.getLongArray(), a.offset, a.strides, b.data.getLongArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getLongArray())
             ret
         }
         DataType.ShortDataType -> {
-            val ret = D1Array(MemoryViewShortArray(ShortArray(newShape[0])), 0, newShape, dtype = DataType.ShortDataType, dim = D1)
+            val ret = D1Array(MemoryViewShortArray(ShortArray(newShape[0])), 0, newShape, dim = D1)
             dotVector(a.data.getShortArray(), a.offset, a.strides, b.data.getShortArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getShortArray())
             ret
         }
         DataType.ByteDataType -> {
-            val ret = D1Array(MemoryViewByteArray(ByteArray(newShape[0])), 0, newShape, dtype = DataType.ByteDataType, dim = D1)
+            val ret = D1Array(MemoryViewByteArray(ByteArray(newShape[0])), 0, newShape, dim = D1)
             dotVector(a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getByteArray())
             ret
         }

@@ -118,7 +118,7 @@ public fun <T, D : Dimension, M : Dimension> MultiArray<T, D>.view(index: Int, a
     checkBounds(index in 0 until shape[axis], index, axis, axis)
     return NDArray(
         data, offset + strides[axis] * index, shape.remove(axis),
-        strides.remove(axis), this.dtype, dimensionOf(this.dim.d - 1), base ?: this
+        strides.remove(axis), dimensionOf(this.dim.d - 1), base ?: this
     )
 }
 
@@ -132,7 +132,7 @@ public fun <T, D : Dimension, M : Dimension> MultiArray<T, D>.view(
     var newOffset = offset
     for (i in axes.indices)
         newOffset += strides[axes[i]] * indices[i]
-    return NDArray(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size), base ?: this)
+    return NDArray(data, newOffset, newShape, newStrides, dimensionOf(this.dim.d - axes.size), base ?: this)
 }
 
 @JvmName("viewD2")
@@ -265,7 +265,14 @@ public fun <T, D : Dimension, O : Dimension> MultiArray<T, D>.slice(inSlice: Clo
             this[axis] = (actualTo - actualFrom + slice.step - 1) / slice.step
         }
     }
-    return NDArray(data, offset + actualFrom * strides[axis], sliceShape, sliceStrides, this.dtype, dimensionOf(sliceShape.size), base ?: this)
+    return NDArray(
+        data,
+        offset + actualFrom * strides[axis],
+        sliceShape,
+        sliceStrides,
+        dimensionOf(sliceShape.size),
+        base ?: this
+    )
 }
 
 
@@ -311,7 +318,7 @@ public fun <T, D : Dimension, O : Dimension> MultiArray<T, D>.slice(indexing: Ma
 
     newShape = newShape.removeAll(removeAxes)
     newStrides = newStrides.removeAll(removeAxes)
-    return NDArray(this.data, newOffset, newShape, newStrides, this.dtype, dimensionOf(newShape.size), base ?: this)
+    return NDArray(this.data, newOffset, newShape, newStrides, dimensionOf(newShape.size), base ?: this)
 }
 
 @JvmName("get12")
