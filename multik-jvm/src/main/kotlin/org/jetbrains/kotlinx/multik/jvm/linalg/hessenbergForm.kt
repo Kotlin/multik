@@ -2,6 +2,7 @@ package org.jetbrains.kotlinx.multik.jvm
 
 import org.jetbrains.kotlinx.multik.api.d2array
 import org.jetbrains.kotlinx.multik.api.empty
+import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.jvm.linalg.conjTranspose
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
@@ -28,10 +29,7 @@ import kotlin.math.sqrt
  *
  */
 internal fun upperHessenberg(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
-    var id = mk.empty<ComplexDouble, D2>(a.shape[0], a.shape[0])
-    for (i in 0 until a.shape[0]) {
-        id[i, i] = ComplexDouble(1.0, 0.0)
-    }
+    var id = mk.identity<ComplexDouble>(a.shape[0])
 
 
 
