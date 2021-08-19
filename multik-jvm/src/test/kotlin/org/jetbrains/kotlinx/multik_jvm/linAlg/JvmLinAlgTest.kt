@@ -7,7 +7,6 @@ package org.jetbrains.kotlinx.multik_jvm.linAlg
 
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jvm.linalg.*
-import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlg.dot
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solve
 import org.jetbrains.kotlinx.multik.jvm.qrComplexDouble
 import org.jetbrains.kotlinx.multik.jvm.upperHessenberg
@@ -80,7 +79,7 @@ class JvmLinAlgTest {
             val (P, L, U) = plu(a)
             assertTriangular(L, isLowerTriangular = true, requireUnitsOnDiagonal = true)
             assertTriangular(U, isLowerTriangular = false, requireUnitsOnDiagonal = false)
-            assertClose(dot(P, dot(L, U)), a, procedurePrecision)
+            assertClose(dotMatrix(P, dotMatrix(L, U)), a, procedurePrecision)
         }
     }
 
@@ -109,13 +108,13 @@ class JvmLinAlgTest {
             val m = rnd.nextInt(1, maxlen)
             val a = mk.d2array<Double>(n, n) { rnd.nextDouble() }
             val b = mk.d2array<Double>(n, m) { rnd.nextDouble() }
-            assertClose(b, dot(a, solve(a, b)), procedurePrecision)
+            assertClose(b, dotMatrix(a, solve(a, b)), procedurePrecision)
 
 
             //test when second argument is d1 vector
             val bd1 = mk.d1array(n) { rnd.nextDouble() }
             val sol = solve(a, bd1)
-            assertClose(dot(a, sol.reshape(sol.shape[0], 1)).reshape(a.shape[0]), bd1, procedurePrecision)
+            assertClose(dotMatrix(a, sol.reshape(sol.shape[0], 1)).reshape(a.shape[0]), bd1, procedurePrecision)
 
         }
     }
@@ -134,13 +133,13 @@ class JvmLinAlgTest {
         }
 
         // assert Q is unitary
-        val approxId = tempDot(Q, Q.conjTranspose())
+        val approxId = dotMatrixComplex(Q, Q.conjTranspose())
         val Id = mk.empty<ComplexDouble, D2>(n, n)
 
         assertCloseMatrixComplexDouble(approxId, idComplexDouble(n), 1e-5)
 
         // assert decomposition is valid
-        val approxmat = tempDot(tempDot(Q, H), Q.conjTranspose())
+        val approxmat = dotMatrixComplex(dotMatrixComplex(Q, H), Q.conjTranspose())
         assertCloseMatrixComplexDouble(approxmat, mat, 1e-5);
     }
 
@@ -152,10 +151,10 @@ class JvmLinAlgTest {
         val (q, r) = qrComplexDouble(mat)
 
         // assert decomposition is valid
-        assertCloseMatrixComplexDouble(tempDot(q, r), mat, 1e-5)
+        assertCloseMatrixComplexDouble(dotMatrixComplex(q, r), mat, 1e-5)
 
         // assert q is unitary
-        assertCloseMatrixComplexDouble(tempDot(q, q.conjTranspose()), idComplexDouble(n), 1e-5)
+        assertCloseMatrixComplexDouble(dotMatrixComplex(q, q.conjTranspose()), idComplexDouble(n), 1e-5)
 
         // assert r is upper triangular
         for (i in 1 until r.shape[0]) {
@@ -184,10 +183,10 @@ class JvmLinAlgTest {
             val (q, r) = schurDecomposition(mat)
 
             // assert decomposition is valid
-            assertCloseMatrixComplexDouble(tempDot(tempDot(q, r), q.conjTranspose()), mat, 1e-5)
+            assertCloseMatrixComplexDouble(dotMatrixComplex(dotMatrixComplex(q, r), q.conjTranspose()), mat, 1e-5)
 
             // assert q is unitary
-            assertCloseMatrixComplexDouble(tempDot(q, q.conjTranspose()), idComplexDouble(n), 1e-5)
+            assertCloseMatrixComplexDouble(dotMatrixComplex(q, q.conjTranspose()), idComplexDouble(n), 1e-5)
 
             // assert r is upper triangular
             for (i in 1 until r.shape[0]) {
@@ -213,9 +212,9 @@ class JvmLinAlgTest {
         }
         val Q = gramShmidtComplexDouble(getRandomMatrixComplexDouble(n, n))
 
-        assertCloseMatrixComplexDouble(tempDot(Q, Q.conjTranspose()), idComplexDouble(n), precision = 1e-5)
+        assertCloseMatrixComplexDouble(dotMatrixComplex(Q, Q.conjTranspose()), idComplexDouble(n), precision = 1e-5)
 
-        val mat = tempDot(tempDot(Q, R), Q.conjTranspose())
+        val mat = dotMatrixComplex(dotMatrixComplex(Q, R), Q.conjTranspose())
 
         var trueEigavals = List<ComplexDouble>(n) { i -> R[i, i] }
 

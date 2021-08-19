@@ -27,22 +27,6 @@ fun Double.toComplexDouble(): ComplexDouble {
     return ComplexDouble(this, 0.0)
 }
 
-// TODO: remove
-internal fun tempDot(a: NDArray<ComplexDouble, D2>, b: NDArray<ComplexDouble, D2>): D2Array<ComplexDouble> {
-    require(a.shape[1] == b.shape[0]) { "Can't multiply" }
-
-    val ans = mk.empty<ComplexDouble, D2>(a.shape[0], b.shape[1])
-
-    for (i in 0 until a.shape[0]) {
-        for (j in 0 until b.shape[1]) {
-            for (k in 0 until a.shape[1]) {
-                ans[i, j] += a[i, k] * b[k, j]
-            }
-        }
-    }
-    return ans
-}
-
 // computes some square root of complex number
 // guarantee csqrt(a) * csqrt(a) = a
 fun csqrt(a: ComplexDouble): ComplexDouble {

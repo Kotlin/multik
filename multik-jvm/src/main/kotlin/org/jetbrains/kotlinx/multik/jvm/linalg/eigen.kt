@@ -64,7 +64,7 @@ internal fun schurDecomposition(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<
     // H = L1 * UT * L1.H
     // a = (L * L1) * UT * (L1.H * L.H)
     val (upperTriangular, L1) = qrShifted(H)
-    return Pair(tempDot(L, L1), upperTriangular) //TODO change to dot
+    return Pair(dotMatrixComplex(L, L1), upperTriangular)
 }
 
 /**
