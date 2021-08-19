@@ -276,7 +276,7 @@ private fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30):
                 }
             }
 
-            // Ensure that H(I,I-1) is real.
+            // Ensure that h[i, i - 1] is real
             var temp = h[i, i - 1]
             if (temp.im != 0.0) {
                 val rtemp = temp.abs().toComplexDouble()
