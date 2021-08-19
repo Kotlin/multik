@@ -2,7 +2,6 @@ package org.jetbrains.kotlinx.multik.jvm.linalg
 
 import org.jetbrains.kotlinx.multik.ndarray.complex.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import java.lang.UnsupportedOperationException
 
 
 //-------------------dotMM--------------------------
@@ -181,12 +180,12 @@ internal fun <T : Complex> dotMatrixComplex(a: MultiArray<T, D2>, b: MultiArray<
     val size = newShape.reduce(Int::times)
     return when (a.dtype) {
         DataType.ComplexDoubleDataType -> {
-            val ret = D2Array(MemoryViewComplexDoubleArray(ComplexDoubleArray(size)), 0, newShape, dtype = DataType.ComplexDoubleDataType, dim = D2)
+            val ret = D2Array(MemoryViewComplexDoubleArray(ComplexDoubleArray(size)), 0, newShape, dim = D2)
             dotMatrixComplex(a.data.getComplexDoubleArray(), a.offset, a.strides, b.data.getComplexDoubleArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getComplexDoubleArray(), ret.strides[0])
             ret
         }
         DataType.ComplexFloatDataType -> {
-            val ret = D2Array(MemoryViewComplexFloatArray(ComplexFloatArray(size)), 0, newShape, dtype = DataType.ComplexFloatDataType, dim = D2)
+            val ret = D2Array(MemoryViewComplexFloatArray(ComplexFloatArray(size)), 0, newShape, dim = D2)
             dotMatrixComplex(a.data.getComplexFloatArray(), a.offset, a.strides, b.data.getComplexFloatArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getComplexFloatArray(), ret.strides[0])
             ret
         }
@@ -373,12 +372,12 @@ internal fun <T : Complex> dotMatrixToVectorComplex(a: MultiArray<T, D2>, b: Mul
 
     return when (a.dtype) {
         DataType.ComplexDoubleDataType -> {
-            val ret = D1Array(MemoryViewComplexDoubleArray(ComplexDoubleArray(newShape[0])), 0, newShape, dtype = DataType.ComplexDoubleDataType, dim = D1)
+            val ret = D1Array(MemoryViewComplexDoubleArray(ComplexDoubleArray(newShape[0])), 0, newShape, dim = D1)
             dotVectorComplex(a.data.getComplexDoubleArray(), a.offset, a.strides, b.data.getComplexDoubleArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getComplexDoubleArray())
             ret
         }
         DataType.ComplexFloatDataType -> {
-            val ret = D1Array(MemoryViewComplexFloatArray(ComplexFloatArray(newShape[0])), 0, newShape, dtype = DataType.ComplexFloatDataType, dim = D1)
+            val ret = D1Array(MemoryViewComplexFloatArray(ComplexFloatArray(newShape[0])), 0, newShape, dim = D1)
             dotVectorComplex(a.data.getComplexFloatArray(), a.offset, a.strides, b.data.getComplexFloatArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getComplexFloatArray())
             ret
         }
