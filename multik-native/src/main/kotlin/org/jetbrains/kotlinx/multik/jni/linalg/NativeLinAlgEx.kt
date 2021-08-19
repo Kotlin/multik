@@ -51,7 +51,7 @@ public object NativeLinAlgEx: LinAlgEx {
             else -> throw UnsupportedOperationException()
         }
 
-        return D2Array(cView, 0, shape, dtype = a.dtype, dim = D2)
+        return D2Array(cView, 0, shape, dim = D2)
     }
 
     override fun <T : Complex> dotMMComplex(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> {
@@ -75,7 +75,7 @@ public object NativeLinAlgEx: LinAlgEx {
             else -> throw UnsupportedOperationException()
         }
 
-        return D2Array(cView, 0, shape, dtype = a.dtype, dim = D2)
+        return D2Array(cView, 0, shape, dim = D2)
     }
 
     override fun <T : Number> dotMV(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> {
@@ -98,7 +98,7 @@ public object NativeLinAlgEx: LinAlgEx {
             else -> throw UnsupportedOperationException()
         }
 
-        return D1Array(cView, 0, shape, dtype = a.dtype, dim = D1)
+        return D1Array(cView, 0, shape, dim = D1)
     }
 
     override fun <T : Complex> dotMVComplex(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> {
@@ -121,7 +121,7 @@ public object NativeLinAlgEx: LinAlgEx {
             else -> throw UnsupportedOperationException()
         }
 
-        return D1Array(cView, 0, shape, dtype = a.dtype, dim = D1)
+        return D1Array(cView, 0, shape, dim = D1)
     }
 
     override fun <T : Number> dotVV(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
