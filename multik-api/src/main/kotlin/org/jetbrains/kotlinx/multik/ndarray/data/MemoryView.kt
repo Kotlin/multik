@@ -10,9 +10,11 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.*
  * View for storing data in a [NDArray] and working them in a uniform style.
  *
  * @property data one of the primitive arrays.
+ * @property dtype type of elements in array
  */
 public interface ImmutableMemoryView<T> : Iterable<T> {
     public val data: Any
+    public val dtype: DataType
     public var size: Int
 
     /**
@@ -32,10 +34,6 @@ public interface ImmutableMemoryView<T> : Iterable<T> {
      * Returns a new instance with a copied primitive array.
      */
     public fun copyOf(): ImmutableMemoryView<T>
-
-    public fun copyInto(
-        destination: ImmutableMemoryView<T>, destinationOffset: Int = 0, startIndex: Int = 0, endIndex: Int = size
-    ): ImmutableMemoryView<T>
 
     /**
      * Returns [ByteArray] if it is [MemoryViewByteArray].
@@ -102,10 +100,6 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
     public abstract operator fun set(index: Int, value: T)
 
     public abstract override fun copyOf(): MemoryView<T>
-
-    public abstract override fun copyInto(
-        destination: ImmutableMemoryView<T>, destinationOffset: Int, startIndex: Int, endIndex: Int
-    ): MemoryView<T>
 
     public override fun getByteArray(): ByteArray = throw UnsupportedOperationException()
 
@@ -232,6 +226,8 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
  * View for [ByteArray].
  */
 public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte>() {
+    override val dtype: DataType = DataType.ByteDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -249,13 +245,6 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
     override fun iterator(): Iterator<Byte> = data.iterator()
 
     override fun copyOf(): MemoryView<Byte> = MemoryViewByteArray(data.copyOf())
-
-    override fun copyInto(
-        destination: ImmutableMemoryView<Byte>, destinationOffset: Int, startIndex: Int, endIndex: Int
-    ): MemoryViewByteArray {
-        val retArray = this.data.copyInto(destination.getByteArray(), destinationOffset, startIndex, endIndex)
-        return MemoryViewByteArray(retArray)
-    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
@@ -323,6 +312,8 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
  * View for [ShortArray].
  */
 public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Short>() {
+    override val dtype: DataType = DataType.ShortDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -340,13 +331,6 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
     override fun iterator(): Iterator<Short> = data.iterator()
 
     override fun copyOf(): MemoryView<Short> = MemoryViewShortArray(data.copyOf())
-
-    override fun copyInto(
-        destination: ImmutableMemoryView<Short>, destinationOffset: Int, startIndex: Int, endIndex: Int
-    ): MemoryViewShortArray {
-        val retArray = this.data.copyInto(destination.getShortArray(), destinationOffset, startIndex, endIndex)
-        return MemoryViewShortArray(retArray)
-    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
@@ -414,6 +398,8 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
  * View for [IntArray].
  */
 public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>() {
+    override val dtype: DataType = DataType.IntDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -431,13 +417,6 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
     override fun iterator(): Iterator<Int> = data.iterator()
 
     override fun copyOf(): MemoryView<Int> = MemoryViewIntArray(data.copyOf())
-
-    override fun copyInto(
-        destination: ImmutableMemoryView<Int>, destinationOffset: Int, startIndex: Int, endIndex: Int
-    ): MemoryViewIntArray {
-        val retArray = this.data.copyInto(destination.getIntArray(), destinationOffset, startIndex, endIndex)
-        return MemoryViewIntArray(retArray)
-    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
@@ -506,6 +485,8 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
  * View for [LongArray].
  */
 public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long>() {
+    override val dtype: DataType = DataType.LongDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -523,13 +504,6 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
     override fun iterator(): Iterator<Long> = data.iterator()
 
     override fun copyOf(): MemoryView<Long> = MemoryViewLongArray(data.copyOf())
-
-    override fun copyInto(
-        destination: ImmutableMemoryView<Long>, destinationOffset: Int, startIndex: Int, endIndex: Int
-    ): MemoryViewLongArray {
-        val retArray = this.data.copyInto(destination.getLongArray(), destinationOffset, startIndex, endIndex)
-        return MemoryViewLongArray(retArray)
-    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
@@ -597,6 +571,8 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
  * View for [FloatArray].
  */
 public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Float>() {
+    override val dtype: DataType = DataType.FloatDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -614,13 +590,6 @@ public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Fl
     override fun iterator(): Iterator<Float> = data.iterator()
 
     override fun copyOf(): MemoryView<Float> = MemoryViewFloatArray(data.copyOf())
-
-    override fun copyInto(
-        destination: ImmutableMemoryView<Float>, destinationOffset: Int, startIndex: Int, endIndex: Int
-    ): MemoryViewFloatArray {
-        val retArray = this.data.copyInto(destination.getFloatArray(), destinationOffset, startIndex, endIndex)
-        return MemoryViewFloatArray(retArray)
-    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
@@ -688,6 +657,8 @@ public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Fl
  * View for [DoubleArray].
  */
 public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<Double>() {
+    override val dtype: DataType = DataType.DoubleDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -705,13 +676,6 @@ public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<
     override fun iterator(): Iterator<Double> = data.iterator()
 
     override fun copyOf(): MemoryView<Double> = MemoryViewDoubleArray(data.copyOf())
-
-    override fun copyInto(
-        destination: ImmutableMemoryView<Double>, destinationOffset: Int, startIndex: Int, endIndex: Int
-    ): MemoryViewDoubleArray {
-        val retArray = this.data.copyInto(destination.getDoubleArray(), destinationOffset, startIndex, endIndex)
-        return MemoryViewDoubleArray(retArray)
-    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
@@ -779,6 +743,8 @@ public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<
  * View for [ComplexFloatArray].
  */
 public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) : MemoryView<ComplexFloat>() {
+    override val dtype: DataType = DataType.ComplexFloatDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -798,13 +764,6 @@ public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) :
     override fun iterator(): Iterator<ComplexFloat> = data.iterator()
 
     override fun copyOf(): MemoryView<ComplexFloat> = MemoryViewComplexFloatArray(data.copyOf())
-
-    override fun copyInto(
-        destination: ImmutableMemoryView<ComplexFloat>, destinationOffset: Int, startIndex: Int, endIndex: Int
-    ): MemoryViewComplexFloatArray {
-        val retArray = this.data.copyInto(destination.getComplexFloatArray(), destinationOffset, startIndex, endIndex)
-        return MemoryViewComplexFloatArray(retArray)
-    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
@@ -872,6 +831,8 @@ public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) :
  * View for [ComplexDoubleArray].
  */
 public class MemoryViewComplexDoubleArray(override val data: ComplexDoubleArray) : MemoryView<ComplexDouble>() {
+    override val dtype: DataType = DataType.ComplexDoubleDataType
+
     override var size: Int = data.size
 
     override var indices: IntRange = data.indices
@@ -891,13 +852,6 @@ public class MemoryViewComplexDoubleArray(override val data: ComplexDoubleArray)
     override fun iterator(): Iterator<ComplexDouble> = data.iterator()
 
     override fun copyOf(): MemoryView<ComplexDouble> = MemoryViewComplexDoubleArray(data.copyOf())
-
-    override fun copyInto(
-        destination: ImmutableMemoryView<ComplexDouble>, destinationOffset: Int, startIndex: Int, endIndex: Int
-    ): MemoryViewComplexDoubleArray {
-        val retArray = this.data.copyInto(destination.getComplexDoubleArray(), destinationOffset, startIndex, endIndex)
-        return MemoryViewComplexDoubleArray(retArray)
-    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true

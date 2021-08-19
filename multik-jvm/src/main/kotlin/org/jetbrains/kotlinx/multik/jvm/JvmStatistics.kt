@@ -60,7 +60,7 @@ public object JvmStatistics : Statistics {
         }
 
         return NDArray<Double, O>(
-            retData, 0, newShape, dtype = DataType.DoubleDataType, dim = dimensionOf(newShape.size)
+            retData, 0, newShape, dim = dimensionOf(newShape.size)
         ) / a.shape[axis].toDouble()
     }
 
