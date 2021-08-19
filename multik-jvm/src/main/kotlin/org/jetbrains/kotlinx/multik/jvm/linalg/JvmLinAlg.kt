@@ -9,10 +9,7 @@ import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.api.mk
-import org.jetbrains.kotlinx.multik.ndarray.data.D2
-import org.jetbrains.kotlinx.multik.ndarray.data.DataType
-import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
-import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
+import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object JvmLinAlg : LinAlg {
 
@@ -45,6 +42,8 @@ public object JvmLinAlg : LinAlg {
             }
         }
     }
+
+
 
 //    override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
 //        require(a.shape[1] == b.shape[0]) {

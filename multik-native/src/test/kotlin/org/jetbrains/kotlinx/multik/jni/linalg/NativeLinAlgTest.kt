@@ -1,6 +1,9 @@
 package org.jetbrains.kotlinx.multik.jni.linalg
 
 import org.jetbrains.kotlinx.multik.api.identity
+import org.jetbrains.kotlinx.multik.api.linalg.dot
+import org.jetbrains.kotlinx.multik.api.linalg.inv
+import org.jetbrains.kotlinx.multik.api.linalg.solve
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.jni.*
