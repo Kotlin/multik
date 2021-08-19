@@ -1,17 +1,46 @@
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.util.TypeCheckError
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.jvm.upperHessenberg
+import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.operations.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
 import java.lang.ArithmeticException
+import java.lang.UnsupportedOperationException
 import kotlin.math.*
 
 
-// TODO check matrix traverse order
 
-// TODO create ComplexFloat etc versions
+public fun<T: Number> eig(a: MultiArray<T, D2>): MultiArray<ComplexDouble, D1> {
+    requireSquare(a)
+    val b = mk.d2arrayComplex(a.shape[0], a.shape[0]) { ComplexDouble(a[it / a.shape[0], it % a.shape[1]]) }
+    return eigenvalues(b)
+}
+
+public fun<T: Complex> eigC(a: MultiArray<T, D2>): MultiArray<ComplexDouble, D1> {
+    requireSquare(a)
+    val b: MultiArray<ComplexDouble, D2>
+    when (a.dtype) {
+        DataType.ComplexFloatDataType -> {
+            a as MultiArray<ComplexFloat, D2>
+            b = mk.d2arrayComplex(a.shape[0], a.shape[0]) { ComplexDouble(a[it / a.shape[0], it % a.shape[1]].re, a[it / a.shape[0], it % a.shape[1]].im) }
+        }
+        DataType.ComplexDoubleDataType -> {
+            a as MultiArray<ComplexDouble, D2>
+            b = a
+        }
+        else -> {
+            throw UnsupportedOperationException("matrix should be Complex")
+        }
+    }
+    return eigenvalues(b)
+}
+
+
 /**
  * computes eigenvalues of matrix a
  */
@@ -46,7 +75,6 @@ internal fun schurDecomposition(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<
  */
 private fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
 
-    val w = mk.empty<ComplexDouble, D1>(a.shape[0])
     val z = mk.identity<ComplexDouble>(a.shape[0])
     val v = mk.empty<ComplexDouble, D1>(2)
 
@@ -65,26 +93,22 @@ private fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30):
     }
 
     val safemin = 1e-300
-    val ulp = 1e-16 // precision // todo: look
+    val ulp = 1e-16
     val smlnum = safemin * (n.toDouble() / ulp)
 
     val itmax = trialsNumber * max(10, n)
     var kdefl = 0
 
     var i = n
-    // curr matrix = h[0..i, 0..i]
+
     while (i >= 1) {
 
         var l = 1
         var failedToConverge = true
-        // matrix h[l + 1 .. i, l + 1 .. i] is converged
+
         for (iteration in 0 until itmax) { // Look for a single small subdiagonal element
 
             l = run {
-                // TODO: check if
-                if (i < l + 1) {
-                    return@run i
-                }
                 for (k in i downTo l + 1) {
                     if (absL1(h[k - 1, k - 2]) < smlnum) {
                         return@run k
@@ -132,7 +156,7 @@ private fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30):
                 h[l - 1, l - 2] = ComplexDouble.zero
             }
 
-            if (l >= i) { // TODO: check 84 line
+            if (l >= i) {
                 failedToConverge = false
                 break
             }
@@ -148,7 +172,7 @@ private fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30):
             when {
                 kdefl % (2 * kExceptionalShift) == 0 -> {
                     s = dat1 * abs(h[i - 1, i - 2].re)
-                    t = h[i - 1, i - 1] + s // TODO: issue Number op Complex
+                    t = h[i - 1, i - 1] + s
                 }
                 kdefl % kExceptionalShift == 0 -> {
                     s = dat1 * abs(h[l, l - 1].re)
@@ -178,7 +202,7 @@ private fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30):
             var h21: ComplexDouble
 
             val m = run {
-                for (m in (i - 1) downTo (l + 1)) {
+                for (m in (i - 1) downTo l) {
                     h11 = h[m - 1, m - 1]
                     h22 = h[m, m]
                     h11s = h11 - t
@@ -188,23 +212,14 @@ private fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30):
                     h21 /= s
                     v[0] = h11s
                     v[1] = h21
-                    val h10 = h[m - 1, m - 2]
+                    if (m > l) {
+                        val h10 = h[m - 1, m - 2]
 
-                    if (h10.abs() * h21.abs() <= ulp * (absL1(h11s) * (absL1(h11) + absL1(h22)))) {
-                        return@run m
+                        if (h10.abs() * h21.abs() <= ulp * (absL1(h11s) * (absL1(h11) + absL1(h22)))) {
+                            return@run m
+                        }
                     }
                 }
-                // TODO merge with for
-                h11 = h[l - 1, l - 1]
-                h22 = h[l, l]
-                h11s = h11 - t
-                h21 = h[l, l - 1].re.toComplexDouble()
-
-                s = absL1(h11s) + h21.abs()
-                h11s /= s
-                h21 /= s
-                v[0] = h11s
-                v[1] = h21
                 return@run l
             }
 
@@ -216,7 +231,7 @@ private fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30):
                 }
 
                 // zlarfg( 2, v( 1 ), v( 2 ), 1, t1 )
-                val (v1, t1) = computeHouseholderReflectorInline(2, v[0], v[1..2] as D1Array<ComplexDouble>)
+                val (v1, t1) = computeHouseholderReflectorInplace(2, v[0], v[1..2] as D1Array<ComplexDouble>)
                 v[0] = v1
 
                 if (k > m) {
@@ -278,11 +293,8 @@ private fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30):
             }
         }
         if (failedToConverge) {
-            // TODO clarify error
-            throw ArithmeticException("failed to converge, try to increase trialsNumber")
+            throw ArithmeticException("failed to converge with trialsNumber = $trialsNumber")
         }
-        // TODO delete w
-        w[i - 1] = h[i - 1, i - 1]
         kdefl = 0
         i = l - 1
     }
@@ -291,7 +303,7 @@ private fun qrShifted(a: MultiArray<ComplexDouble, D2>, trialsNumber: Int = 30):
 }
 
 // return (beta, tau), mute x
-private fun computeHouseholderReflectorInline(
+private fun computeHouseholderReflectorInplace(
     n: Int,
     alpha: ComplexDouble,
     x: D1Array<ComplexDouble>

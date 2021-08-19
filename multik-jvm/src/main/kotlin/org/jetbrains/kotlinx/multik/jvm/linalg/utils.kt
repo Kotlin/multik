@@ -8,7 +8,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-internal fun <T : Number> requireSquare(a: MultiArray<T, D2>) {
+internal fun <T : Any> requireSquare(a: MultiArray<T, D2>) {
     require(a.shape[0] == a.shape[1]) { "Square matrix expected, shape=(${a.shape[0]}, ${a.shape[1]}) given" }
 }
 

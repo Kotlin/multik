@@ -170,7 +170,16 @@ class JvmLinAlgTest {
     @Test
     fun `test Schur decomposition`() {
         for (attempt in 0 until 5) {
-            val n = 100
+
+            val n = when(attempt) {
+                0 -> 1
+                1 -> 2
+                2 -> 5
+                3 -> 10
+                4 -> 100
+                else -> 100
+            }
+
             val mat = getRandomMatrixComplexDouble(n, n)
             val (q, r) = schurDecomposition(mat)
 
@@ -210,7 +219,7 @@ class JvmLinAlgTest {
 
         var trueEigavals = List<ComplexDouble>(n) { i -> R[i, i] }
 
-        val eigs = eigenvalues(mat)
+        val eigs = eigC(mat)
 
         var testedEigenvals = List<ComplexDouble>(n) { i -> eigs[i] }
 
