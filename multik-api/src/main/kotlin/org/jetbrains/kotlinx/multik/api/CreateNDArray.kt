@@ -23,7 +23,7 @@ public inline fun <reified T : Any, reified D : Dimension> Multik.empty(vararg d
     val dtype = DataType.of(T::class)
     val size = dims.reduce { acc, el -> acc * el }
     val data = initMemoryView<T>(size, dtype)
-    return NDArray(data, shape = dims, dtype = dtype, dim = dim)
+    return NDArray(data, shape = dims, dim = dim)
 }
 
 /**
@@ -42,7 +42,7 @@ public fun <T, D : Dimension> Multik.empty(dims: IntArray, dtype: DataType): NDA
     requireDimension(dim, dims.size) // TODO (mk.empty<Float, D2>(intArrayOf(3), DataType.FloatDataType))
     val size = dims.fold(1, Int::times)
     val data = initMemoryView<T>(size, dtype)
-    return NDArray(data, shape = dims, dtype = dtype, dim = dim)
+    return NDArray(data, shape = dims, dim = dim)
 }
 
 /**
@@ -69,7 +69,7 @@ public inline fun <reified T : Any> Multik.identity(n: Int): D2Array<T> {
  */
 public fun <T> Multik.identity(n: Int, dtype: DataType): D2Array<T> {
     val shape = intArrayOf(n, n)
-    val ret = D2Array(initMemoryView<T>(n * n, dtype), shape = shape, dtype = dtype, dim = D2)
+    val ret = D2Array(initMemoryView<T>(n * n, dtype), shape = shape, dim = D2)
     val one: Any = when (dtype) {
         DataType.ByteDataType -> 1.toByte()
         DataType.ShortDataType -> 1.toShort()
@@ -119,7 +119,7 @@ public inline fun <reified T : Complex> Multik.ndarray(arg: List<T>): D1Array<T>
 internal inline fun <reified T : Any> ndarrayCommon1D(arg: List<T>): D1Array<T> {
     val dtype = DataType.of(T::class)
     val data = arg.toViewPrimitiveArray(dtype)
-    return D1Array(data, 0, intArrayOf(arg.size), dtype = dtype, dim = D1)
+    return D1Array(data, 0, intArrayOf(arg.size), dim = D1)
 }
 
 /**
@@ -155,7 +155,7 @@ internal inline fun <reified T : Any> ndarrayCommon2D(arg: List<List<T>>): D2Arr
         res.addAll(ax0)
     }
     val data = res.toViewPrimitiveArray(dtype)
-    return D2Array(data, 0, size, dtype = dtype, dim = D2)
+    return D2Array(data, 0, size, dim = D2)
 }
 
 /**
@@ -195,7 +195,7 @@ internal inline fun <reified T : Any> ndarrayCommon3D(arg: List<List<List<T>>>):
         }
     }
     val data = res.toViewPrimitiveArray(dtype)
-    return D3Array(data, 0, size, dtype = dtype, dim = D3)
+    return D3Array(data, 0, size, dim = D3)
 }
 
 /**
@@ -239,7 +239,7 @@ internal inline fun <reified T : Any> ndarrayCommon4D(arg: List<List<List<List<T
         }
     }
     val data = res.toViewPrimitiveArray(dtype)
-    return D4Array(data, 0, size, dtype = dtype, dim = D4)
+    return D4Array(data, 0, size, dim = D4)
 }
 
 
@@ -307,7 +307,7 @@ internal fun <T, D : Dimension> ndarrayCommon(elements: Collection<T>, shape: In
         for (el in elements)
             this[count++] = el
     }
-    return NDArray(data, shape = shape, dtype = dtype, dim = dim)
+    return NDArray(data, shape = shape, dim = dim)
 }
 
 //_________________________________________________D1___________________________________________________________________
@@ -342,7 +342,7 @@ public fun <T : Complex> Multik.ndarray(elements: Collection<T>): D1Array<T> =
  */
 public fun Multik.ndarray(args: ByteArray): D1Array<Byte> {
     val data = MemoryViewByteArray(args)
-    return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.ByteDataType, dim = D1)
+    return D1Array(data, shape = intArrayOf(args.size), dim = D1)
 }
 
 /**
@@ -354,7 +354,7 @@ public fun Multik.ndarray(args: ByteArray): D1Array<Byte> {
  */
 public fun Multik.ndarray(args: ShortArray): D1Array<Short> {
     val data = MemoryViewShortArray(args)
-    return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.ShortDataType, dim = D1)
+    return D1Array(data, shape = intArrayOf(args.size), dim = D1)
 }
 
 /**
@@ -366,7 +366,7 @@ public fun Multik.ndarray(args: ShortArray): D1Array<Short> {
  */
 public fun Multik.ndarray(args: IntArray): D1Array<Int> {
     val data = MemoryViewIntArray(args)
-    return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.IntDataType, dim = D1)
+    return D1Array(data, shape = intArrayOf(args.size), dim = D1)
 }
 
 /**
@@ -378,7 +378,7 @@ public fun Multik.ndarray(args: IntArray): D1Array<Int> {
  */
 public fun Multik.ndarray(args: LongArray): D1Array<Long> {
     val data = MemoryViewLongArray(args)
-    return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.LongDataType, dim = D1)
+    return D1Array(data, shape = intArrayOf(args.size), dim = D1)
 }
 
 /**
@@ -390,7 +390,7 @@ public fun Multik.ndarray(args: LongArray): D1Array<Long> {
  */
 public fun Multik.ndarray(args: FloatArray): D1Array<Float> {
     val data = MemoryViewFloatArray(args)
-    return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.FloatDataType, dim = D1)
+    return D1Array(data, shape = intArrayOf(args.size), dim = D1)
 }
 
 /**
@@ -402,7 +402,7 @@ public fun Multik.ndarray(args: FloatArray): D1Array<Float> {
  */
 public fun Multik.ndarray(args: DoubleArray): D1Array<Double> {
     val data = MemoryViewDoubleArray(args)
-    return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.DoubleDataType, dim = D1)
+    return D1Array(data, shape = intArrayOf(args.size), dim = D1)
 }
 
 /**
@@ -413,7 +413,7 @@ public fun Multik.ndarray(args: DoubleArray): D1Array<Double> {
  */
 public fun Multik.ndarray(args: ComplexFloatArray): D1Array<ComplexFloat> {
     val data = MemoryViewComplexFloatArray(args)
-    return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.ComplexFloatDataType, dim = D1)
+    return D1Array(data, shape = intArrayOf(args.size), dim = D1)
 }
 
 /**
@@ -424,7 +424,7 @@ public fun Multik.ndarray(args: ComplexFloatArray): D1Array<ComplexFloat> {
  */
 public fun Multik.ndarray(args: ComplexDoubleArray): D1Array<ComplexDouble> {
     val data = MemoryViewComplexDoubleArray(args)
-    return D1Array(data, shape = intArrayOf(args.size), dtype = DataType.ComplexDoubleDataType, dim = D1)
+    return D1Array(data, shape = intArrayOf(args.size), dim = D1)
 }
 
 //_________________________________________________D2___________________________________________________________________
@@ -466,7 +466,7 @@ public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2
 public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int): D2Array<Byte> {
     requireElementsWithShape(args.size, dim1 * dim2)
     val data = MemoryViewByteArray(args)
-    return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.ByteDataType, dim = D2)
+    return D2Array(data, shape = intArrayOf(dim1, dim2), dim = D2)
 }
 
 /**
@@ -481,7 +481,7 @@ public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int): D2Array<Byte> 
 public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int): D2Array<Short> {
     requireElementsWithShape(args.size, dim1 * dim2)
     val data = MemoryViewShortArray(args)
-    return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.ShortDataType, dim = D2)
+    return D2Array(data, shape = intArrayOf(dim1, dim2), dim = D2)
 }
 
 /**
@@ -496,7 +496,7 @@ public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int): D2Array<Short
 public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int): D2Array<Int> {
     requireElementsWithShape(args.size, dim1 * dim2)
     val data = MemoryViewIntArray(args)
-    return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.IntDataType, dim = D2)
+    return D2Array(data, shape = intArrayOf(dim1, dim2), dim = D2)
 }
 
 /**
@@ -511,7 +511,7 @@ public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int): D2Array<Int> {
 public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int): D2Array<Long> {
     requireElementsWithShape(args.size, dim1 * dim2)
     val data = MemoryViewLongArray(args)
-    return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.LongDataType, dim = D2)
+    return D2Array(data, shape = intArrayOf(dim1, dim2), dim = D2)
 }
 
 /**
@@ -526,7 +526,7 @@ public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int): D2Array<Long> 
 public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int): D2Array<Float> {
     requireElementsWithShape(args.size, dim1 * dim2)
     val data = MemoryViewFloatArray(args)
-    return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.FloatDataType, dim = D2)
+    return D2Array(data, shape = intArrayOf(dim1, dim2), dim = D2)
 }
 
 /**
@@ -541,7 +541,7 @@ public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int): D2Array<Float
 public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int): D2Array<Double> {
     requireElementsWithShape(args.size, dim1 * dim2)
     val data = MemoryViewDoubleArray(args)
-    return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.DoubleDataType, dim = D2)
+    return D2Array(data, shape = intArrayOf(dim1, dim2), dim = D2)
 }
 
 /**
@@ -555,7 +555,7 @@ public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int): D2Array<Doub
 public fun Multik.ndarray(args: ComplexFloatArray, dim1: Int, dim2: Int): D2Array<ComplexFloat> {
     requireElementsWithShape(args.size, dim1 * dim2)
     val data = MemoryViewComplexFloatArray(args)
-    return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.ComplexFloatDataType, dim = D2)
+    return D2Array(data, shape = intArrayOf(dim1, dim2), dim = D2)
 }
 
 /**
@@ -569,7 +569,7 @@ public fun Multik.ndarray(args: ComplexFloatArray, dim1: Int, dim2: Int): D2Arra
 public fun Multik.ndarray(args: ComplexDoubleArray, dim1: Int, dim2: Int): D2Array<ComplexDouble> {
     requireElementsWithShape(args.size, dim1 * dim2)
     val data = MemoryViewComplexDoubleArray(args)
-    return D2Array(data, shape = intArrayOf(dim1, dim2), dtype = DataType.ComplexDoubleDataType, dim = D2)
+    return D2Array(data, shape = intArrayOf(dim1, dim2), dim = D2)
 }
 
 //_________________________________________________D3___________________________________________________________________
@@ -614,7 +614,7 @@ public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2
 public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Byte> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
     val data = MemoryViewByteArray(args)
-    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.ByteDataType, dim = D3)
+    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dim = D3)
 }
 
 /**
@@ -630,7 +630,7 @@ public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int, dim3: Int): D3A
 public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Short> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
     val data = MemoryViewShortArray(args)
-    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.ShortDataType, dim = D3)
+    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dim = D3)
 }
 
 /**
@@ -646,7 +646,7 @@ public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int, dim3: Int): D3
 public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Int> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
     val data = MemoryViewIntArray(args)
-    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.IntDataType, dim = D3)
+    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dim = D3)
 }
 
 /**
@@ -662,7 +662,7 @@ public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int, dim3: Int): D3Ar
 public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Long> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
     val data = MemoryViewLongArray(args)
-    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.LongDataType, dim = D3)
+    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dim = D3)
 }
 
 /**
@@ -678,7 +678,7 @@ public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int, dim3: Int): D3A
 public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Float> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
     val data = MemoryViewFloatArray(args)
-    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.FloatDataType, dim = D3)
+    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dim = D3)
 }
 
 /**
@@ -694,7 +694,7 @@ public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int, dim3: Int): D3
 public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Double> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
     val data = MemoryViewDoubleArray(args)
-    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.DoubleDataType, dim = D3)
+    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dim = D3)
 }
 
 /**
@@ -709,7 +709,7 @@ public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int, dim3: Int): D
 public fun Multik.ndarray(args: ComplexFloatArray, dim1: Int, dim2: Int, dim3: Int): D3Array<ComplexFloat> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
     val data = MemoryViewComplexFloatArray(args)
-    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.ComplexFloatDataType, dim = D3)
+    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dim = D3)
 }
 
 /**
@@ -724,7 +724,7 @@ public fun Multik.ndarray(args: ComplexFloatArray, dim1: Int, dim2: Int, dim3: I
 public fun Multik.ndarray(args: ComplexDoubleArray, dim1: Int, dim2: Int, dim3: Int): D3Array<ComplexDouble> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
     val data = MemoryViewComplexDoubleArray(args)
-    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dtype = DataType.ComplexDoubleDataType, dim = D3)
+    return D3Array(data, shape = intArrayOf(dim1, dim2, dim3), dim = D3)
 }
 
 //_________________________________________________D4___________________________________________________________________
@@ -772,7 +772,7 @@ public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2
 public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Byte> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
     val data = MemoryViewByteArray(args)
-    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.ByteDataType, dim = D4)
+    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dim = D4)
 }
 
 /**
@@ -789,7 +789,7 @@ public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int, dim3: Int, dim4
 public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Short> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
     val data = MemoryViewShortArray(args)
-    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.ShortDataType, dim = D4)
+    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dim = D4)
 }
 
 /**
@@ -806,7 +806,7 @@ public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int, dim3: Int, dim
 public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Int> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
     val data = MemoryViewIntArray(args)
-    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.IntDataType, dim = D4)
+    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dim = D4)
 }
 
 /**
@@ -823,7 +823,7 @@ public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int, dim3: Int, dim4:
 public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Long> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
     val data = MemoryViewLongArray(args)
-    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.LongDataType, dim = D4)
+    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dim = D4)
 }
 
 /**
@@ -840,7 +840,7 @@ public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int, dim3: Int, dim4
 public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Float> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
     val data = MemoryViewFloatArray(args)
-    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.FloatDataType, dim = D4)
+    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dim = D4)
 }
 
 /**
@@ -857,7 +857,7 @@ public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int, dim3: Int, dim
 public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Double> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
     val data = MemoryViewDoubleArray(args)
-    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.DoubleDataType, dim = D4)
+    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dim = D4)
 }
 
 /**
@@ -873,7 +873,7 @@ public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int, dim3: Int, di
 public fun Multik.ndarray(args: ComplexFloatArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<ComplexFloat> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
     val data = MemoryViewComplexFloatArray(args)
-    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.ComplexFloatDataType, dim = D4)
+    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dim = D4)
 }
 
 /**
@@ -889,7 +889,7 @@ public fun Multik.ndarray(args: ComplexFloatArray, dim1: Int, dim2: Int, dim3: I
 public fun Multik.ndarray(args: ComplexDoubleArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<ComplexDouble> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
     val data = MemoryViewComplexDoubleArray(args)
-    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dtype = DataType.ComplexDoubleDataType, dim = D4)
+    return D4Array(data, shape = intArrayOf(dim1, dim2, dim3, dim4), dim = D4)
 }
 
 //_________________________________________________DN___________________________________________________________________
@@ -951,7 +951,7 @@ public fun Multik.ndarray(
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
     requireElementsWithShape(args.size, shape.fold(1, Int::times))
     val data = MemoryViewByteArray(args)
-    return NDArray(data, shape = shape, dtype = DataType.ByteDataType, dim = dimensionOf(shape.size))
+    return NDArray(data, shape = shape, dim = dimensionOf(shape.size))
 }
 
 /**
@@ -972,7 +972,7 @@ public fun Multik.ndarray(
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
     requireElementsWithShape(args.size, shape.fold(1, Int::times))
     val data = MemoryViewShortArray(args)
-    return NDArray(data, shape = shape, dtype = DataType.ShortDataType, dim = dimensionOf(shape.size))
+    return NDArray(data, shape = shape, dim = dimensionOf(shape.size))
 }
 
 /**
@@ -993,7 +993,7 @@ public fun Multik.ndarray(
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
     requireElementsWithShape(args.size, shape.fold(1, Int::times))
     val data = MemoryViewIntArray(args)
-    return NDArray(data, shape = shape, dtype = DataType.IntDataType, dim = dimensionOf(shape.size))
+    return NDArray(data, shape = shape, dim = dimensionOf(shape.size))
 }
 
 /**
@@ -1014,7 +1014,7 @@ public fun Multik.ndarray(
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
     requireElementsWithShape(args.size, shape.fold(1, Int::times))
     val data = MemoryViewLongArray(args)
-    return NDArray(data, shape = shape, dtype = DataType.LongDataType, dim = dimensionOf(shape.size))
+    return NDArray(data, shape = shape, dim = dimensionOf(shape.size))
 }
 
 /**
@@ -1035,7 +1035,7 @@ public fun Multik.ndarray(
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
     requireElementsWithShape(args.size, shape.fold(1, Int::times))
     val data = MemoryViewFloatArray(args)
-    return NDArray(data, shape = shape, dtype = DataType.FloatDataType, dim = dimensionOf(shape.size))
+    return NDArray(data, shape = shape, dim = dimensionOf(shape.size))
 }
 
 /**
@@ -1056,7 +1056,7 @@ public fun Multik.ndarray(
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
     requireElementsWithShape(args.size, shape.fold(1, Int::times))
     val data = MemoryViewDoubleArray(args)
-    return NDArray(data, shape = shape, dtype = DataType.DoubleDataType, dim = dimensionOf(shape.size))
+    return NDArray(data, shape = shape, dim = dimensionOf(shape.size))
 }
 
 /**
@@ -1076,7 +1076,7 @@ public fun Multik.ndarray(
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
     requireElementsWithShape(args.size, shape.fold(1, Int::times))
     val data = MemoryViewComplexFloatArray(args)
-    return NDArray(data, shape = shape, dtype = DataType.ComplexFloatDataType, dim = dimensionOf(shape.size))
+    return NDArray(data, shape = shape, dim = dimensionOf(shape.size))
 }
 
 /**
@@ -1096,7 +1096,7 @@ public fun Multik.ndarray(
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
     requireElementsWithShape(args.size, shape.fold(1, Int::times))
     val data = MemoryViewComplexDoubleArray(args)
-    return NDArray(data, shape = shape, dtype = DataType.ComplexDoubleDataType, dim = dimensionOf(shape.size))
+    return NDArray(data, shape = shape, dim = dimensionOf(shape.size))
 }
 
 //______________________________________________________________________________________________________________________
@@ -1128,7 +1128,7 @@ internal inline fun <reified T: Any> d1arrayCommon(sizeD1: Int, noinline init: (
     val dtype = DataType.of(T::class)
     val shape = intArrayOf(sizeD1)
     val data = initMemoryView(sizeD1, dtype, init)
-    return D1Array(data, shape = shape, dtype = dtype, dim = D1)
+    return D1Array(data, shape = shape, dim = D1)
 }
 
 /**
@@ -1163,7 +1163,7 @@ internal inline fun <reified T : Any> d2arrayCommon(sizeD1: Int, sizeD2: Int, no
         require(shape[i] > 0) { "Dimension $i must be positive." }
     }
     val data = initMemoryView(sizeD1 * sizeD2, dtype, init)
-    return D2Array(data, shape = shape, dtype = dtype, dim = D2)
+    return D2Array(data, shape = shape, dim = D2)
 }
 
 
@@ -1228,7 +1228,7 @@ internal inline fun <reified T : Any> d3arrayCommon(
         require(shape[i] > 0) { "Dimension $i must be positive." }
     }
     val data = initMemoryView(sizeD1 * sizeD2 * sizeD3, dtype, init)
-    return D3Array(data, shape = shape, dtype = dtype, dim = D3)
+    return D3Array(data, shape = shape, dim = D3)
 }
 
 ///**
@@ -1295,7 +1295,7 @@ internal inline fun <reified T : Any> d4arrayCommon(
         require(shape[i] > 0) { "Dimension $i must be positive." }
     }
     val data = initMemoryView(sizeD1 * sizeD2 * sizeD3 * sizeD4, dtype, init)
-    return D4Array(data, shape = shape, dtype = dtype, dim = D4)
+    return D4Array(data, shape = shape, dim = D4)
 }
 
 //public inline fun <reified T : Number> Multik.d4array(
@@ -1395,7 +1395,7 @@ internal inline fun <reified T : Any, reified D: Dimension> dnarrayCommon(
     }
     val size = shape.fold(1, Int::times)
     val data = initMemoryView(size, dtype, init)
-    return NDArray(data, shape = shape, dtype = dtype, dim = dimensionOf(shape.size))
+    return NDArray(data, shape = shape, dim = dimensionOf(shape.size))
 }
 
 /**
@@ -1421,7 +1421,7 @@ private fun <T> ndarrayOfCommon(items: Array<out T>): D1Array<T> {
     val dtype = DataType.of(items.first())
     val shape = intArrayOf(items.size)
     val data = initMemoryView(items.size, dtype) { items[it] }
-    return D1Array(data, shape = shape, dtype = dtype, dim = D1)
+    return D1Array(data, shape = shape, dim = D1)
 }
 
 /**
@@ -1460,7 +1460,7 @@ public inline fun <reified T : Number> Multik.arange(start: Int, stop: Int, step
             tmp += step
         }
     }
-    return D1Array(data, shape = shape, dtype = dtype, dim = D1)
+    return D1Array(data, shape = shape, dim = D1)
 }
 
 /**

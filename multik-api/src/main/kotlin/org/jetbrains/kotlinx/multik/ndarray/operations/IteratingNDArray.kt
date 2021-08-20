@@ -13,6 +13,13 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.math.abs
 import kotlin.math.min
 
+public fun <T, D : Dimension> MultiArray<T, D>.isTransposed(): Boolean {
+    val x = this as NDArray<T, D>
+    if (x.dim == D1) return false
+    return x.offset == 0 && x.size == x.data.size
+        && x.strides.reversedArray().contentEquals(computeStrides(x.shape.reversedArray()))
+}
+
 
 /**
  * Returns `true` if all elements match the given [predicate].
@@ -230,13 +237,13 @@ public inline fun <T, D : Dimension, K> MultiArray<T, D>.distinctBy(selector: (T
  * Drops first n elements.
  */
 public fun <T> MultiArray<T, D1>.drop(n: Int): D1Array<T> {
-    if (n == 0) return D1Array(this.data.copyOf(), shape = shape.copyOf(), dtype = dtype, dim = D1)
+    if (n == 0) return D1Array(this.data.copyOf(), shape = shape.copyOf(), dim = D1)
     val resultSize = size - abs(n)
-    if (resultSize < 0) return D1Array(initMemoryView(0, dtype), shape = intArrayOf(0), dtype = dtype, dim = D1)
+    if (resultSize < 0) return D1Array(initMemoryView(0, dtype), shape = intArrayOf(0), dim = D1)
     val k = if (n < 0) 0 else n
     val d = initMemoryView(resultSize, dtype) { this[it + k] }
     val shape = intArrayOf(resultSize)
-    return D1Array(d, shape = shape, dtype = dtype, dim = D1)
+    return D1Array(d, shape = shape, dim = D1)
 }
 
 /**
@@ -703,7 +710,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.map(tr
     var count = 0
     for (el in this)
         data[count++] = transform(el)
-    return NDArray(data, shape = shape, dtype = newDtype, dim = dim)
+    return NDArray(data, shape = shape, dim = dim)
 }
 
 /**
@@ -716,7 +723,7 @@ public inline fun <T, reified R : Number> MultiArray<T, D1>.mapIndexed(transform
     var index = 0
     for (item in this)
         data[index] = transform(index++, item)
-    return D1Array(data, shape = shape, dtype = newDtype, dim = D1)
+    return D1Array(data, shape = shape, dim = D1)
 }
 
 /**
@@ -735,7 +742,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapMul
             throw ArithmeticException("Index overflow has happened.")
         }
     }
-    return NDArray(data, shape = shape, dtype = newDtype, dim = dim)
+    return NDArray(data, shape = shape, dim = dim)
 }
 
 /**
@@ -747,7 +754,7 @@ public inline fun <T, reified R : Number> MultiArray<T, D1>.mapIndexedNotNull(tr
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
     forEachIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
-    return D1Array(data, shape = shape, dtype = newDtype, dim = D1)
+    return D1Array(data, shape = shape, dim = D1)
 }
 
 /**
@@ -759,7 +766,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapMul
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
     forEachMultiIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
-    return NDArray(data, shape = shape.copyOf(), dtype = newDtype, dim = dim)
+    return NDArray(data, shape = shape.copyOf(), dim = dim)
 }
 
 /**
@@ -770,7 +777,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapNot
     val data = initMemoryView<R>(size, newDtype)
     var index = 0
     forEach { element -> transform(element)?.let { data[index++] = it } }
-    return NDArray(data, shape = shape, dtype = newDtype, dim = dim)
+    return NDArray(data, shape = shape, dim = dim)
 }
 
 /**
@@ -936,7 +943,7 @@ public fun <T, D : Dimension> MultiArray<T, D>.windowed(
         }
         index += rStep
     }
-    return D2Array(resData, 0, intArrayOf(resultCapacity / rSize, rSize), dtype = this.dtype, dim = D2)
+    return D2Array(resData, 0, intArrayOf(resultCapacity / rSize, rSize), dim = D2)
 }
 
 /**
@@ -1010,7 +1017,7 @@ public fun <T, D : Dimension> MultiArray<T, D>.reversed(): NDArray<T, D> {
     var index = this.size - 1
     for (element in this)
         data[index--] = element
-    return NDArray(data, 0, this.shape.copyOf(), dtype = this.dtype, dim = this.dim)
+    return NDArray(data, 0, this.shape.copyOf(), dim = this.dim)
 }
 
 
@@ -1035,7 +1042,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.scan(
         accumulator = operation(accumulator, element)
         data[index++] = accumulator
     }
-    return NDArray(data, 0, this.shape.copyOf(), dtype = dataType, dim = this.dim)
+    return NDArray(data, 0, this.shape.copyOf(), dim = this.dim)
 }
 
 /**
@@ -1056,7 +1063,7 @@ public inline fun <T, reified R : Number> MultiArray<T, D1>.scanIndexed(
         accumulator = operation(count, accumulator, ndarrayIter.next())
         data[count++] = accumulator
     }
-    return D1Array(data, 0, this.shape.copyOf(), dtype = dataType, dim = D1)
+    return D1Array(data, 0, this.shape.copyOf(), dim = D1)
 }
 
 /**
@@ -1077,7 +1084,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.scanMu
         accumulator = operation(indexIter.next(), accumulator, ndarrayIter.next())
         data[count++] = accumulator
     }
-    return NDArray(data, 0, this.shape.copyOf(), dtype = dataType, dim = this.dim)
+    return NDArray(data, 0, this.shape.copyOf(), dim = this.dim)
 }
 
 /**

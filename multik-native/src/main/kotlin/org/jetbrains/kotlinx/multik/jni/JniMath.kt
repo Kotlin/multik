@@ -164,7 +164,7 @@ public object NativeMath : Math {
     }
 
     override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>): D1Array<T> {
-        val ret = D1Array<T>(initMemoryView(a.size, a.dtype), shape = intArrayOf(a.size), dtype = a.dtype, dim = D1)
+        val ret = D1Array<T>(initMemoryView(a.size, a.dtype), shape = intArrayOf(a.size), dim = D1)
         if (a.consistent)
             JniMath.cumSum(a.data.data, a.offset, a.size, a.shape, null, ret.data.data, dtype = a.dtype.nativeCode)
         else
@@ -186,7 +186,7 @@ public object NativeMath : Math {
         } else {
             function(a.data.data, a.offset, a.size, a.shape, a.strides, data.data, a.dtype.nativeCode)
         }
-        return NDArray(data, 0, a.shape, dtype = DataType.DoubleDataType, dim = a.dim)
+        return NDArray(data, 0, a.shape, dim = a.dim)
     }
 
 }
