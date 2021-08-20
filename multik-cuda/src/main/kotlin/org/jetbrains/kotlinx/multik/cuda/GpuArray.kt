@@ -52,6 +52,19 @@ internal class GpuCache {
         check(arrays.all { it.isLoaded }) { "Not all arrays are loaded in the GPU memory" }
     }
 
+    fun garbageCleanup() {
+        var firstRun = true
+        while (deleteQueue.isNotEmpty()) {
+            if (firstRun) {
+                logger.trace { "Delete queue is not empty. Cleaning" }
+                firstRun = false
+            }
+
+            val key = deleteQueue.poll()
+            cache.remove(key)?.free(copyToHost = false)
+        }
+    }
+
     fun fullCleanup() {
         cache.forEach { it.value.free() }
         cache.clear()
@@ -60,7 +73,7 @@ internal class GpuCache {
     }
 
     fun <T : Number, D : Dimension> getOrAlloc(array: MultiArray<T, D>): GpuArray {
-        cleanup()
+        garbageCleanup()
 
         val hash = System.identityHashCode(array)
 
@@ -73,7 +86,7 @@ internal class GpuCache {
     }
 
     fun <T : Number, D : Dimension> alloc(size: Int, dtype: DataType, shape: IntArray, dim: D): Pair<NDArray<T, D>, GpuArray> {
-        cleanup()
+        garbageCleanup()
 
         val gpuArray = allocMemory<T>(size, dtype, null)
         val memoryView = CudaMemoryView<T>(size, dtype, gpuArray)
@@ -123,7 +136,7 @@ internal class GpuCache {
 
     private fun getGpuMemInfoString(): String {
         val (free, total) = getGpuMemInfo()
-        return "free: ${byteSizeToString(free)}, total: ${byteSizeToString(total)} MB"
+        return "free: ${byteSizeToString(free)}, total: ${byteSizeToString(total)}"
     }
 
     private fun freeFirst() {
@@ -171,18 +184,5 @@ internal class GpuCache {
         }
 
         return GpuArray(deviceDataPtr, byteSize, transposed)
-    }
-
-    private fun cleanup() {
-        var firstRun = true
-        while (deleteQueue.isNotEmpty()) {
-            if (firstRun) {
-                logger.trace { "Delete queue is not empty. Cleaning" }
-                firstRun = false
-            }
-
-            val key = deleteQueue.poll()
-            cache.remove(key)?.free(copyToHost = false)
-        }
     }
 }

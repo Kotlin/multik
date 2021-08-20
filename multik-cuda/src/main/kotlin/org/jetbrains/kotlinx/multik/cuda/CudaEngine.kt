@@ -81,14 +81,31 @@ public object CudaEngine : Engine() {
 
         logger.info { "Deinitializing cuda engine" }
 
-        logger.debug { "Memory cleanup" }
-        getContext().cache.fullCleanup()
+        cacheCleanup(CleanupMode.FULL)
 
         context.get()!!.deinit()
         context.set(null)
     }
 
+    public enum class CleanupMode {
+        // Fully cleans the cache
+        FULL,
+
+        // Cleans the data that was garbage collected
+        GARBAGE
+    }
+
+    public fun cacheCleanup(mode: CleanupMode = CleanupMode.GARBAGE) {
+        logger.debug { "Cleaning cache. Mode: $mode" }
+
+        if (mode == CleanupMode.GARBAGE)
+            getContext().cache.fullCleanup()
+        else
+            getContext().cache.garbageCleanup()
+    }
+
     private var context: ThreadLocal<CudaContext?> = ThreadLocal()
 
-    internal fun getContext(): CudaContext = context.get()!!
+    internal fun getContext(): CudaContext =
+        context.get() ?: throw IllegalStateException("Cuda is not initialized")
 }
