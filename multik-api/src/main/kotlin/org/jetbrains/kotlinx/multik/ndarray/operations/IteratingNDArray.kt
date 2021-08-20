@@ -705,7 +705,7 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.lastOrNull(predicate: (T) 
  * Return a new array contains elements after applying [transform].
  */
 public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.map(transform: (T) -> R): NDArray<R, D> {
-    val newDtype = DataType.of(R::class)
+    val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
     for (el in this)
@@ -718,7 +718,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.map(tr
  */
 @JvmName("mapD1Indexed")
 public inline fun <T, reified R : Number> MultiArray<T, D1>.mapIndexed(transform: (index: Int, T) -> R): D1Array<R> {
-    val newDtype = DataType.of(R::class)
+    val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var index = 0
     for (item in this)
@@ -731,7 +731,7 @@ public inline fun <T, reified R : Number> MultiArray<T, D1>.mapIndexed(transform
  */
 @JvmName("mapDNIndexed")
 public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapMultiIndexed(transform: (index: IntArray, T) -> R): NDArray<R, D> {
-    val newDtype = DataType.of(R::class)
+    val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     val indexIter = this.multiIndices.iterator()
     var index = 0
@@ -750,7 +750,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapMul
  */
 @JvmName("mapD1IndexedNotNull")
 public inline fun <T, reified R : Number> MultiArray<T, D1>.mapIndexedNotNull(transform: (index: Int, T) -> R?): D1Array<R> {
-    val newDtype = DataType.of(R::class)
+    val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
     forEachIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
@@ -762,7 +762,7 @@ public inline fun <T, reified R : Number> MultiArray<T, D1>.mapIndexedNotNull(tr
  */
 @JvmName("mapDNIndexedNotNull")
 public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapMultiIndexedNotNull(transform: (index: IntArray, T) -> R?): NDArray<R, D> {
-    val newDtype = DataType.of(R::class)
+    val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
     forEachMultiIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
@@ -773,7 +773,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapMul
  * Return a new array contains elements after applying [transform].
  */
 public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapNotNull(transform: (T) -> R?): NDArray<R, D> {
-    val newDtype = DataType.of(R::class)
+    val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var index = 0
     forEach { element -> transform(element)?.let { data[index++] = it } }
@@ -1012,7 +1012,7 @@ public inline fun <S, D : Dimension, T : S> MultiArray<T, D>.reduceOrNull(operat
  *
  */
 public fun <T, D : Dimension> MultiArray<T, D>.reversed(): NDArray<T, D> {
-    if (size <= 1) return this.clone() as NDArray<T, D>
+    if (size <= 1) return this.copy() as NDArray<T, D>
     val data = initMemoryView<T>(this.size, this.dtype)
     var index = this.size - 1
     for (element in this)
@@ -1033,7 +1033,7 @@ public fun <T, D : Dimension> MultiArray<T, D>.reversed(): NDArray<T, D> {
 public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.scan(
     initial: R, operation: (acc: R, T) -> R
 ): NDArray<R, D> {
-    val dataType = DataType.of(R::class)
+    val dataType = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(this.size + 1, dataType)
     data[0] = initial
     var index = 1
@@ -1053,7 +1053,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.scan(
 public inline fun <T, reified R : Number> MultiArray<T, D1>.scanIndexed(
     initial: R, operation: (index: Int, acc: R, T) -> R
 ): D1Array<R> {
-    val dataType = DataType.of(R::class)
+    val dataType = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(this.size + 1, dataType)
     data[0] = initial
     var count = 1
@@ -1073,7 +1073,7 @@ public inline fun <T, reified R : Number> MultiArray<T, D1>.scanIndexed(
 public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.scanMultiIndexed(
     initial: R, operation: (index: IntArray, acc: R, T) -> R
 ): NDArray<R, D> {
-    val dataType = DataType.of(R::class)
+    val dataType = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(this.size + 1, dataType)
     data[0] = initial
     var count = 1

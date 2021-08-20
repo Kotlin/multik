@@ -34,7 +34,14 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
     FloatDataType(5, 4, Float::class),
     DoubleDataType(6, 8, Double::class),
     ComplexFloatDataType(7, 8, ComplexFloat::class),
-    ComplexDoubleDataType(7, 16, ComplexDouble::class);
+    ComplexDoubleDataType(8, 16, ComplexDouble::class);
+
+    public fun isNumber(): Boolean = when (nativeCode) {
+        1, 2, 3, 4, 5, 6 -> true
+        else -> false
+    }
+
+    public fun isComplex(): Boolean = !isNumber()
 
     public companion object {
 
@@ -75,7 +82,7 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
         /**
          * Returns [DataType] by [KClass] of [type]. [T] is `reified` type.
          */
-        public inline fun <reified T: Any> of(type: KClass<out T>): DataType = when (type) {
+        public inline fun <reified T : Any> ofKClass(type: KClass<out T>): DataType = when (type) {
             Byte::class -> ByteDataType
             Short::class -> ShortDataType
             Int::class -> IntDataType

@@ -81,7 +81,7 @@ class SliceTest {
         assertSame(a, f.base)
 
         val x = b2.deepCopy()
-        val y = b2.clone()
+        val y = b2.copy()
         assertSame(null, x.base)
         assertSame(null, y.base)
 

@@ -915,6 +915,9 @@ public class MemoryViewComplexDoubleArray(override val data: ComplexDoubleArray)
     }
 }
 
+public inline fun <reified T: Any> initMemoryView(size: Int): MemoryView<T> =
+    initMemoryView(size, DataType.ofKClass(T::class))
+
 /**
  * Creates a [MemoryView] based [size] and [dataType].
  */

@@ -60,16 +60,17 @@ public class NDArray<T, D : Dimension> constructor(
         if (consistent) this.data.iterator() else NDArrayIterator(data, offset, strides, shape)
 
     public inline fun <reified E : Number> asType(): NDArray<E, D> {
-        val dataType = DataType.of(E::class)
+        val dataType = DataType.ofKClass(E::class)
         return this.asType(dataType)
     }
 
+    //TODO ???
     public fun <E : Number> asType(dataType: DataType): NDArray<E, D> {
         val newData = initMemoryView(this.data.size, dataType) { this.data[it] as E }
         return NDArray(newData, this.offset, this.shape, this.strides, this.dim)
     }
 
-    override fun clone(): NDArray<T, D> =
+    override fun copy(): NDArray<T, D> =
         NDArray(this.data.copyOf(), this.offset, this.shape.copyOf(), this.strides.copyOf(), this.dim)
 
     override fun deepCopy(): NDArray<T, D> {

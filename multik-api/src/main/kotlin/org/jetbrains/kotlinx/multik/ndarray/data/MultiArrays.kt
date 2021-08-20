@@ -53,7 +53,7 @@ public interface MultiArray<T, D : Dimension> {
     /**
      * Returns new [MultiArray] which is a copy of the original ndarray.
      */
-    public fun clone(): MultiArray<T, D>
+    public fun copy(): MultiArray<T, D>
 
     /**
      * Returns new [MultiArray] which is a deep copy of the original ndarray.
