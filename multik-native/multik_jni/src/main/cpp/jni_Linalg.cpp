@@ -50,10 +50,10 @@ JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Signature: (I[FI)I
  */
 JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_inv__I_3FI
-	(JNIEnv *env, jobject jobj, jint n, jfloatArray j_a, jint strA) {
+	(JNIEnv *env, jobject jobj, jint n, jfloatArray j_a, jint lda) {
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
 
-  int info = inverse_matrix_float(n, A, strA);
+  int info = inverse_matrix(n, A, lda);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
 
@@ -66,10 +66,42 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_in
  * Signature: (I[DI)I
  */
 JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_inv__I_3DI
-	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_a, jint strA) {
+	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_a, jint lda) {
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
 
-  int info = inverse_matrix_double(n, A, strA);
+  int info = inverse_matrix(n, A, lda);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    invC
+ * Signature: (I[FI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_invC__I_3FI
+	(JNIEnv *env, jobject jobj, jint n, jfloatArray j_a, jint lda) {
+  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+
+  int info = inverse_matrix_complex(n, A, lda);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    invC
+ * Signature: (I[DI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_invC__I_3DI
+	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_a, jint lda) {
+  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+
+  int info = inverse_matrix_complex(n, A, lda);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
 

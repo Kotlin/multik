@@ -5,8 +5,15 @@ internal object JniLinAlg {
     external fun pow(mat: DoubleArray, n: Int, result: DoubleArray)
     external fun norm(mat: FloatArray, p: Int): Double
     external fun norm(mat: DoubleArray, p: Int): Double
-    external fun inv(n: Int, mat: FloatArray, strA: Int): Int
-    external fun inv(n: Int, mat: DoubleArray, strA: Int): Int
+
+    /**
+     *
+     */
+    external fun inv(n: Int, mat: FloatArray, lda: Int): Int
+    external fun inv(n: Int, mat: DoubleArray, lda: Int): Int
+    external fun invC(n: Int, mat: FloatArray, lda: Int): Int
+    external fun invC(n: Int, mat: DoubleArray, lda: Int): Int
+
     external fun solve(n: Int, nrhs: Int, a: FloatArray, strA: Int, b: FloatArray, strB: Int): Int
     external fun solve(n: Int, nrhs: Int, a: DoubleArray, strA: Int, b: DoubleArray, strB: Int): Int
 

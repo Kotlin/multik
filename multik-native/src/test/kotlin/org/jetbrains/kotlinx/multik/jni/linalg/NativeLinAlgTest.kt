@@ -6,10 +6,7 @@ import org.jetbrains.kotlinx.multik.api.linalg.inv
 import org.jetbrains.kotlinx.multik.api.linalg.solve
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
-import org.jetbrains.kotlinx.multik.jni.DataStructure
-import org.jetbrains.kotlinx.multik.jni.Loader
-import org.jetbrains.kotlinx.multik.jni.assertFloatingNDArray
-import org.jetbrains.kotlinx.multik.jni.assertFloatingNumber
+import org.jetbrains.kotlinx.multik.jni.*
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.get
@@ -127,7 +124,7 @@ class NativeLinAlgTest {
 
         val matrix1TF = matrix1F.transpose()
         val matrix1TFCopy = matrix1TF.deepCopy()
-        val expectedF= NativeLinAlg.dot(matrix1TFCopy, matrix2F)
+        val expectedF = NativeLinAlg.dot(matrix1TFCopy, matrix2F)
         val actualF = NativeLinAlg.dot(matrix1TF, matrix2F)
         assertFloatingNDArray(expectedF, actualF)
 
@@ -196,7 +193,6 @@ class NativeLinAlgTest {
     }
 
     @Test
-    @Ignore
     fun `compute inverse matrix of float`() {
         val a = data.getFloatM(2)
         val ainv = NativeLinAlg.inv(a)
@@ -205,11 +201,26 @@ class NativeLinAlgTest {
     }
 
     @Test
-    @Ignore
     fun `compute inverse matrix of double`() {
         val a = data.getDoubleM(2)
         val ainv = NativeLinAlg.inv(a)
 
         assertFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+    }
+
+    @Test
+    fun `compute inverse matrix of complex float`() {
+        val a = data.getComplexFloatM(2)
+        val ainv = NativeLinAlg.inv(a)
+
+        assertComplexFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+    }
+
+    @Test
+    fun `compute inverse matrix of complex double`() {
+        val a = data.getComplexDoubleM(2)
+        val ainv = NativeLinAlg.inv(a)
+
+        assertComplexFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
     }
 }

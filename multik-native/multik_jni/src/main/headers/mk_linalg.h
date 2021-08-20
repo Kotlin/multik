@@ -32,10 +32,6 @@ void matrix_solve() {
 
 }
 
-void inv() {
-
-}
-
 void eigen_values(double *A, int n) {
   const char Nchar = 'N';
   double *eigReal = new double[n];
@@ -81,20 +77,40 @@ int solve_linear_system_double(int n, int nrhs, double *A, int strA, double *b, 
   return LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, A, strA, ipiv, b, strB);
 }
 
-int inverse_matrix_float(int n, float *A, int strA) {
+int inverse_matrix(int n, float *A, int lda) {
   int ipiv[n];
 
-  LAPACKE_sgetrf(LAPACK_ROW_MAJOR, n, n, A, strA, ipiv);
+  LAPACKE_sgetrf(LAPACK_ROW_MAJOR, n, n, A, lda, ipiv);
 
-  return LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, A, strA, ipiv);
+  return LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, A, lda, ipiv);
 }
 
-int inverse_matrix_double(int n, double *A, int strA) {
+int inverse_matrix(int n, double *A, int lda) {
   int ipiv[n];
 
-  LAPACKE_dgetrf(LAPACK_ROW_MAJOR, n, n, A, strA, ipiv);
+  LAPACKE_dgetrf(LAPACK_ROW_MAJOR, n, n, A, lda, ipiv);
 
-  return LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, A, strA, ipiv);
+  return LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, A, lda, ipiv);
+}
+
+int inverse_matrix_complex(int n, float *A, int lda) {
+  int ipiv[n];
+
+  lapack_complex_float *a = (lapack_complex_float *)A;
+
+  LAPACKE_cgetrf(LAPACK_ROW_MAJOR, n, n, a, lda, ipiv);
+
+  return LAPACKE_cgetri(LAPACK_ROW_MAJOR, n, a, lda, ipiv);
+}
+
+int inverse_matrix_complex(int n, double *A, int lda) {
+  int ipiv[n];
+
+  lapack_complex_double *a = (lapack_complex_double *)A;
+
+  LAPACKE_zgetrf(LAPACK_ROW_MAJOR, n, n, a, lda, ipiv);
+
+  return LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, a, lda, ipiv);
 }
 
 void matrix_dot(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,

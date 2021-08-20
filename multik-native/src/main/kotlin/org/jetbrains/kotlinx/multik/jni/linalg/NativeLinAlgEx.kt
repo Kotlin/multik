@@ -3,19 +3,37 @@ package org.jetbrains.kotlinx.multik.jni.linalg
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.operations.CopyStrategy
 import org.jetbrains.kotlinx.multik.ndarray.operations.isTransposed
+import org.jetbrains.kotlinx.multik.ndarray.operations.toType
 
 public object NativeLinAlgEx: LinAlgEx {
-    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> {
-        TODO("Not yet implemented")
-    }
+    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> =
+        invCommon(mat.toType(CopyStrategy.MEANINGFUL))
 
-    override fun invF(mat: MultiArray<Float, D2>): NDArray<Float, D2> {
-        TODO("Not yet implemented")
-    }
+    override fun invF(mat: MultiArray<Float, D2>): NDArray<Float, D2> =
+        invCommon(if (mat.consistent) mat.copy() else mat.deepCopy())
 
-    override fun <T : Complex> invC(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
+    override fun <T : Complex> invC(mat: MultiArray<T, D2>): NDArray<T, D2> =
+        invCommon(if (mat.consistent) mat.copy() else mat.deepCopy())
+
+    private fun <T> invCommon(mat: MultiArray<T, D2>): NDArray<T, D2> {
+        require(mat.shape[0] == mat.shape[1]) { "Ndarray must be square: mat.shape = ${mat.shape.joinToString(",", "(", ")")}"}
+
+        val info: Int = when (mat.dtype) {
+            DataType.FloatDataType -> JniLinAlg.inv(mat.shape[0], mat.data.getFloatArray(), mat.strides[0])
+            DataType.DoubleDataType -> JniLinAlg.inv(mat.shape[0], mat.data.getDoubleArray(), mat.strides[0])
+            DataType.ComplexFloatDataType -> JniLinAlg.invC(mat.shape[0], mat.data.getFloatArray(), mat.strides[0])
+            DataType.ComplexDoubleDataType -> JniLinAlg.invC(mat.shape[0], mat.data.getDoubleArray(), mat.strides[0])
+            else -> throw UnsupportedOperationException()
+        }
+
+        when {
+            info < 0 -> throw IllegalArgumentException("${-info} argument had illegal value. ")
+            info > 0 -> throw Exception("U($info, $info) is exactly zero. Matrix is singular and its inverse could not be computed")
+        }
+
+        return mat as NDArray<T, D2>
     }
 
     override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> {

@@ -1228,6 +1228,116 @@ public fun <T, D : Dimension> MultiArray<T, D>.toSortedSet(comparator: Comparato
     return toCollection(java.util.TreeSet(comparator))
 }
 
+/**
+ *
+ */
+public enum class CopyStrategy { FULL, MEANINGFUL }
+
+/**
+ *
+ */
+public inline fun <T, reified O : Any, D : Dimension> MultiArray<T, D>.toType(copy: CopyStrategy = CopyStrategy.FULL): NDArray<O, D> {
+    val dtype = DataType.ofKClass(O::class)
+    return this.toType(dtype, copy)
+}
+
+/**
+ *
+ */
+public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(dtype: DataType, copy: CopyStrategy = CopyStrategy.FULL): NDArray<O, D> {
+    if (this.dtype == dtype) {
+        return (if (copy == CopyStrategy.FULL) this.copy() else this.deepCopy()) as NDArray<O, D>
+    }
+
+    val size: Int
+    val iterData: Iterator<T>
+    val strides: IntArray
+
+    if (copy == CopyStrategy.FULL) {
+        size = this.data.size
+        iterData = this.data.iterator()
+        strides = this.strides.copyOf()
+    } else {
+        size = this.size
+        iterData = this.iterator()
+        strides = computeStrides(this.shape)
+    }
+
+    val isNumber = this.dtype.isNumber()
+    val view = initMemoryView<O>(size, dtype)
+
+    when {
+        isNumber && dtype == DataType.FloatDataType -> {
+            val d = view.getFloatArray()
+            var count = 0
+            iterData as Iterator<Number>
+            while (iterData.hasNext()) {
+                d[count++] = iterData.next().toFloat()
+            }
+        }
+        isNumber && dtype == DataType.DoubleDataType -> {
+            val d = view.getDoubleArray()
+            var count = 0
+            iterData as Iterator<Number>
+            while (iterData.hasNext()) {
+                d[count++] = iterData.next().toDouble()
+            }
+        }
+        isNumber && dtype == DataType.IntDataType -> {
+            val d = view.getIntArray()
+            var count = 0
+            iterData as Iterator<Number>
+            while (iterData.hasNext()) {
+                d[count++] = iterData.next().toInt()
+            }
+        }
+        isNumber && dtype == DataType.LongDataType -> {
+            val d = view.getLongArray()
+            var count = 0
+            iterData as Iterator<Number>
+            while (iterData.hasNext()) {
+                d[count++] = iterData.next().toLong()
+            }
+        }
+        !isNumber && dtype == DataType.ComplexFloatDataType -> {
+            val d = view.getComplexFloatArray()
+            var count = 0
+            iterData as Iterator<ComplexDouble>
+            while (iterData.hasNext()) {
+                val c = iterData.next()
+                d[count++] = ComplexFloat(c.re, c.im)
+            }
+        }
+        !isNumber && dtype == DataType.ComplexDoubleDataType -> {
+            val d = view.getComplexDoubleArray()
+            var count = 0
+            iterData as Iterator<ComplexFloat>
+            while (iterData.hasNext()) {
+                val c = iterData.next()
+                d[count++] = ComplexDouble(c.re, c.im)
+            }
+        }
+        isNumber && dtype == DataType.ShortDataType -> {
+            val d = view.getShortArray()
+            var count = 0
+            iterData as Iterator<Number>
+            while (iterData.hasNext()) {
+                d[count++] = iterData.next().toShort()
+            }
+        }
+        isNumber && dtype == DataType.ByteDataType -> {
+            val d = view.getByteArray()
+            var count = 0
+            iterData as Iterator<Number>
+            while (iterData.hasNext()) {
+                d[count++] = iterData.next().toByte()
+            }
+        }
+        else -> throw Exception()
+    }
+    return NDArray(view, this.offset, this.shape.copyOf(), strides, this.dim)
+}
+
 @PublishedApi
 internal fun mapCapacity(size: Int): Int {
     return when {
