@@ -1,9 +1,9 @@
 package org.jetbrains.kotlinx.multik.cuda.linalg
 
+import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.cuda.CudaEngine
-import org.jetbrains.kotlinx.multik.cuda.CudaLinAlg
 import org.jetbrains.kotlinx.multik.cuda.roundDouble
 import org.jetbrains.kotlinx.multik.cuda.roundFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.get

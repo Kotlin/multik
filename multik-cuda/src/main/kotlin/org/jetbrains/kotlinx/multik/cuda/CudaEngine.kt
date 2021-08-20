@@ -11,6 +11,7 @@ import jcuda.runtime.cudaStream_t
 import mu.KotlinLogging
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+import org.jetbrains.kotlinx.multik.cuda.linalg.CudaLinAlg
 
 private val logger = KotlinLogging.logger {}
 
@@ -98,10 +99,10 @@ public object CudaEngine : Engine() {
     public fun cacheCleanup(mode: CleanupMode = CleanupMode.GARBAGE) {
         logger.debug { "Cleaning cache. Mode: $mode" }
 
-        if (mode == CleanupMode.GARBAGE)
-            getContext().cache.fullCleanup()
-        else
-            getContext().cache.garbageCleanup()
+        when (mode) {
+            CleanupMode.GARBAGE -> getContext().cache.garbageCleanup()
+            CleanupMode.FULL -> getContext().cache.fullCleanup()
+        }
     }
 
     private var context: ThreadLocal<CudaContext?> = ThreadLocal()

@@ -7,7 +7,7 @@ private val logger = KotlinLogging.logger {}
 
 object DeferredData
 
-internal class CudaMemoryView<T>(override var size: Int, private val dtype: DataType, private val gpuArray: GpuArray) : MemoryView<T>() {
+internal class CudaMemoryView<T>(override var size: Int, override val dtype: DataType, private val gpuArray: GpuArray) : MemoryView<T>() {
 
     //Data is loaded to heap lazily
     override var data: Any = DeferredData
@@ -51,23 +51,6 @@ internal class CudaMemoryView<T>(override var size: Int, private val dtype: Data
             DataType.DoubleDataType -> MemoryViewDoubleArray((data as DoubleArray).copyOf())
             else -> throw IllegalArgumentException("Unsupported datatype")
         } as MemoryView<T>
-    }
-
-    override fun copyInto(
-        destination: ImmutableMemoryView<T>,
-        destinationOffset: Int,
-        startIndex: Int,
-        endIndex: Int
-    ): MemoryView<T> {
-        loadToHost()
-
-        when (dtype) {
-            DataType.FloatDataType -> (data as FloatArray).copyInto(destination.getFloatArray(), destinationOffset, startIndex, endIndex)
-            DataType.DoubleDataType -> (data as DoubleArray).copyInto(destination.getDoubleArray(), destinationOffset, startIndex, endIndex)
-            else -> throw IllegalArgumentException("Unsupported datatype")
-        }
-
-        return destination as MemoryView<T>
     }
 
     override fun getFloatArray(): FloatArray {

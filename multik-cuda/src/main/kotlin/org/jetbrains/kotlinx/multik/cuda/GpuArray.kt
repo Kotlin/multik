@@ -92,7 +92,7 @@ internal class GpuCache {
         val memoryView = CudaMemoryView<T>(size, dtype, gpuArray)
         gpuArray.deferredLoadFuncRef = WeakReference(memoryView::loadToHost)
 
-        val array = NDArray(memoryView, shape = shape, dtype = dtype, dim = dim)
+        val array = NDArray(memoryView, shape = shape, dim = dim)
         val hash = System.identityHashCode(array)
 
         cleaner.register(array) { deleteQueue.add(hash) }
