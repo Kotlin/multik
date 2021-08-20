@@ -53,20 +53,20 @@ void eigen_values(double *A, int n) {
   delete[] work;
 }
 
-float vector_dot(int n, float *A, int strA, float *B, int strB) {
-  return cblas_sdot(n, A, strA, B, strB);
+float vector_dot(int n, float *X, int incx, float *Y, int incy) {
+  return cblas_sdot(n, X, incx, Y, incy);
 }
 
-double vector_dot(int n, double *A, int strA, double *B, int strB) {
-  return cblas_ddot(n, A, strA, B, strB);
+double vector_dot(int n, double *X, int incx, double *Y, int incy) {
+  return cblas_ddot(n, X, incx, Y, incy);
 }
 
-openblas_complex_float vector_dot_complex(int n, float *A, int strA, float *B, int strB) {
-  return cblas_cdotc(n, A, strA, B, strB);
+openblas_complex_float vector_dot_complex(int n, float *X, int incx, float *Y, int incy) {
+  return cblas_cdotc(n, X, incx, Y, incy);
 }
 
-openblas_complex_double vector_dot_complex(int n, double *A, int strA, double *B, int strB) {
-  return cblas_zdotc(n, A, strA, B, strB);
+openblas_complex_double vector_dot_complex(int n, double *X, int incx, double *Y, int incy) {
+  return cblas_zdotc(n, X, incx, Y, incy);
 }
 
 int solve_linear_system_float(int n, int nrhs, float *A, int strA, float *b, int strB) {
@@ -97,7 +97,8 @@ int inverse_matrix_double(int n, double *A, int strA) {
   return LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, A, strA, ipiv);
 }
 
-void matrix_dot(bool trans_a, float *A, int m, int n, int k, bool trans_b, float *B, float *C) {
+void matrix_dot(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,
+				bool trans_b, int offsetB, float *B, int ldb, float *C) {
   float alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
   CBLAS_TRANSPOSE transB;
@@ -105,10 +106,11 @@ void matrix_dot(bool trans_a, float *A, int m, int n, int k, bool trans_b, float
   (trans_a) ? transA = CblasTrans : transA = CblasNoTrans;
   (trans_b) ? transB = CblasTrans : transB = CblasNoTrans;
 
-  cblas_sgemm(CblasRowMajor, transA, transB, m, n, k, alpha, A, k, B, n, beta, C, n);
+  cblas_sgemm(CblasRowMajor, transA, transB, m, n, k, alpha, A + offsetA, lda, B + offsetB, ldb, beta, C, n);
 }
 
-void matrix_dot(bool trans_a, double *A, int m, int n, int k, bool trans_b, double *B, double *C) {
+void matrix_dot(bool trans_a, int offsetA, double *A, int lda, int m, int n, int k,
+				bool trans_b, int offsetB, double *B, int ldb, double *C) {
   double alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
   CBLAS_TRANSPOSE transB;
@@ -116,10 +118,11 @@ void matrix_dot(bool trans_a, double *A, int m, int n, int k, bool trans_b, doub
   (trans_a) ? transA = CblasTrans : transA = CblasNoTrans;
   (trans_b) ? transB = CblasTrans : transB = CblasNoTrans;
 
-  cblas_dgemm(CblasRowMajor, transA, transB, m, n, k, alpha, A, k, B, n, beta, C, n);
+  cblas_dgemm(CblasRowMajor, transA, transB, m, n, k, alpha, A + offsetA, lda, B + offsetB, ldb, beta, C, n);
 }
 
-void matrix_dot_complex(bool trans_a, float *A, int m, int n, int k, bool trans_b, float *B, void *C) {
+void matrix_dot_complex(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,
+						bool trans_b, int offsetB, float *B, int ldb, float *C) {
   float alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
   CBLAS_TRANSPOSE transB;
@@ -127,10 +130,11 @@ void matrix_dot_complex(bool trans_a, float *A, int m, int n, int k, bool trans_
   (trans_a) ? transA = CblasTrans : transA = CblasNoTrans;
   (trans_b) ? transB = CblasTrans : transB = CblasNoTrans;
 
-  cblas_cgemm(CblasRowMajor, transA, transB, m, n, k, &alpha, A, k, B, n, &beta, C, n);
+  cblas_cgemm(CblasRowMajor, transA, transB, m, n, k, &alpha, A + offsetA, lda, B + offsetB, ldb, &beta, C, n);
 }
 
-void matrix_dot_complex(bool trans_a, double *A, int m, int n, int k, bool trans_b, double *B, double *C) {
+void matrix_dot_complex(bool trans_a, int offsetA, double *A, int lda, int m, int n, int k,
+						bool trans_b, int offsetB, double *B, int ldb, double *C) {
   double alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
   CBLAS_TRANSPOSE transB;
@@ -138,51 +142,43 @@ void matrix_dot_complex(bool trans_a, double *A, int m, int n, int k, bool trans
   (trans_a) ? transA = CblasTrans : transA = CblasNoTrans;
   (trans_b) ? transB = CblasTrans : transB = CblasNoTrans;
 
-  cblas_zgemm(CblasRowMajor, transA, transB, m, n, k, &alpha, A, k, B, n, &beta, C, n);
+  cblas_zgemm(CblasRowMajor, transA, transB, m, n, k, &alpha, A + offsetA, lda, B + offsetB, ldb, &beta, C, n);
 }
 
-void matrix_dot(bool trans_a, float *A, int m, int n, float *B, float *C) {
+void matrix_dot(bool trans_a, int offsetA, float *A, int lda, int m, int n, float *X, int incx, float *Y) {
   float alpha = 1.0, beta = 0.0;
-  //TODO: incx?
-  blasint incy = 1;
   CBLAS_TRANSPOSE transA;
 
   (trans_a) ? transA = CblasTrans : transA = CblasNoTrans;
 
-  cblas_sgemv(CblasRowMajor, transA, m, n, alpha, A, n, B, 1, beta, C, incy);
+  cblas_sgemv(CblasRowMajor, transA, m, n, alpha, A + offsetA, lda, X, incx, beta, Y, 1);
 }
 
-void matrix_dot(bool trans_a, double *A, int m, int n, double *B, double *C) {
+void matrix_dot(bool trans_a, int offsetA, double *A, int lda, int m, int n, double *X, int incx, double *Y) {
   double alpha = 1.0, beta = 0.0;
-  //TODO: incx?
-  blasint incy = 1;
   CBLAS_TRANSPOSE transA;
 
   (trans_a) ? transA = CblasTrans : transA = CblasNoTrans;
 
-  cblas_dgemv(CblasRowMajor, transA, m, n, alpha, A, n, B, 1, beta, C, incy);
+  cblas_dgemv(CblasRowMajor, transA, m, n, alpha, A + offsetA, lda, X, incx, beta, Y, 1);
 }
 
-void matrix_dot_complex(bool trans_a, float *A, int m, int n, float *B, float *C) {
+void matrix_dot_complex(bool trans_a, int offsetA, float *A, int lda, int m, int n, float *X, int incx, float *Y) {
   float alpha = 1.0, beta = 0.0;
-  //TODO: incx?
-  blasint incy = 1;
   CBLAS_TRANSPOSE transA;
 
   (trans_a) ? transA = CblasTrans : transA = CblasNoTrans;
 
-  cblas_cgemv(CblasRowMajor, transA, m, n, &alpha, A, n, B, 1, &beta, C, incy);
+  cblas_cgemv(CblasRowMajor, transA, m, n, &alpha, A + offsetA, lda, X, incx, &beta, Y, 1);
 }
 
-void matrix_dot_complex(bool trans_a, double *A, int m, int n, double *B, double *C) {
+void matrix_dot_complex(bool trans_a, int offsetA, double *A, int lda, int m, int n, double *X, int incx, double *Y) {
   double alpha = 1.0, beta = 0.0;
-  //TODO: incx?
-  blasint incy = 1;
   CBLAS_TRANSPOSE transA;
 
   (trans_a) ? transA = CblasTrans : transA = CblasNoTrans;
 
-  cblas_zgemv(CblasRowMajor, transA, m, n, &alpha, A, n, B, 1, &beta, C, incy);
+  cblas_zgemv(CblasRowMajor, transA, m, n, &alpha, A + offsetA, lda, X, incx, &beta, Y, 1);
 }
 
 #endif //CPP_CPP_LINALG_H_

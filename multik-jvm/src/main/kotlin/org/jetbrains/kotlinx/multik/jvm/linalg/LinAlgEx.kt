@@ -2,6 +2,8 @@ package org.jetbrains.kotlinx.multik.jvm.linalg
 
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
 
@@ -13,7 +15,11 @@ public object JvmLinAlgEx : LinAlgEx {
         invFloat(mat)
 
     override fun <T : Complex> invC(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
+        return when(mat.dtype) {
+            DataType.ComplexDoubleDataType -> invComplexDouble(mat as MultiArray<ComplexDouble, D2>)
+            DataType.ComplexFloatDataType -> invComplexFloat(mat as MultiArray<ComplexFloat, D2>)
+            else -> throw UnsupportedOperationException("expected complex matrix")
+        } as NDArray<T, D2>
     }
 
     override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> {
@@ -36,31 +42,48 @@ public object JvmLinAlgEx : LinAlgEx {
     }
 
     override fun <T : Complex, D : Dim2> solveC(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
-        TODO("Not yet implemented")
+        if (a.dtype != b.dtype) {
+            throw UnsupportedOperationException("argument matrices should have same datatype")
+        }
+
+        return when(a.dtype) {
+            DataType.ComplexDoubleDataType -> {
+                val bComplexDouble = (if (b.dim.d == 2) b else b.reshape(b.shape[0], 1)) as MultiArray<ComplexDouble, D2>
+                val ans = solveComplexDouble(a as MultiArray<ComplexDouble, D2>, bComplexDouble)
+                if (b.dim.d == 2) ans else ans.reshape(ans.shape[0])
+            }
+            DataType.ComplexFloatDataType -> {
+                val bComplexDouble = (if (b.dim.d == 2) b else b.reshape(b.shape[0], 1)) as MultiArray<ComplexFloat, D2>
+                val ans = solveComplexFloat(a as MultiArray<ComplexFloat, D2>, bComplexDouble)
+                if (b.dim.d == 2) ans else ans.reshape(ans.shape[0])
+            }
+            else -> throw UnsupportedOperationException("matrices should be complex")
+        }  as NDArray<T, D>
+
     }
 
     override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
+        return dotMatrix(a, b)
     }
 
     override fun <T : Complex> dotMMComplex(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
+        return dotMatrixComplex(a, b)
     }
 
     override fun <T : Number> dotMV(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> {
-        TODO("Not yet implemented")
+        return dotMatrixToVector(a, b)
     }
 
     override fun <T : Complex> dotMVComplex(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> {
-        TODO("Not yet implemented")
+        return dotMatrixToVectorComplex(a, b)
     }
 
     override fun <T : Number> dotVV(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
-        TODO("Not yet implemented")
+        return dotVecToVec(a, b)
     }
 
     override fun <T : Complex> dotVVComplex(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
-        TODO("Not yet implemented")
+        return dotVecToVecComplex(a, b)
     }
 
 }

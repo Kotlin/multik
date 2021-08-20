@@ -30,94 +30,76 @@ public object NativeLinAlgEx: LinAlgEx {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> {
+    override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> =
+        dotMMCommon(a, b)
+
+    override fun <T : Complex> dotMMComplex(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> =
+        dotMMCommon(a, b)
+
+    private fun <T> dotMMCommon(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> {
         requireDotShape(a.shape, b.shape)
 
-        val transA = a.isTransposed()
         val shape = intArrayOf(a.shape[0], b.shape[1])
         val size = shape.reduce(Int::times)
+        val m = a.shape[0]
+        val k = a.shape[1]
+        val n = b.shape[1]
+
+        val transA = a.isTransposed()
         val transB = b.isTransposed()
 
-        val aN = if (transA || a.consistent) a else a.deepCopy()
-        val bN = if (transB || b.consistent) b else b.deepCopy()
+        val aN = if (transA || a.strides[1] == 1) a else a.deepCopy()
+        val bN = if (transB || b.strides[1] == 1) b else b.deepCopy()
+
+        val lda = if (transA) m else aN.strides[0]
+        val ldb = if (transB) k else bN.strides[0]
 
         val cView = initMemoryView<T>(size, a.dtype)
 
         when(a.dtype) {
             DataType.FloatDataType ->
-                JniLinAlg.dotMM(transA, aN.data.getFloatArray(), shape[0], shape[1], transB, bN.data.getFloatArray(), aN.shape[1], cView.getFloatArray())
+                JniLinAlg.dotMM(transA, aN.offset, aN.data.getFloatArray(), m, k, lda, transB, b.offset, bN.data.getFloatArray(), n, ldb, cView.getFloatArray())
             DataType.DoubleDataType ->
-                JniLinAlg.dotMM(transA, aN.data.getDoubleArray(), shape[0], shape[1], transB, bN.data.getDoubleArray(), aN.shape[1], cView.getDoubleArray())
+                JniLinAlg.dotMM(transA, aN.offset, aN.data.getDoubleArray(), m, k, lda, transB, b.offset, bN.data.getDoubleArray(), n, ldb, cView.getDoubleArray())
+            DataType.ComplexFloatDataType ->
+                JniLinAlg.dotMMC(transA, aN.offset, aN.data.getFloatArray(), m, k, lda, transB, b.offset, bN.data.getFloatArray(), n, ldb, cView.getFloatArray())
+            DataType.ComplexDoubleDataType ->
+                JniLinAlg.dotMMC(transA, aN.offset, aN.data.getDoubleArray(), m, k, lda, transB, b.offset, bN.data.getDoubleArray(), n, ldb, cView.getDoubleArray())
             else -> throw UnsupportedOperationException()
         }
 
         return D2Array(cView, 0, shape, dim = D2)
     }
 
-    override fun <T : Complex> dotMMComplex(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> {
+    override fun <T : Number> dotMV(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> =
+        dotMVCommon(a, b)
+
+    override fun <T : Complex> dotMVComplex(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> =
+        dotMVCommon(a, b)
+
+    private fun <T> dotMVCommon(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> {
         requireDotShape(a.shape, b.shape)
 
-        val transA = a.isTransposed()
-        val shape = intArrayOf(a.shape[0], b.shape[1])
-        val size = shape.reduce(Int::times)
-        val transB = b.isTransposed()
-
-        val aN = if (transA || a.consistent) a else a.deepCopy()
-        val bN = if (transB || b.consistent) b else b.deepCopy()
-
-        val cView = initMemoryView<T>(size, a.dtype)
-
-        when(a.dtype) {
-            DataType.ComplexFloatDataType ->
-                JniLinAlg.dotMMC(transA, aN.data.getFloatArray(), shape[0], shape[1], transB, bN.data.getFloatArray(), aN.shape[1], cView.getFloatArray())
-            DataType.ComplexDoubleDataType ->
-                JniLinAlg.dotMMC(transA, aN.data.getDoubleArray(), shape[0], shape[1], transB, bN.data.getDoubleArray(), aN.shape[1], cView.getDoubleArray())
-            else -> throw UnsupportedOperationException()
-        }
-
-        return D2Array(cView, 0, shape, dim = D2)
-    }
-
-    override fun <T : Number> dotMV(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> {
-        requireDotShape(a.shape, b.shape)
-
-        val transA = a.isTransposed()
         val size = a.shape[0]
         val shape = intArrayOf(size)
+        val m = a.shape[0]
+        val n = a.shape[1]
 
-        val aN = if (transA || a.consistent) a else a.deepCopy()
-        val bN = if (b.consistent) b else b.deepCopy()
+        val transA = a.isTransposed()
+        val aN = if (transA || a.strides[1] == 1) a else a.deepCopy()
+        val lda = if (transA) m else aN.strides[0]
 
         val cView = initMemoryView<T>(size, a.dtype)
 
         when (a.dtype) {
             DataType.FloatDataType ->
-                JniLinAlg.dotMV(transA, aN.data.getFloatArray(), aN.shape[0], aN.shape[1], bN.data.getFloatArray(), cView.getFloatArray())
+                JniLinAlg.dotMV(transA, aN.offset, aN.data.getFloatArray(), m, n, lda, b.data.getFloatArray(), b.strides[0], cView.getFloatArray())
             DataType.DoubleDataType ->
-                JniLinAlg.dotMV(transA, aN.data.getDoubleArray(), aN.shape[0], aN.shape[1], bN.data.getDoubleArray(), cView.getDoubleArray())
-            else -> throw UnsupportedOperationException()
-        }
-
-        return D1Array(cView, 0, shape, dim = D1)
-    }
-
-    override fun <T : Complex> dotMVComplex(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> {
-        requireDotShape(a.shape, b.shape)
-
-        val transA = a.isTransposed()
-        val size = a.shape[0]
-        val shape = intArrayOf(size)
-
-        val aN = if (transA || a.consistent) a else a.deepCopy()
-        val bN = if (b.consistent) b else b.deepCopy()
-
-        val cView = initMemoryView<T>(size, a.dtype)
-
-        when (a.dtype) {
+                JniLinAlg.dotMV(transA, aN.offset, aN.data.getDoubleArray(), m, n, lda, b.data.getDoubleArray(), b.strides[0], cView.getDoubleArray())
             DataType.ComplexFloatDataType ->
-                JniLinAlg.dotMVC(transA, aN.data.getFloatArray(), aN.shape[0], aN.shape[1], bN.data.getFloatArray(), cView.getFloatArray())
+                JniLinAlg.dotMVC(transA, aN.offset, aN.data.getFloatArray(), m, n, lda, b.data.getFloatArray(), b.strides[0], cView.getFloatArray())
             DataType.ComplexDoubleDataType ->
-                JniLinAlg.dotMVC(transA, aN.data.getDoubleArray(), aN.shape[0], aN.shape[1], bN.data.getDoubleArray(), cView.getDoubleArray())
+                JniLinAlg.dotMVC(transA, aN.offset, aN.data.getDoubleArray(), m, n, lda, b.data.getDoubleArray(), b.strides[0], cView.getDoubleArray())
             else -> throw UnsupportedOperationException()
         }
 
