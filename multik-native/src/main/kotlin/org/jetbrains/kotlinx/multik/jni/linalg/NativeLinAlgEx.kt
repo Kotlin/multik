@@ -7,7 +7,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.CopyStrategy
 import org.jetbrains.kotlinx.multik.ndarray.operations.isTransposed
 import org.jetbrains.kotlinx.multik.ndarray.operations.toType
 
-public object NativeLinAlgEx: LinAlgEx {
+public object NativeLinAlgEx : LinAlgEx {
     override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> =
         invCommon(mat.toType(CopyStrategy.MEANINGFUL))
 
@@ -18,7 +18,7 @@ public object NativeLinAlgEx: LinAlgEx {
         invCommon(if (mat.consistent) mat.copy() else mat.deepCopy())
 
     private fun <T> invCommon(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        require(mat.shape[0] == mat.shape[1]) { "Ndarray must be square: mat.shape = ${mat.shape.joinToString(",", "(", ")")}"}
+        requireSquare(mat.shape)
 
         val info: Int = when (mat.dtype) {
             DataType.FloatDataType -> JniLinAlg.inv(mat.shape[0], mat.data.getFloatArray(), mat.strides[0])
@@ -36,16 +36,43 @@ public object NativeLinAlgEx: LinAlgEx {
         return mat as NDArray<T, D2>
     }
 
-    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> {
-        TODO("Not yet implemented")
-    }
+    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> =
+        solveCommon(a.toType(CopyStrategy.MEANINGFUL), b.toType(CopyStrategy.MEANINGFUL))
 
-    override fun <D : Dim2> solveF(a: MultiArray<Float, D2>, b: MultiArray<Float, D>): NDArray<Float, D> {
-        TODO("Not yet implemented")
-    }
+    override fun <D : Dim2> solveF(a: MultiArray<Float, D2>, b: MultiArray<Float, D>): NDArray<Float, D> =
+        solveCommon(a.deepCopy(), b.deepCopy())
 
-    override fun <T : Complex, D : Dim2> solveC(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
-        TODO("Not yet implemented")
+    override fun <T : Complex, D : Dim2> solveC(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> =
+        solveCommon(a.deepCopy(), b.deepCopy())
+
+    private fun <T, D : Dim2> solveCommon(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
+        requireSquare(a.shape)
+        require(a.shape[0] == b.shape[0]) {
+            "The first dimensions of the ndarrays a and b must be match: ${a.shape[0]}(a.shape[0]) != ${b.shape[0]}(b.shape[0]"
+        }
+
+        val nhrs = b.shape.last()
+
+        val info: Int = when (a.dtype) {
+            DataType.FloatDataType -> JniLinAlg.solve(
+                a.shape[0], nhrs, a.data.getFloatArray(), a.strides[0], b.data.getFloatArray(), b.strides[0]
+            )
+            DataType.DoubleDataType -> JniLinAlg.solve(
+                a.shape[0], nhrs, a.data.getDoubleArray(), a.strides[0], b.data.getDoubleArray(), b.strides[0]
+            )
+            DataType.ComplexFloatDataType -> JniLinAlg.solveC(
+                a.shape[0], nhrs, a.data.getFloatArray(), a.strides[0], b.data.getFloatArray(), b.strides[0]
+            )
+            DataType.ComplexDoubleDataType -> JniLinAlg.solveC(
+                a.shape[0], nhrs, a.data.getDoubleArray(), a.strides[0], b.data.getDoubleArray(), b.strides[0]
+            )
+            else -> throw UnsupportedOperationException()
+        }
+        if (info > 0) {
+            throw Exception("The diagonal element of the triangular factor of a is zero, so that A is singular. The solution could not be computed.")
+        }
+
+        return b as NDArray<T, D>
     }
 
     override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> =
@@ -74,15 +101,67 @@ public object NativeLinAlgEx: LinAlgEx {
 
         val cView = initMemoryView<T>(size, a.dtype)
 
-        when(a.dtype) {
+        when (a.dtype) {
             DataType.FloatDataType ->
-                JniLinAlg.dotMM(transA, aN.offset, aN.data.getFloatArray(), m, k, lda, transB, b.offset, bN.data.getFloatArray(), n, ldb, cView.getFloatArray())
+                JniLinAlg.dotMM(
+                    transA,
+                    aN.offset,
+                    aN.data.getFloatArray(),
+                    m,
+                    k,
+                    lda,
+                    transB,
+                    b.offset,
+                    bN.data.getFloatArray(),
+                    n,
+                    ldb,
+                    cView.getFloatArray()
+                )
             DataType.DoubleDataType ->
-                JniLinAlg.dotMM(transA, aN.offset, aN.data.getDoubleArray(), m, k, lda, transB, b.offset, bN.data.getDoubleArray(), n, ldb, cView.getDoubleArray())
+                JniLinAlg.dotMM(
+                    transA,
+                    aN.offset,
+                    aN.data.getDoubleArray(),
+                    m,
+                    k,
+                    lda,
+                    transB,
+                    b.offset,
+                    bN.data.getDoubleArray(),
+                    n,
+                    ldb,
+                    cView.getDoubleArray()
+                )
             DataType.ComplexFloatDataType ->
-                JniLinAlg.dotMMC(transA, aN.offset, aN.data.getFloatArray(), m, k, lda, transB, b.offset, bN.data.getFloatArray(), n, ldb, cView.getFloatArray())
+                JniLinAlg.dotMMC(
+                    transA,
+                    aN.offset,
+                    aN.data.getFloatArray(),
+                    m,
+                    k,
+                    lda,
+                    transB,
+                    b.offset,
+                    bN.data.getFloatArray(),
+                    n,
+                    ldb,
+                    cView.getFloatArray()
+                )
             DataType.ComplexDoubleDataType ->
-                JniLinAlg.dotMMC(transA, aN.offset, aN.data.getDoubleArray(), m, k, lda, transB, b.offset, bN.data.getDoubleArray(), n, ldb, cView.getDoubleArray())
+                JniLinAlg.dotMMC(
+                    transA,
+                    aN.offset,
+                    aN.data.getDoubleArray(),
+                    m,
+                    k,
+                    lda,
+                    transB,
+                    b.offset,
+                    bN.data.getDoubleArray(),
+                    n,
+                    ldb,
+                    cView.getDoubleArray()
+                )
             else -> throw UnsupportedOperationException()
         }
 
@@ -111,13 +190,53 @@ public object NativeLinAlgEx: LinAlgEx {
 
         when (a.dtype) {
             DataType.FloatDataType ->
-                JniLinAlg.dotMV(transA, aN.offset, aN.data.getFloatArray(), m, n, lda, b.data.getFloatArray(), b.strides[0], cView.getFloatArray())
+                JniLinAlg.dotMV(
+                    transA,
+                    aN.offset,
+                    aN.data.getFloatArray(),
+                    m,
+                    n,
+                    lda,
+                    b.data.getFloatArray(),
+                    b.strides[0],
+                    cView.getFloatArray()
+                )
             DataType.DoubleDataType ->
-                JniLinAlg.dotMV(transA, aN.offset, aN.data.getDoubleArray(), m, n, lda, b.data.getDoubleArray(), b.strides[0], cView.getDoubleArray())
+                JniLinAlg.dotMV(
+                    transA,
+                    aN.offset,
+                    aN.data.getDoubleArray(),
+                    m,
+                    n,
+                    lda,
+                    b.data.getDoubleArray(),
+                    b.strides[0],
+                    cView.getDoubleArray()
+                )
             DataType.ComplexFloatDataType ->
-                JniLinAlg.dotMVC(transA, aN.offset, aN.data.getFloatArray(), m, n, lda, b.data.getFloatArray(), b.strides[0], cView.getFloatArray())
+                JniLinAlg.dotMVC(
+                    transA,
+                    aN.offset,
+                    aN.data.getFloatArray(),
+                    m,
+                    n,
+                    lda,
+                    b.data.getFloatArray(),
+                    b.strides[0],
+                    cView.getFloatArray()
+                )
             DataType.ComplexDoubleDataType ->
-                JniLinAlg.dotMVC(transA, aN.offset, aN.data.getDoubleArray(), m, n, lda, b.data.getDoubleArray(), b.strides[0], cView.getDoubleArray())
+                JniLinAlg.dotMVC(
+                    transA,
+                    aN.offset,
+                    aN.data.getDoubleArray(),
+                    m,
+                    n,
+                    lda,
+                    b.data.getDoubleArray(),
+                    b.strides[0],
+                    cView.getDoubleArray()
+                )
             else -> throw UnsupportedOperationException()
         }
 
@@ -154,4 +273,9 @@ private fun requireDotShape(aShape: IntArray, bShape: IntArray) = require(aShape
         "${aShape.joinToString(prefix = "(", postfix = ")")} and " +
         "${bShape.joinToString(prefix = "(", postfix = ")")} not aligned: " +
         "${aShape[1]} (dim 1) != ${bShape[0]} (dim 0)"
+}
+
+
+private fun requireSquare(shape: IntArray) = require(shape[0] == shape[1]) {
+    "Ndarray must be square: shape = ${shape.joinToString(",", "(", ")")}"
 }

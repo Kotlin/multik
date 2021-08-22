@@ -114,11 +114,11 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_in
  * Signature: (II[FI[FI)I
  */
 JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_solve__II_3FI_3FI
-	(JNIEnv *env, jobject jobj, jint n, jint nrhs, jfloatArray j_a, jint strA, jfloatArray j_b, jint strB) {
+	(JNIEnv *env, jobject jobj, jint n, jint nrhs, jfloatArray j_a, jint lda, jfloatArray j_b, jint ldb) {
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *B = (float *)env->GetPrimitiveArrayCritical(j_b, nullptr);
 
-  int info = solve_linear_system_float(n, nrhs, A, strA, B, strB);
+  int info = solve_linear_system(n, nrhs, A, lda, B, ldb);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);
@@ -132,11 +132,47 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_so
  * Signature: (II[DI[DI)I
  */
 JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_solve__II_3DI_3DI
-	(JNIEnv *env, jobject jobj, jint n, jint nrhs, jdoubleArray j_a, jint strA, jdoubleArray j_b, jint strB) {
+	(JNIEnv *env, jobject jobj, jint n, jint nrhs, jdoubleArray j_a, jint lda, jdoubleArray j_b, jint ldb) {
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *B = (double *)env->GetPrimitiveArrayCritical(j_b, nullptr);
 
-  int info = solve_linear_system_double(n, nrhs, A, strA, B, strB);
+  int info = solve_linear_system(n, nrhs, A, lda, B, ldb);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_b, B, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    solveC
+ * Signature: (II[FI[FI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_solveC__II_3FI_3FI
+	(JNIEnv *env, jobject jobj, jint n, jint nrhs, jfloatArray j_a, jint lda, jfloatArray j_b, jint ldb) {
+  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *B = (float *)env->GetPrimitiveArrayCritical(j_b, nullptr);
+
+  int info = solve_linear_system_complex(n, nrhs, A, lda, B, ldb);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_b, B, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    solveC
+ * Signature: (II[DI[DI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_solveC__II_3DI_3DI
+	(JNIEnv *env, jobject jobj, jint n, jint nrhs, jdoubleArray j_a, jint lda, jdoubleArray j_b, jint ldb) {
+  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *B = (double *)env->GetPrimitiveArrayCritical(j_b, nullptr);
+
+  int info = solve_linear_system_complex(n, nrhs, A, lda, B, ldb);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);

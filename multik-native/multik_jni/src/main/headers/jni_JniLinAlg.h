@@ -89,6 +89,22 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_so
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    solveC
+ * Signature: (II[FI[FI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_solveC__II_3FI_3FI
+	(JNIEnv *, jobject, jint, jint, jfloatArray, jint, jfloatArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    solveC
+ * Signature: (II[DI[DI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_solveC__II_3DI_3DI
+	(JNIEnv *, jobject, jint, jint, jdoubleArray, jint, jdoubleArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    dotMM
  * Signature: (ZI[FIIIZI[FII[F)V
  */

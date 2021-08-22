@@ -12,7 +12,6 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.rangeTo
 import kotlin.test.BeforeTest
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -28,7 +27,6 @@ class NativeLinAlgTest {
     }
 
     @Test
-    @Ignore
     fun `solve linear system F`() {
         val expected = mk.ndarray(
             mk[mk[4.1391945f, 1.2361444f, 4.4088345f],
@@ -41,6 +39,37 @@ class NativeLinAlgTest {
         val (a, b) = data.getFloatMM(5, 5, 5, 3)
 
         assertFloatingNDArray(expected, NativeLinAlg.solve(a, b), epsilon = 1e5f)
+    }
+
+    @Test
+    fun `solve linear system D`() {
+        val expected = mk.ndarray(
+            mk[mk[4.1391945, 1.2361444, 4.4088345],
+                mk[-3.0071893, 0.13484901, -3.9121897],
+                mk[3.2885208, -0.04077824, 4.3054614],
+                mk[0.7955365, 0.57545465, 0.42709854],
+                mk[-11.024394, -1.9956491, -11.173507]]
+        )
+
+        val (a, b) = data.getDoubleMM(5, 5, 5, 3)
+
+        assertFloatingNDArray(expected, NativeLinAlg.solve(a, b), epsilon = 1e6)
+    }
+
+    @Test
+    fun `solve linear system Complex`() {
+        val expected = mk.ndarray(
+            mk[mk[ComplexDouble(-0.30547825, -0.61681154), ComplexDouble(0.41432816, -1.46046786),
+                ComplexDouble(-0.35100211, 0.27240141)],
+                mk[ComplexDouble(-0.14282777, 0.52435108), ComplexDouble(-0.14739684, 0.72480181),
+                    ComplexDouble(0.75653133, -0.97962391)],
+                mk[ComplexDouble(1.15623785, -0.11361717), ComplexDouble(0.65161407, 0.47386083),
+                    ComplexDouble(0.51721532, 0.41166838)]]
+        )
+
+        val (a, b) = data.getComplexDoubleMM(3, 3, 3, 3)
+
+        assertComplexFloatingNDArray(expected, NativeLinAlg.solve(a, b), epsilon = 1e8)
     }
 
     @Test

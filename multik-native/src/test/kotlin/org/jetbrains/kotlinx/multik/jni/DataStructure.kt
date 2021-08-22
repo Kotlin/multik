@@ -62,6 +62,16 @@ class DataStructure(private val seed: Int) {
             mk.d2array(sizeBD1, sizeBD2) { random.nextDouble() })
     }
 
+    fun getComplexDoubleMM(
+        sizeAD1: Int, sizeAD2: Int = sizeAD1,
+        sizeBD1: Int, sizeBD2: Int = sizeBD1
+    ): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
+        val random = Random(seed)
+        return Pair(
+            mk.d2arrayComplex(sizeAD1, sizeAD2) { ComplexDouble(random.nextDouble(), random.nextDouble()) },
+            mk.d2arrayComplex(sizeBD1, sizeBD2) { ComplexDouble(random.nextDouble(), random.nextDouble()) })
+    }
+
     fun getFloatVV(sizeA: Int, sizeB: Int = sizeA): Pair<D1Array<Float>, D1Array<Float>> {
         val random = Random(seed)
         return Pair(mk.d1array(sizeA) { random.nextFloat() }, mk.d1array(sizeB) { random.nextFloat() })

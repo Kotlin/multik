@@ -8,30 +8,6 @@
 #include "cblas.h"
 #include "lapacke.h"
 
-void matrix_power() {
-
-}
-
-void svd() {
-
-}
-
-void norm() {
-
-}
-
-void det() {
-
-}
-
-void matrix_rank() {
-
-}
-
-void matrix_solve() {
-
-}
-
 void eigen_values(double *A, int n) {
   const char Nchar = 'N';
   double *eigReal = new double[n];
@@ -65,16 +41,34 @@ openblas_complex_double vector_dot_complex(int n, double *X, int incx, double *Y
   return cblas_zdotc(n, X, incx, Y, incy);
 }
 
-int solve_linear_system_float(int n, int nrhs, float *A, int strA, float *b, int strB) {
+int solve_linear_system(int n, int nrhs, float *A, int lda, float *b, int ldb) {
   int ipiv[n];
 
-  return LAPACKE_sgesv(LAPACK_ROW_MAJOR, n, nrhs, A, strA, ipiv, b, strB);
+  return LAPACKE_sgesv(LAPACK_ROW_MAJOR, n, nrhs, A, lda, ipiv, b, ldb);
 }
 
-int solve_linear_system_double(int n, int nrhs, double *A, int strA, double *b, int strB) {
+int solve_linear_system(int n, int nrhs, double *A, int lda, double *b, int ldb) {
   int ipiv[n];
 
-  return LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, A, strA, ipiv, b, strB);
+  return LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, A, lda, ipiv, b, ldb);
+}
+
+int solve_linear_system_complex(int n, int nrhs, float *A, int lda, float *B, int ldb) {
+  int ipiv[n];
+
+  lapack_complex_float *a = (lapack_complex_float *)A;
+  lapack_complex_float *b = (lapack_complex_float *)B;
+
+  return LAPACKE_cgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, ipiv, b, ldb);
+}
+
+int solve_linear_system_complex(int n, int nrhs, double *A, int lda, double *B, int ldb) {
+  int ipiv[n];
+
+  lapack_complex_double *a = (lapack_complex_double *)A;
+  lapack_complex_double *b = (lapack_complex_double *)B;
+
+  return LAPACKE_zgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, ipiv, b, ldb);
 }
 
 int inverse_matrix(int n, float *A, int lda) {

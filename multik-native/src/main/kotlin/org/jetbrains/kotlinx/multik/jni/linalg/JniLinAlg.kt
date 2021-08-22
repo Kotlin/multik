@@ -7,15 +7,32 @@ internal object JniLinAlg {
     external fun norm(mat: DoubleArray, p: Int): Double
 
     /**
-     *
+     * @param n number of rows and columns of the matrix [mat]
+     * @param mat square matrix
+     * @param lda first dimension of the matrix [mat]
+     * @return int:
+     * = 0 - successful exit
+     * < 0 - if number = -i, the i-th argument had an illegal value
+     * > 0 if number = i, U(i,i) is exactly zero; the matrix is singular and its inverse could not be computed.
      */
     external fun inv(n: Int, mat: FloatArray, lda: Int): Int
     external fun inv(n: Int, mat: DoubleArray, lda: Int): Int
     external fun invC(n: Int, mat: FloatArray, lda: Int): Int
     external fun invC(n: Int, mat: DoubleArray, lda: Int): Int
 
-    external fun solve(n: Int, nrhs: Int, a: FloatArray, strA: Int, b: FloatArray, strB: Int): Int
-    external fun solve(n: Int, nrhs: Int, a: DoubleArray, strA: Int, b: DoubleArray, strB: Int): Int
+    /**
+     * @param n
+     * @param nrhs
+     * @param a
+     * @param lda
+     * @param b
+     * @param ldb
+     * @return
+     */
+    external fun solve(n: Int, nrhs: Int, a: FloatArray, lda: Int, b: FloatArray, ldb: Int): Int
+    external fun solve(n: Int, nrhs: Int, a: DoubleArray, lda: Int, b: DoubleArray, ldb: Int): Int
+    external fun solveC(n: Int, nrhs: Int, a: FloatArray, lda: Int, b: FloatArray, ldb: Int): Int
+    external fun solveC(n: Int, nrhs: Int, a: DoubleArray, lda: Int, b: DoubleArray, ldb: Int): Int
 
 
     /**
@@ -30,7 +47,7 @@ internal object JniLinAlg {
      * @param b second matrix
      * @param n number of columns of the matrix [b] and of the matrix [c]
      * @param ldb first dimension of the matrix [b]
-     * @param c
+     * @param c matrix of result
      */
     external fun dotMM(transA: Boolean, offsetA: Int, a: FloatArray, m: Int, k: Int, lda: Int, transB: Boolean, offsetB: Int, b: FloatArray, n: Int, ldb: Int, c: FloatArray)
     external fun dotMM(transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, k: Int, lda: Int, transB: Boolean, offsetB: Int, b: DoubleArray, n: Int, ldb: Int, c: DoubleArray)
@@ -45,7 +62,7 @@ internal object JniLinAlg {
      * @param n number of columns of the matrix [a]
      * @param lda first dimension of the matrix [a]
      * @param x vector
-     * @param y
+     * @param y vector
      */
     external fun dotMV(transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, x: FloatArray, incX: Int, y: FloatArray)
     external fun dotMV(transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, x: DoubleArray, incX: Int, y: DoubleArray)
