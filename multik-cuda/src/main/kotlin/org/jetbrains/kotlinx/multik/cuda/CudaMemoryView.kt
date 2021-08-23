@@ -81,7 +81,7 @@ internal class CudaMemoryView<T>(override var size: Int, override val dtype: Dat
                 else -> throw IllegalArgumentException("Unsupported datatype")
             }
 
-            gpuArray.transferFromGpu(dtype.getDataPointer(this))
+            gpuArray.transferFromGpu(this.getDataPointer())
         }
     }
 }

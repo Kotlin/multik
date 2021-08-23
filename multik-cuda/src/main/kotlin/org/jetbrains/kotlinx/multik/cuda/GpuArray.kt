@@ -179,7 +179,7 @@ internal class GpuCache {
         } while (result != cudaSuccess)
 
         if (setFrom != null) {
-            val hostDataPtr = dtype.getDataPointer(setFrom)
+            val hostDataPtr = setFrom.getDataPointer()
             checkResult(JCuda.cudaMemcpy(deviceDataPtr, hostDataPtr, byteSize, cudaMemcpyKind.cudaMemcpyHostToDevice))
         }
 

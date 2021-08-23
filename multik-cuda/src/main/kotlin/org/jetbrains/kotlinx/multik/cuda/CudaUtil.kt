@@ -61,10 +61,10 @@ internal fun DataType.getOnePointer(): Pointer =
         else -> throw UnsupportedOperationException()
     }
 
-internal fun <T> DataType.getDataPointer(data: ImmutableMemoryView<T>): Pointer =
-    when (this) {
-        DataType.FloatDataType -> Pointer.to(data.getFloatArray())
-        DataType.DoubleDataType -> Pointer.to(data.getDoubleArray())
+internal fun <T> ImmutableMemoryView<T>.getDataPointer(): Pointer =
+    when (dtype) {
+        DataType.FloatDataType -> Pointer.to(getFloatArray())
+        DataType.DoubleDataType -> Pointer.to(getDoubleArray())
         else -> throw UnsupportedOperationException("Unsupported data type: $this")
     }
 

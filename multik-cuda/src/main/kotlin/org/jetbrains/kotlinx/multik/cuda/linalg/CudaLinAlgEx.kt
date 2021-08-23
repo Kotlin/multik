@@ -71,7 +71,7 @@ public object CudaLinAlgEx: LinAlgEx {
         context.cache.assertAllLoaded(gA, gB)
 
         val result = initMemoryView<T>(1, a.dtype)
-        val resultPtr = a.dtype.getDataPointer(result)
+        val resultPtr = result.getDataPointer()
         val type = a.dtype.getCudaType()
 
         checkResult(JCublas2.cublasDotEx(context.handle, a.shape[0], gA.deviceDataPtr, type, 1, gB.deviceDataPtr, type, 1, resultPtr, type, type))
