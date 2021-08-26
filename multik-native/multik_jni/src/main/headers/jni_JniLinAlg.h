@@ -57,6 +57,22 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_in
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    invC
+ * Signature: (I[FI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_invC__I_3FI
+	(JNIEnv *, jobject, jint, jfloatArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    invC
+ * Signature: (I[DI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_invC__I_3DI
+	(JNIEnv *, jobject, jint, jdoubleArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    solve
  * Signature: (II[FI[FI)I
  */
@@ -73,67 +89,87 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_so
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
- * Method:    dotMM
- * Signature: (Z[FIIZ[FI[F)V
+ * Method:    solveC
+ * Signature: (II[FI[FI)I
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMM__Z_3FIIZ_3FI_3F
-	(JNIEnv *, jobject, jboolean, jfloatArray, jint, jint, jboolean, jfloatArray, jint, jfloatArray);
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_solveC__II_3FI_3FI
+	(JNIEnv *, jobject, jint, jint, jfloatArray, jint, jfloatArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    solveC
+ * Signature: (II[DI[DI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_solveC__II_3DI_3DI
+	(JNIEnv *, jobject, jint, jint, jdoubleArray, jint, jdoubleArray, jint);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    dotMM
- * Signature: (Z[DIIZ[DI[D)V
+ * Signature: (ZI[FIIIZI[FII[F)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMM__Z_3DIIZ_3DI_3D
-	(JNIEnv *, jobject, jboolean, jdoubleArray, jint, jint, jboolean, jdoubleArray, jint, jdoubleArray);
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMM__ZI_3FIIIZI_3FII_3F
+	(JNIEnv *, jobject, jboolean, jint, jfloatArray, jint, jint, jint,
+	 jboolean, jint, jfloatArray, jint, jint, jfloatArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    dotMM
+ * Signature: (ZI[DIIIZI[DII[D)V
+ */
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMM__ZI_3DIIIZI_3DII_3D
+	(JNIEnv *, jobject, jboolean, jint, jdoubleArray, jint, jint, jint,
+	 jboolean, jint, jdoubleArray, jint, jint, jdoubleArray);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    dotMMC
- * Signature: (Z[FIIZ[FI[F)V
+ * Signature: (ZI[FIIIZI[FII[F)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMMC__Z_3FIIZ_3FI_3F
-	(JNIEnv *, jobject, jboolean, jfloatArray, jint, jint, jboolean, jfloatArray, jint, jfloatArray);
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMMC__ZI_3FIIIZI_3FII_3F
+	(JNIEnv *, jobject, jboolean, jint, jfloatArray, jint, jint, jint,
+	 jboolean, jint, jfloatArray, jint, jint, jfloatArray);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    dotMMC
- * Signature: (Z[DIIZ[DI[D)V
+ * Signature: (ZI[DIIIZI[DII[D)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMMC__Z_3DIIZ_3DI_3D
-	(JNIEnv *, jobject, jboolean, jdoubleArray, jint, jint, jboolean, jdoubleArray, jint, jdoubleArray);
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMMC__ZI_3DIIIZI_3DII_3D
+	(JNIEnv *, jobject, jboolean, jint, jdoubleArray, jint, jint, jint,
+	 jboolean, jint, jdoubleArray, jint, jint, jdoubleArray);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    dotMV
- * Signature: (Z[FII[F[F)V
+ * Signature: (ZI[FIII[FI[F)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMV__Z_3FII_3F_3F
-	(JNIEnv *, jobject, jboolean, jfloatArray, jint, jint, jfloatArray, jfloatArray);
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMV__ZI_3FIII_3FI_3F
+	(JNIEnv *, jobject, jboolean, jint, jfloatArray, jint, jint, jint, jfloatArray, jint, jfloatArray);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    dotMV
- * Signature: (Z[DII[D[D)V
+ * Signature: (ZI[DIII[DI[D)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMV__Z_3DII_3D_3D
-	(JNIEnv *, jobject, jboolean, jdoubleArray, jint, jint, jdoubleArray, jdoubleArray);
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMV__ZI_3DIII_3DI_3D
+	(JNIEnv *, jobject, jboolean, jint, jdoubleArray, jint, jint, jint, jdoubleArray, jint, jdoubleArray);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    dotMVC
- * Signature: (Z[FII[F[F)V
+ * Signature: (ZI[FIII[FI[F)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMVC__Z_3FII_3F_3F
-	(JNIEnv *, jobject, jboolean, jfloatArray, jint, jint, jfloatArray, jfloatArray);
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMVC__ZI_3FIII_3FI_3F
+	(JNIEnv *, jobject, jboolean, jint, jfloatArray, jint, jint, jint, jfloatArray, jint, jfloatArray);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    dotMVC
- * Signature: (Z[DII[D[D)V
+ * Signature: (ZI[DIII[DI[D)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMVC__Z_3DII_3D_3D
-	(JNIEnv *, jobject, jboolean, jdoubleArray, jint, jint, jdoubleArray, jdoubleArray);
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotMVC__ZI_3DIII_3DI_3D
+	(JNIEnv *, jobject, jboolean, jint, jdoubleArray, jint, jint, jint, jdoubleArray, jint, jdoubleArray);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg

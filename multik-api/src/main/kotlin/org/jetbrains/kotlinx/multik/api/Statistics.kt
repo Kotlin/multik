@@ -4,6 +4,8 @@
 
 package org.jetbrains.kotlinx.multik.api
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 /**
@@ -97,7 +99,7 @@ public fun <D : Dimension> abs(a: MultiArray<Long, D>): NDArray<Long, D> {
 
 @JvmName("absFloat")
 public fun <D : Dimension> abs(a: MultiArray<Float, D>): NDArray<Float, D> {
-    val ret = initMemoryView<Float>(a.size, a.dtype)
+    val ret = initMemoryView<Float>(a.size)
     var index = 0
     for (element in a) {
         ret[index++] = kotlin.math.abs(element)
@@ -107,10 +109,30 @@ public fun <D : Dimension> abs(a: MultiArray<Float, D>): NDArray<Float, D> {
 
 @JvmName("absDouble")
 public fun <D : Dimension> abs(a: MultiArray<Double, D>): NDArray<Double, D> {
-    val ret = initMemoryView<Double>(a.size, a.dtype)
+    val ret = initMemoryView<Double>(a.size)
     var index = 0
     for (element in a) {
         ret[index++] = kotlin.math.abs(element)
+    }
+    return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
+}
+
+@JvmName("absComplexFloat")
+public fun <D : Dimension> abs(a: MultiArray<ComplexFloat, D>): NDArray<Float, D> {
+    val ret = initMemoryView<Float>(a.size)
+    var index = 0
+    for (element in a) {
+        ret[index++] = element.abs()
+    }
+    return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
+}
+
+@JvmName("absComplexDouble")
+public fun <D : Dimension> abs(a: MultiArray<ComplexDouble, D>): NDArray<Double, D> {
+    val ret = initMemoryView<Double>(a.size)
+    var index = 0
+    for (element in a) {
+        ret[index++] = element.abs()
     }
     return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }

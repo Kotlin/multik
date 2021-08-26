@@ -5,64 +5,63 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 
 //-------------------dotMM--------------------------
-internal fun <T : Number> dotMatrix(a: MultiArray<T, D2>, b: MultiArray<T, D2>): D2Array<T> {
+internal fun <T : Number> dotMatrix(a: MultiArray<T, D2>, b: MultiArray<T, D2>): D2Array<T> =
+    dotMatrixCommon(a, b)
+
+internal fun <T : Complex> dotMatrixComplex(a: MultiArray<T, D2>, b: MultiArray<T, D2>): D2Array<T> =
+    dotMatrixCommon(a, b)
+
+private fun <T> dotMatrixCommon(a: MultiArray<T, D2>, b: MultiArray<T, D2>): D2Array<T> {
+    requireDotShape(a.shape, b.shape)
     val newShape = intArrayOf(a.shape[0], b.shape[1])
     val size = newShape.reduce(Int::times)
-    return when (a.dtype) {
-        DataType.FloatDataType -> {
-            val ret = D2Array(MemoryViewFloatArray(FloatArray(size)), 0, newShape, dim = D2)
-            dotMatrix(a.data.getFloatArray(), a.offset, a.strides, b.data.getFloatArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getFloatArray(), ret.strides[0])
-            ret
-        }
-        DataType.IntDataType -> {
-            val ret = D2Array(MemoryViewIntArray(IntArray(size)), 0, newShape, dim = D2)
-            dotMatrix(a.data.getIntArray(), a.offset, a.strides, b.data.getIntArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getIntArray(), ret.strides[0])
-            ret
-        }
-        DataType.DoubleDataType -> {
-            val ret = D2Array(MemoryViewDoubleArray(DoubleArray(size)), 0, newShape, dim = D2)
-            dotMatrix(a.data.getDoubleArray(), a.offset, a.strides, b.data.getDoubleArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getDoubleArray(), ret.strides[0])
-            ret
-        }
-        DataType.LongDataType -> {
-            val ret = D2Array(MemoryViewLongArray(LongArray(size)), 0, newShape, dim = D2)
-            dotMatrix(a.data.getLongArray(), a.offset, a.strides, b.data.getLongArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getLongArray(), ret.strides[0])
-            ret
-        }
-        DataType.ShortDataType -> {
-            val ret = D2Array(MemoryViewShortArray(ShortArray(size)), 0, newShape, dim = D2)
-            dotMatrix(a.data.getShortArray(), a.offset, a.strides, b.data.getShortArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getShortArray(), ret.strides[0])
-            ret
-        }
-        DataType.ByteDataType -> {
-            val ret = D2Array(MemoryViewByteArray(ByteArray(size)), 0, newShape, dim = D2)
-            dotMatrix(a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getByteArray(), ret.strides[0])
-            ret
-        }
-        else -> throw UnsupportedOperationException("expected matrix type inherit Number")
-    } as D2Array<T>
-}
-
-private fun dotMatrix(
-    left: FloatArray, leftOffset: Int, leftStrides: IntArray,
-    right: FloatArray, rightOffset: Int, rightStrides: IntArray,
-    n: Int, m: Int, t: Int, destination: FloatArray, dStrides: Int
-): FloatArray {
-    val (leftStride_0, leftStride_1) = leftStrides
-    val (rightStride_0, rightStride_1) = rightStrides
-
-    for (i in 0 until n) {
-        val dInd = i * dStrides
-        val lInd = i * leftStride_0 + leftOffset
-        for (k in 0 until t) {
-            val ceil = left[lInd + k * leftStride_1]
-            val rInd = k * rightStride_0 + rightOffset
-            for (j in 0 until m) {
-                destination[dInd + j] += ceil * right[rInd + j * rightStride_1]
-            }
-        }
+    val ret = D2Array<T>(initMemoryView(size, a.dtype), 0, newShape, dim = D2)
+    when (a.dtype) {
+        DataType.FloatDataType ->
+            dotMatrix(
+                a.data.getFloatArray(), a.offset, a.strides, b.data.getFloatArray(), b.offset, b.strides,
+                newShape[0], newShape[1], a.shape[1], ret.data.getFloatArray(), ret.strides[0]
+            )
+        DataType.IntDataType ->
+            dotMatrix(
+                a.data.getIntArray(), a.offset, a.strides, b.data.getIntArray(), b.offset, b.strides,
+                newShape[0], newShape[1], a.shape[1], ret.data.getIntArray(), ret.strides[0]
+            )
+        DataType.DoubleDataType ->
+            dotMatrix(
+                a.data.getDoubleArray(), a.offset, a.strides, b.data.getDoubleArray(), b.offset, b.strides,
+                newShape[0], newShape[1], a.shape[1], ret.data.getDoubleArray(), ret.strides[0]
+            )
+        DataType.LongDataType ->
+            dotMatrix(
+                a.data.getLongArray(), a.offset, a.strides, b.data.getLongArray(), b.offset, b.strides,
+                newShape[0], newShape[1], a.shape[1], ret.data.getLongArray(), ret.strides[0]
+            )
+        DataType.ComplexDoubleDataType ->
+            dotMatrixComplex(
+                a.data.getComplexDoubleArray(), a.offset, a.strides,
+                b.data.getComplexDoubleArray(), b.offset, b.strides,
+                newShape[0], newShape[1], a.shape[1], ret.data.getComplexDoubleArray(), ret.strides[0]
+            )
+        DataType.ComplexFloatDataType ->
+            dotMatrixComplex(
+                a.data.getComplexFloatArray(), a.offset, a.strides,
+                b.data.getComplexFloatArray(), b.offset, b.strides,
+                newShape[0], newShape[1], a.shape[1], ret.data.getComplexFloatArray(), ret.strides[0]
+            )
+        DataType.ShortDataType ->
+            dotMatrix(
+                a.data.getShortArray(), a.offset, a.strides, b.data.getShortArray(), b.offset, b.strides,
+                newShape[0], newShape[1], a.shape[1], ret.data.getShortArray(), ret.strides[0]
+            )
+        DataType.ByteDataType ->
+            dotMatrix(
+                a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides,
+                newShape[0], newShape[1], a.shape[1], ret.data.getByteArray(), ret.strides[0]
+            )
+        else -> throw UnsupportedOperationException()
     }
-    return destination
+    return ret
 }
 
 private fun dotMatrix(
@@ -154,6 +153,28 @@ private fun dotMatrix(
 }
 
 private fun dotMatrix(
+    left: FloatArray, leftOffset: Int, leftStrides: IntArray,
+    right: FloatArray, rightOffset: Int, rightStrides: IntArray,
+    n: Int, m: Int, t: Int, destination: FloatArray, dStrides: Int
+): FloatArray {
+    val (leftStride_0, leftStride_1) = leftStrides
+    val (rightStride_0, rightStride_1) = rightStrides
+
+    for (i in 0 until n) {
+        val dInd = i * dStrides
+        val lInd = i * leftStride_0 + leftOffset
+        for (k in 0 until t) {
+            val ceil = left[lInd + k * leftStride_1]
+            val rInd = k * rightStride_0 + rightOffset
+            for (j in 0 until m) {
+                destination[dInd + j] += ceil * right[rInd + j * rightStride_1]
+            }
+        }
+    }
+    return destination
+}
+
+private fun dotMatrix(
     left: DoubleArray, leftOffset: Int, leftStrides: IntArray,
     right: DoubleArray, rightOffset: Int, rightStrides: IntArray,
     n: Int, m: Int, t: Int, destination: DoubleArray, dStrides: Int
@@ -173,24 +194,6 @@ private fun dotMatrix(
         }
     }
     return destination
-}
-//------------------dotMMComplex------------------
-internal fun <T : Complex> dotMatrixComplex(a: MultiArray<T, D2>, b: MultiArray<T, D2>): D2Array<T> {
-    val newShape = intArrayOf(a.shape[0], b.shape[1])
-    val size = newShape.reduce(Int::times)
-    return when (a.dtype) {
-        DataType.ComplexDoubleDataType -> {
-            val ret = D2Array(MemoryViewComplexDoubleArray(ComplexDoubleArray(size)), 0, newShape, dim = D2)
-            dotMatrixComplex(a.data.getComplexDoubleArray(), a.offset, a.strides, b.data.getComplexDoubleArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getComplexDoubleArray(), ret.strides[0])
-            ret
-        }
-        DataType.ComplexFloatDataType -> {
-            val ret = D2Array(MemoryViewComplexFloatArray(ComplexFloatArray(size)), 0, newShape, dim = D2)
-            dotMatrixComplex(a.data.getComplexFloatArray(), a.offset, a.strides, b.data.getComplexFloatArray(), b.offset, b.strides, newShape[0], newShape[1], a.shape[1], ret.data.getComplexFloatArray(), ret.strides[0])
-            ret
-        }
-        else -> throw UnsupportedOperationException("expected complex matrix")
-    } as D2Array<T>
 }
 
 private fun dotMatrixComplex(
@@ -238,44 +241,62 @@ private fun dotMatrixComplex(
 }
 
 
-
 //-------------------dotMV------------------------
-internal fun <T : Number> dotMatrixToVector(a: MultiArray<T, D2>, b: MultiArray<T, D1>): D1Array<T> {
-    val newShape = intArrayOf(a.shape[0])
+internal fun <T : Number> dotMatrixToVector(a: MultiArray<T, D2>, b: MultiArray<T, D1>): D1Array<T> =
+    dotMatrixToVectorCommon(a, b)
 
-    return when (a.dtype) {
-        DataType.FloatDataType -> {
-            val ret = D1Array(MemoryViewFloatArray(FloatArray(newShape[0])), 0, newShape, dim = D1)
-            dotVector(a.data.getFloatArray(), a.offset, a.strides, b.data.getFloatArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getFloatArray())
-            ret
-        }
-        DataType.IntDataType -> {
-            val ret = D1Array(MemoryViewIntArray(IntArray(newShape[0])), 0, newShape, dim = D1)
-            dotVector(a.data.getIntArray(), a.offset, a.strides, b.data.getIntArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getIntArray())
-            ret
-        }
-        DataType.DoubleDataType -> {
-            val ret = D1Array(MemoryViewDoubleArray(DoubleArray(newShape[0])), 0, newShape, dim = D1)
-            dotVector(a.data.getDoubleArray(), a.offset, a.strides, b.data.getDoubleArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getDoubleArray())
-            ret
-        }
-        DataType.LongDataType -> {
-            val ret = D1Array(MemoryViewLongArray(LongArray(newShape[0])), 0, newShape, dim = D1)
-            dotVector(a.data.getLongArray(), a.offset, a.strides, b.data.getLongArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getLongArray())
-            ret
-        }
-        DataType.ShortDataType -> {
-            val ret = D1Array(MemoryViewShortArray(ShortArray(newShape[0])), 0, newShape, dim = D1)
-            dotVector(a.data.getShortArray(), a.offset, a.strides, b.data.getShortArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getShortArray())
-            ret
-        }
-        DataType.ByteDataType -> {
-            val ret = D1Array(MemoryViewByteArray(ByteArray(newShape[0])), 0, newShape, dim = D1)
-            dotVector(a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getByteArray())
-            ret
-        }
-        else -> throw UnsupportedOperationException("expected matrix type inherit Number")
-    } as D1Array<T>
+internal fun <T : Complex> dotMatrixToVectorComplex(a: MultiArray<T, D2>, b: MultiArray<T, D1>): D1Array<T> =
+    dotMatrixToVectorCommon(a, b)
+
+private fun <T> dotMatrixToVectorCommon(a: MultiArray<T, D2>, b: MultiArray<T, D1>): D1Array<T> {
+    requireDotShape(a.shape, b.shape)
+    val newShape = intArrayOf(a.shape[0])
+    val ret = D1Array<T>(initMemoryView(newShape[0], a.dtype), 0, newShape, dim = D1)
+
+    when (a.dtype) {
+        DataType.FloatDataType ->
+            dotVector(
+                a.data.getFloatArray(), a.offset, a.strides, b.data.getFloatArray(), b.offset, b.strides[0],
+                newShape[0], b.shape[0], ret.data.getFloatArray()
+            )
+        DataType.IntDataType ->
+            dotVector(
+                a.data.getIntArray(), a.offset, a.strides, b.data.getIntArray(), b.offset, b.strides[0],
+                newShape[0], b.shape[0], ret.data.getIntArray()
+            )
+        DataType.DoubleDataType ->
+            dotVector(
+                a.data.getDoubleArray(), a.offset, a.strides, b.data.getDoubleArray(), b.offset, b.strides[0],
+                newShape[0], b.shape[0], ret.data.getDoubleArray()
+            )
+        DataType.LongDataType ->
+            dotVector(
+                a.data.getLongArray(), a.offset, a.strides, b.data.getLongArray(), b.offset, b.strides[0],
+                newShape[0], b.shape[0], ret.data.getLongArray()
+            )
+        DataType.ComplexDoubleDataType ->
+            dotVectorComplex(
+                a.data.getComplexDoubleArray(), a.offset, a.strides, b.data.getComplexDoubleArray(),
+                b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getComplexDoubleArray()
+            )
+        DataType.ComplexFloatDataType ->
+            dotVectorComplex(
+                a.data.getComplexFloatArray(), a.offset, a.strides, b.data.getComplexFloatArray(),
+                b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getComplexFloatArray()
+            )
+        DataType.ShortDataType ->
+            dotVector(
+                a.data.getShortArray(), a.offset, a.strides, b.data.getShortArray(), b.offset, b.strides[0],
+                newShape[0], b.shape[0], ret.data.getShortArray()
+            )
+        DataType.ByteDataType ->
+            dotVector(
+                a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides[0],
+                newShape[0], b.shape[0], ret.data.getByteArray()
+            )
+        else -> throw UnsupportedOperationException()
+    }
+    return ret
 }
 
 private fun dotVector(
@@ -364,27 +385,6 @@ private fun dotVector(
     return destination
 }
 
-
-//-------------------dotMVComplex-----------------
-
-internal fun <T : Complex> dotMatrixToVectorComplex(a: MultiArray<T, D2>, b: MultiArray<T, D1>): D1Array<T> {
-    val newShape = intArrayOf(a.shape[0])
-
-    return when (a.dtype) {
-        DataType.ComplexDoubleDataType -> {
-            val ret = D1Array(MemoryViewComplexDoubleArray(ComplexDoubleArray(newShape[0])), 0, newShape, dim = D1)
-            dotVectorComplex(a.data.getComplexDoubleArray(), a.offset, a.strides, b.data.getComplexDoubleArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getComplexDoubleArray())
-            ret
-        }
-        DataType.ComplexFloatDataType -> {
-            val ret = D1Array(MemoryViewComplexFloatArray(ComplexFloatArray(newShape[0])), 0, newShape, dim = D1)
-            dotVectorComplex(a.data.getComplexFloatArray(), a.offset, a.strides, b.data.getComplexFloatArray(), b.offset, b.strides[0], newShape[0], b.shape[0], ret.data.getComplexFloatArray())
-            ret
-        }
-        else -> throw UnsupportedOperationException("expected Complex matrix")
-    } as D1Array<T>
-}
-
 private fun dotVectorComplex(
     left: ComplexDoubleArray, leftOffset: Int, leftStrides: IntArray,
     right: ComplexDoubleArray, rightOffset: Int, rStride: Int, n: Int, m: Int, destination: ComplexDoubleArray
@@ -417,14 +417,52 @@ private fun dotVectorComplex(
 //-------------VecToVec-----------
 
 internal fun <T : Number> dotVecToVec(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T = when (a.dtype) {
-        DataType.FloatDataType -> dotVecToVec(a.data.getFloatArray(), a.offset, a.strides[0], b.data.getFloatArray(), b.offset, b.strides[0], a.size)
-        DataType.IntDataType -> dotVecToVec(a.data.getIntArray(), a.offset, a.strides[0], b.data.getIntArray(), b.offset, b.strides[0], a.size)
-        DataType.DoubleDataType -> dotVecToVec(a.data.getDoubleArray(), a.offset, a.strides[0], b.data.getDoubleArray(), b.offset, b.strides[0], a.size)
-        DataType.LongDataType -> dotVecToVec(a.data.getLongArray(), a.offset, a.strides[0], b.data.getLongArray(), b.offset, b.strides[0], a.size)
-        DataType.ShortDataType -> dotVecToVec(a.data.getShortArray(), a.offset, a.strides[0], b.data.getShortArray(), b.offset, b.strides[0], a.size)
-        DataType.ByteDataType -> dotVecToVec(a.data.getByteArray(), a.offset, a.strides[0], b.data.getByteArray(), b.offset, b.strides[0], a.size)
-        else -> TODO("Complex numbers")
-    } as T
+    DataType.FloatDataType ->
+        dotVecToVec(
+            a.data.getFloatArray(), a.offset, a.strides[0],
+            b.data.getFloatArray(), b.offset, b.strides[0], a.size
+        )
+    DataType.IntDataType ->
+        dotVecToVec(
+            a.data.getIntArray(), a.offset, a.strides[0],
+            b.data.getIntArray(), b.offset, b.strides[0], a.size
+        )
+    DataType.DoubleDataType ->
+        dotVecToVec(
+            a.data.getDoubleArray(), a.offset, a.strides[0],
+            b.data.getDoubleArray(), b.offset, b.strides[0], a.size
+        )
+    DataType.LongDataType ->
+        dotVecToVec(
+            a.data.getLongArray(), a.offset, a.strides[0],
+            b.data.getLongArray(), b.offset, b.strides[0], a.size
+        )
+    DataType.ShortDataType ->
+        dotVecToVec(
+            a.data.getShortArray(), a.offset, a.strides[0],
+            b.data.getShortArray(), b.offset, b.strides[0], a.size
+        )
+    DataType.ByteDataType ->
+        dotVecToVec(
+            a.data.getByteArray(), a.offset, a.strides[0],
+            b.data.getByteArray(), b.offset, b.strides[0], a.size
+        )
+    else -> throw UnsupportedOperationException()
+} as T
+
+internal fun <T : Complex> dotVecToVecComplex(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T = when (a.dtype) {
+    DataType.ComplexFloatDataType ->
+        dotVecToVecComplex(
+            a.data.getComplexFloatArray(), a.offset, a.strides[0],
+            b.data.getComplexFloatArray(), b.offset, b.strides[0], a.size
+        )
+    DataType.ComplexDoubleDataType ->
+        dotVecToVecComplex(
+            a.data.getComplexDoubleArray(), a.offset, a.strides[0],
+            b.data.getComplexDoubleArray(), b.offset, b.strides[0], a.size
+        )
+    else -> throw UnsupportedOperationException()
+} as T
 
 private fun dotVecToVec(
     left: FloatArray, leftOffset: Int, lStride: Int, right: FloatArray, rightOffset: Int, rStride: Int, n: Int
@@ -486,17 +524,14 @@ private fun dotVecToVec(
     return ret.toByte()
 }
 
-//------------VecToVecComplex
-//-------------VecToVec-----------
-
-internal fun <T : Complex> dotVecToVecComplex(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T = when (a.dtype) {
-    DataType.ComplexFloatDataType -> dotVecToVecComplex(a.data.getComplexFloatArray(), a.offset, a.strides[0], b.data.getComplexFloatArray(), b.offset, b.strides[0], a.size)
-    DataType.ComplexDoubleDataType -> dotVecToVecComplex(a.data.getComplexDoubleArray(), a.offset, a.strides[0], b.data.getComplexDoubleArray(), b.offset, b.strides[0], a.size)
-    else -> throw UnsupportedOperationException("expected Complex vector")
-} as T
-
 private fun dotVecToVecComplex(
-    left: ComplexFloatArray, leftOffset: Int, lStride: Int, right: ComplexFloatArray, rightOffset: Int, rStride: Int, n: Int
+    left: ComplexFloatArray,
+    leftOffset: Int,
+    lStride: Int,
+    right: ComplexFloatArray,
+    rightOffset: Int,
+    rStride: Int,
+    n: Int
 ): ComplexFloat {
     var ret = ComplexFloat.zero
     for (i in 0 until n) {
@@ -506,7 +541,13 @@ private fun dotVecToVecComplex(
 }
 
 private fun dotVecToVecComplex(
-    left: ComplexDoubleArray, leftOffset: Int, lStride: Int, right: ComplexDoubleArray, rightOffset: Int, rStride: Int, n: Int
+    left: ComplexDoubleArray,
+    leftOffset: Int,
+    lStride: Int,
+    right: ComplexDoubleArray,
+    rightOffset: Int,
+    rStride: Int,
+    n: Int
 ): ComplexDouble {
     var ret = ComplexDouble.zero
     for (i in 0 until n) {

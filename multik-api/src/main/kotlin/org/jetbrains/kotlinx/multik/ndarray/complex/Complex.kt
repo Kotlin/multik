@@ -203,7 +203,7 @@ public class ComplexFloat(public val re: Float, public val im: Float) : Complex 
 
     override fun hashCode(): Int = 31 * re.toBits() + im.toBits()
 
-    override fun toString(): String = "$re + ${im}i"
+    override fun toString(): String = "$re+($im)i"
 }
 
 public class ComplexDouble(public val re: Double, public val im: Double) : Complex {
@@ -388,5 +388,5 @@ public class ComplexDouble(public val re: Double, public val im: Double) : Compl
 
     override fun hashCode(): Int = 31 * re.toBits().hashCode() + im.toBits().hashCode()
 
-    override fun toString(): String = "$re + ${im}i"
+    override fun toString(): String = "$re+($im)i"
 }

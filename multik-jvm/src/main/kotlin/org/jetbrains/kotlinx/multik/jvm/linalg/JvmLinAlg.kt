@@ -9,7 +9,10 @@ import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.api.mk
-import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.data.D2
+import org.jetbrains.kotlinx.multik.ndarray.data.DataType
+import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
+import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
 public object JvmLinAlg : LinAlg {
 
@@ -42,26 +45,4 @@ public object JvmLinAlg : LinAlg {
             }
         }
     }
-
-
-
-//    override fun <T : Number, D : Dim2> dot(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
-//        require(a.shape[1] == b.shape[0]) {
-//            "Shapes mismatch: shapes " +
-//                "${a.shape.joinToString(prefix = "(", postfix = ")")} and " +
-//                "${b.shape.joinToString(prefix = "(", postfix = ")")} not aligned: " +
-//                "${a.shape[1]} (dim 1) != ${b.shape[0]} (dim 0)"
-//        }
-//
-//        return if (b.dim.d == 2) {
-//            dotMatrix(a, b as D2Array<T>) as NDArray<T, D>
-//        } else {
-//            dotVector(a, b as D1Array<T>) as NDArray<T, D>
-//        }
-//    }
-
-//    override fun <T : Number> dot(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T {
-//        require(a.size == b.size) { "Sizes a and b don't match: a.size(${a.size}) != b.size(${b.size})" }
-//        return dotVecToVec(a, b)
-//    }
 }

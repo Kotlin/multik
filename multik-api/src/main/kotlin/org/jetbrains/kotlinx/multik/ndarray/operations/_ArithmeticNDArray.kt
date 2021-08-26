@@ -13,13 +13,13 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.plus(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
-    val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
+    val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret += other
     return ret
 }
 
 public operator fun <T, D : Dimension> MultiArray<T, D>.plus(other: T): NDArray<T, D> {
-    val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
+    val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret += other
     return ret
 }
@@ -71,13 +71,13 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.plusAssign(other:
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.minus(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
-    val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
+    val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret -= other
     return ret
 }
 
 public operator fun <T, D : Dimension> MultiArray<T, D>.minus(other: T): NDArray<T, D> {
-    val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
+    val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret -= other
     return ret
 }
@@ -128,13 +128,13 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.minusAssign(other
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.times(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
-    val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
+    val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret *= other
     return ret
 }
 
 public operator fun <T, D : Dimension> MultiArray<T, D>.times(other: T): NDArray<T, D> {
-    val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
+    val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret *= other
     return ret
 }
@@ -185,13 +185,13 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.timesAssign(other
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.div(other: MultiArray<T, D>): NDArray<T, D> {
     requireArraySizes(this.size, other.size)
-    val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
+    val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret /= other
     return ret
 }
 
 public operator fun <T, D : Dimension> MultiArray<T, D>.div(other: T): NDArray<T, D> {
-    val ret = if (this.consistent) (this as NDArray).clone() else (this as NDArray).deepCopy()
+    val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret /= other
     return ret
 }

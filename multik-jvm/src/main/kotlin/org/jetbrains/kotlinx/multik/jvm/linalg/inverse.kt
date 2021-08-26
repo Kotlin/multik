@@ -8,22 +8,12 @@ import org.jetbrains.kotlinx.multik.ndarray.data.D2
 import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
 import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 
-internal fun invDouble(a: MultiArray<Double, D2>): D2Array<Double> {
-    requireSquare(a)
-    return solveDouble(a, mk.identity(a.shape[0]))
-}
+internal fun invDouble(a: MultiArray<Double, D2>): D2Array<Double> = solveDouble(a, mk.identity(a.shape[0]))
 
-internal fun invFloat(a: MultiArray<Float, D2>): D2Array<Float> {
-    requireSquare(a)
-    return solveFloat(a, mk.identity(a.shape[0]))
-}
+internal fun invFloat(a: MultiArray<Float, D2>): D2Array<Float> = solveFloat(a, mk.identity(a.shape[0]))
 
-internal fun invComplexDouble(a: MultiArray<ComplexDouble, D2>): D2Array<ComplexDouble> {
-    requireSquare(a)
-    return solveComplexDouble(a, mk.identity(a.shape[0]))
-}
+internal fun invComplexDouble(a: MultiArray<ComplexDouble, D2>): D2Array<ComplexDouble> =
+    solveComplexDouble(a, mk.identity(a.shape[0]))
 
-internal fun invComplexFloat(a: MultiArray<ComplexFloat, D2>): D2Array<ComplexFloat> {
-    requireSquare(a)
-    return solveComplexFloat(a, mk.identity(a.shape[0]))
-}
+internal fun invComplexFloat(a: MultiArray<ComplexFloat, D2>): D2Array<ComplexFloat> =
+    solveComplexFloat(a, mk.identity(a.shape[0]))

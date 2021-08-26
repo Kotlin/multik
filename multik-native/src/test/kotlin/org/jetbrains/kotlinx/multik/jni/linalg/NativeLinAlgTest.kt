@@ -7,8 +7,13 @@ import org.jetbrains.kotlinx.multik.api.linalg.solve
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.jni.*
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.data.rangeTo
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class NativeLinAlgTest {
 
@@ -37,6 +42,37 @@ class NativeLinAlgTest {
     }
 
     @Test
+    fun `solve linear system D`() {
+        val expected = mk.ndarray(
+            mk[mk[4.1391945, 1.2361444, 4.4088345],
+                mk[-3.0071893, 0.13484901, -3.9121897],
+                mk[3.2885208, -0.04077824, 4.3054614],
+                mk[0.7955365, 0.57545465, 0.42709854],
+                mk[-11.024394, -1.9956491, -11.173507]]
+        )
+
+        val (a, b) = data.getDoubleMM(5, 5, 5, 3)
+
+        assertFloatingNDArray(expected, NativeLinAlg.solve(a, b), epsilon = 1e6)
+    }
+
+    @Test
+    fun `solve linear system Complex`() {
+        val expected = mk.ndarray(
+            mk[mk[ComplexDouble(-0.30547825, -0.61681154), ComplexDouble(0.41432816, -1.46046786),
+                ComplexDouble(-0.35100211, 0.27240141)],
+                mk[ComplexDouble(-0.14282777, 0.52435108), ComplexDouble(-0.14739684, 0.72480181),
+                    ComplexDouble(0.75653133, -0.97962391)],
+                mk[ComplexDouble(1.15623785, -0.11361717), ComplexDouble(0.65161407, 0.47386083),
+                    ComplexDouble(0.51721532, 0.41166838)]]
+        )
+
+        val (a, b) = data.getComplexDoubleMM(3, 3, 3, 3)
+
+        assertComplexFloatingNDArray(expected, NativeLinAlg.solve(a, b), epsilon = 1e8)
+    }
+
+    @Test
     fun `matrix-matrix dot test D`() {
         val expected = mk.ndarray(
             mk[mk[1.0853811780469889, 0.6321441231331913, 0.46677507285707914, 0.4892609866360924],
@@ -52,6 +88,50 @@ class NativeLinAlgTest {
     }
 
     @Test
+    fun `matrix-matrix dot test ComplexDouble`() {
+        val expected = mk.ndarray(
+            mk[mk[ComplexDouble(-11.0, 79.0), ComplexDouble(-7.0, 59.0), ComplexDouble(-3.0, +39.0)],
+                mk[ComplexDouble(-9.0, 111.0), ComplexDouble(-5.0, 83.0), ComplexDouble(-1.0, 55.0)],
+                mk[ComplexDouble(-7.0, 143.0), ComplexDouble(-3.0, 107.0), ComplexDouble(1.0, 71.0)]]
+        )
+
+        val matrix1 = mk.ndarray(
+            mk[mk[ComplexDouble(1, 2), ComplexDouble(3, 4)],
+                mk[ComplexDouble(2, 3), ComplexDouble(4, 5)],
+                mk[ComplexDouble(3, 4), ComplexDouble(5, 6)]]
+        )
+        val matrix2 = mk.ndarray(
+            mk[mk[ComplexDouble(9, 8), ComplexDouble(7, 6), ComplexDouble(5, 4)],
+                mk[ComplexDouble(8, 7), ComplexDouble(6, 5), ComplexDouble(4, 3)]]
+        )
+
+        val actual = NativeLinAlg.dot(matrix1, matrix2)
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `matrix-matrix dot test ComplexFloat`() {
+        val expected = mk.ndarray(
+            mk[mk[ComplexFloat(-11.0, 79.0), ComplexFloat(-7.0, 59.0), ComplexFloat(-3.0, +39.0)],
+                mk[ComplexFloat(-9.0, 111.0), ComplexFloat(-5.0, 83.0), ComplexFloat(-1.0, 55.0)],
+                mk[ComplexFloat(-7.0, 143.0), ComplexFloat(-3.0, 107.0), ComplexFloat(1.0, 71.0)]]
+        )
+
+        val matrix1 = mk.ndarray(
+            mk[mk[ComplexFloat(1, 2), ComplexFloat(3, 4)],
+                mk[ComplexFloat(2, 3), ComplexFloat(4, 5)],
+                mk[ComplexFloat(3, 4), ComplexFloat(5, 6)]]
+        )
+        val matrix2 = mk.ndarray(
+            mk[mk[ComplexFloat(9, 8), ComplexFloat(7, 6), ComplexFloat(5, 4)],
+                mk[ComplexFloat(8, 7), ComplexFloat(6, 5), ComplexFloat(4, 3)]]
+        )
+
+        val actual = NativeLinAlg.dot(matrix1, matrix2)
+        assertEquals(expected, actual)
+    }
+
+    @Test
     fun `matrix-matrix dot test F`() {
         val expected = mk.ndarray(
             mk[mk[0.8819745f, 0.64614516f, 0.7936589f, 0.5490592f],
@@ -64,6 +144,37 @@ class NativeLinAlgTest {
 
         val actual = NativeLinAlg.dot(matrix1, matrix2)
         assertFloatingNDArray(expected, actual)
+    }
+
+    @Test
+    fun `matrix dot matrix transposed test`() {
+        val (matrix1F, matrix2F) = data.getFloatMM(3, 4, 3, 4)
+        val (matrix1D, matrix2D) = data.getDoubleMM(3, 4, 3, 4)
+
+        val matrix1TF = matrix1F.transpose()
+        val matrix1TFCopy = matrix1TF.deepCopy()
+        val expectedF = NativeLinAlg.dot(matrix1TFCopy, matrix2F)
+        val actualF = NativeLinAlg.dot(matrix1TF, matrix2F)
+        assertFloatingNDArray(expectedF, actualF)
+
+
+        val matrix1TD = matrix1D.transpose()
+        val matrix1TDCopy = matrix1TD.deepCopy()
+        val expectedD = NativeLinAlg.dot(matrix1TDCopy, matrix2D)
+        val actualD = NativeLinAlg.dot(matrix1TD, matrix2D)
+        assertFloatingNDArray(expectedD, actualD)
+
+        val matrix2TF = matrix2F.transpose()
+        val matrix2TFCopy = matrix2TF.deepCopy()
+        val expected2F = NativeLinAlg.dot(matrix1F, matrix2TFCopy)
+        val actual2F = NativeLinAlg.dot(matrix1F, matrix2TF)
+        assertFloatingNDArray(expected2F, actual2F)
+
+        val matrix2TD = matrix2D.transpose()
+        val matrix2TDCopy = matrix2TD.deepCopy()
+        val expected2D = NativeLinAlg.dot(matrix1D, matrix2TDCopy)
+        val actual2D = NativeLinAlg.dot(matrix1D, matrix2TD)
+        assertFloatingNDArray(expected2D, actual2D)
     }
 
     @Test
@@ -83,6 +194,14 @@ class NativeLinAlgTest {
         val (matrix, vector) = data.getFloatMV(3)
 
         val actual = NativeLinAlg.dot(matrix, vector)
+        assertFloatingNDArray(expected, actual)
+    }
+
+    @Test
+    fun `matrix slice dot vector test F`() {
+        val (matrix, vector) = data.getFloatMV(5)
+        val expected = NativeLinAlg.dot(matrix[2..5, 0..3].deepCopy(), vector[0..5..2].deepCopy())
+        val actual = NativeLinAlg.dot(matrix[2..5, 0..3], vector[0..5..2])
         assertFloatingNDArray(expected, actual)
     }
 
@@ -116,5 +235,21 @@ class NativeLinAlgTest {
         val ainv = NativeLinAlg.inv(a)
 
         assertFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+    }
+
+    @Test
+    fun `compute inverse matrix of complex float`() {
+        val a = data.getComplexFloatM(2)
+        val ainv = NativeLinAlg.inv(a)
+
+        assertComplexFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+    }
+
+    @Test
+    fun `compute inverse matrix of complex double`() {
+        val a = data.getComplexDoubleM(2)
+        val ainv = NativeLinAlg.inv(a)
+
+        assertComplexFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
     }
 }

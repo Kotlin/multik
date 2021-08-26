@@ -1,6 +1,8 @@
 package org.jetbrains.kotlinx.multik.jni
 
 import org.jetbrains.kotlinx.multik.api.abs
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.Dimension
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 import org.jetbrains.kotlinx.multik.ndarray.operations.all
@@ -17,8 +19,26 @@ fun <D : Dimension> assertFloatingNDArray(
             "Expected \n<$expected>\n Actual \n<$actual>.") { diff.all { it < epsilon } }
 }
 
+fun <D : Dimension> assertComplexFloatingNDArray(
+    expected: NDArray<ComplexFloat, D>, actual: NDArray<ComplexFloat, D>,
+    epsilon: Float = 1e-6f, message: String? = null
+) {
+    val diff = abs(expected - actual)
+    assertTrue("${if (message == null) "" else "$message.\n"} " +
+        "Expected \n<$expected>\n Actual \n<$actual>.") { diff.all { it < epsilon } }
+}
+
 fun <D : Dimension> assertFloatingNDArray(
     expected: NDArray<Double, D>, actual: NDArray<Double, D>,
+    epsilon: Double = 1e-8, message: String? = null
+) {
+    val diff = abs(expected - actual)
+    assertTrue("${if (message == null) "" else "$message.\n"} " +
+        "Expected \n<$expected>\n Actual \n<$actual>.") { diff.all { it < epsilon } }
+}
+
+fun <D : Dimension> assertComplexFloatingNDArray(
+    expected: NDArray<ComplexDouble, D>, actual: NDArray<ComplexDouble, D>,
     epsilon: Double = 1e-8, message: String? = null
 ) {
     val diff = abs(expected - actual)

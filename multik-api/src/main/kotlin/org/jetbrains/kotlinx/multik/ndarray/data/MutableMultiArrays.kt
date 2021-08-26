@@ -10,7 +10,7 @@ package org.jetbrains.kotlinx.multik.ndarray.data
 public interface MutableMultiArray<T, D : Dimension> : MultiArray<T, D> {
     public override val data: MemoryView<T>
 
-    override fun clone(): MutableMultiArray<T, D>
+    override fun copy(): MutableMultiArray<T, D>
 
     override fun deepCopy(): MutableMultiArray<T, D>
 
