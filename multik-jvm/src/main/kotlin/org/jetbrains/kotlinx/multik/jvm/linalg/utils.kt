@@ -1,19 +1,47 @@
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
-import org.jetbrains.kotlinx.multik.ndarray.data.D1
-import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
-import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.api.empty
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.data.*
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 internal fun requireSquare(shape: IntArray) {
     require(shape[0] == shape[1]) { "Square matrix expected, shape=(${shape[0]}, ${shape[1]}) given" }
 }
 
+// return hermitian transposed copy of matrix
+internal fun NDArray<ComplexDouble, D2>.conjTranspose(): D2Array<ComplexDouble> {
+    val ans = mk.empty<ComplexDouble, D2>(this.shape[1], this.shape[0])
+    for (i in 0 until ans.shape[0]) {
+        for (j in 0 until ans.shape[1]) {
+            ans[i, j] = this[j, i].conjugate()
+        }
+    }
+    return ans
+}
+
+fun Double.toComplexDouble(): ComplexDouble {
+    return ComplexDouble(this, 0.0)
+}
+
 internal fun requireDotShape(aShape: IntArray, bShape: IntArray) = require(aShape[1] == bShape[0]) {
     "Shapes mismatch: shapes " +
-        "${aShape.joinToString(prefix = "(", postfix = ")")} and " +
-        "${bShape.joinToString(prefix = "(", postfix = ")")} not aligned: " +
-        "${aShape[1]} (dim 1) != ${bShape[0]} (dim 0)"
+            "${aShape.joinToString(prefix = "(", postfix = ")")} and " +
+            "${bShape.joinToString(prefix = "(", postfix = ")")} not aligned: " +
+            "${aShape[1]} (dim 1) != ${bShape[0]} (dim 0)"
 }
+
+// computes some square root of complex number
+// guarantee csqrt(a) * csqrt(a) = a
+fun csqrt(a: ComplexDouble): ComplexDouble {
+    val arg = a.angle()
+    val absval = a.abs()
+    return ComplexDouble(sqrt(absval) * cos(arg / 2), sqrt(absval) * sin(arg / 2))
+}
+
 
 /**
  * swap lines for plu decomposition
@@ -31,4 +59,3 @@ internal inline fun swapLines(
         }
     }
 }
-

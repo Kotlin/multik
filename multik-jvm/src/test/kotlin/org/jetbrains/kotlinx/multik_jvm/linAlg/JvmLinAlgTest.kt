@@ -10,6 +10,8 @@ import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.jvm.linalg.*
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solve
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solveC
+import org.jetbrains.kotlinx.multik.jvm.qrComplexDouble
+import org.jetbrains.kotlinx.multik.jvm.upperHessenberg
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
@@ -24,6 +26,7 @@ import kotlin.random.Random
 import kotlin.test.*
 
 class JvmLinAlgTest {
+
     @Test
     fun `test of norm function with p=1`() {
         val d2arrayDouble1 = mk.ndarray(mk[mk[1.0, 2.0], mk[3.0, 4.0]])
@@ -72,7 +75,7 @@ class JvmLinAlgTest {
         val procedurePrecision = 1e-5
         val rnd = Random(424242)
 
-        val iters = 10000
+        val iters = 1000
         val sideFrom = 1
         val sideUntil = 100
         for (all in 0 until iters) {
@@ -121,70 +124,6 @@ class JvmLinAlgTest {
 
     }
 
-    private fun <T : Number> assertTriangular(a: MultiArray<T, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
-        if (requireUnitsOnDiagonal) {
-            for (i in 0 until min(a.shape[0], a.shape[1])) {
-                if (a[i, i].toDouble() != 1.0)  throw AssertionError("element at position [$i, $i] of matrix \n$a\n is not unit")
-            }
-        }
-        if (isLowerTriangular) {
-            for (i in 0 until min(a.shape[0], a.shape[1])) {
-                for (j in i + 1 until a.shape[1]) {
-                    if(a[i, j].toDouble() != 0.0) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
-                }
-            }
-        } else {
-            for (i in 0 until min(a.shape[0], a.shape[1])) {
-                for (j in 0 until i) {
-                    if(a[i, j].toDouble() != 0.0) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
-                }
-            }
-        }
-    }
-
-    private fun assertTriangularComplexDouble(a: MultiArray<ComplexDouble, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
-        if (requireUnitsOnDiagonal) {
-            for (i in 0 until min(a.shape[0], a.shape[1])) {
-                if (a[i, i] != ComplexDouble.one)  throw AssertionError("element at position [$i, $i] of matrix \n$a\n is not unit")
-            }
-        }
-        if (isLowerTriangular) {
-            for (i in 0 until min(a.shape[0], a.shape[1])) {
-                for (j in i + 1 until a.shape[1]) {
-                    if(a[i, j] != ComplexDouble.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
-                }
-            }
-        } else {
-            for (i in 0 until min(a.shape[0], a.shape[1])) {
-                for (j in 0 until i) {
-                    if(a[i, j] != ComplexDouble.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
-                }
-            }
-        }
-    }
-
-    private fun assertTriangularComplexFloat(a: MultiArray<ComplexFloat, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
-        if (requireUnitsOnDiagonal) {
-            for (i in 0 until min(a.shape[0], a.shape[1])) {
-                if (a[i, i] != ComplexFloat.one)  throw AssertionError("element at position [$i, $i] of matrix \n$a\n is not unit")
-            }
-        }
-        if (isLowerTriangular) {
-            for (i in 0 until min(a.shape[0], a.shape[1])) {
-                for (j in i + 1 until a.shape[1]) {
-                    if(a[i, j] != ComplexFloat.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
-                }
-            }
-        } else {
-            for (i in 0 until min(a.shape[0], a.shape[1])) {
-                for (j in 0 until i) {
-                    if(a[i, j] != ComplexFloat.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
-                }
-            }
-        }
-    }
-    
-    
     @Test
     fun `solve test`() {
         // double case
@@ -305,36 +244,35 @@ class JvmLinAlgTest {
 
     }
 
-
     @Test
     fun testJvmDot() {
         // random matrices pool
-        val mat1 = mk.ndarray(mk[mk[4, -3, 2], mk[-6, -9, -7], mk[3, 6, 5]])
-        val mat2 = mk.ndarray(mk[mk[-9, 4, -8], mk[-8, 2, 6], mk[3, 8, 7]])
-        val mat3 = mk.ndarray(mk[mk[8, -2, -1], mk[7, -9, -1], mk[-9, -9, -2]])
-        val mat4 = mk.ndarray(mk[mk[-8, 9, -10], mk[-6, 8, -9], mk[5, -5, 3]])
-        val vec1 = mk.ndarray(mk[5, -1, 6])
-        val vec2 = mk.ndarray(mk[5, -9, 1])
-        val vec3 = mk.ndarray(mk[5, -10, 1])
-        val vec4 = mk.ndarray(mk[9, -6, 3])
+        val mat1 = mk.ndarray<Int>(mk[mk[4, -3, 2], mk[-6, -9, -7], mk[3, 6, 5]])
+        val mat2 = mk.ndarray<Int>(mk[mk[-9, 4, -8], mk[-8, 2, 6], mk[3, 8, 7]])
+        val mat3 = mk.ndarray<Int>(mk[mk[8, -2, -1], mk[7, -9, -1], mk[-9, -9, -2]])
+        val mat4 = mk.ndarray<Int>(mk[mk[-8, 9, -10], mk[-6, 8, -9], mk[5, -5, 3]])
+        val vec1 = mk.ndarray<Int>(mk[5, -1, 6])
+        val vec2 = mk.ndarray<Int>(mk[5, -9, 1])
+        val vec3 = mk.ndarray<Int>(mk[5, -10, 1])
+        val vec4 = mk.ndarray<Int>(mk[9, -6, 3])
 
         // true operation results
-        val mat1_x_mat1 = mk.ndarray(mk[mk[40, 27, 39], mk[9, 57, 16], mk[-9, -33, -11]])
-        val mat1_x_mat2 = mk.ndarray(mk[mk[-6, 26, -36], mk[105, -98, -55], mk[-60, 64, 47]])
-        val mat1_x_mat3 = mk.ndarray(mk[mk[-7, 1, -5], mk[-48, 156, 29], mk[21, -105, -19]])
-        val mat1_x_mat4 = mk.ndarray(mk[mk[-4, 2, -7], mk[67, -91, 120], mk[-35, 50, -69]])
+        val mat1_x_mat1 = mk.ndarray<Int>(mk[mk[40, 27, 39], mk[9, 57, 16], mk[-9, -33, -11]])
+        val mat1_x_mat2 = mk.ndarray<Int>(mk[mk[-6, 26, -36], mk[105, -98, -55], mk[-60, 64, 47]])
+        val mat1_x_mat3 = mk.ndarray<Int>(mk[mk[-7, 1, -5], mk[-48, 156, 29], mk[21, -105, -19]])
+        val mat1_x_mat4 = mk.ndarray<Int>(mk[mk[-4, 2, -7], mk[67, -91, 120], mk[-35, 50, -69]])
 
-        val mat2_x_mat2 = mk.ndarray(mk[mk[25, -92, 40], mk[74, 20, 118], mk[-70, 84, 73]])
-        val mat2_x_mat3 = mk.ndarray(mk[mk[28, 54, 21], mk[-104, -56, -6], mk[17, -141, -25]])
-        val mat2_x_mat4 = mk.ndarray(mk[mk[8, -9, 30], mk[82, -86, 80], mk[-37, 56, -81]])
+        val mat2_x_mat2 = mk.ndarray<Int>(mk[mk[25, -92, 40], mk[74, 20, 118], mk[-70, 84, 73]])
+        val mat2_x_mat3 = mk.ndarray<Int>(mk[mk[28, 54, 21], mk[-104, -56, -6], mk[17, -141, -25]])
+        val mat2_x_mat4 = mk.ndarray<Int>(mk[mk[8, -9, 30], mk[82, -86, 80], mk[-37, 56, -81]])
 
-        val mat3_x_mat3 = mk.ndarray(mk[mk[59, 11, -4], mk[2, 76, 4], mk[-117, 117, 22]])
-        val mat3_x_mat4 = mk.ndarray(mk[mk[-57, 61, -65], mk[-7, -4, 8], mk[116, -143, 165]])
+        val mat3_x_mat3 = mk.ndarray<Int>(mk[mk[59, 11, -4], mk[2, 76, 4], mk[-117, 117, 22]])
+        val mat3_x_mat4 = mk.ndarray<Int>(mk[mk[-57, 61, -65], mk[-7, -4, 8], mk[116, -143, 165]])
 
-        val mat1_x_vec1 = mk.ndarray(mk[35, -63, 39])
-        val mat1_x_vec2 = mk.ndarray(mk[49, 44, -34])
-        val mat2_x_vec1 = mk.ndarray(mk[-97, -6, 49])
-        val mat2_x_vec2 = mk.ndarray(mk[-89, -52, -50])
+        val mat1_x_vec1 = mk.ndarray<Int>(mk[35, -63, 39])
+        val mat1_x_vec2 = mk.ndarray<Int>(mk[49, 44, -34])
+        val mat2_x_vec1 = mk.ndarray<Int>(mk[-97, -6, 49])
+        val mat2_x_vec2 = mk.ndarray<Int>(mk[-89, -52, -50])
 
         val vec1_x_vec1 = 62
         val vec1_x_vec2 = 40
@@ -347,10 +285,10 @@ class JvmLinAlgTest {
         val vec3_x_vec4 = 108
         val vec4_x_vec4 = 126
 
-        
+
 
         //Start test cases
-        
+
         //Byte
         assertContentEquals(JvmLinAlgEx.dotMM(mat1.map { it.toByte() }, mat1.map { it.toByte() }).data, mat1_x_mat1.map { it.toByte() }.data)
         assertContentEquals(JvmLinAlgEx.dotMM(mat1.map { it.toByte() }, mat2.map { it.toByte() }).data, mat1_x_mat2.map { it.toByte() }.data)
@@ -417,29 +355,122 @@ class JvmLinAlgTest {
 
     }
 
-}
+    @Test
+    fun `test upper hessenberg form`() {
+        val n = 300
+        val mat = getRandomMatrixComplexDouble(n, n)
+        val (Q, H) = upperHessenberg(mat)
+
+        // check H is upper Hessenberg
+        for (i in 2 until H.shape[0]) {
+            for (j in 0 until i - 1) {
+                assertEquals(H[i, j], ComplexDouble.zero)
+            }
+        }
+
+        // assert Q is unitary
+        val approxId = dotMatrixComplex(Q, Q.conjTranspose())
+        val Id = mk.empty<ComplexDouble, D2>(n, n)
+
+        assertCloseComplex(approxId, idComplexDouble(n), 1e-5)
+
+        // assert decomposition is valid
+        val approxmat = dotMatrixComplex(dotMatrixComplex(Q, H), Q.conjTranspose())
+        assertCloseComplex(approxmat, mat, 1e-5);
+    }
 
 
-private fun <T : Number, D : Dim2> assertClose(a: MultiArray<T, D>, b: MultiArray<T, D>, precision: Double) {
-        assertEquals(a.dim.d, b.dim.d, "matrices have different dimensions")
-        assertContentEquals(a.shape, b.shape, "matrices have different shapes")
-        var maxabs = 0.0
-        if (a.dim.d == 1) {
-            a as D1Array<T>
-            b as D1Array<T>
-            for (i in 0 until a.size) maxabs = max(abs(a[i].toDouble() - b[i].toDouble()), maxabs)
-        } else {
-            a as D2Array<T>
-            b as D2Array<T>
-            for (i in 0 until a.shape[0]) {
-                for (j in 0 until a.shape[1]) {
-                    val t = a[i, j].toDouble()
-                    maxabs = max(abs(a[i, j].toDouble() - b[i, j].toDouble()), maxabs)
+    @Test
+    fun `test qr`() {
+        val n = 100
+        val mat = getRandomMatrixComplexDouble(n, n)
+        val (q, r) = qrComplexDouble(mat)
+
+        // assert decomposition is valid
+        assertCloseComplex(dotMatrixComplex(q, r), mat, 1e-5)
+
+        // assert q is unitary
+        assertCloseComplex(dotMatrixComplex(q, q.conjTranspose()), idComplexDouble(n), 1e-5)
+
+        // assert r is upper triangular
+        for (i in 1 until r.shape[0]) {
+            for (j in 0 until i) {
+                if(r[i, j] != ComplexDouble.zero) {
+                    assertEquals(r[i, j], ComplexDouble.zero)
                 }
             }
         }
-        assertTrue(maxabs < precision, "matrices not close")
+    }
+
+    @Test
+    fun `test Schur decomposition`() {
+        for (attempt in 0 until 5) {
+
+            val n = when(attempt) {
+                0 -> 1
+                1 -> 2
+                2 -> 5
+                3 -> 10
+                4 -> 100
+                else -> 100
+            }
+
+            val mat = getRandomMatrixComplexDouble(n, n)
+            val (q, r) = schurDecomposition(mat)
+
+            // assert decomposition is valid
+            assertCloseComplex(dotMatrixComplex(dotMatrixComplex(q, r), q.conjTranspose()), mat, 1e-5)
+
+            // assert q is unitary
+            assertCloseComplex(dotMatrixComplex(q, q.conjTranspose()), idComplexDouble(n), 1e-5)
+
+            // assert r is upper triangular
+            for (i in 1 until r.shape[0]) {
+                for (j in 0 until i) {
+                    if (r[i, j] != ComplexDouble.zero) {
+                        assertEquals(r[i, j], ComplexDouble.zero)
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Test
+    fun `test eigenvalues`() {
+        val precision = 1e-2
+        val n = 50
+        val R = getRandomMatrixComplexDouble(n, n, -1000.0, 1000.0)
+        for (i in 0 until R.shape[0]) {
+            for (j in 0 until i) {
+                R[i, j] = ComplexDouble.zero
+            }
+        }
+        val Q = gramShmidtComplexDouble(getRandomMatrixComplexDouble(n, n))
+
+        assertCloseComplex(dotMatrixComplex(Q, Q.conjTranspose()), idComplexDouble(n), precision = 1e-5)
+
+        val mat = dotMatrixComplex(dotMatrixComplex(Q, R), Q.conjTranspose())
+
+        var trueEigavals = List<ComplexDouble>(n) { i -> R[i, i] }
+
+        val eigs = eigC(mat)
+
+        var testedEigenvals = List<ComplexDouble>(n) { i -> eigs[i] }
+
+        trueEigavals = trueEigavals.sortedWith(compareBy({ it.re }, { it.im }))
+        testedEigenvals = testedEigenvals.sortedWith(compareBy({ it.re }, { it.im }))
+
+
+
+        for (i in 0 until n) {
+            assertTrue("${trueEigavals[i]} =/= ${testedEigenvals[i]}") { (trueEigavals[i] - testedEigenvals[i]).abs() < precision}
+        }
+
+    }
 }
+
+
 
 private fun <T : Complex, D : Dim2> assertCloseComplex(a: MultiArray<T, D>, b: MultiArray<T, D>, precision: Double) {
     assertEquals(a.dim.d, b.dim.d, "matrices have different dimensions")
@@ -496,7 +527,113 @@ private fun <T : Complex, D : Dim2> assertCloseComplex(a: MultiArray<T, D>, b: M
 
 
 
-fun<T : Number, D: Dim2> composeComplexDouble(rePart: NDArray<T, D>, imPart: NDArray<T, D>): NDArray<ComplexDouble, D> {
+private fun <T : Number, D : Dim2> assertClose(a: MultiArray<T, D>, b: MultiArray<T, D>, precision: Double) {
+    assertEquals(a.dim.d, b.dim.d, "matrices have different dimensions")
+    assertContentEquals(a.shape, b.shape, "matrices have different shapes")
+    var maxabs = 0.0
+    if (a.dim.d == 1) {
+        a as D1Array<T>
+        b as D1Array<T>
+        for (i in 0 until a.size) maxabs = max(abs(a[i].toDouble() - b[i].toDouble()), maxabs)
+    } else {
+        a as D2Array<T>
+        b as D2Array<T>
+        for (i in 0 until a.shape[0]) {
+            for (j in 0 until a.shape[1]) {
+                val t = a[i, j].toDouble()
+                maxabs = max(abs(a[i, j].toDouble() - b[i, j].toDouble()), maxabs)
+            }
+        }
+    }
+    assertTrue(maxabs < precision, "matrices not close")
+}
+
+private fun <T : Number> assertTriangular(a: MultiArray<T, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
+    if (requireUnitsOnDiagonal) {
+        for (i in 0 until min(a.shape[0], a.shape[1])) {
+            if (a[i, i].toDouble() != 1.0)  throw AssertionError("element at position [$i, $i] of matrix \n$a\n is not unit")
+        }
+    }
+    if (isLowerTriangular) {
+        for (i in 0 until min(a.shape[0], a.shape[1])) {
+            for (j in i + 1 until a.shape[1]) {
+                if(a[i, j].toDouble() != 0.0) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+            }
+        }
+    } else {
+        for (i in 0 until min(a.shape[0], a.shape[1])) {
+            for (j in 0 until i) {
+                if(a[i, j].toDouble() != 0.0) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+            }
+        }
+    }
+}
+
+private fun assertTriangularComplexDouble(a: MultiArray<ComplexDouble, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
+    if (requireUnitsOnDiagonal) {
+        for (i in 0 until min(a.shape[0], a.shape[1])) {
+            if (a[i, i] != ComplexDouble.one)  throw AssertionError("element at position [$i, $i] of matrix \n$a\n is not unit")
+        }
+    }
+    if (isLowerTriangular) {
+        for (i in 0 until min(a.shape[0], a.shape[1])) {
+            for (j in i + 1 until a.shape[1]) {
+                if(a[i, j] != ComplexDouble.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+            }
+        }
+    } else {
+        for (i in 0 until min(a.shape[0], a.shape[1])) {
+            for (j in 0 until i) {
+                if(a[i, j] != ComplexDouble.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+            }
+        }
+    }
+}
+
+private fun assertTriangularComplexFloat(a: MultiArray<ComplexFloat, D2>, isLowerTriangular: Boolean, requireUnitsOnDiagonal: Boolean) {
+    if (requireUnitsOnDiagonal) {
+        for (i in 0 until min(a.shape[0], a.shape[1])) {
+            if (a[i, i] != ComplexFloat.one)  throw AssertionError("element at position [$i, $i] of matrix \n$a\n is not unit")
+        }
+    }
+    if (isLowerTriangular) {
+        for (i in 0 until min(a.shape[0], a.shape[1])) {
+            for (j in i + 1 until a.shape[1]) {
+                if(a[i, j] != ComplexFloat.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+            }
+        }
+    } else {
+        for (i in 0 until min(a.shape[0], a.shape[1])) {
+            for (j in 0 until i) {
+                if(a[i, j] != ComplexFloat.zero) throw AssertionError("element at position [$i, $j] of matrix \n$a\n is not zero")
+            }
+        }
+    }
+}
+
+
+
+private fun getRandomMatrixComplexDouble(n: Int, m: Int, from: Double = 0.0, to: Double = 1.0, rnd: Random = Random(424242)): D2Array<ComplexDouble> {
+    val a = mk.empty<ComplexDouble, D2>(n, m)
+
+    for (i in 0 until n) {
+        for (j in 0 until m) {
+            a[i, j] = ComplexDouble(rnd.nextDouble()* (to - from) + from, rnd.nextDouble()* (to - from) + from)
+        }
+    }
+    return a
+}
+
+private fun idComplexDouble(n: Int): D2Array<ComplexDouble> {
+    val ans = mk.empty<ComplexDouble, D2>(n, n)
+    for (i in 0 until n) {
+        ans[i, i] = 1.0.toComplexDouble()
+    }
+    return ans
+}
+
+
+private fun<T : Number, D: Dim2> composeComplexDouble(rePart: NDArray<T, D>, imPart: NDArray<T, D>): NDArray<ComplexDouble, D> {
     if (rePart.dim.d == 1) {
         rePart as D1Array<T>
         imPart as D1Array<T>
@@ -518,7 +655,7 @@ fun<T : Number, D: Dim2> composeComplexDouble(rePart: NDArray<T, D>, imPart: NDA
     return ans as NDArray<ComplexDouble, D>
 }
 
-fun<T : Number, D: Dim2> composeComplexFloat(rePart: NDArray<T, D>, imPart: NDArray<T, D>): NDArray<ComplexFloat, D> {
+private fun<T : Number, D: Dim2> composeComplexFloat(rePart: NDArray<T, D>, imPart: NDArray<T, D>): NDArray<ComplexFloat, D> {
     if (rePart.dim.d == 1) {
         rePart as D1Array<T>
         imPart as D1Array<T>
