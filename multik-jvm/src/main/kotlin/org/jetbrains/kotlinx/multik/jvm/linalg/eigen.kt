@@ -6,21 +6,23 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.operations.map
 import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
 import java.lang.ArithmeticException
 import java.lang.UnsupportedOperationException
+import javax.xml.crypto.Data
 import kotlin.math.*
 
 
 
 public fun<T: Number> eig(a: MultiArray<T, D2>): MultiArray<ComplexDouble, D1> {
-    requireSquare(a)
+    requireSquare(a.shape)
     val b = mk.d2arrayComplex(a.shape[0], a.shape[0]) { ComplexDouble(a[it / a.shape[0], it % a.shape[1]]) }
     return eigenvalues(b)
 }
 
-public fun<T: Complex> eigC(a: MultiArray<T, D2>): MultiArray<ComplexDouble, D1> {
-    requireSquare(a)
+public fun<T: Complex> eigC(a: MultiArray<T, D2>): MultiArray<T, D1> {
+    requireSquare(a.shape)
     val b: MultiArray<ComplexDouble, D2>
     when (a.dtype) {
         DataType.ComplexFloatDataType -> {
@@ -35,7 +37,17 @@ public fun<T: Complex> eigC(a: MultiArray<T, D2>): MultiArray<ComplexDouble, D1>
             throw UnsupportedOperationException("matrix should be Complex")
         }
     }
-    return eigenvalues(b)
+    return when(a.dtype) {
+        DataType.ComplexDoubleDataType -> eigenvalues(b)
+        DataType.ComplexFloatDataType -> {
+            val eigs = eigenvalues(b)
+            val ans = mk.d1arrayComplex<ComplexFloat>(eigs.shape[0]) { ComplexFloat(eigs[it].re, eigs[it].im) }
+            ans
+        }
+        else -> throw UnsupportedOperationException("matrix should be Complex")
+
+    } as MultiArray<T, D1>
+
 }
 
 

@@ -45,10 +45,10 @@ class NativeLinAlgTest {
     fun `solve linear system D`() {
         val expected = mk.ndarray(
             mk[mk[4.1391945, 1.2361444, 4.4088345],
-                mk[-3.0071893, 0.13484901, -3.9121897],
-                mk[3.2885208, -0.04077824, 4.3054614],
-                mk[0.7955365, 0.57545465, 0.42709854],
-                mk[-11.024394, -1.9956491, -11.173507]]
+                    mk[-3.0071893, 0.13484901, -3.9121897],
+                    mk[3.2885208, -0.04077824, 4.3054614],
+                    mk[0.7955365, 0.57545465, 0.42709854],
+                    mk[-11.024394, -1.9956491, -11.173507]]
         )
 
         val (a, b) = data.getDoubleMM(5, 5, 5, 3)
@@ -60,11 +60,11 @@ class NativeLinAlgTest {
     fun `solve linear system Complex`() {
         val expected = mk.ndarray(
             mk[mk[ComplexDouble(-0.30547825, -0.61681154), ComplexDouble(0.41432816, -1.46046786),
-                ComplexDouble(-0.35100211, 0.27240141)],
-                mk[ComplexDouble(-0.14282777, 0.52435108), ComplexDouble(-0.14739684, 0.72480181),
-                    ComplexDouble(0.75653133, -0.97962391)],
-                mk[ComplexDouble(1.15623785, -0.11361717), ComplexDouble(0.65161407, 0.47386083),
-                    ComplexDouble(0.51721532, 0.41166838)]]
+                    ComplexDouble(-0.35100211, 0.27240141)],
+                    mk[ComplexDouble(-0.14282777, 0.52435108), ComplexDouble(-0.14739684, 0.72480181),
+                            ComplexDouble(0.75653133, -0.97962391)],
+                    mk[ComplexDouble(1.15623785, -0.11361717), ComplexDouble(0.65161407, 0.47386083),
+                            ComplexDouble(0.51721532, 0.41166838)]]
         )
 
         val (a, b) = data.getComplexDoubleMM(3, 3, 3, 3)
@@ -91,18 +91,18 @@ class NativeLinAlgTest {
     fun `matrix-matrix dot test ComplexDouble`() {
         val expected = mk.ndarray(
             mk[mk[ComplexDouble(-11.0, 79.0), ComplexDouble(-7.0, 59.0), ComplexDouble(-3.0, +39.0)],
-                mk[ComplexDouble(-9.0, 111.0), ComplexDouble(-5.0, 83.0), ComplexDouble(-1.0, 55.0)],
-                mk[ComplexDouble(-7.0, 143.0), ComplexDouble(-3.0, 107.0), ComplexDouble(1.0, 71.0)]]
+                    mk[ComplexDouble(-9.0, 111.0), ComplexDouble(-5.0, 83.0), ComplexDouble(-1.0, 55.0)],
+                    mk[ComplexDouble(-7.0, 143.0), ComplexDouble(-3.0, 107.0), ComplexDouble(1.0, 71.0)]]
         )
 
         val matrix1 = mk.ndarray(
             mk[mk[ComplexDouble(1, 2), ComplexDouble(3, 4)],
-                mk[ComplexDouble(2, 3), ComplexDouble(4, 5)],
-                mk[ComplexDouble(3, 4), ComplexDouble(5, 6)]]
+                    mk[ComplexDouble(2, 3), ComplexDouble(4, 5)],
+                    mk[ComplexDouble(3, 4), ComplexDouble(5, 6)]]
         )
         val matrix2 = mk.ndarray(
             mk[mk[ComplexDouble(9, 8), ComplexDouble(7, 6), ComplexDouble(5, 4)],
-                mk[ComplexDouble(8, 7), ComplexDouble(6, 5), ComplexDouble(4, 3)]]
+                    mk[ComplexDouble(8, 7), ComplexDouble(6, 5), ComplexDouble(4, 3)]]
         )
 
         val actual = NativeLinAlg.dot(matrix1, matrix2)
@@ -113,18 +113,18 @@ class NativeLinAlgTest {
     fun `matrix-matrix dot test ComplexFloat`() {
         val expected = mk.ndarray(
             mk[mk[ComplexFloat(-11.0, 79.0), ComplexFloat(-7.0, 59.0), ComplexFloat(-3.0, +39.0)],
-                mk[ComplexFloat(-9.0, 111.0), ComplexFloat(-5.0, 83.0), ComplexFloat(-1.0, 55.0)],
-                mk[ComplexFloat(-7.0, 143.0), ComplexFloat(-3.0, 107.0), ComplexFloat(1.0, 71.0)]]
+                    mk[ComplexFloat(-9.0, 111.0), ComplexFloat(-5.0, 83.0), ComplexFloat(-1.0, 55.0)],
+                    mk[ComplexFloat(-7.0, 143.0), ComplexFloat(-3.0, 107.0), ComplexFloat(1.0, 71.0)]]
         )
 
         val matrix1 = mk.ndarray(
             mk[mk[ComplexFloat(1, 2), ComplexFloat(3, 4)],
-                mk[ComplexFloat(2, 3), ComplexFloat(4, 5)],
-                mk[ComplexFloat(3, 4), ComplexFloat(5, 6)]]
+                    mk[ComplexFloat(2, 3), ComplexFloat(4, 5)],
+                    mk[ComplexFloat(3, 4), ComplexFloat(5, 6)]]
         )
         val matrix2 = mk.ndarray(
             mk[mk[ComplexFloat(9, 8), ComplexFloat(7, 6), ComplexFloat(5, 4)],
-                mk[ComplexFloat(8, 7), ComplexFloat(6, 5), ComplexFloat(4, 3)]]
+                    mk[ComplexFloat(8, 7), ComplexFloat(6, 5), ComplexFloat(4, 3)]]
         )
 
         val actual = NativeLinAlg.dot(matrix1, matrix2)
