@@ -6,13 +6,36 @@ package org.jetbrains.kotlinx.multik.cuda
 
 import jcuda.jcublas.JCublas2
 import jcuda.jcublas.cublasHandle
+import jcuda.runtime.JCuda
+import jcuda.runtime.cudaStream_t
+import mu.KotlinLogging
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+import org.jetbrains.kotlinx.multik.cuda.linalg.CudaLinAlg
 
+private val logger = KotlinLogging.logger {}
 
 public class CudaEngineProvider : EngineProvider {
     override fun getEngine(): Engine {
         return CudaEngine
+    }
+}
+
+internal class CudaContext {
+    val handle = cublasHandle()
+    val cache = GpuCache()
+    private val stream = cudaStream_t()
+
+    init {
+        checkResult(JCublas2.cublasCreate(handle))
+        checkResult(JCuda.cudaStreamCreate(stream))
+
+        checkResult(JCublas2.cublasSetStream(handle, stream))
+    }
+
+    fun deinit() {
+        checkResult(JCublas2.cublasDestroy(handle))
+        checkResult(JCuda.cudaStreamDestroy(stream))
     }
 }
 
@@ -22,7 +45,6 @@ public object CudaEngine : Engine() {
 
     override val type: EngineType
         get() = CudaEngineType
-
 
     override fun getMath(): Math {
         return CudaMath
@@ -43,21 +65,48 @@ public object CudaEngine : Engine() {
     }
 
     public fun initCuda() {
-        if (contextHandle != null)
-            throw IllegalStateException("CudaEngine is already initialized")
+        if (context.get() != null) {
+            logger.warn { "Trying to initialize the CudaEngine when it is already initialized" }
+            return
+        }
 
-        contextHandle = cublasHandle()
-        JCublas2.cublasCreate(contextHandle)
+        logger.info { "Initializing cuda engine" }
+        context.set(CudaContext())
     }
 
     public fun deinitCuda() {
-        if (contextHandle == null)
-            throw IllegalStateException("CudaEngine is already deinitialized")
+        if (context.get() == null) {
+            logger.warn { "Trying to deinitialize the CudaEngine when it is not initialized" }
+            return
+        }
 
-        JCublas2.cublasDestroy(contextHandle)
-        contextHandle = null
+        logger.info { "Deinitializing cuda engine" }
+
+        cacheCleanup(CleanupMode.FULL)
+
+        context.get()!!.deinit()
+        context.set(null)
     }
 
-    internal var contextHandle: cublasHandle? = null
-        private set
+    public enum class CleanupMode {
+        // Fully cleans the cache
+        FULL,
+
+        // Cleans the data that was garbage collected
+        GARBAGE
+    }
+
+    public fun cacheCleanup(mode: CleanupMode = CleanupMode.GARBAGE) {
+        logger.debug { "Cleaning cache. Mode: $mode" }
+
+        when (mode) {
+            CleanupMode.GARBAGE -> getContext().cache.garbageCleanup()
+            CleanupMode.FULL -> getContext().cache.fullCleanup()
+        }
+    }
+
+    private var context: ThreadLocal<CudaContext?> = ThreadLocal()
+
+    internal fun getContext(): CudaContext =
+        context.get() ?: throw IllegalStateException("Cuda is not initialized")
 }

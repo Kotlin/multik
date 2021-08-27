@@ -52,7 +52,7 @@ public inline fun <T, D : Dimension, reified M : Dimension> MultiArray<T, D>.wri
     checkBounds(index in 0 until shape[axis], index, axis, axis)
     return NDArray(
         data, offset + strides[axis] * index, shape.remove(axis),
-        strides.remove(axis), this.dtype, dimensionClassOf(this.dim.d - 1)
+        strides.remove(axis), dimensionClassOf(this.dim.d - 1), base ?: this
     )
 }
 
@@ -66,7 +66,7 @@ public inline fun <T, D : Dimension, reified M : Dimension> MultiArray<T, D>.wri
     var newOffset = offset
     for (i in axes.indices)
         newOffset += strides[axes[i]] * indices[i]
-    return NDArray(data, newOffset, newShape, newStrides, this.dtype, dimensionOf(this.dim.d - axes.size))
+    return NDArray(data, newOffset, newShape, newStrides, dimensionOf(this.dim.d - axes.size), base ?: this)
 }
 
 public inline fun <T, D : Dimension, reified M : Dimension> MutableMultiArray<T, D>.mutableView(

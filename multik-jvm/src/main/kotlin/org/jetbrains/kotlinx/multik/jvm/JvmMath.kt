@@ -52,7 +52,7 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return NDArray(argMaxData, 0, newShape, dtype = DataType.IntDataType, dim = dimensionOf(newShape.size))
+        return NDArray(argMaxData, 0, newShape, dim = dimensionOf(newShape.size))
     }
 
     override fun <T : Number> argMaxD2(a: MultiArray<T, D2>, axis: Int): NDArray<Int, D1> = argMax(a, axis)
@@ -102,7 +102,7 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return NDArray(argMinData, 0, newShape, dtype = DataType.IntDataType, dim = dimensionOf(newShape.size))
+        return NDArray(argMinData, 0, newShape, dim = dimensionOf(newShape.size))
     }
 
     override fun <T : Number> argMinD2(a: MultiArray<T, D2>, axis: Int): NDArray<Int, D1> = argMin(a, axis)
@@ -158,7 +158,7 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return NDArray(maxData, 0, newShape, dtype = a.dtype, dim = dimensionOf(newShape.size))
+        return NDArray(maxData, 0, newShape, dim = dimensionOf(newShape.size))
     }
 
     override fun <T : Number> maxD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = max(a, axis)
@@ -198,7 +198,7 @@ public object JvmMath : Math {
                 count++
             }
         }
-        return NDArray(minData, 0, newShape, dtype = a.dtype, dim = dimensionOf(newShape.size))
+        return NDArray(minData, 0, newShape, dim = dimensionOf(newShape.size))
     }
 
     override fun <T : Number> minD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = min(a, axis)
@@ -240,7 +240,6 @@ public object JvmMath : Math {
         val ret = D1Array<Double>(
             initMemoryView(a.size, DataType.DoubleDataType),
             shape = intArrayOf(a.size),
-            dtype = DataType.DoubleDataType,
             dim = D1
         )
         var ind = 0
@@ -283,7 +282,7 @@ public object JvmMath : Math {
             else
                 0.0
         }
-        return NDArray(data, 0, a.shape, dtype = DataType.DoubleDataType, dim = a.dim)
+        return NDArray(data, 0, a.shape, dim = a.dim)
     }
 }
 

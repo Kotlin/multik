@@ -1,18 +1,46 @@
 package org.jetbrains.kotlinx.multik.cuda.linalg
 
+import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.cuda.CudaEngine
-import org.jetbrains.kotlinx.multik.cuda.CudaLinAlg
-import org.jetbrains.kotlinx.multik.cuda.roundDouble
-import org.jetbrains.kotlinx.multik.cuda.roundFloat
+import org.jetbrains.kotlinx.multik.cuda.assertFloatingNDArray
+import org.jetbrains.kotlinx.multik.cuda.assertFloatingNumber
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.rangeTo
+import org.junit.BeforeClass
+import org.slf4j.simple.SimpleLogger
 import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class CudaLinAlgTest {
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun before() {
+            System.setProperty(SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE")
+        }
+    }
+
+    @Test
+    fun `slice caching test`() {
+        val mat1 = mk.ndarray(
+            mk[
+                    mk[1.0, 2.0, 3.0],
+                    mk[4.0, 5.0, 6.0],
+                    mk[7.0, 8.0, 9.0],
+            ]
+        )
+
+        val slice1 = mat1[0..2]
+        val slice2 = mat1[1..3].transpose()
+
+        CudaEngine.runWithCuda {
+            repeat(50) {
+                CudaLinAlg.dot(slice1, slice2)
+            }
+        }
+    }
+
     @Test
     fun `vector-vector dot inconsistent D`() {
         val vec1 = mk.ndarray(mk[1.0, 2.0, 3.0])[0..3..2]
@@ -23,9 +51,7 @@ class CudaLinAlgTest {
         CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(vec1, vec2)
 
-            val diff = kotlin.math.abs(actual - expected)
-
-            assertTrue(diff < EPSILON, "Difference between expected and actual: $diff")
+            assertFloatingNumber(expected, actual)
         }
     }
 
@@ -45,7 +71,7 @@ class CudaLinAlgTest {
         CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(mat1, vec1)
 
-            assertEquals(expected, roundDouble(actual))
+            assertFloatingNDArray(expected, actual)
         }
     }
 
@@ -83,10 +109,10 @@ class CudaLinAlgTest {
 
         CudaEngine.runWithCuda {
             val actual1 = CudaLinAlg.dot(mat1, mat2)
-            assertEquals(expected1, roundDouble(actual1))
+            assertFloatingNDArray(expected1, actual1)
 
             val actual2 = CudaLinAlg.dot(mat2, mat1)
-            assertEquals(expected2, roundDouble(actual2))
+            assertFloatingNDArray(expected2, actual2)
         }
     }
 
@@ -113,7 +139,7 @@ class CudaLinAlgTest {
         CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(mat1, mat2)
 
-            assertEquals(expected, roundDouble(actual))
+            assertFloatingNDArray(expected, actual)
         }
     }
 
@@ -121,10 +147,11 @@ class CudaLinAlgTest {
     @Test
     fun `matrix-matrix dot test D`() {
         val expected = mk.ndarray(
-            mk[mk[1.07, 0.62, 0.46, 0.48],
-                    mk[0.82, 0.72, 0.79, 0.82],
-                    mk[0.53, 0.48, 0.53, 0.51],
-                    mk[1.04, 0.76, 0.71, 0.66]]
+            mk[
+                    mk[1.0719, 0.6181, 0.4608, 0.4811],
+                    mk[0.8211, 0.7162, 0.79  , 0.8199],
+                    mk[0.5288, 0.4834, 0.5342, 0.5082],
+                    mk[1.0353, 0.758 , 0.7114, 0.6647]]
         )
         val matrix1 = mk.ndarray(
             mk[mk[0.22, 0.9, 0.27],
@@ -141,7 +168,7 @@ class CudaLinAlgTest {
         CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(matrix1, matrix2)
 
-            assertEquals(expected, roundDouble(actual))
+            assertFloatingNDArray(expected, actual)
         }
     }
 
@@ -172,13 +199,13 @@ class CudaLinAlgTest {
         CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(matrix1, matrix2)
 
-            assertEquals(expected, roundFloat(actual))
+            assertFloatingNDArray(expected, actual)
         }
     }
 
     @Test
     fun `matrix-vector dot test D`() {
-        val expected = mk.ndarray(mk[0.80, 0.66, 0.58])
+        val expected = mk.ndarray(mk[0.8006, 0.663, 0.5771])
 
         val matrix = mk.ndarray(
             mk[mk[0.22, 0.9, 0.27],
@@ -190,13 +217,13 @@ class CudaLinAlgTest {
         CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(matrix, vector)
 
-            assertEquals(expected, roundDouble(actual))
+            assertFloatingNDArray(expected, actual)
         }
     }
 
     @Test
     fun `matrix-vector dot test F`() {
-        val expected = mk.ndarray(mk[0.80f, 0.66f])
+        val expected = mk.ndarray(mk[0.8006f, 0.663f])
 
         val matrix = mk.ndarray(
             mk[
@@ -208,7 +235,7 @@ class CudaLinAlgTest {
         CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(matrix, vector)
 
-            assertEquals(expected, roundFloat(actual))
+            assertFloatingNDArray(expected, actual)
         }
     }
 
@@ -223,10 +250,8 @@ class CudaLinAlgTest {
 
         CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(v1, v2)
-
-            val diff = kotlin.math.abs(actual - expected)
-
-            assertTrue(diff < EPSILON, "Difference between expected and actual: $diff")
+            
+            assertFloatingNumber(expected, actual)
         }
     }
 
@@ -240,9 +265,61 @@ class CudaLinAlgTest {
         CudaEngine.runWithCuda {
             val actual = CudaLinAlg.dot(v1, v2)
 
-            val diff = kotlin.math.abs(actual - expected)
+            assertFloatingNumber(expected, actual)
+        }
+    }
 
-            assertTrue(diff < EPSILON, "Difference between expected and actual: $diff")
+    @Test
+    fun `memory management vector test`() {
+        val vec1 = mk.ndarray(mk[1.0, 2.0, 3.0])
+        val vec2 = mk.ndarray(mk[4.0, 5.0, 6.0])
+        val vec3 = mk.ndarray(mk[7.0, 8.0, 9.0])
+
+        val expected1 = 32.0
+        val expected2 = 50.0
+        val expected3 = 14.0
+
+        CudaEngine.runWithCuda {
+            val actual1 = CudaLinAlg.dot(vec1, vec2)
+            val actual2 = CudaLinAlg.dot(vec1, vec3)
+            val actual3 = CudaLinAlg.dot(vec1, vec1)
+
+            assertFloatingNumber(expected1, actual1)
+            assertFloatingNumber(expected2, actual2)
+            assertFloatingNumber(expected3, actual3)
+        }
+    }
+
+    @Test
+    fun `memory management matrix test`() {
+        val matrix1 = mk.ndarray(
+            mk[
+                    mk[0f, 4f],
+                    mk[1f, 5f],
+                    mk[2f, 6f],
+                    mk[3f, 7f]]
+        )
+
+        val matrix2 = mk.ndarray(
+            mk[
+                    mk[2f, 4f, 6f],
+                    mk[3f, 5f, 7f]]
+        )
+
+        val expected = mk.ndarray(
+            mk[
+                    mk[272f, 332f],
+                    mk[396f, 483f],
+                    mk[520f, 634f],
+                    mk[644f, 785f]
+            ]
+        )
+
+        CudaEngine.runWithCuda {
+            val matrix3 = CudaLinAlg.dot(matrix1, matrix2)
+            val actual = CudaLinAlg.dot(matrix3, matrix2.transpose())
+
+            assertFloatingNDArray(expected, actual)
         }
     }
 }

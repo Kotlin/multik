@@ -12,6 +12,9 @@ configurations {
 dependencies {
     api(project(":multik-api"))
 
+    implementation("io.github.microutils:kotlin-logging:+")
+    testImplementation("org.slf4j:slf4j-simple:+")
+
     val jCudaVersion = "11.2.0"
 
     jcudaLibs(group = "org.jcuda", name = "jcuda", version = jCudaVersion) {
@@ -31,6 +34,10 @@ dependencies {
 
     jcudaNativeLibs(group = "org.jcuda", name = "jcuda-natives", classifier = classifierWindows, version = jCudaVersion)
     jcudaNativeLibs(group = "org.jcuda", name = "jcublas-natives", classifier = classifierWindows, version = jCudaVersion)
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
 }
 
 tasks.register<Copy>("unzipNativeLibs") {

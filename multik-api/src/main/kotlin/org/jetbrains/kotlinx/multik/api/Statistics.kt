@@ -62,7 +62,7 @@ public fun <D : Dimension> Statistics.abs(a: MultiArray<Byte, D>): NDArray<Byte,
     for (element in a) {
         ret[index++] = absByte(element)
     }
-    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
 @JvmName("absShort")
@@ -72,7 +72,7 @@ public fun <D : Dimension> Statistics.abs(a: MultiArray<Short, D>): NDArray<Shor
     for (element in a) {
         ret[index++] = absShort(element)
     }
-    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
 @JvmName("absInt")
@@ -82,7 +82,7 @@ public fun <D : Dimension> abs(a: MultiArray<Int, D>): NDArray<Int, D> {
     for (element in a) {
         ret[index++] = kotlin.math.abs(element)
     }
-    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
 @JvmName("absLong")
@@ -92,7 +92,7 @@ public fun <D : Dimension> abs(a: MultiArray<Long, D>): NDArray<Long, D> {
     for (element in a) {
         ret[index++] = kotlin.math.abs(element)
     }
-    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
 @JvmName("absFloat")
@@ -102,7 +102,7 @@ public fun <D : Dimension> abs(a: MultiArray<Float, D>): NDArray<Float, D> {
     for (element in a) {
         ret[index++] = kotlin.math.abs(element)
     }
-    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
 @JvmName("absDouble")
@@ -112,7 +112,7 @@ public fun <D : Dimension> abs(a: MultiArray<Double, D>): NDArray<Double, D> {
     for (element in a) {
         ret[index++] = kotlin.math.abs(element)
     }
-    return NDArray(ret, 0, a.shape.copyOf(), dtype = a.dtype, dim = a.dim)
+    return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
 private inline fun absByte(a: Byte): Byte = if (a < 0) (-a).toByte() else a
