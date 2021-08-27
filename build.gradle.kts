@@ -13,7 +13,7 @@ buildscript {
 plugins {
     val kotlinVersion: String by System.getProperties()
     kotlin("jvm") version kotlinVersion
-    id("me.champeau.jmh") version "0.6.5"
+
     id("io.codearte.nexus-staging") version "0.22.0"
 }
 
