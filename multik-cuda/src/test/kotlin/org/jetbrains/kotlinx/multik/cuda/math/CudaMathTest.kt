@@ -4,8 +4,8 @@ import org.jetbrains.kotlinx.multik.api.d3array
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.cuda.CudaEngine
-import org.jetbrains.kotlinx.multik.cuda.CudaMath.add
-import org.jetbrains.kotlinx.multik.cuda.CudaMath.subtract
+import org.jetbrains.kotlinx.multik.cuda.add
+import org.jetbrains.kotlinx.multik.cuda.subtract
 import org.jetbrains.kotlinx.multik.cuda.roundDouble
 import org.junit.Test
 import kotlin.test.assertEquals
