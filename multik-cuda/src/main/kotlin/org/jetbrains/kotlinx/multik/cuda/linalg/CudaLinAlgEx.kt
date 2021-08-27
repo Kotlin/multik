@@ -133,7 +133,7 @@ public object CudaLinAlgEx: LinAlgEx {
                 computeType, CUBLAS_GEMM_DEFAULT
             ))
         } else {
-            val transA = if (gA.transposed) cublasOperation.CUBLAS_OP_N else cublasOperation.CUBLAS_OP_T
+            val transA = if (gA.transposed) cublasOperation.CUBLAS_OP_N else cublasOperation.CUBLAS_OP_T // TODO: check transposed
 
             var (m, n) = a.shape
             if (!gA.transposed)
