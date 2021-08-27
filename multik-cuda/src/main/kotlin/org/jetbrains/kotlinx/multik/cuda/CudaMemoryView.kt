@@ -5,12 +5,10 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 private val logger = KotlinLogging.logger {}
 
-object DeferredData
-
 internal class CudaMemoryView<T>(override var size: Int, override val dtype: DataType, private val gpuArray: GpuArray) : MemoryView<T>() {
 
     //Data is loaded to heap lazily
-    override var data: Any = DeferredData
+    override lateinit var data: Any
         private set
 
     override var lastIndex: Int = size - 1
@@ -72,7 +70,7 @@ internal class CudaMemoryView<T>(override var size: Int, override val dtype: Dat
     }
 
     internal fun loadToHost() {
-        if (data == DeferredData) {
+        if (!this::data.isInitialized) {
             logger.trace { "Loading deferred data to the host" }
 
             data = when (dtype) {

@@ -1,7 +1,3 @@
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
-}
-
 repositories {
     mavenCentral()
 }
@@ -38,6 +34,10 @@ dependencies {
 
     jcudaNativeLibs(group = "org.jcuda", name = "jcuda-natives", classifier = classifierWindows, version = jCudaVersion)
     jcudaNativeLibs(group = "org.jcuda", name = "jcublas-natives", classifier = classifierWindows, version = jCudaVersion)
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions.jvmTarget = "11"
 }
 
 tasks.register<Copy>("unzipNativeLibs") {
