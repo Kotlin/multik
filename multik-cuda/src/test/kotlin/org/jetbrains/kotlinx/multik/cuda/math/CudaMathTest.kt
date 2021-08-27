@@ -5,10 +5,9 @@ import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.cuda.CudaEngine
 import org.jetbrains.kotlinx.multik.cuda.add
+import org.jetbrains.kotlinx.multik.cuda.assertFloatingNDArray
 import org.jetbrains.kotlinx.multik.cuda.subtract
-import org.jetbrains.kotlinx.multik.cuda.roundDouble
 import org.junit.Test
-import kotlin.test.assertEquals
 
 class CudaMathTest {
     @Test
@@ -58,20 +57,20 @@ class CudaMathTest {
             val res4 = (mat1.transpose() add mat2.transpose()).transpose()
             val res5 = mat2 subtract mat1
 
-            assertEquals(expected, roundDouble(res1))
-            assertEquals(expected, roundDouble(res2))
-            assertEquals(expected, roundDouble(res3))
-            assertEquals(expected, roundDouble(res4))
-            assertEquals(expected2, roundDouble(res5))
+            assertFloatingNDArray(expected, res1)
+            assertFloatingNDArray(expected, res2)
+            assertFloatingNDArray(expected, res3)
+            assertFloatingNDArray(expected, res4)
+            assertFloatingNDArray(expected2, res5)
 
             val vecRes1 = vec1 add vec2
             val vecRes2 = vec2 subtract vec1
 
-            assertEquals(vecExpected1, roundDouble(vecRes1))
-            assertEquals(vecExpected2, roundDouble(vecRes2))
+            assertFloatingNDArray(vecExpected1, vecRes1)
+            assertFloatingNDArray(vecExpected2, vecRes2)
 
             val arrayD3_res = arrayD3_1 add arrayD3_2
-            assertEquals(arrayD3_expected, roundDouble(arrayD3_res))
+            assertFloatingNDArray(arrayD3_expected, arrayD3_res)
         }
     }
 }
