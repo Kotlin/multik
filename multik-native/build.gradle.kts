@@ -2,16 +2,28 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
 apply(from = "$rootDir/gradle/openblas.gradle")
 
 dependencies {
     api(project(":multik-api"))
 }
 
+private val currentOS = DefaultNativePlatform.getCurrentOperatingSystem()
+val os = when {
+    currentOS.isMacOsX -> "macos"
+    currentOS.isLinux -> "linux"
+    currentOS.isWindows -> "windows"
+    else -> throw Exception("Unsupported platform")
+}
+
 tasks.jar {
-    dependsOn("multik_jni:build")
+    dependsOn("multik_jni:assembleRelease${os.capitalize()}")
     doFirst {
-        from(fileTree("${project.childProjects["multik_jni"]!!.buildDir}/lib").files)
+        from(fileTree("${project.childProjects["multik_jni"]!!.buildDir}/lib/main/release/${os}/").files.filter {
+            "stripped" !in it.path
+        })
         exclude("*.jar")
     }
 }
@@ -21,7 +33,6 @@ tasks.test {
 
     doFirst{
         copy {
-            from(fileTree("${project.childProjects["multik_jni"]!!.buildDir}/lib").files)
             into("$buildDir/libs")
         }
     }

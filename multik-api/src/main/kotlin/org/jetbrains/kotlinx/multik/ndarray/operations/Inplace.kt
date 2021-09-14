@@ -216,7 +216,6 @@ public sealed class Exp<T> {
 
 public interface Arith
 
-// TODO Complex operation
 public class Sum<T, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
     override fun invoke(left: T, ind1: Int): T =
         if (left is Number) left + (right as MultiArray<T, D1>)[ind1] else (left as Complex) + (right as MultiArray<T, D1>)[ind1]
