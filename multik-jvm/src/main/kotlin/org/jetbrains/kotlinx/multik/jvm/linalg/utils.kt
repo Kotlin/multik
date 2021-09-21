@@ -23,10 +23,6 @@ internal fun NDArray<ComplexDouble, D2>.conjTranspose(): D2Array<ComplexDouble> 
     return ans
 }
 
-fun Double.toComplexDouble(): ComplexDouble {
-    return ComplexDouble(this, 0.0)
-}
-
 internal fun requireDotShape(aShape: IntArray, bShape: IntArray) = require(aShape[1] == bShape[0]) {
     "Shapes mismatch: shapes " +
             "${aShape.joinToString(prefix = "(", postfix = ")")} and " +

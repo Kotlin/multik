@@ -1,13 +1,9 @@
-package org.jetbrains.kotlinx.multik.jvm
+package org.jetbrains.kotlinx.multik.jvm.linalg
 
-import org.jetbrains.kotlinx.multik.api.d2array
-import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
-import org.jetbrains.kotlinx.multik.jvm.linalg.conjTranspose
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import kotlin.math.sqrt
 
 
 /**

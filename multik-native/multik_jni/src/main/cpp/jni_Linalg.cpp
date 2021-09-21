@@ -110,6 +110,78 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_in
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    qr
+ * Signature: (II[FI[F)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qr__II_3FI_3F
+	(JNIEnv *env, jobject jobj, jint m, jint n, jfloatArray j_aq, jint lda, jfloatArray j_r) {
+  auto *AQ = (float *)env->GetPrimitiveArrayCritical(j_aq, nullptr);
+  auto *R = (float *)env->GetPrimitiveArrayCritical(j_r, nullptr);
+
+  int info = qr_matrix(m, n, AQ, lda, R);
+
+  env->ReleasePrimitiveArrayCritical(j_aq, AQ, 0);
+  env->ReleasePrimitiveArrayCritical(j_r, R, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    qr
+ * Signature: (II[DI[D)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qr__II_3DI_3D
+	(JNIEnv *env, jobject jobj, jint m, jint n, jdoubleArray j_aq, jint lda, jdoubleArray j_r) {
+  auto *AQ = (double *)env->GetPrimitiveArrayCritical(j_aq, nullptr);
+  auto *R = (double *)env->GetPrimitiveArrayCritical(j_r, nullptr);
+
+  int info = qr_matrix(m, n, AQ, lda, R);
+
+  env->ReleasePrimitiveArrayCritical(j_aq, AQ, 0);
+  env->ReleasePrimitiveArrayCritical(j_r, R, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    qrC
+ * Signature: (II[FI[F)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qrC__II_3FI_3F
+	(JNIEnv *env, jobject jobj, jint m, jint n, jfloatArray j_aq, jint lda, jfloatArray j_r) {
+  auto *AQ = (float *)env->GetPrimitiveArrayCritical(j_aq, nullptr);
+  auto *R = (float *)env->GetPrimitiveArrayCritical(j_r, nullptr);
+
+  int info = qr_matrix_complex(m, n, AQ, lda, R);
+
+  env->ReleasePrimitiveArrayCritical(j_aq, AQ, 0);
+  env->ReleasePrimitiveArrayCritical(j_r, R, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    qrC
+ * Signature: (II[DI[D)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qrC__II_3DI_3D
+	(JNIEnv *env, jobject jobj, jint m, jint n, jdoubleArray j_aq, jint lda, jdoubleArray j_r) {
+  auto *AQ = (double *)env->GetPrimitiveArrayCritical(j_aq, nullptr);
+  auto *R = (double *)env->GetPrimitiveArrayCritical(j_r, nullptr);
+
+  int info = qr_matrix_complex(m, n, AQ, lda, R);
+
+  env->ReleasePrimitiveArrayCritical(j_aq, AQ, 0);
+  env->ReleasePrimitiveArrayCritical(j_r, R, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    solve
  * Signature: (II[FI[FI)I
  */

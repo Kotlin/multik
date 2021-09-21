@@ -10,11 +10,10 @@ import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.jvm.linalg.*
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solve
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solveC
-import org.jetbrains.kotlinx.multik.jvm.qrComplexDouble
-import org.jetbrains.kotlinx.multik.jvm.upperHessenberg
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
 import org.jetbrains.kotlinx.multik.ndarray.operations.minus

@@ -53,10 +53,21 @@ public object JvmLinAlgEx : LinAlgEx {
                 val ans = solveComplexFloat(a as MultiArray<ComplexFloat, D2>, bComplexDouble)
                 if (b.dim.d == 2) ans else ans.reshape(ans.shape[0])
             }
-            else -> throw UnsupportedOperationException("matrices should be complex")
+            else -> throw UnsupportedOperationException("Matrices should be complex")
         } as NDArray<T, D>
-
     }
+
+    override fun <T : Number> qr(mat: MultiArray<T, D2>): Pair<D2Array<Double>, D2Array<Double>> =
+        qrDouble(mat.toType())
+
+    override fun qrF(mat: MultiArray<Float, D2>): Pair<D2Array<Float>, D2Array<Float>> =
+        qrFloat(mat)
+
+    override fun <T : Complex> qrC(mat: MultiArray<T, D2>): Pair<D2Array<T>, D2Array<T>> = when (mat.dtype) {
+        DataType.ComplexFloatDataType -> qrComplexFloat(mat as MultiArray<ComplexFloat, D2>)
+        DataType.ComplexDoubleDataType -> qrComplexDouble(mat as MultiArray<ComplexDouble, D2>)
+        else -> throw UnsupportedOperationException("Matrix should be complex")
+    } as Pair<D2Array<T>, D2Array<T>>
 
     override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> = dotMatrix(a, b)
 

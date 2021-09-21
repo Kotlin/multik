@@ -1,11 +1,14 @@
 package org.jetbrains.kotlinx.multik.jni.linalg
 
+import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
+import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.CopyStrategy
 import org.jetbrains.kotlinx.multik.ndarray.operations.isTransposed
 import org.jetbrains.kotlinx.multik.ndarray.operations.toType
+import kotlin.math.min
 
 public object NativeLinAlgEx : LinAlgEx {
     override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> =
@@ -73,6 +76,38 @@ public object NativeLinAlgEx : LinAlgEx {
         }
 
         return b as NDArray<T, D>
+    }
+
+    override fun <T : Number> qr(mat: MultiArray<T, D2>): Pair<D2Array<Double>, D2Array<Double>> =
+        qrCommon(mat, DataType.DoubleDataType)
+
+    override fun qrF(mat: MultiArray<Float, D2>): Pair<D2Array<Float>, D2Array<Float>> =
+        qrCommon(mat, DataType.FloatDataType)
+
+    override fun <T : Complex> qrC(mat: MultiArray<T, D2>): Pair<D2Array<T>, D2Array<T>> =
+        qrCommon(mat, mat.dtype)
+
+    private fun <T, O: Any> qrCommon(mat: MultiArray<T, D2>, retDType: DataType): Pair<D2Array<O>, D2Array<O>> {
+        val (m, n) = mat.shape
+        val mn = min(m, n)
+        val q = mat.toType<T, O, D2>(retDType, CopyStrategy.MEANINGFUL)
+        val r = mk.empty<O, D2>(intArrayOf(mn, n), q.dtype)
+
+        val info: Int = when (retDType) {
+            DataType.FloatDataType -> JniLinAlg.qr(m, n, q.data.getFloatArray(), q.strides[0], r.data.getFloatArray())
+            DataType.DoubleDataType -> JniLinAlg.qr(m, n, q.data.getDoubleArray(), q.strides[0], r.data.getDoubleArray())
+            DataType.ComplexFloatDataType -> JniLinAlg.qrC(m, n, q.data.getFloatArray(), q.strides[0], r.data.getFloatArray())
+            DataType.ComplexDoubleDataType -> JniLinAlg.qrC(m, n, q.data.getDoubleArray(), q.strides[0], r.data.getDoubleArray())
+            else -> throw UnsupportedOperationException()
+        }
+
+        when {
+            info < 0 -> throw IllegalArgumentException("${-info} argument had illegal value. ")
+            info > 0 -> throw Exception("") // todo LinAlgException
+        }
+
+        // TODO internal copyOf(end: Int)
+        return Pair(q[Slice.bounds, 0..mn].deepCopy() as D2Array<O>, r)
     }
 
     override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> =

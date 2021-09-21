@@ -73,6 +73,38 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_in
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    qr
+ * Signature: (II[FI[F)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qr__II_3FI_3F
+	(JNIEnv *, jobject, jint, jint, jfloatArray, jint, jfloatArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    qr
+ * Signature: (II[DI[D)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qr__II_3DI_3D
+	(JNIEnv *, jobject, jint, jint, jdoubleArray, jint, jdoubleArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    qrC
+ * Signature: (II[FI[F)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qrC__II_3FI_3F
+	(JNIEnv *, jobject, jint, jint, jfloatArray, jint, jfloatArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    qrC
+ * Signature: (II[DI[D)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qrC__II_3DI_3D
+	(JNIEnv *, jobject, jint, jint, jdoubleArray, jint, jdoubleArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    solve
  * Signature: (II[FI[FI)I
  */

@@ -20,6 +20,11 @@ internal object JniLinAlg {
     external fun invC(n: Int, mat: FloatArray, lda: Int): Int
     external fun invC(n: Int, mat: DoubleArray, lda: Int): Int
 
+    external fun qr(m: Int, n: Int, qa: FloatArray, lda: Int, r: FloatArray): Int
+    external fun qr(m: Int, n: Int, qa: DoubleArray, lda: Int, r: DoubleArray): Int
+    external fun qrC(m: Int, n: Int, qa: FloatArray, lda: Int, r: FloatArray): Int
+    external fun qrC(m: Int, n: Int, qa: DoubleArray, lda: Int, r: DoubleArray): Int
+
     /**
      * @param n
      * @param nrhs

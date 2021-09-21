@@ -1,18 +1,13 @@
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
 import org.jetbrains.kotlinx.multik.api.*
-import org.jetbrains.kotlinx.multik.jvm.upperHessenberg
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import org.jetbrains.kotlinx.multik.ndarray.operations.map
 import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
-import java.lang.ArithmeticException
-import java.lang.UnsupportedOperationException
-import javax.xml.crypto.Data
 import kotlin.math.*
-
 
 
 public fun<T: Number> eig(a: MultiArray<T, D2>): MultiArray<ComplexDouble, D1> {
