@@ -1,165 +1,62 @@
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
 import org.jetbrains.kotlinx.multik.api.empty
-import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
-import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.data.set
-import org.jetbrains.kotlinx.multik.ndarray.operations.map
 import kotlin.math.abs
 import kotlin.math.min
 
-internal fun plu(a: MultiArray<Double, D2>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Double>> {
-    val _a: D2Array<Double> = a.map { it }
-    val perm = mk.empty<Int, D1>(min(_a.shape[0], _a.shape[1]))
+// TODO
+internal fun <T> pluCompressed(mat: MultiArray<T, D2>): Triple<D1Array<Int>, D2Array<T>, D2Array<T>> {
+    val (n, m) = mat.shape
+    val nm = min(n, m)
 
-    pluDecompositionInplace(_a, perm)
-    // since previous call _a contains answer
+    val perm = mk.empty<Int, D1>(nm)
+    val L = mk.empty<T, D2>(intArrayOf(n, nm), mat.dtype)
+    val U = mk.empty<T, D2>(intArrayOf(nm, m), mat.dtype)
 
-    val L = mk.empty<Double, D2>(_a.shape[0], min(_a.shape[0], _a.shape[1]))
-    val U = mk.empty<Double, D2>(min(_a.shape[0], _a.shape[1]), _a.shape[1])
-
-    fillLowerMatrix(L, _a, 1.0, 0.0)
-
-    for (i in 0 until U.shape[0]) {
-        for (j in i until U.shape[1]) {
-            U[i, j] = _a[i, j]
-        }
-    }
-
-    val P = mk.identity<Double>(_a.shape[0])
-
-    for (i in perm.indices.reversed()) {
-        if (perm[i] != 0) {
-            P[i] = P[i + perm[i]].deepCopy().also { P[i + perm[i]] = P[i].deepCopy() }
-        }
-    }
-    return Triple(P, L, U)
-}
-
-internal fun <T : Complex> pluC(a: MultiArray<T, D2>): Triple<D2Array<T>, D2Array<T>, D2Array<T>> {
-    return when (a.dtype) {
-        DataType.ComplexDoubleDataType -> {
-            a as MultiArray<ComplexDouble, D2>
-            val (P, L, U) = pluComplexDouble(a)
-            Triple(P, L, U)
-        }
-        DataType.ComplexFloatDataType -> {
-            a as MultiArray<ComplexFloat, D2>
-            val (P, L, U) = pluComplexFloat(a)
-            Triple(P, L, U)
-        }
-        else -> throw UnsupportedOperationException("matrix should be complex")
-
-    } as Triple<D2Array<T>, D2Array<T>, D2Array<T>>
-}
-
-internal fun pluComplexDouble(a: MultiArray<ComplexDouble, D2>): Triple<D2Array<ComplexDouble>, D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
-    val _a: D2Array<ComplexDouble> = a.deepCopy() as D2Array<ComplexDouble>
-    val perm = mk.empty<Int, D1>(min(_a.shape[0], _a.shape[1]))
-
-    pluDecompositionInplaceComplexDouble(_a, perm)
-    // since previous call _a contains answer
-
-    val L = mk.empty<ComplexDouble, D2>(_a.shape[0], min(_a.shape[0], _a.shape[1]))
-    val U = mk.empty<ComplexDouble, D2>(min(_a.shape[0], _a.shape[1]), _a.shape[1])
-
-    fillLowerMatrix(L, _a, ComplexDouble.one, ComplexDouble.zero)
-
-    for (i in 0 until U.shape[0]) {
-        for (j in i until U.shape[1]) {
-            U[i, j] = _a[i, j]
-        }
-    }
-
-    val P = mk.identity<ComplexDouble>(_a.shape[0])
-
-    for (i in perm.indices.reversed()) {
-        if (perm[i] != 0) {
-            P[i] = P[i + perm[i]].deepCopy().also { P[i + perm[i]] = P[i].deepCopy() }
-        }
-    }
-    return Triple(P, L, U)
-}
-
-internal fun pluComplexFloat(a: MultiArray<ComplexFloat, D2>): Triple<D2Array<ComplexFloat>, D2Array<ComplexFloat>, D2Array<ComplexFloat>> {
-    val _a: D2Array<ComplexFloat> = a.deepCopy() as D2Array<ComplexFloat>
-    val perm = mk.empty<Int, D1>(min(_a.shape[0], _a.shape[1]))
-
-    pluDecompositionInplaceComplexFloat(_a, perm)
-    // since previous call _a contains answer
-
-    val L = mk.empty<ComplexFloat, D2>(_a.shape[0], min(_a.shape[0], _a.shape[1]))
-    val U = mk.empty<ComplexFloat, D2>(min(_a.shape[0], _a.shape[1]), _a.shape[1])
-
-    fillLowerMatrix(L, _a, ComplexFloat.one, ComplexFloat.zero)
-
-    for (i in 0 until U.shape[0]) {
-        for (j in i until U.shape[1]) {
-            U[i, j] = _a[i, j]
-        }
-    }
-
-    val P = mk.identity<ComplexFloat>(_a.shape[0])
-
-    for (i in perm.indices.reversed()) {
-        if (perm[i] != 0) {
-            P[i] = P[i + perm[i]].deepCopy().also { P[i + perm[i]] = P[i].deepCopy() }
-        }
-    }
-    return Triple(P, L, U)
-}
-
-internal fun <T> pluCompressed(a: MultiArray<T, D2>): Triple<D1Array<Int>, D2Array<T>, D2Array<T>> {
-    val _a = a.deepCopy()
-    val perm = mk.empty<Int, D1>(min(_a.shape[0], _a.shape[1]))
-
-    val L = mk.empty<T, D2>(intArrayOf(_a.shape[0], min(_a.shape[0], _a.shape[1])), a.dtype)
-    val U = mk.empty<T, D2>(intArrayOf(min(_a.shape[0], _a.shape[1]), _a.shape[1]), a.dtype)
-
-    when(_a.dtype) {
+    when(mat.dtype) {
         DataType.DoubleDataType -> {
-            pluDecompositionInplace(_a as D2Array<Double>, perm)
-            fillLowerMatrix(L as D2Array<Double>, _a, 1.0, 0.0)
+            pluDecompositionInplace(mat as D2Array<Double>, perm)
+            fillLowerMatrix(L as D2Array<Double>, mat, 1.0)
         }
         DataType.FloatDataType -> {
-            pluDecompositionInplaceF(_a as D2Array<Float>, perm)
-            fillLowerMatrix(L as D2Array<Float>, _a, 1f, 0f)
+            pluDecompositionInplaceF(mat as D2Array<Float>, perm)
+            fillLowerMatrix(L as D2Array<Float>, mat, 1f)
         }
         DataType.ComplexDoubleDataType -> {
-            pluDecompositionInplaceComplexDouble(_a as D2Array<ComplexDouble>, perm)
-            fillLowerMatrix(L as D2Array<ComplexDouble>, _a, ComplexDouble.one, ComplexDouble.zero)
+            pluDecompositionInplaceComplexDouble(mat as D2Array<ComplexDouble>, perm)
+            fillLowerMatrix(L as D2Array<ComplexDouble>, mat, ComplexDouble.one)
         }
         DataType.ComplexFloatDataType -> {
-            pluDecompositionInplaceComplexFloat(_a as D2Array<ComplexFloat>, perm)
-            fillLowerMatrix(L as D2Array<ComplexFloat>, _a, ComplexFloat.one, ComplexFloat.zero)
+            pluDecompositionInplaceComplexFloat(mat as D2Array<ComplexFloat>, perm)
+            fillLowerMatrix(L as D2Array<ComplexFloat>, mat, ComplexFloat.one)
         }
         else -> throw UnsupportedOperationException()
     }
-    // since previous call _a contains answer
 
+    // todo fillUpperMatrix
     for (i in 0 until U.shape[0]) {
         for (j in i until U.shape[1]) {
-            U[i, j] = _a[i, j]
+            U[i, j] = mat[i, j]
         }
     }
 
     return Triple(perm, L, U)
 }
 
-/**
- *
- */
-private fun <T> fillLowerMatrix(L: D2Array<T>, a: D2Array<T>, one: T, zero: T) {
+// TODO eye
+// TODO fillLowerUpperMatrix
+private fun <T> fillLowerMatrix(L: D2Array<T>, a: D2Array<T>, one: T) {
     for (i in 0 until L.shape[0]) {
-        for (j in 0 until L.shape[1]) {
+        for (j in 0..i) {
             L[i, j] = when {
-                j < i -> a[i, j]
+                j >= L.shape[1] -> break
                 i == j -> one
-                else -> zero
+                else -> a[i, j]
             }
         }
     }
@@ -322,7 +219,7 @@ private fun pluDecompositionInplaceF(a: D2Array<Float>, rowPerm: D1Array<Int>) {
 
     swapLines(rowPerm, from2 = n1, to2 = a.shape[1], swap = { i, j ->
         a[i, j] = a[i + rowPerm[i], j].also { a[i + rowPerm[i], j] = a[i, j] }
-    })
+    }) // TODO swap rows on matrix
 
     val aSlice = a[0..n1, 0..n1]
     val x = a[0..n1, n1..(n1 + n2)] as D2Array<Float>

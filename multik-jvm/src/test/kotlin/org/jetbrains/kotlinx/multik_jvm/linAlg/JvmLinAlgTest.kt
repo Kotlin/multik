@@ -83,7 +83,7 @@ class JvmLinAlgTest {
 
             val a = mk.d2array<Double>(m, n) { rnd.nextDouble() }
 
-            val (P, L, U) = plu(a)
+            val (P, L, U) = JvmLinAlgEx.plu(a)
             assertTriangular(L, isLowerTriangular = true, requireUnitsOnDiagonal = true)
             assertTriangular(U, isLowerTriangular = false, requireUnitsOnDiagonal = false)
             assertClose(JvmLinAlg.dot(P, JvmLinAlg.dot(L, U)), a, procedurePrecision)
@@ -97,9 +97,9 @@ class JvmLinAlgTest {
 
             val aRe = mk.d2array<Double>(m, n) { rnd.nextDouble() }
             val aIm = mk.d2array<Double>(m, n) { rnd.nextDouble() }
-            val a = composeComplexDouble(aRe, aIm);
+            val a = composeComplexDouble(aRe, aIm)
 
-            val (P, L, U) = pluC(a)
+            val (P, L, U) = JvmLinAlgEx.pluC(a)
             assertTriangularComplexDouble(L, isLowerTriangular = true, requireUnitsOnDiagonal = true)
             assertTriangularComplexDouble(U, isLowerTriangular = false, requireUnitsOnDiagonal = false)
             assertCloseComplex(JvmLinAlgEx.dotMMComplex(P, JvmLinAlgEx.dotMMComplex(L, U)), a, procedurePrecision)
@@ -111,9 +111,9 @@ class JvmLinAlgTest {
 
             val aRe = mk.d2array<Float>(m, n) { rnd.nextFloat() }
             val aIm = mk.d2array<Float>(m, n) { rnd.nextFloat() }
-            val a = composeComplexFloat(aRe, aIm);
+            val a = composeComplexFloat(aRe, aIm)
 
-            val (P, L, U) = pluC(a)
+            val (P, L, U) = JvmLinAlgEx.pluC(a)
 
 
             assertTriangularComplexFloat(L, isLowerTriangular = true, requireUnitsOnDiagonal = true)
@@ -375,7 +375,7 @@ class JvmLinAlgTest {
 
         // assert decomposition is valid
         val approxmat = dotMatrixComplex(dotMatrixComplex(Q, H), Q.conjTranspose())
-        assertCloseComplex(approxmat, mat, 1e-5);
+        assertCloseComplex(approxmat, mat, 1e-5)
     }
 
 
@@ -539,7 +539,6 @@ private fun <T : Number, D : Dim2> assertClose(a: MultiArray<T, D>, b: MultiArra
         b as D2Array<T>
         for (i in 0 until a.shape[0]) {
             for (j in 0 until a.shape[1]) {
-                val t = a[i, j].toDouble()
                 maxabs = max(abs(a[i, j].toDouble() - b[i, j].toDouble()), maxabs)
             }
         }

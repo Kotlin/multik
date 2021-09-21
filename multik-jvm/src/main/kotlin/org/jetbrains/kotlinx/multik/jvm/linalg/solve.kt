@@ -8,9 +8,6 @@ import kotlin.math.abs
 internal fun solveDouble(
     a: MultiArray<Double, D2>, b: MultiArray<Double, D2>, singularityErrorLevel: Double = 1e-7
 ): D2Array<Double> {
-    requireSquare(a.shape)
-    requireDotShape(a.shape, b.shape)
-
     val (P, L, U) = pluCompressed(a)
     val _b = b.deepCopy() as D2Array<Double>
 
@@ -31,9 +28,6 @@ internal fun solveDouble(
 internal fun solveFloat(
     a: MultiArray<Float, D2>, b: MultiArray<Float, D2>, singularityErrorLevel: Float = 1e-6f
 ): D2Array<Float> {
-    requireSquare(a.shape)
-    requireDotShape(a.shape, b.shape)
-
     val (P, L, U) = pluCompressed(a)
     val _b = b.deepCopy() as D2Array<Float>
 
@@ -54,9 +48,6 @@ internal fun solveFloat(
 internal fun solveComplexDouble(
     a: MultiArray<ComplexDouble, D2>, b: MultiArray<ComplexDouble, D2>, singularityErrorLevel: Double = 1e-7
 ): D2Array<ComplexDouble> {
-    requireSquare(a.shape)
-    requireDotShape(a.shape, b.shape)
-
     val (P, L, U) = pluCompressed(a)
     val _b = b.deepCopy() as D2Array<ComplexDouble>
 
@@ -77,9 +68,6 @@ internal fun solveComplexDouble(
 internal fun solveComplexFloat(
     a: MultiArray<ComplexFloat, D2>, b: MultiArray<ComplexFloat, D2>, singularityErrorLevel: Float = 1e-6f
 ): D2Array<ComplexFloat> {
-    requireSquare(a.shape)
-    requireDotShape(a.shape, b.shape)
-
     val (P, L, U) = pluCompressed(a)
     val _b = b.deepCopy() as D2Array<ComplexFloat>
 
@@ -100,22 +88,22 @@ internal fun solveComplexFloat(
 
 private fun solveTriangle(
     a: MultiArray<Double, D2>, b: MultiArray<Double, D2>, isLowerTriangle: Boolean = true
-): D2Array<Double> = solveCommon(a, b.deepCopy() as D2Array<Double>, isLowerTriangle,
+): D2Array<Double> = solveTriangleleCommon(a, b.deepCopy() as D2Array<Double>, isLowerTriangle,
     { cf1, cf2 -> cf1 / cf2 }, { cf1, cf2, cf3, cf4 -> cf1 - (cf2 * cf3 / cf4) })
 
 private fun solveTriangleF(
     a: MultiArray<Float, D2>, b: MultiArray<Float, D2>, isLowerTriangle: Boolean = true
-): D2Array<Float> = solveCommon(a, b.deepCopy() as D2Array<Float>, isLowerTriangle,
+): D2Array<Float> = solveTriangleleCommon(a, b.deepCopy() as D2Array<Float>, isLowerTriangle,
     { cf1, cf2 -> cf1 / cf2 }, { cf1, cf2, cf3, cf4 -> cf1 - (cf2 * cf3 / cf4) })
 
 private fun solveTriangleComplexDouble(
     a: MultiArray<ComplexDouble, D2>, b: MultiArray<ComplexDouble, D2>, isLowerTriangle: Boolean = true
-): D2Array<ComplexDouble> = solveCommon(a, b.deepCopy() as D2Array<ComplexDouble>, isLowerTriangle,
+): D2Array<ComplexDouble> = solveTriangleleCommon(a, b.deepCopy() as D2Array<ComplexDouble>, isLowerTriangle,
     { cf1, cf2 -> cf1 / cf2 }, { cf1, cf2, cf3, cf4 -> cf1 - (cf2 * cf3 / cf4) })
 
 private fun solveTriangleComplexFloat(
     a: MultiArray<ComplexFloat, D2>, b: MultiArray<ComplexFloat, D2>, isLowerTriangle: Boolean = true
-): D2Array<ComplexFloat> = solveCommon(a, b.deepCopy() as D2Array<ComplexFloat>, isLowerTriangle,
+): D2Array<ComplexFloat> = solveTriangleleCommon(a, b.deepCopy() as D2Array<ComplexFloat>, isLowerTriangle,
     { cf1, cf2 -> cf1 / cf2 }, { cf1, cf2, cf3, cf4 -> cf1 - (cf2 * cf3 / cf4) })
 
 /**
@@ -123,7 +111,7 @@ private fun solveTriangleComplexFloat(
  * @param actionFirst x[i, j] /= a[i, i]
  * @param actionSecond x[k, j] -= a[k, i] * x[i, j] / a[k, k]
  */
-private inline fun <T> solveCommon(
+private inline fun <T> solveTriangleleCommon(
     a: MultiArray<T, D2>, x: D2Array<T>,
     isLowerTriangle: Boolean = true, actionFirst: (T, T) -> T, actionSecond: (T, T, T, T) -> T
 ): D2Array<T> {

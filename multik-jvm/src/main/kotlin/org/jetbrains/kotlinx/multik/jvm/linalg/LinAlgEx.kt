@@ -1,60 +1,50 @@
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
+import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
+import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.operations.CopyStrategy
 import org.jetbrains.kotlinx.multik.ndarray.operations.toType
 
 public object JvmLinAlgEx : LinAlgEx {
     override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> =
-        invDouble(if (mat.dtype == DataType.DoubleDataType) mat as MultiArray<Double, D2> else mat.toType())
+        solveCommon(mat, mk.identity(mat.shape[0], mat.dtype), mat.dtype)
 
     override fun invF(mat: MultiArray<Float, D2>): NDArray<Float, D2> =
-        invFloat(mat)
+        solveCommon(mat, mk.identity(mat.shape[0], mat.dtype), mat.dtype)
 
-    override fun <T : Complex> invC(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        return when (mat.dtype) {
-            DataType.ComplexDoubleDataType -> invComplexDouble(mat as MultiArray<ComplexDouble, D2>)
-            DataType.ComplexFloatDataType -> invComplexFloat(mat as MultiArray<ComplexFloat, D2>)
+    override fun <T : Complex> invC(mat: MultiArray<T, D2>): NDArray<T, D2> =
+        solveCommon(mat, mk.identity(mat.shape[0], mat.dtype), mat.dtype)
+
+    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> =
+        solveCommon(a, b, DataType.DoubleDataType)
+
+    override fun <D : Dim2> solveF(a: MultiArray<Float, D2>, b: MultiArray<Float, D>): NDArray<Float, D> =
+        solveCommon(a, b, DataType.FloatDataType)
+
+    override fun <T : Complex, D : Dim2> solveC(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> =
+        solveCommon(a, b, a.dtype)
+
+    private fun <T, O : Any, D : Dim2> solveCommon(a: MultiArray<T, D2>, b: MultiArray<T, D>, dtype: DataType): NDArray<O, D> {
+        requireSquare(a.shape)
+        requireDotShape(a.shape, b.shape)
+
+        val _a = a.toType<T, O, D2>(dtype, CopyStrategy.MEANINGFUL)
+        val bTyped = if (dtype == DataType.DoubleDataType) b.toType<T, O, D>(dtype, CopyStrategy.MEANINGFUL) else b
+        val _b = (if (bTyped.dim.d == 2) bTyped else bTyped.reshape(bTyped.shape[0], 1)) as MultiArray<T, D2>
+
+        val ans = when (dtype) {
+            DataType.DoubleDataType -> solveDouble(_a as D2Array<Double>, _b as D2Array<Double>)
+            DataType.FloatDataType -> solveFloat(_a as D2Array<Float>, _b as D2Array<Float>)
+            DataType.ComplexDoubleDataType -> solveComplexDouble(_a as D2Array<ComplexDouble>, _b as D2Array<ComplexDouble>)
+            DataType.ComplexFloatDataType -> solveComplexFloat(_a as D2Array<ComplexFloat>, _b as D2Array<ComplexFloat>)
             else -> throw UnsupportedOperationException()
-        } as NDArray<T, D2>
-    }
-
-    override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> {
-        val aDouble = if (a.dtype == DataType.DoubleDataType) a as MultiArray<Double, D2> else a.toType()
-
-        val bDouble = (if (b.dim.d == 2) b else b.reshape(b.shape[0], 1)) as MultiArray<Double, D2>
-
-        val ans = solveDouble(aDouble, bDouble)
-        return (if (b.dim.d == 2) ans else ans.reshape(ans.shape[0])) as NDArray<Double, D>
-    }
-
-    override fun <D : Dim2> solveF(a: MultiArray<Float, D2>, b: MultiArray<Float, D>): NDArray<Float, D> {
-        val bFloat = (if (b.dim.d == 2) b else b.reshape(b.shape[0], 1)) as MultiArray<Float, D2>
-
-        val ans = solveFloat(a, bFloat)
-        return (if (b.dim.d == 2) ans else ans.reshape(ans.shape[0])) as NDArray<Float, D>
-    }
-
-    override fun <T : Complex, D : Dim2> solveC(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> {
-        if (a.dtype != b.dtype) throw UnsupportedOperationException("Argument matrices should have same datatype")
-
-        return when (a.dtype) {
-            DataType.ComplexDoubleDataType -> {
-                val bComplexDouble =
-                    (if (b.dim.d == 2) b else b.reshape(b.shape[0], 1)) as MultiArray<ComplexDouble, D2>
-                val ans = solveComplexDouble(a as MultiArray<ComplexDouble, D2>, bComplexDouble)
-                if (b.dim.d == 2) ans else ans.reshape(ans.shape[0])
-            }
-            DataType.ComplexFloatDataType -> {
-                val bComplexDouble = (if (b.dim.d == 2) b else b.reshape(b.shape[0], 1)) as MultiArray<ComplexFloat, D2>
-                val ans = solveComplexFloat(a as MultiArray<ComplexFloat, D2>, bComplexDouble)
-                if (b.dim.d == 2) ans else ans.reshape(ans.shape[0])
-            }
-            else -> throw UnsupportedOperationException("Matrices should be complex")
-        } as NDArray<T, D>
+        }
+        return (if (b.dim.d == 2) ans else ans.reshape(ans.shape[0])) as NDArray<O, D>
     }
 
     override fun <T : Number> qr(mat: MultiArray<T, D2>): Pair<D2Array<Double>, D2Array<Double>> =
@@ -68,6 +58,29 @@ public object JvmLinAlgEx : LinAlgEx {
         DataType.ComplexDoubleDataType -> qrComplexDouble(mat as MultiArray<ComplexDouble, D2>)
         else -> throw UnsupportedOperationException("Matrix should be complex")
     } as Pair<D2Array<T>, D2Array<T>>
+
+    override fun <T : Number> plu(mat: MultiArray<T, D2>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Double>> =
+        pluCommon(mat, DataType.DoubleDataType)
+
+    override fun pluF(mat: MultiArray<Float, D2>): Triple<D2Array<Float>, D2Array<Float>, D2Array<Float>> =
+        pluCommon(mat, DataType.FloatDataType)
+
+    override fun <T : Complex> pluC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D2Array<T>, D2Array<T>> =
+        pluCommon(mat, mat.dtype)
+
+    private fun <T, O : Any> pluCommon(mat: MultiArray<T, D2>, dtype: DataType): Triple<D2Array<O>, D2Array<O>, D2Array<O>> {
+        val a = mat.toType<T, O, D2>(dtype, CopyStrategy.MEANINGFUL)
+        val (perm, L, U) = pluCompressed(a)
+
+        val P = mk.identity<O>(a.shape[0], dtype)
+
+        for (i in perm.indices.reversed()) {
+            if (perm[i] != 0) {
+                P[i] = P[i + perm[i]].deepCopy().also { P[i + perm[i]] = P[i].deepCopy() }
+            }
+        }
+        return Triple(P, L, U)
+    }
 
     override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> = dotMatrix(a, b)
 
