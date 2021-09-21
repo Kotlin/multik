@@ -11,5 +11,4 @@ include(
     ":multik-jvm",
     ":multik-native",
     "multik-native:multik_jni",
-    ":examples"
 )

@@ -19,7 +19,7 @@ plugins {
 
 val kotlinVersion: String by System.getProperties()
 val multikVersion: String by project
-val unpublished = listOf("multik", "examples", "multik_jni")
+val unpublished = listOf("multik", "multik_jni")
 
 allprojects {
     repositories {
