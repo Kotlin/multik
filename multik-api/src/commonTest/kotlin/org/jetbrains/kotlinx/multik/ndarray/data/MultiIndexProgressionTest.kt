@@ -40,6 +40,19 @@ class MultiIndexProgressionTest {
     }
 
     @Test
+    fun `test to single iterating`() {
+        val pro = intArrayOf(0, 0, 0)..intArrayOf(0, 0, 0)
+        var count = 0
+        var actual: IntArray? = null
+        for (i in pro) {
+            actual = i
+            count++
+        }
+        assertEquals(1, count)
+        assertTrue(intArrayOf(0, 0 , 0).contentEquals(actual))
+    }
+
+    @Test
     fun `test to get first`() {
         val first = intArrayOf(0, 2, 1)
         val last = intArrayOf(2, 3, 2)

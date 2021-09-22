@@ -19,13 +19,13 @@ public typealias D4Array<T> = NDArray<T, D4>
  * @param T type of stored values.
  * @param D dimension.
  */
-public class NDArray<T : Number, D : Dimension> constructor(
+public class NDArray<T, D : Dimension> constructor(
     data: ImmutableMemoryView<T>,
     public override val offset: Int = 0,
     public override val shape: IntArray,
     public override val strides: IntArray = computeStrides(shape),
-    public override val dtype: DataType,
-    public override val dim: D
+    public override val dim: D,
+    public override val base: MultiArray<T, out Dimension>? = null
 ) : MutableMultiArray<T, D> {
 
     init {
@@ -60,24 +60,31 @@ public class NDArray<T : Number, D : Dimension> constructor(
         if (consistent) this.data.iterator() else NDArrayIterator(data, offset, strides, shape)
 
     public inline fun <reified E : Number> asType(): NDArray<E, D> {
-        val dataType = DataType.of(E::class)
+        val dataType = DataType.ofKClass(E::class)
         return this.asType(dataType)
     }
 
+    //TODO ???
     public fun <E : Number> asType(dataType: DataType): NDArray<E, D> {
-        val newData = initMemoryView<E>(this.data.size, dataType) { this.data[it] as E }
-        return NDArray<E, D>(newData, this.offset, this.shape, this.strides, dataType, this.dim)
+        val newData = initMemoryView(this.data.size, dataType) { this.data[it] as E }
+        return NDArray(newData, this.offset, this.shape, this.strides, this.dim)
     }
 
-    override fun clone(): NDArray<T, D> =
-        NDArray(this.data.copyOf(), this.offset, this.shape.copyOf(), this.strides.copyOf(), this.dtype, this.dim)
+    override fun copy(): NDArray<T, D> =
+        NDArray(this.data.copyOf(), this.offset, this.shape.copyOf(), this.strides.copyOf(), this.dim)
 
     override fun deepCopy(): NDArray<T, D> {
-        val data = initMemoryView<T>(this.size, this.dtype)
-        var index = 0
-        for (el in this)
-            data[index++] = el
-        return NDArray<T, D>(data, 0, this.shape.copyOf(), dtype = this.dtype, dim = this.dim)
+        val data: MemoryView<T>
+
+        if (consistent) {
+            data = this.data.copyOf()
+        } else {
+            data = initMemoryView<T>(this.size, this.dtype)
+            var index = 0
+            for (el in this)
+                data[index++] = el
+        }
+        return NDArray(data, 0, this.shape.copyOf(), dim = this.dim)
     }
 
     override fun flatten(): MultiArray<T, D1> {
@@ -89,7 +96,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
             for (el in this) tmpData[index++] = el
             tmpData
         }
-        return D1Array(data, 0, intArrayOf(size), dtype = this.dtype, dim = D1)
+        return D1Array(data, 0, intArrayOf(size), dim = D1)
     }
 
     // TODO(strides? : view.reshape().reshape()?)
@@ -101,7 +108,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
         return if (this.dim.d == 1 && this.shape.first() == dim1) {
             this as D1Array<T>
         } else {
-            D1Array<T>(this.data, this.offset, intArrayOf(dim1), dtype = this.dtype, dim = D1)
+            D1Array(this.data, this.offset, intArrayOf(dim1), dim = D1, base = base ?: this)
         }
     }
 
@@ -113,7 +120,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
         return if (this.shape.contentEquals(newShape)) {
             this as D2Array<T>
         } else {
-            D2Array<T>(this.data, this.offset, newShape, dtype = this.dtype, dim = D2)
+            D2Array(this.data, this.offset, newShape, dim = D2, base = base ?: this)
         }
     }
 
@@ -125,7 +132,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
         return if (this.shape.contentEquals(newShape)) {
             this as D3Array<T>
         } else {
-            D3Array<T>(this.data, this.offset, newShape, dtype = this.dtype, dim = D3)
+            D3Array(this.data, this.offset, newShape, dim = D3, base = base ?: this)
         }
     }
 
@@ -137,7 +144,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
         return if (this.shape.contentEquals(newShape)) {
             this as D4Array<T>
         } else {
-            D4Array<T>(this.data, this.offset, newShape, dtype = this.dtype, dim = D4)
+            D4Array(this.data, this.offset, newShape, dim = D4, base = base ?: this)
         }
     }
 
@@ -151,7 +158,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
         return if (this.shape.contentEquals(newShape)) {
             this as NDArray<T, DN>
         } else {
-            NDArray<T, DN>(this.data, this.offset, newShape, dtype = this.dtype, dim = DN(newShape.size))
+            NDArray(this.data, this.offset, newShape, dim = DN(newShape.size), base = base ?: this)
         }
     }
 
@@ -159,6 +166,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
         require(axes.isEmpty() || axes.size == dim.d) { "All dimensions must be indicated." }
         for (axis in axes) require(axis in 0 until dim.d) { "Dimension must be from 0 to ${dim.d}." }
         require(axes.toSet().size == axes.size) { "The specified dimensions must be unique." }
+        if (dim.d == 1) return NDArray(this.data, this.offset, this.shape, this.strides, this.dim)
         val newShape: IntArray
         val newStrides: IntArray
         if (axes.isEmpty()) {
@@ -172,7 +180,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
                 newStrides[i] = this.strides[axis]
             }
         }
-        return NDArray(this.data, this.offset, newShape, newStrides, this.dtype, this.dim)
+        return NDArray(this.data, this.offset, newShape, newStrides, this.dim, base = base ?: this)
     }
 
     override fun squeeze(vararg axes: Int): NDArray<T, DN> {
@@ -183,7 +191,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
             axes.toList()
         }
         val newShape = this.shape.sliceArray(this.shape.indices - cutAxes)
-        return NDArray<T, DN>(this.data, this.offset, newShape, dtype = this.dtype, dim = DN(newShape.size))
+        return NDArray(this.data, this.offset, newShape, dim = DN(newShape.size), base = base ?: this)
     }
 
     override fun unsqueeze(vararg axes: Int): NDArray<T, DN> {
@@ -191,12 +199,12 @@ public class NDArray<T : Number, D : Dimension> constructor(
         for (axis in axes.sorted()) {
             newShape.add(axis, 1)
         }
-        return NDArray<T, DN>(
+        return NDArray(
             this.data,
             this.offset,
             newShape.toIntArray(),
-            dtype = this.dtype,
-            dim = DN(newShape.size)
+            dim = DN(newShape.size),
+            base = base ?: this
         )
     }
 
@@ -215,7 +223,6 @@ public class NDArray<T : Number, D : Dimension> constructor(
             initMemoryView(newShape.fold(1, Int::times), this.dtype),
             0,
             newShape,
-            dtype = this.dtype,
             dim = DN(newShape.size)
         )
         while (thisIt.hasNext())
@@ -251,7 +258,7 @@ public class NDArray<T : Number, D : Dimension> constructor(
         if (this.dim.d == -1) throw Exception("Array dimension is undefined")
         if (this.dim.d > 4) return this as NDArray<T, DN>
 
-        return NDArray(this.data, this.offset, this.shape, this.strides, this.dtype, DN(this.dim.d))
+        return NDArray(this.data, this.offset, this.shape, this.strides, DN(this.dim.d), base = base ?: this)
     }
 
     override fun equals(other: Any?): Boolean {

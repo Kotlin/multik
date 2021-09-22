@@ -40,7 +40,7 @@ public class MultiIndexProgression(public val first: IntArray, public val last: 
 internal class MultiIndexIterator(first: IntArray, last: IntArray, private val step: Int) : Iterator<IntArray> {
     private val startElement: IntArray = first.copyOf()
     private val finalElement: IntArray = last.copyOf()
-    private var hasNext: Boolean = if (step > 0) first < last else first > last
+    private var hasNext: Boolean = if (step > 0) first <= last else first >= last
 
     private val next = if (hasNext) first.copyOf().apply { this[lastIndex] -= step } else finalElement
 

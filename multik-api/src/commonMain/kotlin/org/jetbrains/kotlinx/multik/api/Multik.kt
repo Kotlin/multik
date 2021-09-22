@@ -5,6 +5,12 @@
 package org.jetbrains.kotlinx.multik.api
 
 import kotlin.native.concurrent.ThreadLocal
+import org.jetbrains.kotlinx.multik.api.Multik.engine
+import org.jetbrains.kotlinx.multik.api.Multik.engines
+import org.jetbrains.kotlinx.multik.api.Multik.linalg
+import org.jetbrains.kotlinx.multik.api.Multik.math
+import org.jetbrains.kotlinx.multik.api.Multik.stat
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 
 /**
  * Abbreviated name for [Multik].

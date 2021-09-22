@@ -5,9 +5,12 @@
 package org.jetbrains.kotlinx.multik.jvm
 
 import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlg
 
 
 public class JvmEngine : Engine() {
+
     override val name: String
         get() = type.name
 

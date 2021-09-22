@@ -16,7 +16,7 @@ plugins {
 
 val kotlinVersion: String by System.getProperties()
 val multikVersion: String by project
-val unpublished = listOf("multik", "examples", "benchmarks")
+val unpublished = listOf("multik", "multik_jni")
 
 allprojects {
     repositories {
@@ -27,7 +27,6 @@ allprojects {
     version = multikVersion
 
 }
-
 
 configure(subprojects.filter { it.name !in unpublished }) {
     //apply("$rootDir/gradle/publish.gradle")

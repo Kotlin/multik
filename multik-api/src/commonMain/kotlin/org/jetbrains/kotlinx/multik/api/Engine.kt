@@ -4,6 +4,8 @@
 
 package org.jetbrains.kotlinx.multik.api
 
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+
 public sealed class EngineType(public val name: String)
 
 public object DefaultEngineType : EngineType("DEFAULT")

@@ -4,10 +4,14 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+
 @PublishedApi
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun requireDimension(dim: Dimension, shapeSize: Int) {
-    require(dim.d == shapeSize) { "Dimension doesn't match the size of the shape: dimension (${dim.d}) != $shapeSize shape size." }
+    require(dim.d == shapeSize || (dim.d > 4 && shapeSize > 4))
+    { "Dimension doesn't match the size of the shape: dimension (${dim.d}) != $shapeSize shape size." }
 }
 
 @PublishedApi
@@ -23,7 +27,7 @@ internal inline fun requireElementsWithShape(elementSize: Int, shapeSize: Int) {
 
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun requireArraySizes(rightSize: Int, otherSize: Int) {
-    require(rightSize == otherSize) { "Array sizes don't match: (right operand size) ${rightSize}!= ${otherSize} (left operand size)" }
+    require(rightSize == otherSize) { "Array sizes don't match: (right operand size) $rightSize != $otherSize (left operand size)" }
 }
 
 @Suppress("NOTHING_TO_INLINE")
@@ -40,14 +44,15 @@ internal fun computeStrides(shape: IntArray): IntArray = shape.copyOf().apply {
 
 //TODO(create module utils)
 @Suppress("NOTHING_TO_INLINE")
-/*internal*/public inline fun zeroNumber(dtype: DataType): Number = when (dtype.nativeCode) {
-    1 -> 0.toByte()
-    2 -> 0.toShort()
-    3 -> 0
-    4 -> 0L
-    5 -> 0f
-    6 -> 0.0
-    else -> throw Exception("Type not defined.")
+/*internal*/public inline fun zeroNumber(dtype: DataType): Any = when (dtype) {
+    DataType.ByteDataType -> 1.toByte()
+    DataType.ShortDataType -> 1.toShort()
+    DataType.IntDataType -> 1
+    DataType.LongDataType -> 1L
+    DataType.FloatDataType -> 1f
+    DataType.DoubleDataType -> 1.0
+    DataType.ComplexFloatDataType -> ComplexFloat.zero
+    DataType.ComplexDoubleDataType -> ComplexDouble.zero
 }
 
 @PublishedApi

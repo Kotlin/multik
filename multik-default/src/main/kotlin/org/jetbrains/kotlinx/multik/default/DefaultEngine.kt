@@ -5,8 +5,9 @@
 package org.jetbrains.kotlinx.multik.default
 
 import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+import org.jetbrains.kotlinx.multik.default.linalg.DefaultLinAlg
 import org.jetbrains.kotlinx.multik.jni.NativeEngine
-
 
 public class DefaultEngine : Engine() {
     override val name: String

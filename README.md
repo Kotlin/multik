@@ -45,6 +45,8 @@ dependencies {
 
 ## Quickstart
 
+Visit [Multik documentation](https://kotlin.github.io/multik) for a detailed feature overview.
+
 #### Creating arrays
 
 ```kotlin
@@ -222,14 +224,6 @@ Run `./gradlew assemble` to build all modules.
 
 ## Testing
 `./gradlew test`
-
-## Benchmarks
-
-The benchmark code be found in `src/jmh` folder. To run the benchmarks, run following commands:
-```
-./gradlew assemble benchmarkJar
-java -jar ./build/libs/multik-benchmark.jar
-```
 
 ## Contributing
 There is an opportunity to contribute to the project:
