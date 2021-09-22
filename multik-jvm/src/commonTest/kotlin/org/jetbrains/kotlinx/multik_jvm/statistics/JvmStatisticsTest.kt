@@ -21,26 +21,26 @@ class JvmStatisticsTest {
     }
 
     @Test
-    fun `test median`() {
+    fun `test_median`() {
         val a = mk.ndarray(mk[mk[10, 7, 4], mk[3, 2, 1]])
         println(mk.stat.median(a))
     }
 
     @Test
-    fun `test simple average`() {
+    fun `test_simple_average`() {
         val a = mk.arange<Long>(1, 11, 1)
         assertEquals(mk.stat.mean(a), mk.stat.average(a))
     }
 
     @Test
-    fun `test average with weights`() {
+    fun `test_average_with_weights`() {
         val a = mk.arange<Long>(1, 11, 1)
         val weights = mk.arange<Long>(10, 0, -1)
         assertEquals(4.0, mk.stat.average(a, weights))
     }
 
     @Test
-    fun `test of mean function on a 3-d ndarray`() {
+    fun `test_of_mean_function_on_a_3d_ndarray`() {
         val ndarray = mk.ndarray(mk[mk[mk[0, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[3.0, 5.666666666666667], mk[5.666666666666667, 7.666666666666667]])
@@ -53,13 +53,13 @@ class JvmStatisticsTest {
     }
 
     @Test
-    fun `test of mean function on a flat ndarray`() {
+    fun `test_of_mean_function_on_a_flat_ndarray`() {
         val ndarray = mk.ndarray(mk[1, 2, 3, 4])
         assertEquals(2.5, JvmStatistics.mean(ndarray))
     }
 
     @Test
-    fun `test of mean function on a 2-d ndarray`() {
+    fun `test_of_mean_function_on_a_2d_ndarray`() {
         val ndarray = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
         assertEquals(2.5, JvmStatistics.mean(ndarray))
     }

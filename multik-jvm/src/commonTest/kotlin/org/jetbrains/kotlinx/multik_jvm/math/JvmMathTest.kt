@@ -24,7 +24,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test of argMax function Double`() {
+    fun `test_of_argMax_function_Double`() {
         val ndarray1 = mk.ndarray(mk[0.008830892, 0.7638366187, -0.0401326368965, -0.269757419187])
         val ndarray2 = mk.ndarray(mk[0.0088308926050, 0.763836618743, Double.NaN, -0.2697574191872])
 
@@ -33,7 +33,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test of argMax function with axis`() {
+    fun `test_of_argMax_function_with_axis`() {
         val ndarray = mk.ndarray(mk[mk[mk[50, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[0, 2], mk[2, 2]])
@@ -45,7 +45,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test of argMin function with axis`() {
+    fun `test_of_argMin_function_with_axis`() {
         val ndarray = mk.ndarray(mk[mk[mk[50, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[1, 0], mk[0, 0]])
@@ -57,7 +57,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test of max function with axis`() {
+    fun `test_of_max_function_with_axis`() {
         val ndarray = mk.ndarray(mk[mk[mk[0, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[7, 9], mk[10, 11]])
@@ -70,7 +70,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test of min function with axis`() {
+    fun `test_of_min_function_with_axis`() {
         val ndarray = mk.ndarray(mk[mk[mk[0, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[0, 3], mk[1, 4]])
@@ -83,13 +83,13 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test of sum function with axis on flat ndarray`() {
+    fun `test_of_sum_function_with_axis_on_flat_ndarray`() {
         val ndarray = mk.ndarray(mk[0, 3, 1, 4])
         assertFailsWith<IllegalArgumentException> { JvmMath.sum<Int, D1, D1>(ndarray, 0) }
     }
 
     @Test
-    fun `test of sum function with axis on 2-d ndarray`() {
+    fun `test_of_sum_function_with_axis_on_2d_ndarray`() {
         val ndarray = mk.ndarray(mk[mk[0, 3], mk[1, 4]])
 
         val expectedWith0Axis = mk.ndarray(mk[1, 7])
@@ -100,7 +100,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test of sum function with axis on 3-d ndarray`() {
+    fun `test_of_sum_function_with_axis_on_3d_ndarray`() {
         val ndarray = mk.ndarray(mk[mk[mk[0, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[9, 17], mk[17, 23]])
@@ -113,13 +113,13 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test of sum function with third axis on 2-d ndarray`() {
+    fun `test_of_sum_function_with_third_axis_on_2d_ndarray`() {
         val ndarray = mk.ndarray(mk[mk[0, 3], mk[1, 4]])
         assertFailsWith<IllegalArgumentException> { JvmMath.sumD2(ndarray, 2) }
     }
 
     @Test
-    fun `test of cumSum function with axis on 3-d ndarray`() {
+    fun `test_of_cumSum_function_with_axis_on_3d_ndarray`() {
         val ndarray = mk.ndarray(mk[mk[mk[0, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis =

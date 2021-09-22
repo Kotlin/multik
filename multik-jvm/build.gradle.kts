@@ -65,8 +65,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 api(project(":multik-api"))
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
+                implementation(kotlin("test"))
             }
         }
         val jvmMain by getting {
@@ -74,12 +73,7 @@ kotlin {
                 implementation(kotlin("reflect"))
             }
         }
-        val jvmTest by getting {
-            dependencies {
-                implementation(kotlin("reflect"))
-                implementation(kotlin("test-junit"))
-            }
-        }
+        val jvmTest by getting
         val nativeMain by getting
         val nativeTest by getting
         val iosArm64Main by getting
