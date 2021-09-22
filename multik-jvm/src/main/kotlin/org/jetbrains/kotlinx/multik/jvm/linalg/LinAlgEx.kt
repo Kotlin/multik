@@ -76,9 +76,12 @@ public object JvmLinAlgEx : LinAlgEx {
 
         for (i in perm.indices.reversed()) {
             if (perm[i] != 0) {
-                P[i] = P[i + perm[i]].deepCopy().also { P[i + perm[i]] = P[i].deepCopy() }
+                for (k in 0 until P.shape[1]) {
+                    P[i, k] = P[i + perm[i], k].also { P[i + perm[i], k] = P[i, k] }
+                }
             }
         }
+
         return Triple(P, L, U)
     }
 

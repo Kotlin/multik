@@ -15,17 +15,14 @@ public object DefaultLinAlgEx : LinAlgEx {
         NativeEngine
     }
 
-    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> {
-        TODO("Not yet implemented")
-    }
+    override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> =
+        NativeLinAlgEx.inv(mat)
 
-    override fun invF(mat: MultiArray<Float, D2>): NDArray<Float, D2> {
-        TODO("Not yet implemented")
-    }
+    override fun invF(mat: MultiArray<Float, D2>): NDArray<Float, D2> =
+        NativeLinAlgEx.invF(mat)
 
-    override fun <T : Complex> invC(mat: MultiArray<T, D2>): NDArray<T, D2> {
-        TODO("Not yet implemented")
-    }
+    override fun <T : Complex> invC(mat: MultiArray<T, D2>): NDArray<T, D2> =
+        NativeLinAlgEx.invC(mat)
 
     override fun <T : Number, D : Dim2> solve(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<Double, D> =
         NativeLinAlgEx.solve(a, b)
@@ -44,6 +41,15 @@ public object DefaultLinAlgEx : LinAlgEx {
 
     override fun <T : Complex> qrC(mat: MultiArray<T, D2>): Pair<D2Array<T>, D2Array<T>> =
         NativeLinAlgEx.qrC(mat)
+
+    override fun <T : Number> plu(mat: MultiArray<T, D2>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Double>> =
+        NativeLinAlgEx.plu(mat)
+
+    override fun pluF(mat: MultiArray<Float, D2>): Triple<D2Array<Float>, D2Array<Float>, D2Array<Float>> =
+        NativeLinAlgEx.pluF(mat)
+
+    override fun <T : Complex> pluC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D2Array<T>, D2Array<T>> =
+        NativeLinAlgEx.pluC(mat)
 
     override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> =
         when (a.dtype) {

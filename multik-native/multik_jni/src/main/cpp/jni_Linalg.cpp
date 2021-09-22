@@ -182,6 +182,78 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qr
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    plu
+ * Signature: (II[FI[I)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_plu__II_3FI_3I
+	(JNIEnv *env, jobject jobj, jint m, jint n, jfloatArray j_a, jint lda, jintArray j_ipiv) {
+  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *IPIV = (int *)env->GetPrimitiveArrayCritical(j_ipiv, nullptr);
+
+  int info = plu_matrix(m, n, A, lda, IPIV);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_ipiv, IPIV, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    plu
+ * Signature: (II[DI[I)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_plu__II_3DI_3I
+	(JNIEnv *env, jobject jobj, jint m, jint n, jdoubleArray j_a, jint lda, jintArray j_ipiv) {
+  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *IPIV = (int *)env->GetPrimitiveArrayCritical(j_ipiv, nullptr);
+
+  int info = plu_matrix(m, n, A, lda, IPIV);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_ipiv, IPIV, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    pluC
+ * Signature: (II[FI[I)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_pluC__II_3FI_3I
+	(JNIEnv *env, jobject jobj, jint m, jint n, jfloatArray j_a, jint lda, jintArray j_ipiv) {
+  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *IPIV = (int *)env->GetPrimitiveArrayCritical(j_ipiv, nullptr);
+
+  int info = plu_matrix_complex(m, n, A, lda, IPIV);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_ipiv, IPIV, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    pluC
+ * Signature: (II[DI[I)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_pluC__II_3DI_3I
+	(JNIEnv *env, jobject jobj, jint m, jint n, jdoubleArray j_a, jint lda, jintArray j_ipiv) {
+  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *IPIV = (int *)env->GetPrimitiveArrayCritical(j_ipiv, nullptr);
+
+  int info = plu_matrix_complex(m, n, A, lda, IPIV);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_ipiv, IPIV, 0);
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    solve
  * Signature: (II[FI[FI)I
  */

@@ -25,6 +25,11 @@ internal object JniLinAlg {
     external fun qrC(m: Int, n: Int, qa: FloatArray, lda: Int, r: FloatArray): Int
     external fun qrC(m: Int, n: Int, qa: DoubleArray, lda: Int, r: DoubleArray): Int
 
+    external fun plu(m: Int, n: Int, a: FloatArray, lda: Int, ipiv: IntArray): Int
+    external fun plu(m: Int, n: Int, a: DoubleArray, lda: Int, ipiv: IntArray): Int
+    external fun pluC(m: Int, n: Int, a: FloatArray, lda: Int, ipiv: IntArray): Int
+    external fun pluC(m: Int, n: Int, a: DoubleArray, lda: Int, ipiv: IntArray): Int
+
     /**
      * @param n
      * @param nrhs

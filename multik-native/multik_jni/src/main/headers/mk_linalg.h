@@ -176,6 +176,24 @@ int qr_matrix_complex(int m, int n, double *AQ, int lda, double *R) {
   return LAPACKE_zungqr(LAPACK_ROW_MAJOR, m, mn, mn, aq, lda, tau);
 }
 
+int plu_matrix(int m, int n, float *A, int lda, int *IPIV) {
+  return LAPACKE_sgetrf(LAPACK_ROW_MAJOR, m, n, A, lda, IPIV);
+}
+
+int plu_matrix(int m, int n, double *A, int lda, int *IPIV) {
+  return LAPACKE_dgetrf(LAPACK_ROW_MAJOR, m, n, A, lda, IPIV);
+}
+
+int plu_matrix_complex(int m, int n, float *A, int lda, int *IPIV) {
+  lapack_complex_float *a = (lapack_complex_float *)A;
+  return LAPACKE_cgetrf(LAPACK_ROW_MAJOR, m, n, a, lda, IPIV);
+}
+
+int plu_matrix_complex(int m, int n, double *A, int lda, int *IPIV) {
+  lapack_complex_double *a = (lapack_complex_double *)A;
+  return LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n, a, lda, IPIV);
+}
+
 void matrix_dot(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,
 				bool trans_b, int offsetB, float *B, int ldb, float *C) {
   float alpha = 1.0, beta = 0.0;

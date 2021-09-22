@@ -11,10 +11,8 @@ internal fun solveDouble(
     val (P, L, U) = pluCompressed(a)
     val _b = b.deepCopy() as D2Array<Double>
 
-    for (i in P.indices) {
-        if (P[i] != 0) {
-            _b[i] = _b[i + P[i]].deepCopy().also { _b[i + P[i]] = _b[i].deepCopy() }
-        }
+    swapLines(P, to2 = _b.shape[1]) { i, k ->
+        _b[i, k] = _b[i + P[i], k].also { _b[i + P[i], k] = _b[i, k] }
     }
     for (i in 0 until U.shape[0]) {
         if (abs(U[i, i]) < singularityErrorLevel) {
@@ -31,10 +29,8 @@ internal fun solveFloat(
     val (P, L, U) = pluCompressed(a)
     val _b = b.deepCopy() as D2Array<Float>
 
-    for (i in P.indices) {
-        if (P[i] != 0) {
-            _b[i] = _b[i + P[i]].deepCopy().also { _b[i + P[i]] = _b[i].deepCopy() }
-        }
+    swapLines(P, to2 = _b.shape[1]) { i, k ->
+        _b[i, k] = _b[i + P[i], k].also { _b[i + P[i], k] = _b[i, k] }
     }
     for (i in 0 until U.shape[0]) {
         if (abs(U[i, i]) < singularityErrorLevel) {
@@ -51,10 +47,8 @@ internal fun solveComplexDouble(
     val (P, L, U) = pluCompressed(a)
     val _b = b.deepCopy() as D2Array<ComplexDouble>
 
-    for (i in P.indices) {
-        if (P[i] != 0) {
-            _b[i] = _b[i + P[i]].deepCopy().also { _b[i + P[i]] = _b[i].deepCopy() }
-        }
+    swapLines(P, to2 = _b.shape[1]) { i, k ->
+        _b[i, k] = _b[i + P[i], k].also { _b[i + P[i], k] = _b[i, k] }
     }
     for (i in 0 until U.shape[0]) {
         if (U[i, i].abs() < singularityErrorLevel) {
@@ -71,10 +65,8 @@ internal fun solveComplexFloat(
     val (P, L, U) = pluCompressed(a)
     val _b = b.deepCopy() as D2Array<ComplexFloat>
 
-    for (i in P.indices) {
-        if (P[i] != 0) {
-            _b[i] = _b[i + P[i]].deepCopy().also { _b[i + P[i]] = _b[i].deepCopy() }
-        }
+    swapLines(P, to2 = _b.shape[1]) { i, k ->
+        _b[i, k] = _b[i + P[i], k].also { _b[i + P[i], k] = _b[i, k] }
     }
     for (i in 0 until U.shape[0]) {
         if (U[i, i].abs() < singularityErrorLevel) {
