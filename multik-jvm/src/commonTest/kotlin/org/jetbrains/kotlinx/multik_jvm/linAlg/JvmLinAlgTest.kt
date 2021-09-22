@@ -27,7 +27,7 @@ import kotlin.test.*
 class JvmLinAlgTest {
 
     @Test
-    fun `test of norm function with p=1`() {
+    fun `test_of_norm_function_with_p=1`() {
         val d2arrayDouble1 = mk.ndarray(mk[mk[1.0, 2.0], mk[3.0, 4.0]])
         val d2arrayDouble2 = mk.ndarray(mk[mk[-1.0, -2.0], mk[-3.0, -4.0]])
 
@@ -68,7 +68,7 @@ class JvmLinAlgTest {
     }
 
     @Test
-    fun `test plu`() {
+    fun `test_plu`() {
 
         // Number case
         val procedurePrecision = 1e-5
@@ -124,7 +124,7 @@ class JvmLinAlgTest {
     }
 
     @Test
-    fun `solve test`() {
+    fun `solve_test`() {
         // double case
         val procedurePrecision = 1e-5
         val rnd = Random(424242)
@@ -355,7 +355,7 @@ class JvmLinAlgTest {
     }
 
     @Test
-    fun `test upper hessenberg form`() {
+    fun `test_upper_hessenberg_form`() {
         val n = 300
         val mat = getRandomMatrixComplexDouble(n, n)
         val (Q, H) = upperHessenberg(mat)
@@ -380,7 +380,7 @@ class JvmLinAlgTest {
 
 
     @Test
-    fun `test qr`() {
+    fun `test_qr`() {
         val n = 100
         val mat = getRandomMatrixComplexDouble(n, n)
         val (q, r) = qrComplexDouble(mat)
@@ -402,7 +402,7 @@ class JvmLinAlgTest {
     }
 
     @Test
-    fun `test Schur decomposition`() {
+    fun `test_Schur_decomposition`() {
         for (attempt in 0 until 5) {
 
             val n = when(attempt) {
@@ -436,7 +436,7 @@ class JvmLinAlgTest {
 
 
     @Test
-    fun `test eigenvalues`() {
+    fun `test_eigenvalues`() {
         val precision = 1e-2
         val n = 50
         val R = getRandomMatrixComplexDouble(n, n, -1000.0, 1000.0)

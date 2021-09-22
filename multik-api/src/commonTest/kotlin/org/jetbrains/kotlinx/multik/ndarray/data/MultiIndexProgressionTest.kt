@@ -12,7 +12,7 @@ import kotlin.test.assertTrue
 class MultiIndexProgressionTest {
 
     @Test
-    fun `test of iterating`() {
+    fun `test_of_iterating`() {
         val prog = intArrayOf(0, 2, 1)..intArrayOf(2, 3, 2)
         val expected = mapOf(
             0 to intArrayOf(0, 2, 1),
@@ -40,7 +40,7 @@ class MultiIndexProgressionTest {
     }
 
     @Test
-    fun `test to single iterating`() {
+    fun `test_to_single_iterating`() {
         val pro = intArrayOf(0, 0, 0)..intArrayOf(0, 0, 0)
         var count = 0
         var actual: IntArray? = null
@@ -53,7 +53,7 @@ class MultiIndexProgressionTest {
     }
 
     @Test
-    fun `test to get first`() {
+    fun `test_to_get_first`() {
         val first = intArrayOf(0, 2, 1)
         val last = intArrayOf(2, 3, 2)
         val prog = first..last
@@ -61,7 +61,7 @@ class MultiIndexProgressionTest {
     }
 
     @Test
-    fun `test to get last`() {
+    fun `test_to_get_last`() {
         val first = intArrayOf(0, 2, 1)
         val last = intArrayOf(2, 3, 2)
         val prog = first..last
@@ -69,13 +69,13 @@ class MultiIndexProgressionTest {
     }
 
     @Test
-    fun `test to get step`() {
+    fun `test_to_get_step`() {
         val prog = intArrayOf(2, 3, 2) downTo intArrayOf(0, 2, 1)
         assertEquals(-1, prog.step)
     }
 
     @Test
-    fun `test reversed`() {
+    fun `test_reversed`() {
         val prog = intArrayOf(0, 2, 1)..intArrayOf(2, 3, 2)
         val expected = mapOf(
             11 to intArrayOf(0, 2, 1),
