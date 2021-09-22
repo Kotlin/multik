@@ -4,6 +4,8 @@
 
 package org.jetbrains.kotlinx.multik.api
 
+import kotlin.native.concurrent.ThreadLocal
+
 /**
  * Abbreviated name for [Multik].
  */
@@ -24,6 +26,7 @@ public typealias mk = Multik
  * @property linalg returns the [LinAlg] implementation of the corresponding engine.
  * @property stat returns the [Statistics] implementation of the corresponding engine.
  */
+@ThreadLocal
 public object Multik {
     public val engine: String? get() = Engine.getDefaultEngine()
 

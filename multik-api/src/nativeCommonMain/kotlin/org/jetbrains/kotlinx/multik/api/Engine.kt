@@ -1,7 +1,8 @@
 package org.jetbrains.kotlinx.multik.api
 
+import kotlin.native.concurrent.ThreadLocal
 
-
+@ThreadLocal
 public actual val enginesProvider : Set<Engine> =
     mutableSetOf()
 
