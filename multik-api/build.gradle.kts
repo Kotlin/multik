@@ -32,6 +32,7 @@ kotlin {
     }
     iosArm64()
     iosX64()
+    js()
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         binaries.all {

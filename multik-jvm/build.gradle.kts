@@ -45,6 +45,8 @@ kotlin {
         }
     }
 
+    js()
+
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         binaries.all {
             freeCompilerArgs = freeCompilerArgs + "-Xallocator=mimalloc"
