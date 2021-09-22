@@ -45,7 +45,10 @@ kotlin {
         }
     }
 
-    js()
+    js {
+        browser()
+        nodejs()
+    }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         binaries.all {
