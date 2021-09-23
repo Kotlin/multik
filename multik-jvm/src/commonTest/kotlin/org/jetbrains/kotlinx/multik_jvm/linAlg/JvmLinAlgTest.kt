@@ -7,6 +7,7 @@ package org.jetbrains.kotlinx.multik_jvm.linAlg
 
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.api.linalg.dot
+import org.jetbrains.kotlinx.multik.jvm.JvmEngine
 import org.jetbrains.kotlinx.multik.jvm.linalg.*
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solve
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solveC
@@ -25,6 +26,12 @@ import kotlin.random.Random
 import kotlin.test.*
 
 class JvmLinAlgTest {
+
+    @BeforeTest
+    fun setup() {
+        // init engines on native. This does nothing on jvm which uses reflection
+        initEnginesProvider(listOf(JvmEngine()))
+    }
 
     @Test
     fun `test_of_norm_function_with_p_equals_1`() {
