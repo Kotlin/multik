@@ -1308,6 +1308,22 @@ public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(dtype: DataType, 
                 }
             }
         }
+        isNumber && dtype == DataType.ComplexFloatDataType -> {
+            val d = view.getComplexFloatArray()
+            var count = 0
+            iterData as Iterator<Number>
+            while (iterData.hasNext()) {
+                d[count++] = ComplexFloat(iterData.next(), 0f)
+            }
+        }
+        isNumber && dtype == DataType.ComplexDoubleDataType -> {
+            val d = view.getComplexDoubleArray()
+            var count = 0
+            iterData as Iterator<Number>
+            while (iterData.hasNext()) {
+                d[count++] = ComplexDouble(iterData.next(), 0.0)
+            }
+        }
         isNumber && dtype == DataType.ShortDataType -> {
             val d = view.getShortArray()
             var count = 0

@@ -68,6 +68,27 @@ public object JvmLinAlgEx : LinAlgEx {
     override fun <T : Complex> pluC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D2Array<T>, D2Array<T>> =
         pluCommon(mat, mat.dtype)
 
+    override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun <T : Number> eigVals(mat: MultiArray<T, D2>): D1Array<ComplexDouble> =
+        eigenValuesCommon(mat, DataType.ComplexDoubleDataType)
+
+    override fun eigValsF(mat: MultiArray<Float, D2>): D1Array<ComplexFloat> =
+        eigenValuesCommon(mat, DataType.ComplexFloatDataType)
+
+    override fun <T : Complex> eigValsC(mat: MultiArray<T, D2>): D1Array<T> =
+        eigenValuesCommon(mat, mat.dtype)
+
     private fun <T, O : Any> pluCommon(mat: MultiArray<T, D2>, dtype: DataType): Triple<D2Array<O>, D2Array<O>, D2Array<O>> {
         val a = mat.toType<T, O, D2>(dtype, CopyStrategy.MEANINGFUL)
         val (perm, L, U) = pluCompressed(a)
