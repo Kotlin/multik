@@ -27,7 +27,7 @@ import kotlin.test.*
 class JvmLinAlgTest {
 
     @Test
-    fun `test_of_norm_function_with_p=1`() {
+    fun `test_of_norm_function_with_p_equals_1`() {
         val d2arrayDouble1 = mk.ndarray(mk[mk[1.0, 2.0], mk[3.0, 4.0]])
         val d2arrayDouble2 = mk.ndarray(mk[mk[-1.0, -2.0], mk[-3.0, -4.0]])
 

@@ -16,10 +16,6 @@ public class DefaultEngine : Engine() {
     override val type: EngineType
         get() = DefaultEngineType
 
-    init {
-        NativeEngine
-    }
-
     override fun getMath(): Math {
         return DefaultMath
     }

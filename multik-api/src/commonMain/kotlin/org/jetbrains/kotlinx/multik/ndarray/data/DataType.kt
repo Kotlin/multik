@@ -64,19 +64,20 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
         /**
          * Returns [DataType] by class of [element].
          */
-        public fun <T> of(element: T): DataType {
-            return when (element) {
-                is Byte -> ByteDataType
-                is Short -> ShortDataType
-                is Int -> IntDataType
-                is Long -> LongDataType
-                is Float -> FloatDataType
-                is Double -> DoubleDataType
-                is ComplexFloat -> ComplexFloatDataType
-                is ComplexDouble -> ComplexDoubleDataType
+        public inline fun <reified T> of(element: T): DataType {
+            return when (T::class) {
+                Byte::class -> ByteDataType
+                Short::class -> ShortDataType
+                Int::class -> IntDataType
+                Long::class -> LongDataType
+                Float::class -> FloatDataType
+                Double::class -> DoubleDataType
+                ComplexFloat::class -> ComplexFloatDataType
+                ComplexDouble::class -> ComplexDoubleDataType
                 else -> throw IllegalStateException("One of the primitive types was expected")
             }
         }
+
 
         /**
          * Returns [DataType] by [KClass] of [type]. [T] is `reified` type.
