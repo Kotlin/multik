@@ -3,6 +3,7 @@ package org.jetbrains.kotlinx.multik.jvm.linalg
 import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.math.cos
 import kotlin.math.sin
@@ -13,6 +14,18 @@ internal fun requireSquare(shape: IntArray) {
 }
 
 // return hermitian transposed copy of matrix
+@JvmName("conjTransposeFloat")
+internal fun NDArray<ComplexFloat, D2>.conjTranspose(): D2Array<ComplexFloat> {
+    val ans = mk.empty<ComplexFloat, D2>(this.shape[1], this.shape[0])
+    for (i in 0 until ans.shape[0]) {
+        for (j in 0 until ans.shape[1]) {
+            ans[i, j] = this[j, i].conjugate()
+        }
+    }
+    return ans
+}
+
+@JvmName("conjTransposeDouble")
 internal fun NDArray<ComplexDouble, D2>.conjTranspose(): D2Array<ComplexDouble> {
     val ans = mk.empty<ComplexDouble, D2>(this.shape[1], this.shape[0])
     for (i in 0 until ans.shape[0]) {
@@ -32,6 +45,12 @@ internal fun requireDotShape(aShape: IntArray, bShape: IntArray) = require(aShap
 
 // computes some square root of complex number
 // guarantee csqrt(a) * csqrt(a) = a
+fun csqrt(a: ComplexFloat): ComplexFloat {
+    val arg = a.angle()
+    val absval = a.abs()
+    return ComplexFloat(sqrt(absval) * cos(arg / 2), sqrt(absval) * sin(arg / 2))
+}
+
 fun csqrt(a: ComplexDouble): ComplexDouble {
     val arg = a.angle()
     val absval = a.abs()

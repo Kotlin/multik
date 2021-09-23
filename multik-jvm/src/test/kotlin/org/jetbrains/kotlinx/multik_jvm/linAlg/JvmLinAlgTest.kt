@@ -358,7 +358,7 @@ class JvmLinAlgTest {
     fun `test upper hessenberg form`() {
         val n = 300
         val mat = getRandomMatrixComplexDouble(n, n)
-        val (Q, H) = upperHessenberg(mat)
+        val (Q, H) = upperHessenbergDouble(mat.deepCopy())
 
         // check H is upper Hessenberg
         for (i in 2 until H.shape[0]) {
@@ -415,7 +415,7 @@ class JvmLinAlgTest {
             }
 
             val mat = getRandomMatrixComplexDouble(n, n)
-            val (q, r) = schurDecomposition(mat)
+            val (q, r) = schurDecomposition(mat.deepCopy())
 
             // assert decomposition is valid
             assertCloseComplex(dotMatrixComplex(dotMatrixComplex(q, r), q.conjTranspose()), mat, 1e-5)
@@ -453,7 +453,7 @@ class JvmLinAlgTest {
 
         var trueEigavals = List<ComplexDouble>(n) { i -> R[i, i] }
 
-        val eigs = eigC(mat)
+        val eigs = JvmLinAlgEx.eigValsC(mat)
 
         var testedEigenvals = List<ComplexDouble>(n) { i -> eigs[i] }
 
