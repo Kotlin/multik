@@ -5,6 +5,7 @@ import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import kotlin.jvm.JvmName
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
