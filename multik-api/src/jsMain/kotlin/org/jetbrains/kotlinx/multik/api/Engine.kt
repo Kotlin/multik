@@ -1,10 +1,12 @@
 package org.jetbrains.kotlinx.multik.api
 
 
-public actual val enginesProvider : Set<Engine> =
-    mutableSetOf()
+public actual val enginesProvider : Map<EngineType, Engine> = HashMap()
 
 
 public actual fun initEnginesProvider(engines: List<Engine>) {
-    (enginesProvider as MutableSet).addAll(engines)
+    engines.forEach {
+        (enginesProvider as HashMap)[it.type] = it
+    }
+    Engine.loadEngine()
 }
