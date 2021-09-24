@@ -1,5 +1,6 @@
 package org.jetbrains.kotlinx.multik.jni.linalg
 
+import org.jetbrains.kotlinx.multik.api.d1arrayComplex
 import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
@@ -122,6 +123,72 @@ public object NativeLinAlgEx : LinAlgEx {
             DataType.ComplexDoubleDataType -> pluCommon(mat, mat.dtype, ComplexDouble.one as T)
             else -> throw UnsupportedOperationException()
         }
+
+    override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> =
+        eigCommon<Double, ComplexDouble>(mat.toType(CopyStrategy.MEANINGFUL), true)
+            as Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>>
+
+    override fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>> =
+        eigCommon<Float, ComplexFloat>(mat.deepCopy(), true)
+            as Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>>
+
+    override fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>> =
+        eigCommon<T, T>(mat.deepCopy(), true) as Pair<D1Array<T>, D2Array<T>>
+
+    override fun <T : Number> eigVals(mat: MultiArray<T, D2>): D1Array<ComplexDouble> =
+        eigCommon<Double, ComplexDouble>(mat.toType(CopyStrategy.MEANINGFUL), false).first
+
+    override fun eigValsF(mat: MultiArray<Float, D2>): D1Array<ComplexFloat> =
+        eigCommon<Float, ComplexFloat>(mat.deepCopy(), false).first
+
+    override fun <T : Complex> eigValsC(mat: MultiArray<T, D2>): D1Array<T> =
+        eigCommon<T, T>(mat.deepCopy(), false).first
+
+    private fun <T, O : Complex> eigCommon(mat: MultiArray<T, D2>, computeVectors: Boolean): Pair<D1Array<O>, D2Array<O>?> {
+        requireSquare(mat.shape)
+
+        val n = mat.shape.first()
+        val computeV = if (computeVectors) 'V' else 'N'
+        val w: D1Array<O>
+        val v: D2Array<O>?
+
+        val info = when (mat.dtype) {
+            DataType.FloatDataType -> {
+                val wr = FloatArray(n)
+                val wi = FloatArray(n)
+                v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexFloatDataType) else null
+                val i = JniLinAlg.eig(n, mat.data.getFloatArray(), wr, wi, computeV, v?.data?.getFloatArray())
+                w = mk.d1arrayComplex(n) { ComplexFloat(wr[it], wi[it]) } as D1Array<O>
+                i
+            }
+            DataType.DoubleDataType -> {
+                val wr = DoubleArray(n)
+                val wi = DoubleArray(n)
+                v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexDoubleDataType) else null
+                val i = JniLinAlg.eig(n, mat.data.getDoubleArray(), wr, wi, computeV, v?.data?.getDoubleArray())
+                w = mk.d1arrayComplex(n) { ComplexDouble(wr[it], wi[it]) } as D1Array<O>
+                i
+            }
+            DataType.ComplexFloatDataType -> {
+                w = mk.empty(intArrayOf(n), DataType.ComplexFloatDataType)
+                v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexFloatDataType) else null
+                JniLinAlg.eig(n, mat.data.getFloatArray(), w.data.getFloatArray(), computeV, v?.data?.getFloatArray())
+            }
+            DataType.ComplexDoubleDataType -> {
+                w = mk.empty(intArrayOf(n), DataType.ComplexDoubleDataType)
+                v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexFloatDataType) else null
+                JniLinAlg.eig(n, mat.data.getDoubleArray(), w.data.getDoubleArray(), computeV, v?.data?.getDoubleArray())
+            }
+            else -> throw UnsupportedOperationException()
+        }
+
+        when {
+            info < 0 -> throw IllegalArgumentException("The $info-th argument had an illegal value")
+            info > 0 -> throw Exception("Failed to compute all the eigenvalues.")
+        }
+
+        return Pair(w, v)
+    }
 
     private fun <T, O : Any> pluCommon(mat: MultiArray<T, D2>, dtype: DataType, one: O): Triple<D2Array<O>, D2Array<O>, D2Array<O>> {
         val (m, n) = mat.shape

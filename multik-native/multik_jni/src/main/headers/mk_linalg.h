@@ -194,6 +194,30 @@ int plu_matrix_complex(int m, int n, double *A, int lda, int *IPIV) {
   return LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n, a, lda, IPIV);
 }
 
+int eigen(int n, float *A, float *WR, float *WI, char computeV, float *VR) {
+  return LAPACKE_sgeev(LAPACK_ROW_MAJOR, 'N', computeV, n, A, n, WR, WI, nullptr, 0, VR, n);
+}
+
+int eigen(int n, double *A, double *WR, double *WI, char computeV, double *VR) {
+  return LAPACKE_dgeev(LAPACK_ROW_MAJOR, 'N', computeV, n, A, n, WR, WI, nullptr, 0, VR, n);
+}
+
+int eigen(int n, float *A, float *W, char computeV, float *VR) {
+  lapack_complex_float *a = (lapack_complex_float *)A;
+  lapack_complex_float *w = (lapack_complex_float *)W;
+  lapack_complex_float *vr = (lapack_complex_float *)VR;
+
+  return LAPACKE_cgeev(LAPACK_ROW_MAJOR, 'N', computeV, n, a, n, w, nullptr, 0, vr, n);
+}
+
+int eigen(int n, double *A, double *W, char computeV, double *VR) {
+  lapack_complex_double *a = (lapack_complex_double *)A;
+  lapack_complex_double *w = (lapack_complex_double *)W;
+  lapack_complex_double *vr = (lapack_complex_double *)VR;
+
+  return LAPACKE_zgeev(LAPACK_ROW_MAJOR, 'N', computeV, n, a, n, w, nullptr, 0, vr, n);
+}
+
 void matrix_dot(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,
 				bool trans_b, int offsetB, float *B, int ldb, float *C) {
   float alpha = 1.0, beta = 0.0;

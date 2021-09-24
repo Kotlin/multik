@@ -254,6 +254,120 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_pl
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    eig
+ * Signature: (I[F[F[FC[F)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_eig__I_3F_3F_3FC_3F
+	(JNIEnv *env, jobject jobj, jint n, jfloatArray j_a, jfloatArray j_wr, jfloatArray j_wi,
+	 jchar compute_v, jfloatArray j_v) {
+  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *WR = (float *)env->GetPrimitiveArrayCritical(j_wi, nullptr);
+  auto *WI = (float *)env->GetPrimitiveArrayCritical(j_wi, nullptr);
+  float *V;
+  if (j_v == nullptr) {
+	V = nullptr;
+  } else {
+	V = (float *)env->GetPrimitiveArrayCritical(j_v, nullptr);
+  }
+
+  int info = eigen(n, A, WR, WI, (char) compute_v, V);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_wr, WR, 0);
+  env->ReleasePrimitiveArrayCritical(j_wi, WI, 0);
+  if (j_v != nullptr) {
+	env->ReleasePrimitiveArrayCritical(j_v, V, 0);
+  }
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    eig
+ * Signature: (I[D[D[DC[D)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_eig__I_3D_3D_3DC_3D
+	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_a, jdoubleArray j_wr, jdoubleArray j_wi,
+	 jchar compute_v, jdoubleArray j_v) {
+  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *WR = (double *)env->GetPrimitiveArrayCritical(j_wi, nullptr);
+  auto *WI = (double *)env->GetPrimitiveArrayCritical(j_wi, nullptr);
+  double *V;
+  if (j_v == nullptr) {
+	V = nullptr;
+  } else {
+	V = (double *)env->GetPrimitiveArrayCritical(j_v, nullptr);
+  }
+
+  int info = eigen(n, A, WR, WI, (char) compute_v, V);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_wr, WR, 0);
+  env->ReleasePrimitiveArrayCritical(j_wi, WI, 0);
+  if (j_v != nullptr) {
+	env->ReleasePrimitiveArrayCritical(j_v, V, 0);
+  }
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    eig
+ * Signature: (I[F[FC[F)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_eig__I_3F_3FC_3F
+	(JNIEnv * env, jobject jobj, jint n, jfloatArray j_a, jfloatArray j_w, jchar compute_v, jfloatArray j_v) {
+  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *W = (float *)env->GetPrimitiveArrayCritical(j_w, nullptr);
+  float *V;
+  if (j_v == nullptr) {
+	V = nullptr;
+  } else {
+	V = (float *)env->GetPrimitiveArrayCritical(j_v, nullptr);
+  }
+
+  int info = eigen(n, A, W, (char) compute_v, V);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_w, W, 0);
+  if (j_v != nullptr) {
+	env->ReleasePrimitiveArrayCritical(j_v, V, 0);
+  }
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
+ * Method:    eig
+ * Signature: (I[D[DC[D)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_eig__I_3D_3DC_3D
+	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_a, jdoubleArray j_w, jchar compute_v, jdoubleArray j_v) {
+  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+  auto *W = (double *)env->GetPrimitiveArrayCritical(j_w, nullptr);
+  double *V;
+  if (j_v == nullptr) {
+	V = nullptr;
+  } else {
+	V = (double *)env->GetPrimitiveArrayCritical(j_v, nullptr);
+  }
+
+  int info = eigen(n, A, W, (char) compute_v, V);
+
+  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+  env->ReleasePrimitiveArrayCritical(j_w, W, 0);
+  if (j_v != nullptr) {
+	env->ReleasePrimitiveArrayCritical(j_v, V, 0);
+  }
+
+  return info;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    solve
  * Signature: (II[FI[FI)I
  */
