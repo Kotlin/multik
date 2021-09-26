@@ -6,6 +6,7 @@ import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlg
 import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlgEx
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlg
+import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
@@ -53,23 +54,23 @@ public object DefaultLinAlgEx : LinAlgEx {
     override fun <T : Complex> pluC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D2Array<T>, D2Array<T>> =
         NativeLinAlgEx.pluC(mat)
 
-    override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> =
-        NativeLinAlgEx.eig(mat)
+//    override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> =
+//        NativeLinAlgEx.eig(mat)
 
-    override fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>> =
-        NativeLinAlgEx.eigF(mat)
+//    override fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>> =
+//        NativeLinAlgEx.eigF(mat)
 
-    override fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>> =
-        NativeLinAlgEx.eigC(mat)
+//    override fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>> =
+//        NativeLinAlgEx.eigC(mat)
 
     override fun <T : Number> eigVals(mat: MultiArray<T, D2>): D1Array<ComplexDouble> =
-        NativeLinAlgEx.eigVals(mat)
+        JvmLinAlgEx.eigVals(mat) // TODO: change to native
 
     override fun eigValsF(mat: MultiArray<Float, D2>): D1Array<ComplexFloat> =
-        NativeLinAlgEx.eigValsF(mat)
+        JvmLinAlgEx.eigValsF(mat)
 
     override fun <T : Complex> eigValsC(mat: MultiArray<T, D2>): D1Array<T> =
-        NativeLinAlgEx.eigValsC(mat)
+        JvmLinAlgEx.eigValsC(mat)
 
     override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> =
         when (a.dtype) {

@@ -124,25 +124,28 @@ public object NativeLinAlgEx : LinAlgEx {
             else -> throw UnsupportedOperationException()
         }
 
-    override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> =
-        eigCommon<Double, ComplexDouble>(mat.toType(CopyStrategy.MEANINGFUL), true)
-            as Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>>
+//    override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> =
+//        eigCommon<Double, ComplexDouble>(mat.toType(CopyStrategy.MEANINGFUL), true)
+//            as Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>>
 
-    override fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>> =
-        eigCommon<Float, ComplexFloat>(mat.deepCopy(), true)
-            as Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>>
+//    override fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>> =
+//        eigCommon<Float, ComplexFloat>(mat.deepCopy(), true)
+//            as Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>>
 
-    override fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>> =
-        eigCommon<T, T>(mat.deepCopy(), true) as Pair<D1Array<T>, D2Array<T>>
+//    override fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>> =
+//        eigCommon<T, T>(mat.deepCopy(), true) as Pair<D1Array<T>, D2Array<T>>
 
     override fun <T : Number> eigVals(mat: MultiArray<T, D2>): D1Array<ComplexDouble> =
-        eigCommon<Double, ComplexDouble>(mat.toType(CopyStrategy.MEANINGFUL), false).first
+        TODO("Not yet implemented")
+//        eigCommon<Double, ComplexDouble>(mat.toType(CopyStrategy.MEANINGFUL), false).first
 
     override fun eigValsF(mat: MultiArray<Float, D2>): D1Array<ComplexFloat> =
-        eigCommon<Float, ComplexFloat>(mat.deepCopy(), false).first
+        TODO("Not yet implemented")
+//        eigCommon<Float, ComplexFloat>(mat.deepCopy(), false).first
 
     override fun <T : Complex> eigValsC(mat: MultiArray<T, D2>): D1Array<T> =
-        eigCommon<T, T>(mat.deepCopy(), false).first
+        TODO("Not yet implemented")
+//        eigCommon<T, T>(mat.deepCopy(), false).first
 
     private fun <T, O : Complex> eigCommon(mat: MultiArray<T, D2>, computeVectors: Boolean): Pair<D1Array<O>, D2Array<O>?> {
         requireSquare(mat.shape)
