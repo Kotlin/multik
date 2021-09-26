@@ -36,19 +36,24 @@ library {
             ) + when {
                 it.operatingSystem.isMacOsX -> listOf("-I", "${Jvm.current().javaHome.canonicalPath}/include/darwin")
                 it.operatingSystem.isLinux -> listOf("-I", "${Jvm.current().javaHome.canonicalPath}/include/linux")
-                it.operatingSystem.isWindows -> listOf(
-                    "-static-libgcc", "-static-libstdc++", "-static", "-lpthread",
-                    "-I", "${Jvm.current().javaHome.canonicalPath}/include/win32"
-                )
+                it.operatingSystem.isWindows -> listOf("-I", "${Jvm.current().javaHome.canonicalPath}/include/win32")
                 else -> emptyList()
             }
         })
     }
-
-
 }
 
 
 tasks.withType(CppCompile::class.java).configureEach { dependsOn("installOpenBlas") }
 
-tasks.withType(LinkSharedLibrary::class.java).configureEach { linkerArgs.addAll(listOf("$buildDir/openblas/lib/libopenblas.a")) }
+tasks.withType(LinkSharedLibrary::class.java).configureEach {
+    linkerArgs.addAll(
+        targetPlatform.map {
+            listOf("$buildDir/openblas/lib/libopenblas.a") +
+            if (it.operatingSystem.isWindows)
+                listOf("-static-libgcc", "-static-libstdc++", "-static", "-lpthread")
+            else
+                emptyList()
+        }
+    )
+}
