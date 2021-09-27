@@ -179,14 +179,14 @@ public object NativeLinAlgEx : LinAlgEx {
             }
             DataType.ComplexDoubleDataType -> {
                 w = mk.empty(intArrayOf(n), DataType.ComplexDoubleDataType)
-                v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexFloatDataType) else null
+                v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexDoubleDataType) else null
                 JniLinAlg.eig(n, mat.data.getDoubleArray(), w.data.getDoubleArray(), computeV, v?.data?.getDoubleArray())
             }
             else -> throw UnsupportedOperationException()
         }
 
         when {
-            info < 0 -> throw IllegalArgumentException("The $info-th argument had an illegal value")
+            info < 0 -> throw IllegalArgumentException("The ${-info}-th argument had an illegal value")
             info > 0 -> throw Exception("Failed to compute all the eigenvalues.")
         }
 
