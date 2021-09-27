@@ -58,7 +58,7 @@ public object NativeLinAlgEx : LinAlgEx {
             "The first dimensions of the ndarrays a and b must be match: ${a.shape[0]}(a.shape[0]) != ${b.shape[0]}(b.shape[0]"
         }
 
-        val nhrs = b.shape.last()
+        val nhrs = if (b.dim.d == 1) 1 else b.shape.last()
 
         val info: Int = when (a.dtype) {
             DataType.FloatDataType -> JniLinAlg.solve(
