@@ -8,23 +8,8 @@
 #include "cblas.h"
 #include "lapacke.h"
 #include "algorithm"
+#include <cstring>
 
-void eigen_values(double *A, int n) {
-  const char Nchar = 'N';
-  double *eigReal = new double[n];
-  double *eigImag = new double[n];
-  const int lwork = 5 * n;
-  double *work = new double[lwork];
-  int info;
-  double *lv, *rv;
-  const int one = 1;
-// перезаписывает матрицу
-//  dgeev(&Nchar, &Nchar, &n, A, &n, eigReal, eigImag, nullptr, &one, nullptr, &one, work, &lwork, &info);
-
-  delete[] eigReal;
-  delete[] eigImag;
-  delete[] work;
-}
 
 float vector_dot(int n, float *X, int incx, float *Y, int incy) {
   return cblas_sdot(n, X, incx, Y, incy);
@@ -118,7 +103,7 @@ int qr_matrix(int m, int n, float *AQ, int lda, float *R) {
 
   for (size_t row = 0; row < mn; ++row) {
 	size_t index = (n + 1) * row;
-	memcpy(R + index, AQ + index, (n - row) * sizeof(float));
+	std::memcpy(R + index, AQ + index, (n - row) * sizeof(float));
   }
 
   return LAPACKE_sorgqr(LAPACK_ROW_MAJOR, m, mn, mn, AQ, lda, tau);
@@ -134,7 +119,7 @@ int qr_matrix(int m, int n, double *AQ, int lda, double *R) {
 
   for (size_t row = 0; row < mn; ++row) {
 	size_t index = (n + 1) * row;
-	memcpy(R + index, AQ + index, (n - row) * sizeof(double));
+	std::memcpy(R + index, AQ + index, (n - row) * sizeof(double));
   }
 
   return LAPACKE_dorgqr(LAPACK_ROW_MAJOR, m, mn, mn, AQ, lda, tau);
@@ -152,7 +137,7 @@ int qr_matrix_complex(int m, int n, float *AQ, int lda, float *R) {
 
   for (size_t row = 0; row < mn; ++row) {
 	size_t index = (n + 1) * row;
-	memcpy(r + index, aq + index, (n - row) * sizeof(lapack_complex_float));
+	std::memcpy(r + index, aq + index, (n - row) * sizeof(lapack_complex_float));
   }
 
   return LAPACKE_cungqr(LAPACK_ROW_MAJOR, m, mn, mn, aq, lda, tau);
@@ -170,7 +155,7 @@ int qr_matrix_complex(int m, int n, double *AQ, int lda, double *R) {
 
   for (size_t row = 0; row < mn; ++row) {
 	size_t index = (n + 1) * row;
-	memcpy(r + index, aq + index, (n - row) * sizeof(lapack_complex_double));
+	std::memcpy(r + index, aq + index, (n - row) * sizeof(lapack_complex_double));
   }
 
   return LAPACKE_zungqr(LAPACK_ROW_MAJOR, m, mn, mn, aq, lda, tau);
@@ -192,6 +177,30 @@ int plu_matrix_complex(int m, int n, float *A, int lda, int *IPIV) {
 int plu_matrix_complex(int m, int n, double *A, int lda, int *IPIV) {
   lapack_complex_double *a = (lapack_complex_double *)A;
   return LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n, a, lda, IPIV);
+}
+
+int eigen(int n, float *A, float *WR, float *WI, char computeV, float *VR) {
+//  return LAPACKE_sgeev(LAPACK_ROW_MAJOR, 'N', computeV, n, A, n, WR, WI, nullptr, 0, VR, n);
+}
+
+int eigen(int n, double *A, double *WR, double *WI, char computeV, double *VR) {
+//  return LAPACKE_dgeev(LAPACK_ROW_MAJOR, 'N', computeV, n, A, n, WR, WI, nullptr, 0, VR, n);
+}
+
+int eigen(int n, float *A, float *W, char computeV, float *VR) {
+  lapack_complex_float *a = (lapack_complex_float *)A;
+  lapack_complex_float *w = (lapack_complex_float *)W;
+  lapack_complex_float *vr = (lapack_complex_float *)VR;
+
+//  return LAPACKE_cgeev(LAPACK_ROW_MAJOR, 'N', computeV, n, a, n, w, nullptr, 0, vr, n);
+}
+
+int eigen(int n, double *A, double *W, char computeV, double *VR) {
+  lapack_complex_double *a = (lapack_complex_double *)A;
+  lapack_complex_double *w = (lapack_complex_double *)W;
+  lapack_complex_double *vr = (lapack_complex_double *)VR;
+
+//  return LAPACKE_zgeev(LAPACK_ROW_MAJOR, 'N', computeV, n, a, n, w, nullptr, 0, vr, n);
 }
 
 void matrix_dot(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,
