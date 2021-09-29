@@ -2,16 +2,8 @@ package org.jetbrains.kotlinx.multik.jni.math
 
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
-<<<<<<< HEAD
-import org.jetbrains.kotlinx.multik.jni.Loader
-import org.jetbrains.kotlinx.multik.jni.NativeMath
-import org.jetbrains.kotlinx.multik.jni.roundDouble
-import org.jetbrains.kotlinx.multik.ndarray.data.D2
-import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
-=======
 import org.jetbrains.kotlinx.multik.jni.*
 import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
->>>>>>> v0.0.2
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

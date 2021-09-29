@@ -12,6 +12,7 @@ apply(from = "$rootDir/gradle/openblas.gradle")
 
 dependencies {
     api(project(":multik-api"))
+    testImplementation(kotlin("test"))
 }
 
 private val currentOS = DefaultNativePlatform.getCurrentOperatingSystem()
