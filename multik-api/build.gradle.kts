@@ -51,6 +51,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("reflect"))
+                implementation("org.apache.commons:commons-csv:1.9.0")
             }
         }
         val nativeCommonMain by creating {

@@ -1,6 +1,6 @@
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
-import org.jetbrains.kotlinx.multik.api.d2arrayComplex
+import org.jetbrains.kotlinx.multik.api.d2array
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
@@ -13,7 +13,7 @@ internal fun gramShmidtComplexFloat(a: MultiArray<ComplexFloat, D2>): D2Array<Co
 
     // ans = a.T
     // we need fair transpose: elements in ans matrix row should be consequently in memory
-    val ans = mk.d2arrayComplex(a.shape[1], a.shape[0]) { ComplexFloat.zero } //(a.deepCopy() as D2Array<ComplexDouble>)
+    val ans = mk.d2array(a.shape[1], a.shape[0]) { ComplexFloat.zero } //(a.deepCopy() as D2Array<ComplexDouble>)
     for (i in 0 until ans.shape[0]) {
         for (j in 0 until ans.shape[1]) {
             ans[i, j] = a[j, i]
@@ -70,7 +70,7 @@ internal fun gramShmidtComplexDouble(a: MultiArray<ComplexDouble, D2>): D2Array<
 
     // ans = a.T
     // we need fair transpose: elements in ans matrix row should be consequently in memory
-    val ans: D2Array<ComplexDouble> = mk.d2arrayComplex(a.shape[1], a.shape[0]) { ComplexDouble.zero } //(a.deepCopy() as D2Array<ComplexDouble>)
+    val ans: D2Array<ComplexDouble> = mk.d2array(a.shape[1], a.shape[0]) { ComplexDouble.zero } //(a.deepCopy() as D2Array<ComplexDouble>)
     for (i in 0 until ans.shape[0]) {
         for (j in 0 until ans.shape[1]) {
             ans[i, j] = a[j, i]

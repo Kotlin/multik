@@ -8,6 +8,18 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
+public operator fun <T, D : Dimension> MultiArray<T, D>.unaryMinus(): NDArray<T, D> =
+    when (dtype) {
+        DataType.DoubleDataType -> (this as NDArray<Double, D>).map { -it }
+        DataType.FloatDataType -> (this as NDArray<Float, D>).map { -it }
+        DataType.IntDataType -> (this as NDArray<Int, D>).map { -it }
+        DataType.LongDataType -> (this as NDArray<Long, D>).map { -it }
+        DataType.ComplexFloatDataType -> (this as NDArray<ComplexFloat, D>).map { -it }
+        DataType.ComplexDoubleDataType -> (this as NDArray<ComplexDouble, D>).map { -it }
+        DataType.ShortDataType -> (this as NDArray<Short, D>).map { -it }
+        DataType.ByteDataType -> (this as NDArray<Byte, D>).map { -it }
+    } as NDArray<T, D>
+
 /**
  * Create a new array as the sum of [this] and [other].
  */
