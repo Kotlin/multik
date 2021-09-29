@@ -2,7 +2,6 @@ package org.jetbrains.kotlinx.multik.jni
 
 import org.jetbrains.kotlinx.multik.api.d1array
 import org.jetbrains.kotlinx.multik.api.d2array
-import org.jetbrains.kotlinx.multik.api.d2arrayComplex
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
@@ -19,7 +18,7 @@ class DataStructure(private val seed: Int) {
 
     fun getComplexFloatM(n: Int, m: Int = n): D2Array<ComplexFloat> {
         val random = Random(seed)
-        return mk.d2arrayComplex(n, m) { ComplexFloat(random.nextFloat(), random.nextFloat()) }
+        return mk.d2array(n, m) { ComplexFloat(random.nextFloat(), random.nextFloat()) }
     }
 
     fun getDoubleM(n: Int, m: Int = n): D2Array<Double> {
@@ -29,7 +28,7 @@ class DataStructure(private val seed: Int) {
 
     fun getComplexDoubleM(n: Int, m: Int = n): D2Array<ComplexDouble> {
         val random = Random(seed)
-        return mk.d2arrayComplex(n, m) { ComplexDouble(random.nextDouble(), random.nextDouble()) }
+        return mk.d2array(n, m) { ComplexDouble(random.nextDouble(), random.nextDouble()) }
     }
 
     fun getFloatV(n: Int): D1Array<Float> {
@@ -68,8 +67,8 @@ class DataStructure(private val seed: Int) {
     ): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
         val random = Random(seed)
         return Pair(
-            mk.d2arrayComplex(sizeAD1, sizeAD2) { ComplexDouble(random.nextDouble(), random.nextDouble()) },
-            mk.d2arrayComplex(sizeBD1, sizeBD2) { ComplexDouble(random.nextDouble(), random.nextDouble()) })
+            mk.d2array(sizeAD1, sizeAD2) { ComplexDouble(random.nextDouble(), random.nextDouble()) },
+            mk.d2array(sizeBD1, sizeBD2) { ComplexDouble(random.nextDouble(), random.nextDouble()) })
     }
 
     fun getFloatVV(sizeA: Int, sizeB: Int = sizeA): Pair<D1Array<Float>, D1Array<Float>> {

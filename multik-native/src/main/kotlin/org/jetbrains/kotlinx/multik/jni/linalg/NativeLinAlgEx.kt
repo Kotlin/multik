@@ -1,6 +1,6 @@
 package org.jetbrains.kotlinx.multik.jni.linalg
 
-import org.jetbrains.kotlinx.multik.api.d1arrayComplex
+import org.jetbrains.kotlinx.multik.api.d1array
 import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
@@ -161,7 +161,7 @@ public object NativeLinAlgEx : LinAlgEx {
                 val wi = FloatArray(n)
                 v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexFloatDataType) else null
                 val i = JniLinAlg.eig(n, mat.data.getFloatArray(), wr, wi, computeV, v?.data?.getFloatArray())
-                w = mk.d1arrayComplex(n) { ComplexFloat(wr[it], wi[it]) } as D1Array<O>
+                w = mk.d1array(n) { ComplexFloat(wr[it], wi[it]) } as D1Array<O>
                 i
             }
             DataType.DoubleDataType -> {
@@ -169,7 +169,7 @@ public object NativeLinAlgEx : LinAlgEx {
                 val wi = DoubleArray(n)
                 v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexDoubleDataType) else null
                 val i = JniLinAlg.eig(n, mat.data.getDoubleArray(), wr, wi, computeV, v?.data?.getDoubleArray())
-                w = mk.d1arrayComplex(n) { ComplexDouble(wr[it], wi[it]) } as D1Array<O>
+                w = mk.d1array(n) { ComplexDouble(wr[it], wi[it]) } as D1Array<O>
                 i
             }
             DataType.ComplexFloatDataType -> {

@@ -1,6 +1,6 @@
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
-import org.jetbrains.kotlinx.multik.api.d1arrayComplex
+import org.jetbrains.kotlinx.multik.api.d1array
 import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
@@ -33,14 +33,14 @@ internal fun eigenvaluesFloat(a: MultiArray<ComplexFloat, D2>): D1Array<ComplexF
     val (_, H) = upperHessenbergFloat(a)
     val (upperTriangular, _) = qrShiftedFloat(H)
 
-    return mk.d1arrayComplex(upperTriangular.shape[0]) { upperTriangular[it, it] }
+    return mk.d1array(upperTriangular.shape[0]) { upperTriangular[it, it] }
 }
 
 internal fun eigenvaluesDouble(a: MultiArray<ComplexDouble, D2>): D1Array<ComplexDouble> {
     val (_, H) = upperHessenbergDouble(a)
     val (upperTriangular, _) = qrShiftedDouble(H)
 
-    return mk.d1arrayComplex(upperTriangular.shape[0]) { upperTriangular[it, it] }
+    return mk.d1array(upperTriangular.shape[0]) { upperTriangular[it, it] }
 }
 
 
