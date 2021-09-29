@@ -22,15 +22,12 @@ kotlin {
             useJUnit()
         }
     }
-    val hostOs = System.getProperty("os.name")
-    val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
-        hostOs == "Mac OS X" -> macosX64("native")
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
+    mingwX64()
+    linuxX64()
+    macosX64()
+    macosArm64()
     iosArm64()
+    iosSimulatorArm64()
     iosX64()
     js {
         browser()
@@ -59,18 +56,13 @@ kotlin {
         val nativeCommonMain by creating {
             dependsOn(commonMain)
         }
-
-        val nativeMain by getting {
-            dependsOn(nativeCommonMain)
+        names.forEach { n ->
+            if (n.contains("X64Main") || n.contains("Arm64Main")){
+                this@sourceSets.getByName(n).apply{
+                    dependsOn(nativeCommonMain)
+                }
+            }
         }
-        val nativeTest by getting
-        val iosArm64Main by getting {
-            dependsOn(nativeCommonMain)
-        }
-        val iosX64Main by getting {
-            dependsOn(nativeCommonMain)
-        }
-
     }
 }
 

@@ -14,33 +14,40 @@ kotlin {
         }
         withJava()
     }
-    val hostOs = System.getProperty("os.name")
-    val isMingwX64 = hostOs.startsWith("Windows")
-    val nativeTarget = when {
-        hostOs == "Mac OS X" -> macosX64("native")
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
-
-    nativeTarget.apply {
+    mingwX64()
+    linuxX64()
+    macosX64(){
         binaries {
             framework {
-                baseName = "library"
+                baseName = "multik-jvm"
+            }
+        }
+    }
+    macosArm64(){
+        binaries {
+            framework {
+                baseName = "multik-jvm"
             }
         }
     }
     iosArm64 {
         binaries {
             framework {
-                baseName = "library"
+                baseName = "multik-jvm"
+            }
+        }
+    }
+    iosSimulatorArm64() {
+        binaries {
+            framework {
+                baseName = "multik-jvm"
             }
         }
     }
     iosX64 {
         binaries {
             framework {
-                baseName = "library"
+                baseName = "multik-jvm"
             }
         }
     }
@@ -73,13 +80,6 @@ kotlin {
                 implementation(kotlin("reflect"))
             }
         }
-        val jvmTest by getting
-        val nativeMain by getting
-        val nativeTest by getting
-        val iosArm64Main by getting
-        val iosArm64Test by getting
-        val iosX64Main by getting
-        val iosX64Test by getting
     }
 }
 
