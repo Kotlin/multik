@@ -170,6 +170,7 @@ public inline fun <K, D : Dimension, V, M : MutableMap<in K, in V>> MultiArray<K
 /**
  * Returns an average value of elements in the ndarray.
  */
+// TODO: complex number
 public fun <T : Number, D : Dimension> MultiArray<T, D>.average(): Double {
     var sum = 0.0
     var count = 0
@@ -490,6 +491,7 @@ public inline fun <T, D : Dimension, K> MultiArray<T, D>.groupNDArrayBy(keySelec
  * with the key returned by [keySelector] applied to each element,
  * and returns a map where each group key is associated with an ndarray of matching values.
  */
+// TODO: complex number
 public inline fun <T, D : Dimension, K, V : Number> MultiArray<T, D>.groupNDArrayBy(
     keySelector: (T) -> K, valueTransform: (T) -> V
 ): Map<K, NDArray<V, D1>> {
@@ -704,7 +706,7 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.lastOrNull(predicate: (T) 
 /**
  * Return a new array contains elements after applying [transform].
  */
-public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.map(transform: (T) -> R): NDArray<R, D> {
+public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.map(transform: (T) -> R): NDArray<R, D> {
     val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
@@ -717,7 +719,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.map(tr
  * Return a new array contains elements after applying [transform].
  */
 @JvmName("mapD1Indexed")
-public inline fun <T, reified R : Number> MultiArray<T, D1>.mapIndexed(transform: (index: Int, T) -> R): D1Array<R> {
+public inline fun <T, reified R : Any> MultiArray<T, D1>.mapIndexed(transform: (index: Int, T) -> R): D1Array<R> {
     val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var index = 0
@@ -730,7 +732,7 @@ public inline fun <T, reified R : Number> MultiArray<T, D1>.mapIndexed(transform
  * Return a new array contains elements after applying [transform].
  */
 @JvmName("mapDNIndexed")
-public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapMultiIndexed(transform: (index: IntArray, T) -> R): NDArray<R, D> {
+public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapMultiIndexed(transform: (index: IntArray, T) -> R): NDArray<R, D> {
     val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     val indexIter = this.multiIndices.iterator()
@@ -749,7 +751,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapMul
  * Return a new array contains elements after applying [transform].
  */
 @JvmName("mapD1IndexedNotNull")
-public inline fun <T, reified R : Number> MultiArray<T, D1>.mapIndexedNotNull(transform: (index: Int, T) -> R?): D1Array<R> {
+public inline fun <T, reified R : Any> MultiArray<T, D1>.mapIndexedNotNull(transform: (index: Int, T) -> R?): D1Array<R> {
     val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
@@ -761,7 +763,7 @@ public inline fun <T, reified R : Number> MultiArray<T, D1>.mapIndexedNotNull(tr
  * Return a new array contains elements after applying [transform].
  */
 @JvmName("mapDNIndexedNotNull")
-public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapMultiIndexedNotNull(transform: (index: IntArray, T) -> R?): NDArray<R, D> {
+public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapMultiIndexedNotNull(transform: (index: IntArray, T) -> R?): NDArray<R, D> {
     val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
@@ -772,7 +774,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapMul
 /**
  * Return a new array contains elements after applying [transform].
  */
-public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.mapNotNull(transform: (T) -> R?): NDArray<R, D> {
+public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapNotNull(transform: (T) -> R?): NDArray<R, D> {
     val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var index = 0
@@ -1030,7 +1032,7 @@ public fun <T, D : Dimension> MultiArray<T, D>.reversed(): NDArray<T, D> {
  *
  * @param [operation] function that takes current accumulator value and an element, and calculates the next accumulator value.
  */
-public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.scan(
+public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.scan(
     initial: R, operation: (acc: R, T) -> R
 ): NDArray<R, D> {
     val dataType = DataType.ofKClass(R::class)
@@ -1050,7 +1052,7 @@ public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.scan(
  * each element, its index in this d1 ndarray and current accumulator value that starts with [initial] value.
  */
 @JvmName("scanD1Indexed")
-public inline fun <T, reified R : Number> MultiArray<T, D1>.scanIndexed(
+public inline fun <T, reified R : Any> MultiArray<T, D1>.scanIndexed(
     initial: R, operation: (index: Int, acc: R, T) -> R
 ): D1Array<R> {
     val dataType = DataType.ofKClass(R::class)
@@ -1070,7 +1072,7 @@ public inline fun <T, reified R : Number> MultiArray<T, D1>.scanIndexed(
  * Return a flat ndarray containing successive accumulation values generated by applying [operation] from left to right to
  * each element, its multi index in this dn ndarray and current accumulator value that starts with [initial] value.
  */
-public inline fun <T, D : Dimension, reified R : Number> MultiArray<T, D>.scanMultiIndexed(
+public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.scanMultiIndexed(
     initial: R, operation: (index: IntArray, acc: R, T) -> R
 ): NDArray<R, D> {
     val dataType = DataType.ofKClass(R::class)
@@ -1108,12 +1110,12 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.sorted(): NDArray<T, D> 
 /**
  * Returns the sum of all elements in the collection.
  */
-@Suppress("UNCHECKED_CAST")
-public fun <T : Number, D : Dimension> MultiArray<T, D>.sum(): T = mk.math.sum(this)
+public fun <T : Number, D : Dimension> MultiArray<T, D>.sum(): T = mk.math.sum(this) // TODO: complex number
 
 /**
  * Returns the sum of all values produced by [selector] function applied to each element in the collection.
  */
+// TODO: complex number
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.sumBy(selector: (T) -> Int): Int {
     var sum = 0
     for (element in this) {
@@ -1125,6 +1127,7 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.sumBy(selector: (
 /**
  * Returns the sum of all values produced by [selector] function applied to each element in the collection.
  */
+// TODO: complex number
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.sumBy(selector: (T) -> Double): Double {
     var sum = 0.0
     for (element in this) {
@@ -1136,6 +1139,7 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.sumBy(selector: (
 /**
  * Returns the sum of all values produced by [selector] function applied to each element in the collection.
  */
+// TODO: complex number
 public inline fun <T, D : Dimension> MultiArray<T, D>.sumBy(selector: (T) -> ComplexFloat): ComplexFloat {
     var sum = ComplexFloat.zero
     for (element in this) {
@@ -1244,7 +1248,10 @@ public inline fun <T, reified O : Any, D : Dimension> MultiArray<T, D>.toType(co
 /**
  *
  */
-public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(dtype: DataType, copy: CopyStrategy = CopyStrategy.FULL): NDArray<O, D> {
+public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(
+    dtype: DataType,
+    copy: CopyStrategy = CopyStrategy.FULL
+): NDArray<O, D> {
     if (this.dtype == dtype) {
         return (if (copy == CopyStrategy.FULL) this.copy() else this.deepCopy()) as NDArray<O, D>
     }
