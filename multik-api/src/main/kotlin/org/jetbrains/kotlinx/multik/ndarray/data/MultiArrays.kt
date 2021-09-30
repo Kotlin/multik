@@ -99,7 +99,6 @@ public interface MultiArray<T, D : Dimension> {
      */
     public fun unsqueeze(vararg axes: Int): MultiArray<T, DN>
 
-    // TODO(concatenate over axis)
     /**
      * Concatenates this ndarray with [other].
      */
