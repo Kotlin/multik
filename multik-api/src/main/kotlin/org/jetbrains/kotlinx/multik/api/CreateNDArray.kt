@@ -1455,6 +1455,24 @@ public fun <T : Number> Iterable<T>.toNDArray(): D1Array<T> = this.toCommonNDArr
 @JvmName("toComplexNDArray")
 public fun <T : Complex> Iterable<T>.toNDArray(): D1Array<T> = this.toCommonNDArray()
 
+@JvmName("List2DToNDArrayNumber")
+public inline fun <reified T : Number> List<List<T>>.toNDArray(): D2Array<T> = Multik.ndarray(this)
+
+@JvmName("List2DToNDArrayComplex")
+public inline fun <reified T : Complex> List<List<T>>.toNDArray(): D2Array<T> = Multik.ndarray(this)
+
+@JvmName("List3DToNDArrayNumber")
+public inline fun <reified T : Number> List<List<List<T>>>.toNDArray(): D3Array<T> = Multik.ndarray(this)
+
+@JvmName("List3DToNDArrayComplex")
+public inline fun <reified T : Complex> List<List<List<T>>>.toNDArray(): D3Array<T> = Multik.ndarray(this)
+
+@JvmName("List4DToNDArrayNumber")
+public inline fun <reified T : Number> List<List<List<List<T>>>>.toNDArray(): D4Array<T> = Multik.ndarray(this)
+
+@JvmName("List4DToNDArrayComplex")
+public inline fun <reified T : Complex> List<List<List<List<T>>>>.toNDArray(): D4Array<T> = Multik.ndarray(this)
+
 @PublishedApi
 internal fun <T> Iterable<T>.toCommonNDArray(): D1Array<T> {
     if (this is Collection<T>)

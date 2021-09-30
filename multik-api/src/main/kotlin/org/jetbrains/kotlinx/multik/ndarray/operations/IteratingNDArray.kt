@@ -1188,6 +1188,42 @@ public fun <T, D : Dimension> MultiArray<T, D>.toList(): List<T> {
 }
 
 /**
+ * Returns a List<List<T>> containing all elements.
+ */
+public fun <T> MultiArray<T, D2>.toListD2(): List<List<T>> =
+    List(shape[0]) { i ->
+        List(shape[1]) { j ->
+            this[i, j]
+        }
+    }
+
+/**
+ * Returns a List<List<List<T>>> containing all elements.
+ */
+public fun <T> MultiArray<T, D3>.toListD3(): List<List<List<T>>> =
+    List(shape[0]) { i ->
+        List(shape[1]) { j ->
+            List(shape[2]) { k ->
+                this[i, j, k]
+            }
+        }
+    }
+
+/**
+ * Returns a List<List<List<List<T>>>> containing all elements.
+ */
+public fun <T> MultiArray<T, D4>.toListD4(): List<List<List<List<T>>>> =
+    List(shape[0]) { i ->
+        List(shape[1]) { j ->
+            List(shape[2]) { k ->
+                List(shape[3]) { l ->
+                    this[i, j, k, l]
+                }
+            }
+        }
+    }
+
+/**
  * Returns a [MutableList] filled with all elements of this collection.
  */
 public fun <T, D : Dimension> MultiArray<T, D>.toMutableList(): MutableList<T> {
