@@ -6,7 +6,7 @@ package org.jetbrains.kotlinx.multik_jvm.math
 
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
-import org.jetbrains.kotlinx.multik.jvm.JvmMath
+import org.jetbrains.kotlinx.multik.jvm.math.JvmMath
 import org.jetbrains.kotlinx.multik.ndarray.data.D1
 import kotlin.test.Test
 import kotlin.test.assertEquals

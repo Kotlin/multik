@@ -2,17 +2,21 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package org.jetbrains.kotlinx.multik.jvm
+package org.jetbrains.kotlinx.multik.jvm.math
 
-import org.jetbrains.kotlinx.multik.api.Math
 import org.jetbrains.kotlinx.multik.api.empty
+import org.jetbrains.kotlinx.multik.api.math.Math
+import org.jetbrains.kotlinx.multik.api.math.MathEx
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.first
 import org.jetbrains.kotlinx.multik.ndarray.operations.plusAssign
-import kotlin.math.ln
 
 public object JvmMath : Math {
+
+    override val mathEx: MathEx
+        get() = JvmMathEx
+
     override fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int {
         var arg = 0
         var count = 0
@@ -112,22 +116,6 @@ public object JvmMath : Math {
     override fun <T : Number> argMinD4(a: MultiArray<T, D4>, axis: Int): NDArray<Int, D3> = argMin(a, axis)
 
     override fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4> = argMin(a, axis)
-
-    override fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): NDArray<Double, D> {
-        return mathOperation(a) { kotlin.math.exp(it) }
-    }
-
-    override fun <T : Number, D : Dimension> log(a: MultiArray<T, D>): NDArray<Double, D> {
-        return mathOperation(a) { ln(it) }
-    }
-
-    override fun <T : Number, D : Dimension> sin(a: MultiArray<T, D>): NDArray<Double, D> {
-        return mathOperation(a) { kotlin.math.sin(it) }
-    }
-
-    override fun <T : Number, D : Dimension> cos(a: MultiArray<T, D>): NDArray<Double, D> {
-        return mathOperation(a) { kotlin.math.cos(it) }
-    }
 
     override fun <T : Number, D : Dimension> max(a: MultiArray<T, D>): T {
         var max = a.first()
@@ -270,19 +258,6 @@ public object JvmMath : Math {
             tmp += ret.slice(indexMap)
         }
         return ret
-    }
-
-    private fun <T : Number, D : Dimension> mathOperation(
-        a: MultiArray<T, D>, function: (Double) -> Double
-    ): NDArray<Double, D> {
-        val iter = a.iterator()
-        val data = initMemoryView(a.size, DataType.DoubleDataType) {
-            if (iter.hasNext())
-                function(iter.next().toDouble())
-            else
-                0.0
-        }
-        return NDArray(data, 0, a.shape, dim = a.dim)
     }
 }
 

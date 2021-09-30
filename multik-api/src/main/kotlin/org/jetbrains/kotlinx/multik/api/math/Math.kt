@@ -2,7 +2,7 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package org.jetbrains.kotlinx.multik.api
+package org.jetbrains.kotlinx.multik.api.math
 
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
@@ -10,6 +10,8 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
  * Mathematical methods interface.
  */
 public interface Math {
+
+    public val mathEx: MathEx
 
     /**
      * Returns flat index of maximum element in an ndarray.
@@ -19,7 +21,7 @@ public interface Math {
     /**
      * Returns an ndarray of indices of maximum elements in an ndarray [a] over a given [axis].
      */
-    public fun <T : Number, D : Dimension, O: Dimension> argMax(a: MultiArray<T, D>, axis: Int): NDArray<Int, O>
+    public fun <T : Number, D : Dimension, O : Dimension> argMax(a: MultiArray<T, D>, axis: Int): NDArray<Int, O>
 
     /**
      * Returns an ndarray of indices of maximum elements in a two-dimensional ndarray [a] over a given [axis].
@@ -49,7 +51,7 @@ public interface Math {
     /**
      * Returns an ndarray of indices of minimum elements in an ndarray [a] over a given [axis].
      */
-    public fun <T : Number, D : Dimension, O: Dimension> argMin(a: MultiArray<T, D>, axis: Int): NDArray<Int, O>
+    public fun <T : Number, D : Dimension, O : Dimension> argMin(a: MultiArray<T, D>, axis: Int): NDArray<Int, O>
 
     /**
      * Returns an ndarray of indices of minimum elements in a two-dimensional ndarray [a] over a given [axis].
@@ -72,26 +74,6 @@ public interface Math {
     public fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4>
 
     /**
-     * Returns an ndarray of Double from the given ndarray to each element of which an exp function has been applied.
-     */
-    public fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): NDArray<Double, D>
-
-    /**
-     * Returns an ndarray of Double from the given ndarray to each element of which a log function has been applied.
-     */
-    public fun <T : Number, D : Dimension> log(a: MultiArray<T, D>): NDArray<Double, D>
-
-    /**
-     * Returns an ndarray of Double from the given ndarray to each element of which a sin function has been applied.
-     */
-    public fun <T : Number, D : Dimension> sin(a: MultiArray<T, D>): NDArray<Double, D>
-
-    /**
-     * Returns an ndarray of Double from the given ndarray to each element of which a cos function has been applied.
-     */
-    public fun <T : Number, D : Dimension> cos(a: MultiArray<T, D>): NDArray<Double, D>
-
-    /**
      * Returns maximum element of the given ndarray.
      */
     public fun <T : Number, D : Dimension> max(a: MultiArray<T, D>): T
@@ -99,7 +81,7 @@ public interface Math {
     /**
      * Returns maximum of an ndarray [a] along a given [axis].
      */
-    public fun <T : Number, D : Dimension, O: Dimension> max(a: MultiArray<T, D>, axis: Int): NDArray<T, O>
+    public fun <T : Number, D : Dimension, O : Dimension> max(a: MultiArray<T, D>, axis: Int): NDArray<T, O>
 
     /**
      * Returns maximum of a two-dimensional ndarray [a] along a given [axis].
@@ -129,7 +111,7 @@ public interface Math {
     /**
      * Returns minimum of an ndarray [a] along a given [axis].
      */
-    public fun <T : Number, D : Dimension, O: Dimension> min(a: MultiArray<T, D>, axis: Int): NDArray<T, O>
+    public fun <T : Number, D : Dimension, O : Dimension> min(a: MultiArray<T, D>, axis: Int): NDArray<T, O>
 
     /**
      * Returns minimum of a two-dimensional ndarray [a] along a given [axis].
@@ -159,27 +141,27 @@ public interface Math {
     /**
      * Returns an ndarray of sum all elements over a given [axis].
      */
-    public fun <T: Number, D: Dimension, O: Dimension> sum(a: MultiArray<T, D>, axis: Int): NDArray<T, O>
+    public fun <T : Number, D : Dimension, O : Dimension> sum(a: MultiArray<T, D>, axis: Int): NDArray<T, O>
 
     /**
      * Returns an ndarray of sum all elements in a two-dimensional ndarray [a] over a given [axis].
      */
-    public fun <T: Number> sumD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1>
+    public fun <T : Number> sumD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1>
 
     /**
      * Returns an ndarray of sum all elements in a three-dimensional ndarray [a] over a given [axis].
      */
-    public fun <T: Number> sumD3(a: MultiArray<T, D3>, axis: Int): NDArray<T, D2>
+    public fun <T : Number> sumD3(a: MultiArray<T, D3>, axis: Int): NDArray<T, D2>
 
     /**
      * Returns an ndarray of sum all elements in a four-dimensional ndarray [a] over a given [axis].
      */
-    public fun <T: Number> sumD4(a: MultiArray<T, D4>, axis: Int): NDArray<T, D3>
+    public fun <T : Number> sumD4(a: MultiArray<T, D4>, axis: Int): NDArray<T, D3>
 
     /**
      * Returns an ndarray of sum all elements in a n-dimensional ndarray [a] over a given [axis].
      */
-    public fun <T: Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4>
+    public fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4>
 
     /**
      * Returns cumulative sum of all elements in the given ndarray.

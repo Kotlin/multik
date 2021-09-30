@@ -1,6 +1,5 @@
-package org.jetbrains.kotlinx.multik.default
+package org.jetbrains.kotlinx.multik.default.linalg
 
-import org.jetbrains.kotlinx.multik.default.linalg.DefaultLinAlgEx
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.data.D1
 import org.jetbrains.kotlinx.multik.ndarray.data.D2

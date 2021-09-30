@@ -2,18 +2,22 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package org.jetbrains.kotlinx.multik.default
+package org.jetbrains.kotlinx.multik.default.math
 
-import org.jetbrains.kotlinx.multik.api.Math
+import org.jetbrains.kotlinx.multik.api.math.Math
+import org.jetbrains.kotlinx.multik.api.math.MathEx
 import org.jetbrains.kotlinx.multik.jni.NativeEngine
-import org.jetbrains.kotlinx.multik.jni.NativeMath
-import org.jetbrains.kotlinx.multik.jvm.JvmMath
+import org.jetbrains.kotlinx.multik.jni.math.NativeMath
+import org.jetbrains.kotlinx.multik.jvm.math.JvmMath
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object DefaultMath : Math {
     init {
         NativeEngine
     }
+
+    override val mathEx: MathEx
+        get() = DefaultMathEx
 
     override fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int = if (a.size <= 100) {
         JvmMath.argMax(a)
@@ -48,14 +52,6 @@ public object DefaultMath : Math {
     override fun <T : Number> argMinD4(a: MultiArray<T, D4>, axis: Int): NDArray<Int, D3> = argMin(a, axis)
 
     override fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4> = argMin(a, axis)
-
-    override fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): NDArray<Double, D> = NativeMath.exp(a)
-
-    override fun <T : Number, D : Dimension> log(a: MultiArray<T, D>): NDArray<Double, D> = NativeMath.log(a)
-
-    override fun <T : Number, D : Dimension> sin(a: MultiArray<T, D>): NDArray<Double, D> = NativeMath.sin(a)
-
-    override fun <T : Number, D : Dimension> cos(a: MultiArray<T, D>): NDArray<Double, D> = NativeMath.cos(a)
 
     override fun <T : Number, D : Dimension> max(a: MultiArray<T, D>): T = if (a.size <= 100) {
         JvmMath.max(a)
