@@ -1223,6 +1223,38 @@ public fun <T> MultiArray<T, D4>.toListD4(): List<List<List<List<T>>>> =
         }
     }
 
+public fun <D: Dimension> MultiArray<Int, D>.toIntArray() : IntArray {
+    val result = IntArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element
+    return result
+}
+
+public fun <D: Dimension> MultiArray<Long, D>.toLongArray() : LongArray {
+    val result = LongArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element
+    return result
+}
+
+public fun <D: Dimension> MultiArray<Float, D>.toFloatArray() : FloatArray {
+    val result = FloatArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element
+    return result
+}
+
+public fun <D: Dimension> MultiArray<Double, D>.toDoubleArray() : DoubleArray {
+    val result = DoubleArray(size)
+    var index = 0
+    for (element in this)
+        result[index++] = element
+    return result
+}
+
 /**
  * Returns a [MutableList] filled with all elements of this collection.
  */
