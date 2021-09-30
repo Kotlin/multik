@@ -4,6 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.operations
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.copyInto
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 /**
@@ -33,7 +34,11 @@ public fun <T, D : Dimension> MultiArray<T, D>.append(arr: MultiArray<T, D>, axi
 internal fun <T, D : Dimension> MultiArray<T, D>.copyFromTwoArrays(iter: Iterator<T>, size: Int): MemoryView<T> {
     val data = initMemoryView<T>(size, this.dtype)
     if (this.consistent) {
-        System.arraycopy(this.data.data, 0, data.data, 0, this.size)
+        when (this.dtype) {
+            DataType.ComplexFloatDataType -> this.data.getComplexFloatArray().copyInto(data.getComplexFloatArray())
+            DataType.ComplexDoubleDataType -> this.data.getComplexDoubleArray().copyInto(data.getComplexDoubleArray())
+            else -> System.arraycopy(this.data.data, 0, data.data, 0, this.size)
+        }
     } else {
         var index = 0
         for (el in this)
