@@ -4,6 +4,8 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
+import org.jetbrains.kotlinx.multik.ndarray.operations.copyFromTwoArrays
+
 public typealias D1Array<T> = NDArray<T, D1>
 public typealias D2Array<T> = NDArray<T, D2>
 public typealias D3Array<T> = NDArray<T, D3>
@@ -208,28 +210,15 @@ public class NDArray<T, D : Dimension> constructor(
         )
     }
 
-    override fun cat(other: MultiArray<T, D>, axis: Int): NDArray<T, DN> {
+    override fun cat(other: MultiArray<T, D>, axis: Int): NDArray<T, D> {
         require(
             this.shape.withIndex()
                 .all { it.index == axis || it.value == other.shape[it.index] }) { "All dimensions of input arrays for the concatenation axis must match exactly." }
-
         val newShape = this.shape.copyOf()
         newShape[axis] = this.shape[axis] + other.shape[axis]
-
-        val thisIt = this.iterator()
-        val otherIt = other.iterator()
-        var index = 0
-        val ret = NDArray<T, DN>(
-            initMemoryView(newShape.fold(1, Int::times), this.dtype),
-            0,
-            newShape,
-            dim = DN(newShape.size)
-        )
-        while (thisIt.hasNext())
-            ret.data[index++] = thisIt.next()
-        while (otherIt.hasNext())
-            ret.data[index++] = otherIt.next()
-        return ret
+        val newSize = this.size + other.size
+        val data = this.copyFromTwoArrays(other.iterator(), newSize)
+        return NDArray(data, 0, newShape, dim = this.dim)
     }
 
     //todo extensions

@@ -32,7 +32,7 @@ public interface MutableMultiArray<T, D : Dimension> : MultiArray<T, D> {
 
     override fun unsqueeze(vararg axes: Int): MutableMultiArray<T, DN>
 
-    override fun cat(other: MultiArray<T, D>, axis: Int): MutableMultiArray<T, DN>
+    override fun cat(other: MultiArray<T, D>, axis: Int): NDArray<T, D>
 }
 
 //___________________________________________________WritableView_______________________________________________________

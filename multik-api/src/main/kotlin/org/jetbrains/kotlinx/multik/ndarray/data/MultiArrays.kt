@@ -103,7 +103,7 @@ public interface MultiArray<T, D : Dimension> {
     /**
      * Concatenates this ndarray with [other].
      */
-    public fun cat(other: MultiArray<T, D>, axis: Int = 0): MultiArray<T, DN>
+    public fun cat(other: MultiArray<T, D>, axis: Int = 0): NDArray<T, D>
 }
 
 //___________________________________________________ReadableView_______________________________________________________
