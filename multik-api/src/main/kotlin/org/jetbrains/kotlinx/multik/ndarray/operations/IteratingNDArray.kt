@@ -13,6 +13,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
 
 public fun <T, D : Dimension> MultiArray<T, D>.isTransposed(): Boolean {
@@ -788,6 +789,47 @@ public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.map(trans
     for (el in this)
         data[count++] = transform(el)
     return NDArray(data, shape = shape, dim = dim)
+}
+
+
+/**
+ * Returns the element-wise minimum of array elements for [this] and [other].
+ */
+public fun <T, D : Dimension> MultiArray<T, D>.minimum(other: MultiArray<T, D>): NDArray<T, D> {
+    requireArraySizes(this.size, other.size)
+    val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
+    when (dtype) {
+            DataType.DoubleDataType -> (ret as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> min (a, b) }
+            DataType.FloatDataType -> (ret as NDArray<Float, D>).commonAssignOp(other.iterator() as Iterator<Float>) { a, b -> min (a, b) }
+            DataType.IntDataType -> (ret as NDArray<Int, D>).commonAssignOp(other.iterator() as Iterator<Int>) { a, b -> min (a, b) }
+            DataType.LongDataType -> (ret as NDArray<Long, D>).commonAssignOp(other.iterator() as Iterator<Long>) { a, b -> min (a, b) }
+           // DataType.ComplexFloatDataType -> (ret as NDArray<ComplexFloat, D>).commonAssignOp(other.iterator() as Iterator<ComplexFloat>) { TODO() }
+           // DataType.ComplexDoubleDataType -> (ret as NDArray<ComplexDouble, D>).commonAssignOp(other.iterator() as Iterator<ComplexDouble>) { TODO() }
+            DataType.ShortDataType -> (ret as NDArray<Short, D>).commonAssignOp(other.iterator() as Iterator<Short>) { a, b -> (minOf (a, b)) }
+            DataType.ByteDataType -> (ret as NDArray<Byte, D>).commonAssignOp(other.iterator() as Iterator<Byte>) { a, b -> (minOf (a, b)) }
+            else -> TODO()
+        }
+    return ret
+}
+
+/**
+ * Returns the element-wise maximum of array elements for [this] and [other].
+ */
+public fun <T, D : Dimension> MultiArray<T, D>.maximum(other: MultiArray<T, D>): NDArray<T, D> {
+    requireArraySizes(this.size, other.size)
+    val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
+    when (dtype) {
+        DataType.DoubleDataType -> (ret as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> max (a, b) }
+        DataType.FloatDataType -> (ret as NDArray<Float, D>).commonAssignOp(other.iterator() as Iterator<Float>) { a, b -> max (a, b) }
+        DataType.IntDataType -> (ret as NDArray<Int, D>).commonAssignOp(other.iterator() as Iterator<Int>) { a, b -> max (a, b) }
+        DataType.LongDataType -> (ret as NDArray<Long, D>).commonAssignOp(other.iterator() as Iterator<Long>) { a, b -> max (a, b) }
+        // DataType.ComplexFloatDataType -> (ret as NDArray<ComplexFloat, D>).commonAssignOp(other.iterator() as Iterator<ComplexFloat>) { TODO() }
+        // DataType.ComplexDoubleDataType -> (ret as NDArray<ComplexDouble, D>).commonAssignOp(other.iterator() as Iterator<ComplexDouble>) { TODO() }
+        DataType.ShortDataType -> (ret as NDArray<Short, D>).commonAssignOp(other.iterator() as Iterator<Short>) { a, b -> (maxOf (a, b)) }
+        DataType.ByteDataType -> (ret as NDArray<Byte, D>).commonAssignOp(other.iterator() as Iterator<Byte>) { a, b -> (maxOf (a, b)) }
+        else -> TODO()
+    }
+    return ret
 }
 
 /**
