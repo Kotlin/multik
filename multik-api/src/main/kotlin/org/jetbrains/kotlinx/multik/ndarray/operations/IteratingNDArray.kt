@@ -7,8 +7,7 @@ package org.jetbrains.kotlinx.multik.ndarray.operations
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarrayCommon
 import org.jetbrains.kotlinx.multik.api.toCommonNDArray
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+import org.jetbrains.kotlinx.multik.ndarray.complex.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.math.abs
 import kotlin.math.min
@@ -1225,33 +1224,73 @@ public fun <T> MultiArray<T, D4>.toListD4(): List<List<List<List<T>>>> =
 
 public fun <D: Dimension> MultiArray<Int, D>.toIntArray() : IntArray {
     val result = IntArray(size)
-    var index = 0
-    for (element in this)
-        result[index++] = element
+    if (this.consistent) {
+        data.getIntArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
     return result
 }
 
 public fun <D: Dimension> MultiArray<Long, D>.toLongArray() : LongArray {
     val result = LongArray(size)
-    var index = 0
-    for (element in this)
-        result[index++] = element
+    if (this.consistent) {
+        data.getLongArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
     return result
 }
 
 public fun <D: Dimension> MultiArray<Float, D>.toFloatArray() : FloatArray {
     val result = FloatArray(size)
-    var index = 0
-    for (element in this)
-        result[index++] = element
+    if (this.consistent) {
+        data.getFloatArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
     return result
 }
 
 public fun <D: Dimension> MultiArray<Double, D>.toDoubleArray() : DoubleArray {
     val result = DoubleArray(size)
-    var index = 0
-    for (element in this)
-        result[index++] = element
+    if (this.consistent) {
+        data.getDoubleArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
+    return result
+}
+
+public fun <D: Dimension> MultiArray<ComplexFloat, D>.toComplexFloatArray() : ComplexFloatArray {
+    val result = ComplexFloatArray(size)
+    if (this.consistent) {
+        data.getComplexFloatArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
+    return result
+}
+
+public fun <D: Dimension> MultiArray<ComplexDouble, D>.toComplexDoubleArray() : ComplexDoubleArray {
+    val result = ComplexDoubleArray(size)
+    if (this.consistent) {
+        data.getComplexDoubleArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
     return result
 }
 
