@@ -250,7 +250,7 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.divAssign(other: 
 }
 
 
-private inline fun <T : Any, D : Dimension> MutableMultiArray<T, D>.commonAssignOp(
+internal inline fun <T : Any, D : Dimension> MutableMultiArray<T, D>.commonAssignOp(
     other: Iterator<T>,
     op: (T, T) -> T
 ) {
