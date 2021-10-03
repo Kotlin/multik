@@ -92,6 +92,10 @@ public operator fun <T : Number> Number.compareTo(other: T): Int {
     }
 }
 
+internal fun MultiArray<*, *>.actualAxis(axis: Int): Int {
+    return if (axis < 0) dim.d + axis else axis
+}
+
 @PublishedApi
 internal fun IntArray.remove(pos: Int): IntArray = when (pos) {
     0 -> sliceArray(1..lastIndex)
