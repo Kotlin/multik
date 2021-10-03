@@ -1170,7 +1170,7 @@ public inline fun <reified T : Any> Multik.d2array(sizeD1: Int, sizeD2: Int, noi
 public inline fun <reified T : Any> Multik.d2arrayIndices(
     sizeD1: Int, sizeD2: Int, init: (i: Int, j: Int) -> T
 ): D2Array<T> {
-    val dtype = DataType.of(T::class)
+    val dtype = DataType.ofKClass(T::class)
     val shape = intArrayOf(sizeD1, sizeD2)
     for (i in shape.indices) {
         require(shape[i] > 0) { "Dimension $i must be positive." }
@@ -1212,7 +1212,7 @@ public inline fun <reified T : Any> Multik.d3array(
 public inline fun <reified T : Any> Multik.d3arrayIndices(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, init: (i: Int, j: Int, k: Int) -> T
 ): D3Array<T> {
-    val dtype = DataType.of(T::class)
+    val dtype = DataType.ofKClass(T::class)
     val shape = intArrayOf(sizeD1, sizeD2, sizeD3)
     for (i in shape.indices) {
         require(shape[i] > 0) { "Dimension $i must be positive." }
@@ -1256,7 +1256,7 @@ public inline fun <reified T : Any> Multik.d4array(
 public inline fun <reified T : Any> Multik.d4arrayIndices(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, init: (i: Int, j: Int, k: Int, m: Int) -> T
 ): D4Array<T> {
-    val dtype = DataType.of(T::class)
+    val dtype = DataType.ofKClass(T::class)
     val shape = intArrayOf(sizeD1, sizeD2, sizeD3, sizeD4)
     for (i in shape.indices) {
         require(shape[i] > 0) { "Dimension $i must be positive." }
