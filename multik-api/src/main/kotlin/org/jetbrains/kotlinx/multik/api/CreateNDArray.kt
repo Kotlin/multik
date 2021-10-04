@@ -7,6 +7,7 @@ package org.jetbrains.kotlinx.multik.api
 import org.jetbrains.kotlinx.multik.ndarray.complex.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.plusAssign
+import org.jetbrains.kotlinx.multik.ndarray.operations.stack
 import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
 import kotlin.math.ceil
 
@@ -1441,6 +1442,9 @@ public inline fun <reified T : Number> Multik.linspace(start: Double, stop: Doub
     ret[ret.size - 1] = stop
     return ret.asType()
 }
+
+public fun <T : Number> Multik.meshgrid(x: MultiArray<T, D1>, y: MultiArray<T, D1>): Pair<D2Array<T>, D2Array<T>> =
+    Pair(mk.stack(List(y.size) { x }), mk.stack(List(x.size) { y }, axis = 1))
 
 /**
  * Returns [D1Array] containing all elements.
