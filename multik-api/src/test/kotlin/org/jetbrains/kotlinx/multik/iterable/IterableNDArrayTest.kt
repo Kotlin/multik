@@ -331,21 +331,15 @@ class IterableNDArrayTest {
 
     @Test
     fun `test minimum`() {
-        val array1 = intArrayOf(2, 3, 4)
-        val array2 = intArrayOf(1, 5, 2)
-        val array3 = intArrayOf(1, 3, 2)
-        val ndarray1 = mk.ndarray(array1)
-        val ndarray2 = mk.ndarray(array2)
-        assertEquals(mk.ndarray(array3), ndarray1.minimum(ndarray2))
+        val ndarray1 = mk.ndarray(mk[2, 3, 4])
+        val ndarray2 = mk.ndarray(mk[1, 5, 2])
+        assertEquals(mk.ndarray(mk[1, 3, 2]), ndarray1.minimum(ndarray2))
     }
 
     @Test
     fun `test maximum`() {
-        val array1 = intArrayOf(2, 3, 4)
-        val array2 = intArrayOf(1, 5, 2)
-        val array3 = intArrayOf(2, 5, 4)
-        val ndarray1 = mk.ndarray(array1)
-        val ndarray2 = mk.ndarray(array2)
-        assertEquals(mk.ndarray(array3), ndarray1.maximum(ndarray2))
+        val ndarray1 = mk.ndarray(mk[2, 3, 4])
+        val ndarray2 = mk.ndarray(mk[1, 5, 2])
+        assertEquals(mk.ndarray(mk[2, 5, 4]), ndarray1.maximum(ndarray2))
     }
 }
