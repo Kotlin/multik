@@ -130,10 +130,10 @@ private fun String.toComplexFloat(): ComplexFloat {
 
 private fun isCompressed(file: File) = listOf("gz", "zip").contains(file.extension)
 
-public fun <T, D : Dim2> Multik.writeCSV(file: File, ndarray: NDArray<T, D>, delimiter: Char = ','): Unit =
+public fun <T, D : Dim2> Multik.write(file: File, ndarray: NDArray<T, D>, delimiter: Char = ','): Unit =
     writeCSV(FileWriter(file), ndarray, CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(delimiter).build())
 
-public fun <T, D : Dim2> Multik.writeCSV(path: String, ndarray: NDArray<T, D>, delimiter: Char = ','): Unit =
+public fun <T, D : Dim2> Multik.write(path: String, ndarray: NDArray<T, D>, delimiter: Char = ','): Unit =
     writeCSV(FileWriter(path), ndarray, CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(delimiter).build())
 
 public fun <T, D : Dim2> Multik.writeCSV(
@@ -150,6 +150,7 @@ public fun <T, D : Dim2> Multik.writeCSV(
                 for (j in 0 until ndarray.shape[1]) {
                     printer.print(ndarray[i, j])
                 }
+                printer.println()
             }
         }
     }
