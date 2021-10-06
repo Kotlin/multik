@@ -81,7 +81,7 @@ public class NDArray<T, D : Dimension> constructor(
         if (consistent) {
             data = this.data.copyOf()
         } else {
-            data = initMemoryView<T>(this.size, this.dtype)
+            data = initMemoryView(this.size, this.dtype)
             var index = 0
             for (el in this)
                 data[index++] = el

@@ -132,7 +132,7 @@ class JvmMathTest {
 
     @Test
     fun `test multiplication of complex 2-d ndarray`() {
-        val result = ComplexFloat(-2) * mk.identity<ComplexFloat>(3)
+        val result = ComplexFloat(-2) * mk.identity(3)
         assertEquals(ComplexFloat(-2), result[0, 0])
     }
 }

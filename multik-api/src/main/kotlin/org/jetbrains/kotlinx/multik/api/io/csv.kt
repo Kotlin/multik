@@ -91,10 +91,10 @@ public fun <T, D : Dim2> Multik.readDelim(
     val d = dim ?: D2
     return if (d == D1) {
         val shape = intArrayOf(jSize * iSize)
-        D1Array<T>(data, 0, shape, dim = D1)
+        D1Array(data, 0, shape, dim = D1)
     } else {
         val shape = intArrayOf(iSize, jSize)
-        D2Array<T>(data, 0, shape, dim = D2)
+        D2Array(data, 0, shape, dim = D2)
     } as NDArray<T, D>
 }
 

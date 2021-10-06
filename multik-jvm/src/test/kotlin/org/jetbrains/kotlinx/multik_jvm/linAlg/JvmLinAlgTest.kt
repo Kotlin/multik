@@ -81,7 +81,7 @@ class JvmLinAlgTest {
             val m = rnd.nextInt(sideFrom, sideUntil)
             val n = rnd.nextInt(sideFrom, sideUntil)
 
-            val a = mk.d2array<Double>(m, n) { rnd.nextDouble() }
+            val a = mk.d2array(m, n) { rnd.nextDouble() }
 
             val (P, L, U) = JvmLinAlgEx.plu(a)
             assertTriangular(L, isLowerTriangular = true, requireUnitsOnDiagonal = true)
@@ -95,8 +95,8 @@ class JvmLinAlgTest {
             val m = rnd.nextInt(sideFrom, sideUntil)
             val n = rnd.nextInt(sideFrom, sideUntil)
 
-            val aRe = mk.d2array<Double>(m, n) { rnd.nextDouble() }
-            val aIm = mk.d2array<Double>(m, n) { rnd.nextDouble() }
+            val aRe = mk.d2array(m, n) { rnd.nextDouble() }
+            val aIm = mk.d2array(m, n) { rnd.nextDouble() }
             val a = composeComplexDouble(aRe, aIm)
 
             val (P, L, U) = JvmLinAlgEx.pluC(a)
@@ -109,8 +109,8 @@ class JvmLinAlgTest {
             val m = rnd.nextInt(sideFrom, sideUntil)
             val n = rnd.nextInt(sideFrom, sideUntil)
 
-            val aRe = mk.d2array<Float>(m, n) { rnd.nextFloat() }
-            val aIm = mk.d2array<Float>(m, n) { rnd.nextFloat() }
+            val aRe = mk.d2array(m, n) { rnd.nextFloat() }
+            val aIm = mk.d2array(m, n) { rnd.nextFloat() }
             val a = composeComplexFloat(aRe, aIm)
 
             val (P, L, U) = JvmLinAlgEx.pluC(a)
@@ -145,8 +145,8 @@ class JvmLinAlgTest {
             val maxlen = 100
             val n = rnd.nextInt(1, maxlen)
             val m = rnd.nextInt(1, maxlen)
-            val a = mk.d2array<Double>(n, n) { rnd.nextDouble() }
-            val b = mk.d2array<Double>(n, m) { rnd.nextDouble() }
+            val a = mk.d2array(n, n) { rnd.nextDouble() }
+            val b = mk.d2array(n, m) { rnd.nextDouble() }
             assertClose(b, JvmLinAlg.dot(a, solve(a, b)), procedurePrecision)
 
 
@@ -176,15 +176,15 @@ class JvmLinAlgTest {
             val n = rnd.nextInt(1, maxlen)
             val m = rnd.nextInt(1, maxlen)
 
-            val a = mk.empty<ComplexDouble, D2>(n, n)
+            val a = mk.zeros<ComplexDouble>(n, n)
             for (i in 0 until n) {
                 for (j in 0 until n) {
                     a[i, j] = ComplexDouble(rnd.nextDouble(), rnd.nextDouble())
                 }
             }
 
-            val bRe = mk.d2array<Double>(n, m) { rnd.nextDouble() }
-            val bIm = mk.d2array<Double>(n, m) { rnd.nextDouble() }
+            val bRe = mk.d2array(n, m) { rnd.nextDouble() }
+            val bIm = mk.d2array(n, m) { rnd.nextDouble() }
             val b = composeComplexDouble(bRe, bIm)
             assertCloseComplex(b, JvmLinAlg.dot(a, solveC(a, b)), procedurePrecision)
 
@@ -218,15 +218,15 @@ class JvmLinAlgTest {
             val n = rnd.nextInt(1, maxlen)
             val m = rnd.nextInt(1, maxlen)
 
-            val a = mk.empty<ComplexFloat, D2>(n, n)
+            val a = mk.zeros<ComplexFloat>(n, n)
             for (i in 0 until n) {
                 for (j in 0 until n) {
                     a[i, j] = ComplexFloat(rnd.nextFloat(), rnd.nextFloat())
                 }
             }
 
-            val bRe = mk.d2array<Float>(n, m) { rnd.nextFloat() }
-            val bIm = mk.d2array<Float>(n, m) { rnd.nextFloat() }
+            val bRe = mk.d2array(n, m) { rnd.nextFloat() }
+            val bIm = mk.d2array(n, m) { rnd.nextFloat() }
             val b = composeComplexFloat(bRe, bIm)
             assertCloseComplex(b, JvmLinAlg.dot(a, solveC(a, b)), 1e-2)
 
@@ -246,32 +246,32 @@ class JvmLinAlgTest {
     @Test
     fun testJvmDot() {
         // random matrices pool
-        val mat1 = mk.ndarray<Int>(mk[mk[4, -3, 2], mk[-6, -9, -7], mk[3, 6, 5]])
-        val mat2 = mk.ndarray<Int>(mk[mk[-9, 4, -8], mk[-8, 2, 6], mk[3, 8, 7]])
-        val mat3 = mk.ndarray<Int>(mk[mk[8, -2, -1], mk[7, -9, -1], mk[-9, -9, -2]])
-        val mat4 = mk.ndarray<Int>(mk[mk[-8, 9, -10], mk[-6, 8, -9], mk[5, -5, 3]])
-        val vec1 = mk.ndarray<Int>(mk[5, -1, 6])
-        val vec2 = mk.ndarray<Int>(mk[5, -9, 1])
-        val vec3 = mk.ndarray<Int>(mk[5, -10, 1])
-        val vec4 = mk.ndarray<Int>(mk[9, -6, 3])
+        val mat1 = mk.ndarray(mk[mk[4, -3, 2], mk[-6, -9, -7], mk[3, 6, 5]])
+        val mat2 = mk.ndarray(mk[mk[-9, 4, -8], mk[-8, 2, 6], mk[3, 8, 7]])
+        val mat3 = mk.ndarray(mk[mk[8, -2, -1], mk[7, -9, -1], mk[-9, -9, -2]])
+        val mat4 = mk.ndarray(mk[mk[-8, 9, -10], mk[-6, 8, -9], mk[5, -5, 3]])
+        val vec1 = mk.ndarray(mk[5, -1, 6])
+        val vec2 = mk.ndarray(mk[5, -9, 1])
+        val vec3 = mk.ndarray(mk[5, -10, 1])
+        val vec4 = mk.ndarray(mk[9, -6, 3])
 
         // true operation results
-        val mat1_x_mat1 = mk.ndarray<Int>(mk[mk[40, 27, 39], mk[9, 57, 16], mk[-9, -33, -11]])
-        val mat1_x_mat2 = mk.ndarray<Int>(mk[mk[-6, 26, -36], mk[105, -98, -55], mk[-60, 64, 47]])
-        val mat1_x_mat3 = mk.ndarray<Int>(mk[mk[-7, 1, -5], mk[-48, 156, 29], mk[21, -105, -19]])
-        val mat1_x_mat4 = mk.ndarray<Int>(mk[mk[-4, 2, -7], mk[67, -91, 120], mk[-35, 50, -69]])
+        val mat1_x_mat1 = mk.ndarray(mk[mk[40, 27, 39], mk[9, 57, 16], mk[-9, -33, -11]])
+        val mat1_x_mat2 = mk.ndarray(mk[mk[-6, 26, -36], mk[105, -98, -55], mk[-60, 64, 47]])
+        val mat1_x_mat3 = mk.ndarray(mk[mk[-7, 1, -5], mk[-48, 156, 29], mk[21, -105, -19]])
+        val mat1_x_mat4 = mk.ndarray(mk[mk[-4, 2, -7], mk[67, -91, 120], mk[-35, 50, -69]])
 
-        val mat2_x_mat2 = mk.ndarray<Int>(mk[mk[25, -92, 40], mk[74, 20, 118], mk[-70, 84, 73]])
-        val mat2_x_mat3 = mk.ndarray<Int>(mk[mk[28, 54, 21], mk[-104, -56, -6], mk[17, -141, -25]])
-        val mat2_x_mat4 = mk.ndarray<Int>(mk[mk[8, -9, 30], mk[82, -86, 80], mk[-37, 56, -81]])
+        val mat2_x_mat2 = mk.ndarray(mk[mk[25, -92, 40], mk[74, 20, 118], mk[-70, 84, 73]])
+        val mat2_x_mat3 = mk.ndarray(mk[mk[28, 54, 21], mk[-104, -56, -6], mk[17, -141, -25]])
+        val mat2_x_mat4 = mk.ndarray(mk[mk[8, -9, 30], mk[82, -86, 80], mk[-37, 56, -81]])
 
-        val mat3_x_mat3 = mk.ndarray<Int>(mk[mk[59, 11, -4], mk[2, 76, 4], mk[-117, 117, 22]])
-        val mat3_x_mat4 = mk.ndarray<Int>(mk[mk[-57, 61, -65], mk[-7, -4, 8], mk[116, -143, 165]])
+        val mat3_x_mat3 = mk.ndarray(mk[mk[59, 11, -4], mk[2, 76, 4], mk[-117, 117, 22]])
+        val mat3_x_mat4 = mk.ndarray(mk[mk[-57, 61, -65], mk[-7, -4, 8], mk[116, -143, 165]])
 
-        val mat1_x_vec1 = mk.ndarray<Int>(mk[35, -63, 39])
-        val mat1_x_vec2 = mk.ndarray<Int>(mk[49, 44, -34])
-        val mat2_x_vec1 = mk.ndarray<Int>(mk[-97, -6, 49])
-        val mat2_x_vec2 = mk.ndarray<Int>(mk[-89, -52, -50])
+        val mat1_x_vec1 = mk.ndarray(mk[35, -63, 39])
+        val mat1_x_vec2 = mk.ndarray(mk[49, 44, -34])
+        val mat2_x_vec1 = mk.ndarray(mk[-97, -6, 49])
+        val mat2_x_vec2 = mk.ndarray(mk[-89, -52, -50])
 
         val vec1_x_vec1 = 62
         val vec1_x_vec2 = 40
@@ -369,7 +369,7 @@ class JvmLinAlgTest {
 
         // assert Q is unitary
         val approxId = dotMatrixComplex(Q, Q.conjTranspose())
-        val Id = mk.empty<ComplexDouble, D2>(n, n)
+        val Id = mk.zeros<ComplexDouble>(n, n)
 
         assertCloseComplex(approxId, idComplexDouble(n), 1e-5)
 
@@ -451,11 +451,11 @@ class JvmLinAlgTest {
 
         val mat = dotMatrixComplex(dotMatrixComplex(Q, R), Q.conjTranspose())
 
-        var trueEigavals = List<ComplexDouble>(n) { i -> R[i, i] }
+        var trueEigavals = List(n) { i -> R[i, i] }
 
         val eigs = JvmLinAlgEx.eigValsC(mat)
 
-        var testedEigenvals = List<ComplexDouble>(n) { i -> eigs[i] }
+        var testedEigenvals = List(n) { i -> eigs[i] }
 
         trueEigavals = trueEigavals.sortedWith(compareBy({ it.re }, { it.im }))
         testedEigenvals = testedEigenvals.sortedWith(compareBy({ it.re }, { it.im }))
@@ -612,7 +612,7 @@ private fun assertTriangularComplexFloat(a: MultiArray<ComplexFloat, D2>, isLowe
 
 
 private fun getRandomMatrixComplexDouble(n: Int, m: Int, from: Double = 0.0, to: Double = 1.0, rnd: Random = Random(424242)): D2Array<ComplexDouble> {
-    val a = mk.empty<ComplexDouble, D2>(n, m)
+    val a = mk.zeros<ComplexDouble>(n, m)
 
     for (i in 0 until n) {
         for (j in 0 until m) {
@@ -623,7 +623,7 @@ private fun getRandomMatrixComplexDouble(n: Int, m: Int, from: Double = 0.0, to:
 }
 
 private fun idComplexDouble(n: Int): D2Array<ComplexDouble> {
-    val ans = mk.empty<ComplexDouble, D2>(n, n)
+    val ans = mk.zeros<ComplexDouble>(n, n)
     for (i in 0 until n) {
         ans[i, i] = 1.0.toComplexDouble()
     }
@@ -635,7 +635,7 @@ private fun<T : Number, D: Dim2> composeComplexDouble(rePart: NDArray<T, D>, imP
     if (rePart.dim.d == 1) {
         rePart as D1Array<T>
         imPart as D1Array<T>
-        val ans = mk.empty<ComplexDouble, D1>(rePart.shape[0])
+        val ans = mk.zeros<ComplexDouble>(rePart.shape[0])
         for (i in 0 until ans.shape[0]) {
             ans[i] = ComplexDouble(rePart[i].toDouble(), imPart[i].toDouble())
         }
@@ -644,7 +644,7 @@ private fun<T : Number, D: Dim2> composeComplexDouble(rePart: NDArray<T, D>, imP
 
     rePart as D2Array<T>
     imPart as D2Array<T>
-    val ans = mk.empty<ComplexDouble, D2>(rePart.shape[0], rePart.shape[1])
+    val ans = mk.zeros<ComplexDouble>(rePart.shape[0], rePart.shape[1])
     for (i in 0 until ans.shape[0]) {
         for (j in 0 until ans.shape[1]) {
             ans[i, j] = ComplexDouble(rePart[i, j].toDouble(), imPart[i, j].toDouble())
@@ -657,7 +657,7 @@ private fun<T : Number, D: Dim2> composeComplexFloat(rePart: NDArray<T, D>, imPa
     if (rePart.dim.d == 1) {
         rePart as D1Array<T>
         imPart as D1Array<T>
-        val ans = mk.empty<ComplexFloat, D1>(rePart.shape[0])
+        val ans = mk.zeros<ComplexFloat>(rePart.shape[0])
         for (i in 0 until ans.shape[0]) {
             ans[i] = ComplexFloat(rePart[i].toFloat(), imPart[i].toFloat())
         }
@@ -666,7 +666,7 @@ private fun<T : Number, D: Dim2> composeComplexFloat(rePart: NDArray<T, D>, imPa
 
     rePart as D2Array<T>
     imPart as D2Array<T>
-    val ans = mk.empty<ComplexFloat, D2>(rePart.shape[0], rePart.shape[1])
+    val ans = mk.zeros<ComplexFloat>(rePart.shape[0], rePart.shape[1])
     for (i in 0 until ans.shape[0]) {
         for (j in 0 until ans.shape[1]) {
             ans[i, j] = ComplexFloat(rePart[i, j].toFloat(), imPart[i, j].toFloat())

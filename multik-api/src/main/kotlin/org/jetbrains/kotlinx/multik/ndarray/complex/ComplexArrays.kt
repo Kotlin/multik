@@ -45,6 +45,7 @@ public class ComplexFloatArray(public val size: Int = 0) {
 
     override fun hashCode(): Int = this.contentHashCode()
 
+    @Suppress("DuplicatedCode")
     override fun toString(): String {
         val sb = StringBuilder(2 + _size * 3)
         sb.append("[")
@@ -100,6 +101,7 @@ public class ComplexDoubleArray(public val size: Int = 0) {
 
     override fun hashCode(): Int = this.contentHashCode()
 
+    @Suppress("DuplicatedCode")
     override fun toString(): String {
         val sb = StringBuilder(2 + _size * 3)
         sb.append("[")

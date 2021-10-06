@@ -163,6 +163,7 @@ public class ComplexFloat(public val re: Float, public val im: Float) : Complex 
     }
 
     /** Divides this value by the other value. */
+    @Suppress("DuplicatedCode")
     public operator fun div(other: ComplexDouble): ComplexDouble = when {
         abs(other.re) > abs(other.im) -> {
             val dr = other.im / other.re
@@ -348,6 +349,7 @@ public class ComplexDouble(public val re: Double, public val im: Double) : Compl
     }
 
     /** Divides this value by the other value. */
+    @Suppress("DuplicatedCode")
     public operator fun div(other: ComplexDouble): ComplexDouble = when {
         abs(other.re) > abs(other.im) -> {
             val dr = other.im / other.re

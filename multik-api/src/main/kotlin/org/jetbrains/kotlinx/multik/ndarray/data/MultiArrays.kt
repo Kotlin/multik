@@ -125,6 +125,7 @@ public fun <T, D : Dimension, M : Dimension> MultiArray<T, D>.view(index: Int, a
     )
 }
 
+@Suppress("DuplicatedCode")
 public fun <T, D : Dimension, M : Dimension> MultiArray<T, D>.view(
     indices: IntArray, axes: IntArray
 ): MultiArray<T, M> {
@@ -200,6 +201,7 @@ public operator fun <T> MultiArray<T, D3>.get(ind1: Int, ind2: Int): MultiArray<
     view(ind1, ind2, 0, 1)
 
 @JvmName("get5")
+@Suppress("DuplicatedCode")
 public operator fun <T> MultiArray<T, D3>.get(ind1: Int, ind2: Int, ind3: Int): T {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
     checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
@@ -219,6 +221,7 @@ public operator fun <T> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int): 
     view(ind1, ind2, ind3, 0, 1, 2)
 
 @JvmName("get9")
+@Suppress("DuplicatedCode")
 public operator fun <T> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int): T {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
     checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])

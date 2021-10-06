@@ -8,6 +8,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.ImmutableMemoryView
 import kotlin.math.abs
 import kotlin.math.pow
 
+@Suppress("DuplicatedCode")
 internal fun norm(
     mat: FloatArray, matOffset: Int, matStrides: IntArray, n: Int, m: Int, power: Int, consistent: Boolean
 ): Double {
@@ -32,6 +33,7 @@ internal fun norm(
     return result.pow(1.0 / power)
 }
 
+@Suppress("DuplicatedCode")
 internal fun norm(
     mat: DoubleArray, matOffset: Int, matStrides: IntArray, n: Int, m: Int, power: Int, consistent: Boolean
 ): Double {

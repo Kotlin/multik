@@ -4,8 +4,8 @@
 
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
-import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
@@ -20,7 +20,7 @@ internal fun requireSquare(shape: IntArray) {
 // return hermitian transposed copy of matrix
 @JvmName("conjTransposeFloat")
 internal fun NDArray<ComplexFloat, D2>.conjTranspose(): D2Array<ComplexFloat> {
-    val ans = mk.empty<ComplexFloat, D2>(this.shape[1], this.shape[0])
+    val ans = mk.zeros<ComplexFloat>(this.shape[1], this.shape[0])
     for (i in 0 until ans.shape[0]) {
         for (j in 0 until ans.shape[1]) {
             ans[i, j] = this[j, i].conjugate()
@@ -31,7 +31,7 @@ internal fun NDArray<ComplexFloat, D2>.conjTranspose(): D2Array<ComplexFloat> {
 
 @JvmName("conjTransposeDouble")
 internal fun NDArray<ComplexDouble, D2>.conjTranspose(): D2Array<ComplexDouble> {
-    val ans = mk.empty<ComplexDouble, D2>(this.shape[1], this.shape[0])
+    val ans = mk.zeros<ComplexDouble>(this.shape[1], this.shape[0])
     for (i in 0 until ans.shape[0]) {
         for (j in 0 until ans.shape[1]) {
             ans[i, j] = this[j, i].conjugate()

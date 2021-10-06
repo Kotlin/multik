@@ -26,6 +26,7 @@ public sealed class Inplace<T : Number, D : Dimension>(public val base: MutableM
 public open class InplaceOperation<T : Number, D : Dimension>(base: MutableMultiArray<T, D>) : Inplace<T, D>(base)
 
 @JvmName("mathD1")
+@Suppress("DuplicatedCode")
 public fun <T : Number> InplaceOperation<T, D1>.math(init: InplaceMath<T, D1>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()

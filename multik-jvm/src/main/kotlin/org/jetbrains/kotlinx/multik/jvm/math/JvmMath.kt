@@ -2,12 +2,14 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
+@file:Suppress("DuplicatedCode")
+
 package org.jetbrains.kotlinx.multik.jvm.math
 
-import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.api.math.MathEx
 import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.first
 import org.jetbrains.kotlinx.multik.ndarray.operations.plusAssign
@@ -35,7 +37,7 @@ public object JvmMath : Math {
         require(a.dim.d > 1) { "NDArray of dimension one, use the `argMax` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
-        val min = JvmMath.min(a)
+        val min = min(a)
         val size = newShape.fold(1, Int::times)
         val maxArray = MutableList(size) { min }
         val argMaxData = initMemoryView<Int>(size, DataType.IntDataType)
@@ -85,7 +87,7 @@ public object JvmMath : Math {
         require(a.dim.d > 1) { "NDArray of dimension one, use the `argMin` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
-        val max = JvmMath.max(a)
+        val max = max(a)
         val size = newShape.fold(1, Int::times)
         val minArray = MutableList(size) { max }
         val argMinData = initMemoryView<Int>(size, DataType.IntDataType)
@@ -127,7 +129,7 @@ public object JvmMath : Math {
         require(a.dim.d > 1) { "NDArray of dimension one, use the `max` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
-        val min = JvmMath.min(a)
+        val min = min(a)
         val size = newShape.fold(1, Int::times)
         val maxData = initMemoryView(size, a.dtype) { min }
         val indexMap: MutableMap<Int, Indexing> = mutableMapOf()
@@ -167,7 +169,7 @@ public object JvmMath : Math {
         require(a.dim.d > 1) { "NDArray of dimension one, use the `min` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
-        val max = JvmMath.max(a)
+        val max = max(a)
         val size = newShape.fold(1, Int::times)
         val minData = initMemoryView(size, a.dtype) { max }
         val indexMap: MutableMap<Int, Indexing> = mutableMapOf()
@@ -203,7 +205,7 @@ public object JvmMath : Math {
         require(a.dim.d > 1) { "NDArray of dimension one, use the `sum` function without axis." }
         require(axis in 0 until a.dim.d) { "axis $axis is out of bounds for this ndarray of dimension ${a.dim.d}." }
         val newShape = a.shape.remove(axis)
-        val ret: NDArray<T, O> = mk.empty(newShape, a.dtype)
+        val ret: NDArray<T, O> = mk.zeros(newShape, a.dtype)
         val indexMap: MutableMap<Int, Indexing> = mutableMapOf()
         for (i in a.shape.indices) {
             if (i == axis) continue
@@ -216,13 +218,13 @@ public object JvmMath : Math {
         return ret
     }
 
-    override fun <T : Number> sumD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = JvmMath.sum(a, axis)
+    override fun <T : Number> sumD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = sum(a, axis)
 
-    override fun <T : Number> sumD3(a: MultiArray<T, D3>, axis: Int): NDArray<T, D2> = JvmMath.sum(a, axis)
+    override fun <T : Number> sumD3(a: MultiArray<T, D3>, axis: Int): NDArray<T, D2> = sum(a, axis)
 
-    override fun <T : Number> sumD4(a: MultiArray<T, D4>, axis: Int): NDArray<T, D3> = JvmMath.sum(a, axis)
+    override fun <T : Number> sumD4(a: MultiArray<T, D4>, axis: Int): NDArray<T, D3> = sum(a, axis)
 
-    override fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> = JvmMath.sum(a, axis)
+    override fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> = sum(a, axis)
 
     override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>): D1Array<T> {
         val ret = D1Array<Double>(

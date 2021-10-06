@@ -2,6 +2,8 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
+@file:Suppress("DuplicatedCode")
+
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
 import org.jetbrains.kotlinx.multik.api.d2array
@@ -33,7 +35,7 @@ internal fun gramShmidtComplexFloat(a: MultiArray<ComplexFloat, D2>): D2Array<Co
         }
         norm = sqrt(abs(norm))
         if (norm < precision) {
-            continue;
+            continue
         }
         for (j in 0 until ans.shape[1]) {
             ans[i, j] = ans[i, j] / norm
@@ -90,7 +92,7 @@ internal fun gramShmidtComplexDouble(a: MultiArray<ComplexDouble, D2>): D2Array<
         }
         norm = sqrt(abs(norm))
         if (norm < precision) {
-            continue;
+            continue
         }
         for (j in 0 until ans.shape[1]) {
             ans[i, j] = ans[i, j] / norm

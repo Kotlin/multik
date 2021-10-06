@@ -5,10 +5,10 @@
 package org.jetbrains.kotlinx.multik.jni.linalg
 
 import org.jetbrains.kotlinx.multik.api.d1array
-import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
@@ -105,7 +105,7 @@ public object NativeLinAlgEx : LinAlgEx {
         val (m, n) = mat.shape
         val mn = min(m, n)
         val q = mat.toType<T, O, D2>(retDType, CopyStrategy.MEANINGFUL)
-        val r = mk.empty<O, D2>(intArrayOf(mn, n), q.dtype)
+        val r = mk.zeros<O, D2>(intArrayOf(mn, n), q.dtype)
 
         val info: Int = when (retDType) {
             DataType.FloatDataType -> JniLinAlg.qr(m, n, q.data.getFloatArray(), q.strides[0], r.data.getFloatArray())
@@ -169,7 +169,7 @@ public object NativeLinAlgEx : LinAlgEx {
             DataType.FloatDataType -> {
                 val wr = FloatArray(n)
                 val wi = FloatArray(n)
-                v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexFloatDataType) else null
+                v = if (computeVectors) mk.zeros(intArrayOf(n, n), DataType.ComplexFloatDataType) else null
                 val i = JniLinAlg.eig(n, mat.data.getFloatArray(), wr, wi, computeV, v?.data?.getFloatArray())
                 w = mk.d1array(n) { ComplexFloat(wr[it], wi[it]) } as D1Array<O>
                 i
@@ -177,19 +177,19 @@ public object NativeLinAlgEx : LinAlgEx {
             DataType.DoubleDataType -> {
                 val wr = DoubleArray(n)
                 val wi = DoubleArray(n)
-                v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexDoubleDataType) else null
+                v = if (computeVectors) mk.zeros(intArrayOf(n, n), DataType.ComplexDoubleDataType) else null
                 val i = JniLinAlg.eig(n, mat.data.getDoubleArray(), wr, wi, computeV, v?.data?.getDoubleArray())
                 w = mk.d1array(n) { ComplexDouble(wr[it], wi[it]) } as D1Array<O>
                 i
             }
             DataType.ComplexFloatDataType -> {
-                w = mk.empty(intArrayOf(n), DataType.ComplexFloatDataType)
-                v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexFloatDataType) else null
+                w = mk.zeros(intArrayOf(n), DataType.ComplexFloatDataType)
+                v = if (computeVectors) mk.zeros(intArrayOf(n, n), DataType.ComplexFloatDataType) else null
                 JniLinAlg.eig(n, mat.data.getFloatArray(), w.data.getFloatArray(), computeV, v?.data?.getFloatArray())
             }
             DataType.ComplexDoubleDataType -> {
-                w = mk.empty(intArrayOf(n), DataType.ComplexDoubleDataType)
-                v = if (computeVectors) mk.empty(intArrayOf(n, n), DataType.ComplexDoubleDataType) else null
+                w = mk.zeros(intArrayOf(n), DataType.ComplexDoubleDataType)
+                v = if (computeVectors) mk.zeros(intArrayOf(n, n), DataType.ComplexDoubleDataType) else null
                 JniLinAlg.eig(n, mat.data.getDoubleArray(), w.data.getDoubleArray(), computeV, v?.data?.getDoubleArray())
             }
             else -> throw UnsupportedOperationException()
@@ -221,8 +221,8 @@ public object NativeLinAlgEx : LinAlgEx {
         if (info < 0) throw IllegalArgumentException("${-info} argument had illegal value. ")
 
         val P = mk.identity<O>(m, dtype)
-        val L = mk.empty<O, D2>(intArrayOf(m, mn), dtype)
-        val U = mk.empty<O, D2>(intArrayOf(mn, n), dtype)
+        val L = mk.zeros<O, D2>(intArrayOf(m, mn), dtype)
+        val U = mk.zeros<O, D2>(intArrayOf(mn, n), dtype)
 
         for (i in (ipiv.size - 1) downTo 0) {
             val ip = ipiv[i] - 1

@@ -315,10 +315,9 @@ internal inline fun <reified T : Any> ndarrayCommon4D(arg: List<List<List<List<T
  * @sample samples.NDArrayTest.ndarrayCollections
  */
 public inline fun <T : Number, reified D : Dimension> Multik.ndarray(
-    elements: Collection<T>,
-    shape: IntArray
+    elements: Collection<T>, shape: IntArray
 ): NDArray<T, D> =
-    ndarrayCommon(elements, shape, dimensionClassOf<D>(shape.size))
+    ndarrayCommon(elements, shape, dimensionClassOf(shape.size))
 
 /**
  * Returns a new array given [shape] from collection.
@@ -330,10 +329,9 @@ public inline fun <T : Number, reified D : Dimension> Multik.ndarray(
  */
 @JvmName("ndarrayComplex")
 public inline fun <T : Complex, reified D : Dimension> Multik.ndarray(
-    elements: Collection<T>,
-    shape: IntArray
+    elements: Collection<T>, shape: IntArray
 ): NDArray<T, D> =
-    ndarrayCommon(elements, shape, dimensionClassOf<D>(shape.size))
+    ndarrayCommon(elements, shape, dimensionClassOf(shape.size))
 
 /**
  * Returns a new array given shape and dimension from collection.
@@ -1356,10 +1354,10 @@ public inline fun <reified T : Any> Multik.dnarray(
 ): NDArray<T, DN> = dnarray(intArrayOf(sizeD1, sizeD2, sizeD3, sizeD4, *dims), init)
 
 /**
- * Returns a new array with the specified shape [dims], where each element is calculated by calling the specified
+ * Returns a new array with the specified [shape], where each element is calculated by calling the specified
  * [init] function.
  *
- * @param dims array shape.
+ * @param shape array shape.
  * @param init initialization function.
  * @return [NDArray] of [DN] dimension.
  * @sample samples.NDArrayTest.dnarrayWithDims
