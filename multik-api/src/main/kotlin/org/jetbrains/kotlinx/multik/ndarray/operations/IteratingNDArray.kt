@@ -4,11 +4,14 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.operations
 
+import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarrayCommon
 import org.jetbrains.kotlinx.multik.api.toCommonNDArray
 import org.jetbrains.kotlinx.multik.ndarray.complex.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import kotlin.experimental.and
+import kotlin.experimental.or
 import kotlin.math.abs
 import kotlin.math.min
 
@@ -17,6 +20,79 @@ public fun <T, D : Dimension> MultiArray<T, D>.isTransposed(): Boolean {
     if (x.dim == D1) return false
     return x.offset == 0 && x.size == x.data.size
         && x.strides.reversedArray().contentEquals(computeStrides(x.shape.reversedArray()))
+}
+
+// TODO: boolean array
+public infix fun <T : Number, D : Dimension> MultiArray<T, D>.and(other: MultiArray<T, D>): NDArray<Int, D> {
+    requireArraySizes(this.size, other.size)
+
+    val ret = mk.empty<Int, D>(this.shape, DataType.IntDataType)
+    val lIter = this.iterator()
+    val rIter = other.iterator()
+    for (i in ret.data.indices) {
+        ret.data[i] = when (dtype) {
+            DataType.DoubleDataType -> {
+                val l = lIter.next().toDouble()
+                val r = rIter.next().toDouble()
+                when {
+                    l == 0.0 || r == 0.0 -> 0
+                    l.isNaN() || r.isNaN() -> 0
+                    else -> 1
+                }
+            }
+            DataType.FloatDataType -> {
+                val l = lIter.next().toFloat()
+                val r = rIter.next().toFloat()
+                when {
+                    l == 0f || r == 0f -> 0
+                    l.isNaN() || r.isNaN() -> 0
+                    else -> 1
+                }
+            }
+            DataType.IntDataType -> lIter.next().toInt() and rIter.next().toInt()
+            DataType.LongDataType -> (lIter.next().toLong() and rIter.next().toLong()).toInt()
+            DataType.ShortDataType -> (lIter.next().toShort() and rIter.next().toShort()).toInt()
+            DataType.ByteDataType -> (lIter.next().toByte() and rIter.next().toByte()).toInt()
+            else -> throw Exception("")
+        }
+    }
+    return ret
+}
+
+public infix fun <T : Number, D : Dimension> MultiArray<T, D>.or(other: MultiArray<T, D>): NDArray<Int, D> {
+    requireArraySizes(this.size, other.size)
+
+    val ret = mk.empty<Int, D>(this.shape, DataType.IntDataType)
+    val lIter = this.iterator()
+    val rIter = other.iterator()
+    for (i in ret.data.indices) {
+        ret.data[i] = when (dtype) {
+            DataType.DoubleDataType -> {
+                val l = lIter.next().toDouble()
+                val r = rIter.next().toDouble()
+                when {
+                    l == 0.0 && r == 0.0 -> 0
+                    l.isNaN() && r.isNaN() -> 0
+                    else -> 1
+                }
+            }
+            DataType.FloatDataType -> {
+                val l = lIter.next().toFloat()
+                val r = rIter.next().toFloat()
+                when {
+                    l == 0f && r == 0f -> 0
+                    l.isNaN() && r.isNaN() -> 0
+                    else -> 1
+                }
+            }
+            DataType.IntDataType -> lIter.next().toInt() or rIter.next().toInt()
+            DataType.LongDataType -> (lIter.next().toLong() or rIter.next().toLong()).toInt()
+            DataType.ShortDataType -> (lIter.next().toShort() or rIter.next().toShort()).toInt()
+            DataType.ByteDataType -> (lIter.next().toByte() or rIter.next().toByte()).toInt()
+            else -> throw Exception("")
+        }
+    }
+    return ret
 }
 
 
@@ -1222,7 +1298,7 @@ public fun <T> MultiArray<T, D4>.toListD4(): List<List<List<List<T>>>> =
         }
     }
 
-public fun <D: Dimension> MultiArray<Int, D>.toIntArray() : IntArray {
+public fun <D : Dimension> MultiArray<Int, D>.toIntArray(): IntArray {
     val result = IntArray(size)
     if (this.consistent) {
         data.getIntArray().copyInto(result)
@@ -1234,7 +1310,7 @@ public fun <D: Dimension> MultiArray<Int, D>.toIntArray() : IntArray {
     return result
 }
 
-public fun <D: Dimension> MultiArray<Long, D>.toLongArray() : LongArray {
+public fun <D : Dimension> MultiArray<Long, D>.toLongArray(): LongArray {
     val result = LongArray(size)
     if (this.consistent) {
         data.getLongArray().copyInto(result)
@@ -1246,7 +1322,7 @@ public fun <D: Dimension> MultiArray<Long, D>.toLongArray() : LongArray {
     return result
 }
 
-public fun <D: Dimension> MultiArray<Float, D>.toFloatArray() : FloatArray {
+public fun <D : Dimension> MultiArray<Float, D>.toFloatArray(): FloatArray {
     val result = FloatArray(size)
     if (this.consistent) {
         data.getFloatArray().copyInto(result)
@@ -1258,7 +1334,7 @@ public fun <D: Dimension> MultiArray<Float, D>.toFloatArray() : FloatArray {
     return result
 }
 
-public fun <D: Dimension> MultiArray<Double, D>.toDoubleArray() : DoubleArray {
+public fun <D : Dimension> MultiArray<Double, D>.toDoubleArray(): DoubleArray {
     val result = DoubleArray(size)
     if (this.consistent) {
         data.getDoubleArray().copyInto(result)
@@ -1270,7 +1346,7 @@ public fun <D: Dimension> MultiArray<Double, D>.toDoubleArray() : DoubleArray {
     return result
 }
 
-public fun <D: Dimension> MultiArray<ComplexFloat, D>.toComplexFloatArray() : ComplexFloatArray {
+public fun <D : Dimension> MultiArray<ComplexFloat, D>.toComplexFloatArray(): ComplexFloatArray {
     val result = ComplexFloatArray(size)
     if (this.consistent) {
         data.getComplexFloatArray().copyInto(result)
@@ -1282,7 +1358,7 @@ public fun <D: Dimension> MultiArray<ComplexFloat, D>.toComplexFloatArray() : Co
     return result
 }
 
-public fun <D: Dimension> MultiArray<ComplexDouble, D>.toComplexDoubleArray() : ComplexDoubleArray {
+public fun <D : Dimension> MultiArray<ComplexDouble, D>.toComplexDoubleArray(): ComplexDoubleArray {
     val result = ComplexDoubleArray(size)
     if (this.consistent) {
         data.getComplexDoubleArray().copyInto(result)
