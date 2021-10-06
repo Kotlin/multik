@@ -20,11 +20,11 @@ double vector_dot(int n, double *X, int incx, double *Y, int incy) {
 }
 
 openblas_complex_float vector_dot_complex(int n, float *X, int incx, float *Y, int incy) {
-  return cblas_cdotc(n, X, incx, Y, incy);
+  return cblas_cdotu(n, X, incx, Y, incy);
 }
 
 openblas_complex_double vector_dot_complex(int n, double *X, int incx, double *Y, int incy) {
-  return cblas_zdotc(n, X, incx, Y, incy);
+  return cblas_zdotu(n, X, incx, Y, incy);
 }
 
 int solve_linear_system(int n, int nrhs, float *A, int lda, float *b, int ldb) {

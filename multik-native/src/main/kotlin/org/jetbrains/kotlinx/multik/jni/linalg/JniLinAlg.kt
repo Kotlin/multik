@@ -4,6 +4,9 @@
 
 package org.jetbrains.kotlinx.multik.jni.linalg
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+
 internal object JniLinAlg {
     external fun pow(mat: FloatArray, n: Int, result: FloatArray)
     external fun pow(mat: DoubleArray, n: Int, result: DoubleArray)
@@ -97,6 +100,6 @@ internal object JniLinAlg {
      */
     external fun dotVV(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): Float
     external fun dotVV(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): Double
-    external fun dotVVC(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): Float
-    external fun dotVVC(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): Double
+    external fun dotVVC(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): ComplexFloat
+    external fun dotVVC(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): ComplexDouble
 }
