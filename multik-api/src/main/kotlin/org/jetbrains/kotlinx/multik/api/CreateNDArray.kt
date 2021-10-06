@@ -18,6 +18,7 @@ import kotlin.math.ceil
  * @return [NDArray] of [D] dimension
  * @sample samples.NDArrayTest.empty
  */
+@Deprecated("Use zeros instead.", ReplaceWith("mk.zeros(dims)"))
 public inline fun <reified T : Any, reified D : Dimension> Multik.empty(vararg dims: Int): NDArray<T, D> {
     val dim = dimensionClassOf<D>(dims.size)
     requireDimension(dim, dims.size)
@@ -37,12 +38,72 @@ public inline fun <reified T : Any, reified D : Dimension> Multik.empty(vararg d
  * @return [NDArray] of [D] dimension.
  * @sample samples.NDArrayTest.emptyWithDtype
  */
+@Deprecated("Use zeros instead.", ReplaceWith("mk.zeros(dims)"))
 public fun <T, D : Dimension> Multik.empty(dims: IntArray, dtype: DataType): NDArray<T, D> {
-    // TODO check data type
     val dim = dimensionOf<D>(dims.size)
-    requireDimension(dim, dims.size) // TODO (mk.empty<Float, D2>(intArrayOf(3), DataType.FloatDataType))
+    requireDimension(dim, dims.size)
     val size = dims.fold(1, Int::times)
     val data = initMemoryView<T>(size, dtype)
+    return NDArray(data, shape = dims, dim = dim)
+}
+
+public inline fun <reified T : Any> Multik.zeros(dim1: Int): D1Array<T> =
+    zeros(intArrayOf(dim1), DataType.ofKClass(T::class))
+
+public inline fun <reified T : Any> Multik.zeros(dim1: Int, dim2: Int): D2Array<T> =
+    zeros(intArrayOf(dim1, dim2), DataType.ofKClass(T::class))
+
+public inline fun <reified T : Any> Multik.zeros(dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
+    zeros(intArrayOf(dim1, dim2, dim3), DataType.ofKClass(T::class))
+
+public inline fun <reified T : Any> Multik.zeros(dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<T> =
+    zeros(intArrayOf(dim1, dim2, dim3, dim4), DataType.ofKClass(T::class))
+
+public inline fun <reified T : Any> Multik.zeros(
+    dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
+): NDArray<T, DN> =
+    zeros(intArrayOf(dim1, dim2, dim3, dim4) + dims, DataType.ofKClass(T::class))
+
+public fun <T, D : Dimension> Multik.zeros(dims: IntArray, dtype: DataType): NDArray<T, D> {
+    val dim = dimensionOf<D>(dims.size)
+    requireDimension(dim, dims.size)
+    val size = dims.fold(1, Int::times)
+    val data = initMemoryView<T>(size, dtype)
+    return NDArray(data, shape = dims, dim = dim)
+}
+
+public inline fun <reified T : Any> Multik.ones(dim1: Int): D1Array<T> =
+    zeros(intArrayOf(dim1), DataType.ofKClass(T::class))
+
+public inline fun <reified T : Any> Multik.ones(dim1: Int, dim2: Int): D2Array<T> =
+    zeros(intArrayOf(dim1, dim2), DataType.ofKClass(T::class))
+
+public inline fun <reified T : Any> Multik.ones(dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
+    zeros(intArrayOf(dim1, dim2, dim3), DataType.ofKClass(T::class))
+
+public inline fun <reified T : Any> Multik.ones(dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<T> =
+    zeros(intArrayOf(dim1, dim2, dim3, dim4), DataType.ofKClass(T::class))
+
+public inline fun <reified T : Any> Multik.ones(
+    dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
+): NDArray<T, DN> =
+    zeros(intArrayOf(dim1, dim2, dim3, dim4) + dims, DataType.ofKClass(T::class))
+
+public fun <T, D : Dimension> Multik.ones(dims: IntArray, dtype: DataType): NDArray<T, D> {
+    val dim = dimensionOf<D>(dims.size)
+    requireDimension(dim, dims.size)
+    val size = dims.fold(1, Int::times)
+    val one: T = when (dtype) {
+        DataType.ByteDataType -> 1.toByte()
+        DataType.ShortDataType -> 1.toShort()
+        DataType.IntDataType -> 1
+        DataType.LongDataType -> 1L
+        DataType.FloatDataType -> 1f
+        DataType.DoubleDataType -> 1.0
+        DataType.ComplexFloatDataType -> ComplexFloat.one
+        DataType.ComplexDoubleDataType -> ComplexDouble.one
+    } as T
+    val data = initMemoryView(size, dtype) { one }
     return NDArray(data, shape = dims, dim = dim)
 }
 
