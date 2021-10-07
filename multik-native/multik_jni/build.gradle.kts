@@ -12,6 +12,7 @@ apply(from = "$rootDir/gradle/openblas.gradle")
 
 val gccMinGWPath: String? = System.getenv("MinGW_x64_Bin_Path")
 val gccLibPath: String? = System.getenv("path_to_libgcc")
+val gccDarwin: String? = System.getenv("path_to_gcc_darwin") ?: gccLibPath
 
 library {
     source.from(file("src/main/cpp"))
@@ -63,8 +64,8 @@ tasks.withType(LinkSharedLibrary::class.java).configureEach {
                         )
                     it.operatingSystem.isMacOsX ->
                         listOf(
-                            "$gccLibPath/libgcc.a",
-                            "$gccLibPath/../../../libgfortran.a", "$gccLibPath/../../../libquadmath.a"
+                            "$gccDarwin/libgcc.a",
+                            "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a"
                         )
                     it.operatingSystem.isLinux ->
                         listOf("-static-libgcc", "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a")
