@@ -138,22 +138,6 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_pl
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    eig
- * Signature: (I[F[F[FC[F)I
- */
-JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_eig__I_3F_3F_3FC_3F
-	(JNIEnv *, jobject, jint, jfloatArray, jfloatArray, jfloatArray, jchar, jfloatArray);
-
-/*
- * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
- * Method:    eig
- * Signature: (I[D[D[DC[D)I
- */
-JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_eig__I_3D_3D_3DC_3D
-	(JNIEnv *, jobject, jint, jdoubleArray, jdoubleArray, jdoubleArray, jchar, jdoubleArray);
-
-/*
- * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
- * Method:    eig
  * Signature: (I[F[FC[F)I
  */
 JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_eig__I_3F_3FC_3F

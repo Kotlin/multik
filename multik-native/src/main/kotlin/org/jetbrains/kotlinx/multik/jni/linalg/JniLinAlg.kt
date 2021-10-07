@@ -37,8 +37,6 @@ internal object JniLinAlg {
     external fun pluC(m: Int, n: Int, a: FloatArray, lda: Int, ipiv: IntArray): Int
     external fun pluC(m: Int, n: Int, a: DoubleArray, lda: Int, ipiv: IntArray): Int
 
-    external fun eig(n: Int, a: FloatArray, wr: FloatArray, wi: FloatArray, computeV: Char, vr: FloatArray?): Int
-    external fun eig(n: Int, a: DoubleArray, wr: DoubleArray, wi: DoubleArray, computeV: Char, vr: DoubleArray?): Int
     external fun eig(n: Int, a: FloatArray, w: FloatArray, computeV: Char, vr: FloatArray?): Int
     external fun eig(n: Int, a: DoubleArray, w: DoubleArray, computeV: Char, vr: DoubleArray?): Int
 

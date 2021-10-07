@@ -10,22 +10,15 @@ plugins {
 
 apply(from = "$rootDir/gradle/openblas.gradle")
 
-val gccPath: String? = System.getenv("MinGW_x64_Bin_Path")
-val gfortranAndQuadmathPath: String? = System.getenv("path_to_gfortran")
-
-val linkList: List<String> = mutableListOf("$buildDir/openblas/lib/libopenblas.a", "-static-libgcc", "-static-libstdc++", "-lpthread", "-v").apply {
-    if (gfortranAndQuadmathPath != null) {
-        this.add("$gfortranAndQuadmathPath/libgfortran.a")
-        this.add("$gfortranAndQuadmathPath/libquadmath.a")
-    }
-}
+val gccMinGWPath: String? = System.getenv("MinGW_x64_Bin_Path")
+val gccLibPath: String? = System.getenv("path_to_libgcc")
 
 library {
     source.from(file("src/main/cpp"))
 
     toolChains.configureEach {
-        if (this is Gcc && gccPath != null) {
-            this.path(gccPath)
+        if (this is Gcc && gccMinGWPath != null) {
+            this.path(gccMinGWPath)
         }
     }
 
@@ -59,14 +52,24 @@ library {
 tasks.withType(CppCompile::class.java).configureEach { dependsOn("installOpenBlas") }
 
 tasks.withType(LinkSharedLibrary::class.java).configureEach {
-    linkerArgs.addAll(linkList
-//        targetPlatform.map {
-//            linkList +
-//                if (it.operatingSystem.isWindows || it.operatingSystem.isMacOsX)
-//                    listOf("-static-libgcc", "-static-libstdc++")
-//                else
-//                    listOf("-static-libgcc", "-static-libstdc++", "-static", "-lpthread")
-//                    emptyList()
-//        }
+    linkerArgs.addAll(
+        targetPlatform.map {
+            listOf("$buildDir/openblas/lib/libopenblas.a") +
+                when {
+                    it.operatingSystem.isWindows ->
+                        listOf(
+                            "-static-libgcc", "-static-libstdc++", "-static", "-lpthread",
+                            "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a"
+                        )
+                    it.operatingSystem.isMacOsX ->
+                        listOf(
+                            "$gccLibPath/libgcc.a",
+                            "$gccLibPath/../../../libgfortran.a", "$gccLibPath/../../../libquadmath.a"
+                        )
+                    it.operatingSystem.isLinux ->
+                        listOf("$gccLibPath/libgcc.a", "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a")
+                    else -> emptyList()
+                }
+        }
     )
 }
