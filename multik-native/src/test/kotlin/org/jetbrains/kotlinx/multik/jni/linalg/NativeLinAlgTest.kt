@@ -6,7 +6,6 @@ package org.jetbrains.kotlinx.multik.jni.linalg
 
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.dot
-import org.jetbrains.kotlinx.multik.api.linalg.eig
 import org.jetbrains.kotlinx.multik.api.linalg.inv
 import org.jetbrains.kotlinx.multik.api.linalg.solve
 import org.jetbrains.kotlinx.multik.api.mk
@@ -256,17 +255,5 @@ class NativeLinAlgTest {
         val ainv = NativeLinAlg.inv(a)
 
         assertComplexFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
-    }
-
-    @Test
-    fun `eigenvalues test`() {
-//        val a = mk.d2arrayIndices(3, 3) { i, j -> if (i == j) i + 1.0 else 0.0 }
-        val a = mk.ndarray(mk[mk[1 + 1e-9, 0.0], mk[0.0, 1 - 1e-9]])
-//        println(mk.linalg.eigVals(a))
-        val (w, v) = mk.linalg.eig(a)
-        println("w")
-        println(w)
-        println("v")
-        println(v)
     }
 }
