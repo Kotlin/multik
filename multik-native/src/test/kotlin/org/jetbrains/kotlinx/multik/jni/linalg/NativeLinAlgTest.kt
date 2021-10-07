@@ -4,20 +4,21 @@
 
 package org.jetbrains.kotlinx.multik.jni.linalg
 
-import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.dot
+import org.jetbrains.kotlinx.multik.api.linalg.eig
 import org.jetbrains.kotlinx.multik.api.linalg.inv
 import org.jetbrains.kotlinx.multik.api.linalg.solve
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.jni.*
-import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
-import org.jetbrains.kotlinx.multik.ndarray.data.*
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.random.Random
-import kotlin.test.*
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.data.rangeTo
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class NativeLinAlgTest {
 
@@ -255,5 +256,17 @@ class NativeLinAlgTest {
         val ainv = NativeLinAlg.inv(a)
 
         assertComplexFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+    }
+
+    @Test
+    fun `eigenvalues test`() {
+//        val a = mk.d2arrayIndices(3, 3) { i, j -> if (i == j) i + 1.0 else 0.0 }
+        val a = mk.ndarray(mk[mk[1 + 1e-9, 0.0], mk[0.0, 1 - 1e-9]])
+//        println(mk.linalg.eigVals(a))
+        val (w, v) = mk.linalg.eig(a)
+        println("w")
+        println(w)
+        println("v")
+        println(v)
     }
 }
