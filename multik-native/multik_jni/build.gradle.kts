@@ -13,7 +13,7 @@ apply(from = "$rootDir/gradle/openblas.gradle")
 val gccPath: String? = System.getenv("MinGW_x64_Bin_Path")
 val gfortranAndQuadmathPath: String? = System.getenv("path_to_gfortran")
 
-val linkList: List<String> = mutableListOf("$buildDir/openblas/lib/libopenblas.a", "-static", "-lpthread").apply {
+val linkList: List<String> = mutableListOf("$buildDir/openblas/lib/libopenblas.a", "-static", "-lpthread", "-v").apply {
     if (gfortranAndQuadmathPath != null) {
         this.add("$gfortranAndQuadmathPath/libgfortran.a")
         this.add("$gfortranAndQuadmathPath/libquadmath.a")
