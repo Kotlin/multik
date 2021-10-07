@@ -35,7 +35,7 @@ library {
     binaries.configureEach {
         compileTask.get().compilerArgs.addAll(compileTask.get().targetPlatform.map {
             listOf(
-                "-std=c++14", "-O3", "-fno-exceptions", "-ffast-math",
+                "-std=c++14", "-O3", "-fno-exceptions", "-ffast-math", "-fPIC",
                 "-I", "${Jvm.current().javaHome.canonicalPath}/include",
                 "-I", "$buildDir/openblas/include/"
             ) + when {
@@ -67,7 +67,7 @@ tasks.withType(LinkSharedLibrary::class.java).configureEach {
                             "$gccLibPath/../../../libgfortran.a", "$gccLibPath/../../../libquadmath.a"
                         )
                     it.operatingSystem.isLinux ->
-                        listOf("$gccLibPath/libgcc.a", "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a")
+                        listOf("-static-libgcc", "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a")
                     else -> emptyList()
                 }
         }
