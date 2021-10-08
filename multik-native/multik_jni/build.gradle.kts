@@ -11,8 +11,8 @@ plugins {
 apply(from = "$rootDir/gradle/openblas.gradle")
 
 val gccMinGWPath: String? = System.getenv("MinGW_x64_Bin_Path")
-val gccLibPath: String? = System.getenv("path_to_libgcc")
-val gccDarwin: String? = System.getenv("path_to_gcc_darwin") ?: gccLibPath
+val gccLibPath: String = System.getenv("path_to_libgcc") ?: ""
+val gccDarwin: String = System.getenv("path_to_gcc_darwin") ?: gccLibPath
 
 library {
     source.from(file("src/main/cpp"))
@@ -67,8 +67,6 @@ tasks.withType(LinkSharedLibrary::class.java).configureEach {
                             "$gccDarwin/libgcc.a",
                             "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a"
                         )
-                    it.operatingSystem.isLinux -> emptyList()
-//                        listOf("$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a")
                     else -> emptyList()
                 }
         }
