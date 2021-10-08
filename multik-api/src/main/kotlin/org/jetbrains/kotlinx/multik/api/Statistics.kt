@@ -58,7 +58,7 @@ public interface Statistics {
  * Returns the absolute value of the given ndarray [a].
  */
 @JvmName("absByte")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Byte, D>): NDArray<Byte, D> {
+public fun <D : Dimension> abs(a: MultiArray<Byte, D>): NDArray<Byte, D> {
     val ret = initMemoryView<Byte>(a.size, a.dtype)
     var index = 0
     for (element in a) {
@@ -68,7 +68,7 @@ public fun <D : Dimension> Statistics.abs(a: MultiArray<Byte, D>): NDArray<Byte,
 }
 
 @JvmName("absShort")
-public fun <D : Dimension> Statistics.abs(a: MultiArray<Short, D>): NDArray<Short, D> {
+public fun <D : Dimension> abs(a: MultiArray<Short, D>): NDArray<Short, D> {
     val ret = initMemoryView<Short>(a.size, a.dtype)
     var index = 0
     for (element in a) {
