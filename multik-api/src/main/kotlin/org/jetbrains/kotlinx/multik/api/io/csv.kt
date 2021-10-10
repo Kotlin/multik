@@ -14,10 +14,27 @@ import java.io.*
 import java.nio.charset.Charset
 import java.util.zip.GZIPInputStream
 
+/**
+ * Returns an NDArray of type [T] and [D] dimension read from csv file.
+ * @param T NDArray element type
+ * @param D dimension of NDArray. It can be 1 or 2
+ * @param fileName file path including file name and extensions
+ * @param delimiter separator between elements
+ * @param charset character encoding, by default is UTF_8
+ */
 public inline fun <reified T : Any, reified D : Dim2> Multik.read(
     fileName: String, delimiter: Char = ',', charset: Charset = Charsets.UTF_8
 ): NDArray<T, D> = read(fileName, DataType.ofKClass(T::class), dimensionClassOf<D>(), delimiter, charset)
 
+/**
+ * Returns an NDArray of type [T] and [D] dimension read from csv file.
+ * @param T NDArray element type
+ * @param D dimension of NDArray. It can be 1 or 2
+ * @param fileName file path including file name and extensions
+ * @param dtype NDArray element type
+ * @param delimiter separator between elements
+ * @param charset character encoding, by default is UTF_8
+ */
 public fun <T, D : Dim2> Multik.read(
     fileName: String, dtype: DataType, dim: Dim2,
     delimiter: Char = ',', charset: Charset = Charsets.UTF_8
@@ -27,6 +44,14 @@ public fun <T, D : Dim2> Multik.read(
     return read(file, dtype, dim, delimiter, charset)
 }
 
+/**
+ * Returns a raw array of dimension 2. The type casts to either [Double] or [ComplexDouble].
+ * @param fileName file path including file name and extensions
+ * @param dtype NDArray element type
+ * @param dim dimension of NDArray
+ * @param delimiter separator between elements
+ * @param charset character encoding, by default is UTF_8
+ */
 public fun Multik.readRaw(
     fileName: String, dtype: DataType? = null, dim: Dim2? = null,
     delimiter: Char = ',', charset: Charset = Charsets.UTF_8
@@ -36,23 +61,57 @@ public fun Multik.readRaw(
     return readRaw(file, dtype, dim, delimiter, charset)
 }
 
+/**
+ * Returns an NDArray of type [T] and [D] dimension read from csv file.
+ * @param T NDArray element type
+ * @param D dimension of NDArray. It can be 1 or 2
+ * @param file csv file
+ * @param delimiter separator between elements
+ * @param charset character encoding, by default is UTF_8
+ */
 public inline fun <reified T : Any, reified D : Dim2> Multik.read(
     file: File, delimiter: Char = ',', charset: Charset = Charsets.UTF_8
 ): NDArray<T, D> = read(file, DataType.ofKClass(T::class), dimensionClassOf<D>(), delimiter, charset)
 
+/**
+ * Returns an NDArray of type [T] and [D] dimension read from csv file.
+ * @param T NDArray element type
+ * @param D dimension of NDArray. It can be 1 or 2
+ * @param dtype NDArray element type
+ * @param file csv file
+ * @param delimiter separator between elements
+ * @param charset character encoding, by default is UTF_8
+ */
 public fun <T, D : Dim2> Multik.read(
     file: File, dtype: DataType, dim: Dim2,
     delimiter: Char = ',', charset: Charset = Charsets.UTF_8
 ): NDArray<T, D> =
     readDelim(FileInputStream(file), dtype, dim, delimiter, charset, isCompressed(file))
 
+/**
+ * Returns a raw array of dimension 2. The type casts to either [Double] or [ComplexDouble].
+ * @param file csv file
+ * @param dtype NDArray element type
+ * @param dim dimension of NDArray
+ * @param delimiter separator between elements
+ * @param charset character encoding, by default is UTF_8
+ */
 public fun Multik.readRaw(
     file: File, dtype: DataType? = null, dim: Dim2? = null,
     delimiter: Char = ',', charset: Charset = Charsets.UTF_8
 ): NDArray<*, D2> =
     readDelim<Any, D2>(FileInputStream(file), dtype, dim, delimiter, charset, isCompressed(file))
 
-
+/**
+ * Returns an NDArray of type [T] and [D] dimension read from csv file.
+ * @param T NDArray element type
+ * @param D dimension of NDArray. It can be 1 or 2
+ * @param inStream data input stream from file
+ * @param dtype NDArray element type
+ * @param dim dimension of NDArray
+ * @param delimiter separator between elements
+ * @param isCompressed shows whether the data is compressed, by default is false
+ */
 public fun <T, D : Dim2> Multik.readDelim(
     inStream: InputStream, dtype: DataType?, dim: Dim2?,
     delimiter: Char = ',', charset: Charset, isCompressed: Boolean = false
@@ -65,6 +124,15 @@ public fun <T, D : Dim2> Multik.readDelim(
         readDelim(this, CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(delimiter).build(), dtype, dim)
     }
 
+/**
+ * Returns an NDArray of type [T] and [D] dimension read from csv file.
+ * @param T NDArray element type
+ * @param D dimension of NDArray. It can be 1 or 2
+ * @param reader reading character-input streams
+ * @param format csv format from apache
+ * @param dtype NDArray element type
+ * @param dim dimension of NDArray
+ */
 public fun <T, D : Dim2> Multik.readDelim(
     reader: Reader, format: CSVFormat = CSVFormat.DEFAULT,
     dtype: DataType?, dim: Dim2?
@@ -134,12 +202,34 @@ private fun String.toComplexFloat(): ComplexFloat {
 
 private fun isCompressed(file: File) = listOf("gz", "zip").contains(file.extension)
 
+/**
+ * Writes an NDArray to csv file. The NDArray must be up to the second dimension.
+ * @param T NDArray element type
+ * @param D dimension of NDArray. It can be 1 or 2
+ * @param file file where the data will be written, if the file does not exist, it will be created
+ * @param delimiter separator between elements
+ */
 public fun <T, D : Dim2> Multik.write(file: File, ndarray: NDArray<T, D>, delimiter: Char = ','): Unit =
     writeCSV(FileWriter(file), ndarray, CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(delimiter).build())
 
+/**
+ * Writes an NDArray to csv file. The NDArray must be up to the second dimension.
+ * @param T NDArray element type
+ * @param D dimension of NDArray. It can be 1 or 2
+ * @param path file path where the data will be written
+ * @param delimiter separator between elements
+ */
 public fun <T, D : Dim2> Multik.write(path: String, ndarray: NDArray<T, D>, delimiter: Char = ','): Unit =
     writeCSV(FileWriter(path), ndarray, CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(delimiter).build())
 
+/**
+ * Returns an NDArray of type [T] and [D] dimension read from csv file.
+ * @param T NDArray element type
+ * @param D dimension of NDArray. It can be 1 or 2
+ * @param writer
+ * @param ndarray array of data
+ * @param format csv format from apache
+ */
 public fun <T, D : Dim2> Multik.writeCSV(
     writer: Appendable,
     ndarray: NDArray<T, D>,

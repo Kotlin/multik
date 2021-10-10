@@ -10,6 +10,9 @@ import org.jetbrains.kotlinx.multik.ndarray.data.Dim2
 import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
+/**
+ * Returns the solution to a system of linear equations
+ */
 @JvmName("solveF")
 public fun <D : Dim2> LinAlg.solve(a: MultiArray<Float, D2>, b: MultiArray<Float, D>): NDArray<Float, D> = this.linAlgEx.solveF(a, b)
 

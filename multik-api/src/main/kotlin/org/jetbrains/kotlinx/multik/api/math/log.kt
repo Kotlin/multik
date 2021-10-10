@@ -11,7 +11,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
 /**
- * Returns an ndarray of Double from the given ndarray to each element of which a log function has been applied.
+ * Returns a ndarray of Double from the given ndarray to each element of which a log function has been applied.
  */
 @JvmName("log")
 public fun <T : Number, D : Dimension> Math.log(a: MultiArray<T, D>): NDArray<Double, D> = this.mathEx.log(a)

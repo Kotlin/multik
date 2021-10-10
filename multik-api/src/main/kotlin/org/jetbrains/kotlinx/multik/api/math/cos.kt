@@ -11,7 +11,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
 /**
- * Returns an ndarray of Double from the given ndarray to each element of which a cos function has been applied.
+ * Returns a ndarray of Double from the given ndarray to each element of which a cos function has been applied.
  */
 @JvmName("cos")
 public fun <T : Number, D : Dimension> Math.cos(a: MultiArray<T, D>): NDArray<Double, D> = this.mathEx.cos(a)

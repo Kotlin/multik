@@ -9,6 +9,9 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
+/**
+ * Extension interface for [LinAlg] for improved type support.
+ */
 public interface LinAlgEx {
     public fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2>
     public fun invF(mat: MultiArray<Float, D2>): NDArray<Float, D2>

@@ -8,6 +8,9 @@ import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
+/**
+ * Superclass for complex numbers.
+ */
 public interface Complex {
     public companion object {
 
@@ -21,6 +24,9 @@ public interface Complex {
     }
 }
 
+/**
+ * Represents a single-precision 64-bit complex number.
+ */
 public class ComplexFloat(public val re: Float, public val im: Float) : Complex {
 
     public constructor(re: Number, im: Number): this(re.toFloat(), im.toFloat())
@@ -207,6 +213,9 @@ public class ComplexFloat(public val re: Float, public val im: Float) : Complex 
     override fun toString(): String = "$re+($im)i"
 }
 
+/**
+ * Represents a double-precision 128-bit complex number.
+ */
 public class ComplexDouble(public val re: Double, public val im: Double) : Complex {
 
     public constructor(re: Number, im: Number): this(re.toDouble(), im.toDouble())

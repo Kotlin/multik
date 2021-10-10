@@ -47,6 +47,9 @@ public fun <T, D : Dimension> Multik.empty(dims: IntArray, dtype: DataType): NDA
     return NDArray(data, shape = dims, dim = dim)
 }
 
+/**
+ * Returns a new zero array of type [T] with the specified shape.
+ */
 public inline fun <reified T : Any> Multik.zeros(dim1: Int): D1Array<T> =
     zeros(intArrayOf(dim1), DataType.ofKClass(T::class))
 
@@ -72,6 +75,9 @@ public fun <T, D : Dimension> Multik.zeros(dims: IntArray, dtype: DataType): NDA
     return NDArray(data, shape = dims, dim = dim)
 }
 
+/**
+ * Returns a new ones array of type [T] with the specified shape.
+ */
 public inline fun <reified T : Any> Multik.ones(dim1: Int): D1Array<T> =
     zeros(intArrayOf(dim1), DataType.ofKClass(T::class))
 
@@ -1518,21 +1524,39 @@ public fun <T : Number> Iterable<T>.toNDArray(): D1Array<T> = this.toCommonNDArr
 @JvmName("toComplexNDArray")
 public fun <T : Complex> Iterable<T>.toNDArray(): D1Array<T> = this.toCommonNDArray()
 
+/**
+ * Returns [D2Array] containing all elements.
+ */
 @JvmName("List2DToNDArrayNumber")
 public inline fun <reified T : Number> List<List<T>>.toNDArray(): D2Array<T> = Multik.ndarray(this)
 
+/**
+ * Returns [D2Array] containing all elements.
+ */
 @JvmName("List2DToNDArrayComplex")
 public inline fun <reified T : Complex> List<List<T>>.toNDArray(): D2Array<T> = Multik.ndarray(this)
 
+/**
+ * Returns [D3Array] containing all elements.
+ */
 @JvmName("List3DToNDArrayNumber")
 public inline fun <reified T : Number> List<List<List<T>>>.toNDArray(): D3Array<T> = Multik.ndarray(this)
 
+/**
+ * Returns [D3Array] containing all elements.
+ */
 @JvmName("List3DToNDArrayComplex")
 public inline fun <reified T : Complex> List<List<List<T>>>.toNDArray(): D3Array<T> = Multik.ndarray(this)
 
+/**
+ * Returns [D4Array] containing all elements.
+ */
 @JvmName("List4DToNDArrayNumber")
 public inline fun <reified T : Number> List<List<List<List<T>>>>.toNDArray(): D4Array<T> = Multik.ndarray(this)
 
+/**
+ * Returns [D4Array] containing all elements.
+ */
 @JvmName("List4DToNDArrayComplex")
 public inline fun <reified T : Complex> List<List<List<List<T>>>>.toNDArray(): D4Array<T> = Multik.ndarray(this)
 

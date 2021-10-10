@@ -10,6 +10,9 @@ import org.jetbrains.kotlinx.multik.ndarray.data.Dimension
 import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
+/**
+ * Extension interface for [Math] for improved type support.
+ */
 public interface MathEx {
     public fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): NDArray<Double, D>
     public fun <D : Dimension> expF(a: MultiArray<Float, D>): NDArray<Float, D>

@@ -11,7 +11,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
 /**
- * Returns an ndarray of Double from the given ndarray to each element of which an exp function has been applied.
+ * Returns a ndarray of Double from the given ndarray to each element of which an exp function has been applied.
  */
 @JvmName("exp")
 public fun <T : Number, D : Dimension> Math.exp(a: MultiArray<T, D>): NDArray<Double, D> = this.mathEx.exp(a)
