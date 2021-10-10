@@ -1,73 +1,77 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package org.jetbrains.kotlinx.multik.jni.math
 
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.jni.DataStructure
 import org.jetbrains.kotlinx.multik.jni.Loader
-import org.jetbrains.kotlinx.multik.jni.NativeMath
-import org.jetbrains.kotlinx.multik.jni.roundDouble
-import org.jetbrains.kotlinx.multik.ndarray.data.D2
-import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
-import java.math.BigDecimal
-import java.math.RoundingMode
+import org.jetbrains.kotlinx.multik.jni.assertFloatingNDArray
+import org.jetbrains.kotlinx.multik.jni.assertFloatingNumber
+import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class NativeMathTest {
 
-    val ndarray: NDArray<Float, D2> = mk.ndarray(mk[mk[5.7f, 1.08f], mk[9.12f, 3.55f]])
+    private lateinit var data: DataStructure
+    private lateinit var ndarray: D2Array<Float>
 
     @BeforeTest
     fun load() {
         Loader("multik_jni").manualLoad()
+
+        data = DataStructure(42)
+        ndarray = data.getFloatM(2)
     }
 
     @Test
-    fun argMaxTest() {
-        assertEquals(2, NativeMath.argMax(ndarray))
-    }
+    fun argMaxTest() = assertEquals(3, NativeMath.argMax(ndarray))
 
     @Test
-    fun argMinTest() {
-        assertEquals(1, NativeMath.argMin(ndarray))
-    }
+    fun argMinTest() = assertEquals(0, NativeMath.argMin(ndarray))
 
     @Test
     fun expTest() {
-        val expected = mk.ndarray(mk[mk[298.87, 2.94], mk[9136.2, 34.81]])
-        assertEquals(expected, roundDouble(NativeMath.exp(ndarray)))
+        val expected = mk.ndarray(
+            mk[mk[1.2539709297612778, 1.499692498450485],
+                mk[2.47182503414346, 2.647835581718662]]
+        )
+        assertFloatingNDArray(expected, NativeMathEx.exp(ndarray))
     }
 
     @Test
     fun logTest() {
-        val expected = mk.ndarray(mk[mk[1.74, 0.08], mk[2.21, 1.27]])
-        assertEquals(expected, roundDouble(NativeMath.log(ndarray)))
+        val expected = mk.ndarray(
+            mk[mk[-1.4858262962985072, -0.9032262301885379],
+                mk[-0.0998681176145879, -0.026608338154056003]]
+        )
+        assertFloatingNDArray(expected, NativeMathEx.log(ndarray))
     }
 
     @Test
     fun sinTest() {
-        val expected = mk.ndarray(mk[mk[-0.55, 0.88], mk[0.3, -0.4]])
-        assertEquals(expected, roundDouble(NativeMath.sin(ndarray)))
+        val expected =
+            mk.ndarray(mk[mk[0.22438827641771292, 0.39425779276225403], mk[0.7863984442713585, 0.826995590204087]])
+        assertFloatingNDArray(expected, NativeMathEx.sin(ndarray))
     }
 
     @Test
     fun cosTest() {
-        val expected = mk.ndarray(mk[mk[0.83, 0.47], mk[-0.95, -0.92]])
-        assertEquals(expected, roundDouble(NativeMath.cos(ndarray)))
+        val expected =
+            mk.ndarray(mk[mk[0.9744998211422555, 0.9189998872939189], mk[0.6177195859349023, 0.5622084077839763]])
+        assertFloatingNDArray(expected, NativeMathEx.cos(ndarray))
     }
 
     @Test
-    fun maxTest() {
-        assertEquals(9.12f, NativeMath.max(ndarray))
-    }
+    fun maxTest() = assertEquals(0.97374254f, NativeMath.max(ndarray))
 
     @Test
-    fun minTest() {
-        assertEquals(1.08f, NativeMath.min(ndarray))
-    }
+    fun minTest() = assertEquals(0.22631526f, NativeMath.min(ndarray))
 
     @Test
-    fun sumTest() {
-        assertEquals(19.449999f, NativeMath.sum(ndarray))
-    }
+    fun sumTest() = assertFloatingNumber(2.5102746f, NativeMath.sum(ndarray))
 }

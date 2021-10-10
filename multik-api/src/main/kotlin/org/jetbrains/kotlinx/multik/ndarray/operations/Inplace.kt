@@ -4,12 +4,15 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.operations
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.math.*
 
 private fun unsupported(): Nothing = throw UnsupportedOperationException("Not supported for local property reference.")
 
-public fun <T : Number, D : Dimension> NDArray<T, D>.inplace(init: InplaceOperation<T, D>.() -> Unit): Unit {
+public fun <T : Number, D : Dimension> NDArray<T, D>.inplace(init: InplaceOperation<T, D>.() -> Unit) {
     val inplaceOperation = InplaceOperation(this)
     inplaceOperation.init()
 }
@@ -23,7 +26,8 @@ public sealed class Inplace<T : Number, D : Dimension>(public val base: MutableM
 public open class InplaceOperation<T : Number, D : Dimension>(base: MutableMultiArray<T, D>) : Inplace<T, D>(base)
 
 @JvmName("mathD1")
-public fun <T : Number> InplaceOperation<T, D1>.math(init: InplaceMath<T, D1>.() -> Unit): Unit {
+@Suppress("DuplicatedCode")
+public fun <T : Number> InplaceOperation<T, D1>.math(init: InplaceMath<T, D1>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()
     for (op in math.batchOperation) {
@@ -37,7 +41,7 @@ public fun <T : Number> InplaceOperation<T, D1>.math(init: InplaceMath<T, D1>.()
 }
 
 @JvmName("mathD2")
-public fun <T : Number> InplaceOperation<T, D2>.math(init: InplaceMath<T, D2>.() -> Unit): Unit {
+public fun <T : Number> InplaceOperation<T, D2>.math(init: InplaceMath<T, D2>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()
     for (op in math.batchOperation)
@@ -51,7 +55,7 @@ public fun <T : Number> InplaceOperation<T, D2>.math(init: InplaceMath<T, D2>.()
 }
 
 @JvmName("mathD3")
-public fun <T : Number> InplaceOperation<T, D3>.math(init: InplaceMath<T, D3>.() -> Unit): Unit {
+public fun <T : Number> InplaceOperation<T, D3>.math(init: InplaceMath<T, D3>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()
     for (op in math.batchOperation)
@@ -66,7 +70,7 @@ public fun <T : Number> InplaceOperation<T, D3>.math(init: InplaceMath<T, D3>.()
 }
 
 @JvmName("mathD4")
-public fun <T : Number> InplaceOperation<T, D4>.math(init: InplaceMath<T, D4>.() -> Unit): Unit {
+public fun <T : Number> InplaceOperation<T, D4>.math(init: InplaceMath<T, D4>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()
     for (op in math.batchOperation)
@@ -82,7 +86,7 @@ public fun <T : Number> InplaceOperation<T, D4>.math(init: InplaceMath<T, D4>.()
 }
 
 @JvmName("mathDN")
-public fun <T : Number> InplaceOperation<T, DN>.math(init: InplaceMath<T, DN>.() -> Unit): Unit {
+public fun <T : Number> InplaceOperation<T, DN>.math(init: InplaceMath<T, DN>.() -> Unit) {
     val math = InplaceMath(base)
     math.init()
     for (op in math.batchOperation)
@@ -202,7 +206,7 @@ public fun <D : Dimension> InplaceMath<Double, D>.abs(): InplaceMath<Double, D> 
     return this
 }
 
-public sealed class Exp<T : Number> {
+public sealed class Exp<T> {
     public open operator fun invoke(left: T): T = unsupported()
     public open operator fun invoke(left: T, ind1: Int): T = unsupported()
     public open operator fun invoke(left: T, ind1: Int, ind2: Int): T = unsupported()
@@ -213,52 +217,64 @@ public sealed class Exp<T : Number> {
 
 public interface Arith
 
-public class Sum<T : Number, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
-    override fun invoke(left: T, ind1: Int): T = left + (right as MultiArray<T, D1>)[ind1]
-    override fun invoke(left: T, ind1: Int, ind2: Int): T = left + (right as MultiArray<T, D2>)[ind1, ind2]
+public class Sum<T, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
+    override fun invoke(left: T, ind1: Int): T =
+        if (left is Number) left + (right as MultiArray<T, D1>)[ind1] else (left as Complex) + (right as MultiArray<T, D1>)[ind1]
+    override fun invoke(left: T, ind1: Int, ind2: Int): T =
+        if (left is Number) left + (right as MultiArray<T, D2>)[ind1, ind2] else (left as Complex) + (right as MultiArray<T, D2>)[ind1, ind2]
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int): T =
-        left + (right as MultiArray<T, D3>)[ind1, ind2, ind3]
+        if (left is Number) left + (right as MultiArray<T, D3>)[ind1, ind2, ind3] else (left as Complex) + (right as MultiArray<T, D3>)[ind1, ind2, ind3]
 
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int, ind4: Int): T =
-        left + (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4]
+        if (left is Number) left + (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4] else (left as Complex) + (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4]
 
-    override fun invoke(left: T, index: IntArray): T = left + (right as MultiArray<T, DN>)[index]
+    override fun invoke(left: T, index: IntArray): T =
+        if (left is Number) left + (right as MultiArray<T, DN>)[index] else (left as Complex) + (right as MultiArray<T, DN>)[index]
 }
 
-public class Sub<T : Number, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
-    override fun invoke(left: T, ind1: Int): T = left - (right as MultiArray<T, D1>)[ind1]
-    override fun invoke(left: T, ind1: Int, ind2: Int): T = left - (right as MultiArray<T, D2>)[ind1, ind2]
+public class Sub<T, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
+    override fun invoke(left: T, ind1: Int): T =
+        if (left is Number) left - (right as MultiArray<T, D1>)[ind1] else (left as Complex) - (right as MultiArray<T, D1>)[ind1]
+    override fun invoke(left: T, ind1: Int, ind2: Int): T =
+        if (left is Number) left - (right as MultiArray<T, D2>)[ind1, ind2] else (left as Complex) - (right as MultiArray<T, D2>)[ind1, ind2]
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int): T =
-        left - (right as MultiArray<T, D3>)[ind1, ind2, ind3]
+        if (left is Number) left - (right as MultiArray<T, D3>)[ind1, ind2, ind3] else (left as Complex) - (right as MultiArray<T, D3>)[ind1, ind2, ind3]
 
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int, ind4: Int): T =
-        left - (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4]
+        if (left is Number) left - (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4] else (left as Complex) - (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4]
 
-    override fun invoke(left: T, index: IntArray): T = left - (right as MultiArray<T, DN>)[index]
+    override fun invoke(left: T, index: IntArray): T =
+        if (left is Number) left - (right as MultiArray<T, DN>)[index] else (left as Complex) - (right as MultiArray<T, DN>)[index]
 }
 
-public class Prod<T : Number, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
-    override fun invoke(left: T, ind1: Int): T = left * (right as MultiArray<T, D1>)[ind1]
-    override fun invoke(left: T, ind1: Int, ind2: Int): T = left * (right as MultiArray<T, D2>)[ind1, ind2]
+public class Prod<T, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
+    override fun invoke(left: T, ind1: Int): T =
+        if (left is Number) left * (right as MultiArray<T, D1>)[ind1] else (left as Complex) * (right as MultiArray<T, D1>)[ind1]
+    override fun invoke(left: T, ind1: Int, ind2: Int): T =
+        if (left is Number) left * (right as MultiArray<T, D2>)[ind1, ind2] else (left as Complex) * (right as MultiArray<T, D2>)[ind1, ind2]
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int): T =
-        left * (right as MultiArray<T, D3>)[ind1, ind2, ind3]
+        if (left is Number) left * (right as MultiArray<T, D3>)[ind1, ind2, ind3] else (left as Complex) * (right as MultiArray<T, D3>)[ind1, ind2, ind3]
 
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int, ind4: Int): T =
-        left * (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4]
+        if (left is Number) left * (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4] else (left as Complex) * (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4]
 
-    override fun invoke(left: T, index: IntArray): T = left * (right as MultiArray<T, DN>)[index]
+    override fun invoke(left: T, index: IntArray): T =
+        if (left is Number) left * (right as MultiArray<T, DN>)[index] else (left as Complex) * (right as MultiArray<T, DN>)[index]
 }
 
-public class Div<T : Number, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
-    override fun invoke(left: T, ind1: Int): T = left / (right as MultiArray<T, D1>)[ind1]
-    override fun invoke(left: T, ind1: Int, ind2: Int): T = left / (right as MultiArray<T, D2>)[ind1, ind2]
+public class Div<T, D : Dimension>(private val right: MultiArray<T, D>) : Exp<T>(), Arith {
+    override fun invoke(left: T, ind1: Int): T =
+        if (left is Number) left / (right as MultiArray<T, D1>)[ind1] else (left as Complex) / (right as MultiArray<T, D1>)[ind1]
+    override fun invoke(left: T, ind1: Int, ind2: Int): T =
+        if (left is Number) left / (right as MultiArray<T, D2>)[ind1, ind2] else (left as Complex) / (right as MultiArray<T, D2>)[ind1, ind2]
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int): T =
-        left / (right as MultiArray<T, D3>)[ind1, ind2, ind3]
+        if (left is Number) left / (right as MultiArray<T, D3>)[ind1, ind2, ind3] else (left as Complex) / (right as MultiArray<T, D3>)[ind1, ind2, ind3]
 
     override fun invoke(left: T, ind1: Int, ind2: Int, ind3: Int, ind4: Int): T =
-        left / (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4]
+        if (left is Number) left / (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4] else (left as Complex) / (right as MultiArray<T, D4>)[ind1, ind2, ind3, ind4]
 
-    override fun invoke(left: T, index: IntArray): T = left / (right as MultiArray<T, DN>)[index]
+    override fun invoke(left: T, index: IntArray): T =
+        if (left is Number) left / (right as MultiArray<T, DN>)[index] else (left as Complex) / (right as MultiArray<T, DN>)[index]
 }
 
 public class Sin<T : Number> : Exp<T>() {
@@ -309,4 +325,84 @@ public class Abs<T : Number> : Exp<T>() {
         is Double -> abs(left) as T
         else -> throw Exception("")
     }
+}
+
+private inline operator fun <T> Number.plus(other: T): T {
+    return when {
+        this is Double && other is Double -> this + other
+        this is Float && other is Float -> this + other
+        this is Int && other is Int -> this + other
+        this is Long && other is Long -> this + other
+        this is Short && other is Short -> this + other
+        this is Byte && other is Byte -> this + other
+        else -> Exception("Unknown type: ${this::class}")
+    } as T
+}
+
+private inline operator fun <T> Complex.plus(other: T): T {
+    return when {
+        this is ComplexFloat && other is ComplexFloat -> this + other
+        this is ComplexDouble && other is ComplexDouble -> this + other
+        else -> Exception("Unknown type: ${this::class}")
+    } as T
+}
+
+private inline operator fun <T> Number.minus(other: T): T {
+    return when {
+        this is Double && other is Double -> this - other
+        this is Float && other is Float -> this - other
+        this is Int && other is Int -> this - other
+        this is Long && other is Long -> this - other
+        this is Short && other is Short -> this - other
+        this is Byte && other is Byte -> this - other
+        else -> Exception("Unknown type: ${this::class}")
+    } as T
+}
+
+private inline operator fun <T> Complex.minus(other: T): T {
+    return when {
+        this is ComplexFloat && other is ComplexFloat -> this - other
+        this is ComplexDouble && other is ComplexDouble -> this - other
+        else -> Exception("Unknown type: ${this::class}")
+    } as T
+}
+
+private inline operator fun <T> Number.times(other: T): T {
+    return when {
+        this is Double && other is Double -> this * other
+        this is Float && other is Float -> this * other
+        this is Int && other is Int -> this * other
+        this is Long && other is Long -> this * other
+        this is Short && other is Short -> this * other
+        this is Byte && other is Byte -> this * other
+        else -> Exception("Unknown type: ${this::class}")
+    } as T
+}
+
+private inline operator fun <T> Complex.times(other: T): T {
+    return when {
+        this is ComplexFloat && other is ComplexFloat -> this * other
+        this is ComplexDouble && other is ComplexDouble -> this * other
+        else -> Exception("Unknown type: ${this::class}")
+    } as T
+}
+
+private inline operator fun <T> Number.div(other: T): T {
+    return when {
+        this is Double && other is Double -> this / other
+        this is Float && other is Float -> this / other
+        this is Int && other is Int -> this / other
+        this is Long && other is Long -> this / other
+        this is Short && other is Short -> this / other
+        this is Byte && other is Byte -> this / other
+        else -> Exception("Unknown type: ${this::class}")
+    } as T
+}
+
+private inline operator fun <T> Complex.div(other: T): T {
+    return when {
+        this is ComplexFloat && other is ComplexFloat -> this / other
+        this is ComplexDouble && other is ComplexDouble -> this / other
+        else -> Exception("Unknown type: ${this::class}")
+    } as T
 }

@@ -3,15 +3,19 @@
  */
 
 plugins {
-    id("org.jetbrains.dokka") version "1.4.10.2"
+    val dokka_version: String by System.getProperties()
+
+    id("org.jetbrains.dokka") version dokka_version
 }
 
 kotlin {
     explicitApi()
 }
 
+val common_csv_version: String by project
 dependencies {
     implementation(kotlin("reflect"))
+    implementation("org.apache.commons:commons-csv:$common_csv_version")
 }
 
 

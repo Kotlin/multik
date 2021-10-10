@@ -6,6 +6,8 @@ package org.jetbrains.kotlinx.multik.jvm
 
 import org.jetbrains.kotlinx.multik.api.Statistics
 import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.jvm.math.JvmMath
+import org.jetbrains.kotlinx.multik.jvm.math.remove
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.div
 import org.jetbrains.kotlinx.multik.ndarray.operations.first
@@ -60,7 +62,7 @@ public object JvmStatistics : Statistics {
         }
 
         return NDArray<Double, O>(
-            retData, 0, newShape, dtype = DataType.DoubleDataType, dim = dimensionOf(newShape.size)
+            retData, 0, newShape, dim = dimensionOf(newShape.size)
         ) / a.shape[axis].toDouble()
     }
 

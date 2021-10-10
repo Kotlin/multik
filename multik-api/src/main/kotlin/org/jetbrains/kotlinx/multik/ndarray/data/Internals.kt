@@ -4,12 +4,14 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
-import org.jetbrains.kotlinx.multik.ndarray.operations.minus
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 
 @PublishedApi
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun requireDimension(dim: Dimension, shapeSize: Int) {
-    require(dim.d == shapeSize) { "Dimension doesn't match the size of the shape: dimension (${dim.d}) != $shapeSize shape size." }
+    require(dim.d == shapeSize || (dim.d > 4 && shapeSize > 4))
+    { "Dimension doesn't match the size of the shape: dimension (${dim.d}) != $shapeSize shape size." }
 }
 
 @PublishedApi
@@ -25,7 +27,7 @@ internal inline fun requireElementsWithShape(elementSize: Int, shapeSize: Int) {
 
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun requireArraySizes(rightSize: Int, otherSize: Int) {
-    require(rightSize == otherSize) { "Array sizes don't match: (right operand size) ${rightSize}!= ${otherSize} (left operand size)" }
+    require(rightSize == otherSize) { "Array sizes don't match: (right operand size) $rightSize != $otherSize (left operand size)" }
 }
 
 @Suppress("NOTHING_TO_INLINE")
@@ -42,14 +44,15 @@ internal fun computeStrides(shape: IntArray): IntArray = shape.clone().apply {
 
 //TODO(create module utils)
 @Suppress("NOTHING_TO_INLINE")
-/*internal*/public inline fun zeroNumber(dtype: DataType): Number = when (dtype.nativeCode) {
-    1 -> 0.toByte()
-    2 -> 0.toShort()
-    3 -> 0
-    4 -> 0L
-    5 -> 0f
-    6 -> 0.0
-    else -> throw Exception("Type not defined.")
+/*internal*/public inline fun zeroNumber(dtype: DataType): Any = when (dtype) {
+    DataType.ByteDataType -> 1.toByte()
+    DataType.ShortDataType -> 1.toShort()
+    DataType.IntDataType -> 1
+    DataType.LongDataType -> 1L
+    DataType.FloatDataType -> 1f
+    DataType.DoubleDataType -> 1.0
+    DataType.ComplexFloatDataType -> ComplexFloat.zero
+    DataType.ComplexDoubleDataType -> ComplexDouble.zero
 }
 
 @PublishedApi
@@ -77,7 +80,21 @@ internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::
 } as T
 
 //TODO(create module utils)
-/*internal*/ public operator fun <T : Number> Number.compareTo(other: T): Int = (this - other).toInt()
+public operator fun <T : Number> Number.compareTo(other: T): Int {
+    return when {
+        this is Float && other is Float -> this.compareTo(other)
+        this is Double && other is Double -> this.compareTo(other)
+        this is Int && other is Int -> this.compareTo(other)
+        this is Long && other is Long -> this.compareTo(other)
+        this is Short && other is Short -> this.compareTo(other)
+        this is Byte && other is Byte -> this.compareTo(other)
+        else -> this.toDouble().compareTo(other.toDouble())
+    }
+}
+
+internal fun MultiArray<*, *>.actualAxis(axis: Int): Int {
+    return if (axis < 0) dim.d + axis else axis
+}
 
 @PublishedApi
 internal fun IntArray.remove(pos: Int): IntArray = when (pos) {

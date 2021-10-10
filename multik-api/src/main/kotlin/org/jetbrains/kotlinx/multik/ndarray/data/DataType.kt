@@ -4,6 +4,8 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType.*
 import kotlin.reflect.KClass
 import kotlin.reflect.jvm.jvmName
@@ -21,14 +23,25 @@ import kotlin.reflect.jvm.jvmName
  * @property LongDataType long.
  * @property FloatDataType float.
  * @property DoubleDataType double.
+ * @property ComplexFloatDataType complex float.
+ * @property ComplexDoubleDataType complex double.
  */
-public enum class DataType(public val nativeCode: Int, public val itemSize: Int, public val clazz: KClass<out Number>) {
+public enum class DataType(public val nativeCode: Int, public val itemSize: Int, public val clazz: KClass<out Any>) {
     ByteDataType(1, 1, Byte::class),
     ShortDataType(2, 2, Short::class),
     IntDataType(3, 4, Int::class),
     LongDataType(4, 8, Long::class),
     FloatDataType(5, 4, Float::class),
-    DoubleDataType(6, 8, Double::class);
+    DoubleDataType(6, 8, Double::class),
+    ComplexFloatDataType(7, 8, ComplexFloat::class),
+    ComplexDoubleDataType(8, 16, ComplexDouble::class);
+
+    public fun isNumber(): Boolean = when (nativeCode) {
+        1, 2, 3, 4, 5, 6 -> true
+        else -> false
+    }
+
+    public fun isComplex(): Boolean = !isNumber()
 
     public companion object {
 
@@ -43,6 +56,8 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
                 4 -> LongDataType
                 5 -> FloatDataType
                 6 -> DoubleDataType
+                7 -> ComplexFloatDataType
+                8 -> ComplexDoubleDataType
                 else -> throw IllegalStateException("One of the primitive types was expected")
             }
         }
@@ -50,7 +65,7 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
         /**
          * Returns [DataType] by class of [element].
          */
-        public fun <T : Number> of(element: T): DataType {
+        public fun <T> of(element: T): DataType {
             return when (element) {
                 is Byte -> ByteDataType
                 is Short -> ShortDataType
@@ -58,6 +73,8 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
                 is Long -> LongDataType
                 is Float -> FloatDataType
                 is Double -> DoubleDataType
+                is ComplexFloat -> ComplexFloatDataType
+                is ComplexDouble -> ComplexDoubleDataType
                 else -> throw IllegalStateException("One of the primitive types was expected")
             }
         }
@@ -65,13 +82,15 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
         /**
          * Returns [DataType] by [KClass] of [type]. [T] is `reified` type.
          */
-        public inline fun <reified T : Number> of(type: KClass<out T>): DataType = when (type) {
+        public inline fun <reified T : Any> ofKClass(type: KClass<out T>): DataType = when (type) {
             Byte::class -> ByteDataType
             Short::class -> ShortDataType
             Int::class -> IntDataType
             Long::class -> LongDataType
             Float::class -> FloatDataType
             Double::class -> DoubleDataType
+            ComplexFloat::class -> ComplexFloatDataType
+            ComplexDouble::class -> ComplexDoubleDataType
             else -> throw IllegalStateException("One of the primitive types was expected, got ${type.jvmName}")
         }
     }

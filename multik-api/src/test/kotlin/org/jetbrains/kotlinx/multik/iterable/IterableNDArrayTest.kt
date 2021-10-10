@@ -130,7 +130,7 @@ class IterableNDArrayTest {
     fun `test filterIndexed`() {
         val data = mk.arange<Float>(10)
         data[0] = 10f
-        assertEquals(mk.arange(6, 10, 1), data.filterIndexed { index: Int, fl -> (index != 0) && (fl > 5) })
+        assertEquals(mk.arange(6, 10, 1), data.filterIndexed { index, fl -> (index != 0) && (fl > 5) })
     }
 
     @Test
@@ -188,13 +188,13 @@ class IterableNDArrayTest {
     fun `test foldIndexed`() {
         val list = listOf(1, 2, 3, 4, 5)
         val ndarray = mk.ndarray(list)
-        val actual = ndarray.foldIndexed(Pair(1, 1)) { index: Int, acc: Pair<Int, Int>, i: Int ->
+        val actual = ndarray.foldIndexed(Pair(1, 1)) { index, acc: Pair<Int, Int>, i: Int ->
             Pair(
                 acc.first + index,
                 acc.second * i
             )
         }
-        val expected = list.foldIndexed(Pair(1, 1)) { index: Int, acc: Pair<Int, Int>, i: Int ->
+        val expected = list.foldIndexed(Pair(1, 1)) { index, acc: Pair<Int, Int>, i: Int ->
             Pair(
                 acc.first + index,
                 acc.second * i
@@ -238,6 +238,12 @@ class IterableNDArrayTest {
     }
 
     @Test
+    fun `test map for scalar ndarray`() {
+        val a = mk.ndarray(mk[mk[mk[3.2]]])
+        assertEquals(mk.ndarray(mk[mk[mk[3]]]), a.map { it.toInt() })
+    }
+
+    @Test
     fun `test map`() {
         val data = mk.ndarrayOf(1, 2, 3, 4)
         assertEquals(mk.ndarrayOf(1, 4, 9, 16), data.map { it * it })
@@ -247,6 +253,8 @@ class IterableNDArrayTest {
     fun `test mapIndexed`() {
         val data = mk.ndarrayOf(1, 2, 3, 4)
         assertEquals(mk.ndarrayOf(0, 2, 6, 12), data.mapIndexed { idx: Int, value -> value * idx })
+        val ndarray = mk.ndarrayOf(1, 2, 3, 4).reshape(2, 2)
+        ndarray.mapMultiIndexed { idx: IntArray, value -> value * (idx[0] xor idx[1]) }
     }
 
     @Test
@@ -290,6 +298,7 @@ class IterableNDArrayTest {
 
     @Test
     fun `test sort`() {
+        //TODO(assert)
         val intArray = intArrayOf(42, 42, 23, 1, 23, 4, 10, 14, 3, 7, 25, 16, 2, 1, 37)
         val ndarray = mk.ndarray(intArray, 3, 5)
         val sortedNDArray = ndarray.sorted()
@@ -318,5 +327,19 @@ class IterableNDArrayTest {
     fun `test scan`() {
         val ndarray = mk.ndarray(mk[1, 2, 3, 4, 5, 6])
         println(ndarray.scan(10) { acc: Int, i: Int -> acc + i })
+    }
+
+    @Test
+    fun `test minimum`() {
+        val ndarray1 = mk.ndarray(mk[2, 3, 4])
+        val ndarray2 = mk.ndarray(mk[1, 5, 2])
+        assertEquals(mk.ndarray(mk[1, 3, 2]), ndarray1.minimum(ndarray2))
+    }
+
+    @Test
+    fun `test maximum`() {
+        val ndarray1 = mk.ndarray(mk[2, 3, 4])
+        val ndarray2 = mk.ndarray(mk[1, 5, 2])
+        assertEquals(mk.ndarray(mk[2, 5, 4]), ndarray1.maximum(ndarray2))
     }
 }

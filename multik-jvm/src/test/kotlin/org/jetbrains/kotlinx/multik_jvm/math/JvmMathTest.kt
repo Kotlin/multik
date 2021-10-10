@@ -4,15 +4,28 @@
 
 package org.jetbrains.kotlinx.multik_jvm.math
 
+import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
-import org.jetbrains.kotlinx.multik.jvm.JvmMath
+import org.jetbrains.kotlinx.multik.jvm.math.JvmMath
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.D1
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class JvmMathTest {
+
+    @Test
+    fun `test of argMax function Double`() {
+        val ndarray1 = mk.ndarray(mk[0.008830892, 0.7638366187, -0.0401326368965, -0.269757419187])
+        val ndarray2 = mk.ndarray(mk[0.0088308926050, 0.763836618743, Double.NaN, -0.2697574191872])
+
+        assertEquals(1, mk.math.argMax(ndarray1))
+        assertEquals(2, mk.math.argMax(ndarray2))
+    }
 
     @Test
     fun `test of argMax function with axis`() {
@@ -115,5 +128,11 @@ class JvmMathTest {
         assertEquals(expectedWith0Axis, mk.math.cumSum(ndarray, axis = 0))
         assertEquals(expectedWith1Axis, mk.math.cumSum(ndarray, axis = 1))
         assertEquals(expectedWith2Axis, mk.math.cumSum(ndarray, axis = 2))
+    }
+
+    @Test
+    fun `test multiplication of complex 2-d ndarray`() {
+        val result = ComplexFloat(-2) * mk.identity(3)
+        assertEquals(ComplexFloat(-2), result[0, 0])
     }
 }

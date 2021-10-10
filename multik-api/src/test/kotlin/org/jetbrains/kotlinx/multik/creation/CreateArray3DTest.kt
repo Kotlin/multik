@@ -7,6 +7,7 @@ package org.jetbrains.kotlinx.multik.creation
 import org.jetbrains.kotlinx.multik.api.d3array
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.ndarray.complex.*
 import org.jetbrains.kotlinx.multik.ndarray.data.D3
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 import org.jetbrains.kotlinx.multik.ndarray.operations.toList
@@ -79,13 +80,33 @@ class CreateArray3DTest {
     }
 
     @Test
+    fun createComplexFloatArray3DTest() {
+        val inputArray = ComplexFloatArray(30) { ComplexFloat(it.toFloat(), it.toFloat()) }
+        val a = mk.ndarray(inputArray, 2, 5, 3)
+
+        assertEquals(dim, a.dim.d)
+
+        assertEquals(inputArray.asList(), a.toList())
+    }
+
+    @Test
+    fun createComplexDoubleArray3DTest() {
+        val inputArray = ComplexDoubleArray(30) { ComplexDouble(it.toDouble(), it.toDouble()) }
+        val a = mk.ndarray(inputArray, 2, 5, 3)
+
+        assertEquals(dim, a.dim.d)
+
+        assertEquals(inputArray.asList(), a.toList())
+    }
+
+    @Test
     fun createDslArrayTest() {
         val inputArr = IntArray(30) { it }
         val a = mk.d3array(2, 5, 3) { it }
         assertEquals(mk.ndarray(inputArr, 2, 5, 3), a)
 
         val b = mk.d3array(2, 5, 3) { it * it }
-        assertEquals(mk.ndarray<Int, D3>(inputArr.map { it * it }, shape), b)
+        assertEquals(mk.ndarray(inputArr.map { it * it }, shape), b)
     }
 
     @Test

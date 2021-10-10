@@ -1,7 +1,6 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        jcenter()
     }
 }
 
@@ -11,5 +10,5 @@ include(
     ":multik-default",
     ":multik-jvm",
     ":multik-native",
-    ":examples"
+    "multik-native:multik_jni",
 )

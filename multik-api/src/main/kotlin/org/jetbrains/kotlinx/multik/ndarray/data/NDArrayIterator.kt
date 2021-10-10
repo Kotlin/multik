@@ -7,7 +7,7 @@ package org.jetbrains.kotlinx.multik.ndarray.data
 /**
  * Iterator over multidimensional arrays. Iterated taking into account the [offset], [strides] and [shape].
  */
-public class NDArrayIterator<T : Number>(
+public class NDArrayIterator<T>(
     private val data: MemoryView<T>,
     private val offset: Int = 0,
     private val strides: IntArray,
