@@ -7,7 +7,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class ComplexNDArrayTest {
+class ComplexMultiArrayTest {
 
     @Test
     fun `re and im properties returns real and imaginary portion of float complex number array`() {
