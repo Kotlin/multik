@@ -48,3 +48,23 @@ public val <D : Dimension> MultiArray<ComplexFloat, D>.im: NDArray<Float, D>
 @get:JvmName("imDouble")
 public val <D : Dimension> MultiArray<ComplexDouble, D>.im: NDArray<Double, D>
     get() = this.map { it.im }
+
+/**
+ * Transforms this [MultiArray] of [ComplexDouble] to an [NDArray] of the conjugated value.
+ * Dimensions are preserved.
+ *
+ * @param D dimension.
+ * @return [NDArray] of conjugated [ComplexDouble]
+ */
+@JvmName("conjDouble")
+public fun <D: Dimension> MultiArray<ComplexDouble, D>.conj(): MultiArray<ComplexDouble, D> = this.map { it.conjugate() }
+
+/**
+ * Transforms this [MultiArray] of [ComplexFloat] to an [NDArray] of the conjugated value.
+ * Dimensions are preserved.
+ *
+ * @param D dimension.
+ * @return [NDArray] of conjugated [ComplexFloat]
+ */
+@JvmName("conjFloat")
+public fun <D: Dimension> MultiArray<ComplexFloat, D>.conj(): MultiArray<ComplexFloat, D> = this.map { it.conjugate() }
