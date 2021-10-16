@@ -60,4 +60,44 @@ class ComplexMultiArrayTest {
         assertTrue(real.isEmpty())
         assertTrue(im.isEmpty())
     }
+
+    @Test
+    fun `conj returns array of conjugated complex doubles`() {
+        val complex = mk.d2arrayIndices(3, 3) { i, j -> ComplexDouble(i, j) }
+        val expected = mk.d2arrayIndices(3, 3) { i, j -> ComplexDouble(i, -j) }
+        val actual = complex.conj()
+
+        assertEquals(complex.shape, actual.shape)
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `conj returns array of conjugated complex floats`() {
+        val complex = mk.d2arrayIndices(3, 3) { i, j -> ComplexFloat(i, j) }
+        val expected = mk.d2arrayIndices(3, 3) { i, j -> ComplexFloat(i, -j) }
+        val actual = complex.conj()
+
+        assertEquals(complex.shape, actual.shape)
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `conj for empty complex float arrays`() {
+        val complex = mk.ndarray(emptyList<ComplexFloat>())
+        val conj = complex.conj()
+
+        assertEquals(complex.shape, conj.shape)
+        assertTrue(conj.isEmpty())
+    }
+
+    @Test
+    fun `conj for empty complex double arrays`() {
+        val complex = mk.ndarray(emptyList<ComplexDouble>())
+        val conj = complex.conj()
+
+        assertEquals(complex.shape, conj.shape)
+        assertTrue(conj.isEmpty())
+    }
+
+
 }
