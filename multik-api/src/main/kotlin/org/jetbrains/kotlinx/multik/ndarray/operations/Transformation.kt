@@ -139,20 +139,22 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
     axis: Int = 0
 ): NDArray<T, O> {
     if (axis == 0) {
+        var offset = 0
         arrays.forEachIndexed { i: Int, arr: MultiArray<T, D> ->
             if (arr.consistent) {
                 when (dest.dtype) {
                     DataType.ComplexFloatDataType -> arr.data.getComplexFloatArray()
-                        .copyInto(dest.data.getComplexFloatArray(), i * arr.size)
+                        .copyInto(dest.data.getComplexFloatArray(), offset)
                     DataType.ComplexDoubleDataType -> arr.data.getComplexDoubleArray()
-                        .copyInto(dest.data.getComplexDoubleArray(), i * arr.size)
-                    else -> System.arraycopy(arr.data.data, 0, dest.data.data, i * arr.size, arr.size)
+                        .copyInto(dest.data.getComplexDoubleArray(), offset)
+                    else -> System.arraycopy(arr.data.data, 0, dest.data.data, offset, arr.size)
                 }
             } else {
-                var index = i * arr.size
+                var index = offset
                 for (el in arr)
                     dest.data[index++] = el
             }
+            offset += arr.size
         }
     } else {
         when (arrays.first().dim) {
