@@ -8,8 +8,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.Slice
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.operations.asSequence
 import org.jetbrains.kotlinx.multik.ndarray.operations.plus
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Test
+import kotlin.test.*
 
 class ConcatenateTest {
     @Test
@@ -20,9 +19,9 @@ class ConcatenateTest {
         val arr3 = mk.zeros<Double>(3) + 3.0
         val arr4 = mk.zeros<Double>(4) + 4.0
 
-        val result = arr1.catFix(listOf(arr2, arr3, arr4), 0)
+        val result = arr1.cat(listOf(arr2, arr3, arr4), 0)
 
-        Assertions.assertArrayEquals(
+        assertContentEquals(
             doubleArrayOf(
                 1.0,
                 2.0, 2.0,
@@ -42,10 +41,10 @@ class ConcatenateTest {
         val arr4 = mk.zeros<Double>(10) + 4.0
         val arr5 = arr4[Slice(2, 6, 1)]
 
-        Assertions.assertFalse(arr5.consistent)
-        val result = arr1.catFix(listOf(arr2, arr3, arr5), 0)
+        assertFalse(arr5.consistent)
+        val result = arr1.cat(listOf(arr2, arr3, arr5), 0)
 
-        Assertions.assertArrayEquals(
+        assertContentEquals(
             doubleArrayOf(
                 1.0,
                 2.0, 2.0,
@@ -65,11 +64,11 @@ class ConcatenateTest {
         val arr4 = mk.zeros<ComplexDouble>(4) + ComplexDouble(4.0, 0.0)
 
 
-        val result = arr1.catFix(listOf(arr2, arr3, arr4), 0)
+        val result = arr1.cat(listOf(arr2, arr3, arr4), 0)
 
         var realResult = result.asSequence().map { it.re }.toList().toDoubleArray()
 
-        Assertions.assertArrayEquals(
+        assertContentEquals(
             doubleArrayOf(
                 1.0,
                 2.0, 2.0,
@@ -80,6 +79,4 @@ class ConcatenateTest {
         )
 
     }
-
-
 }
