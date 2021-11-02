@@ -1481,15 +1481,18 @@ public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(
 
     val size: Int
     val iterData: Iterator<T>
+    val offset: Int
     val strides: IntArray
 
     if (copy == CopyStrategy.FULL) {
         size = this.data.size
         iterData = this.data.iterator()
+        offset = this.offset
         strides = this.strides.copyOf()
     } else {
         size = this.size
         iterData = this.iterator()
+        offset = 0
         strides = computeStrides(this.shape)
     }
 
@@ -1581,7 +1584,7 @@ public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(
         }
         else -> throw Exception()
     }
-    return NDArray(view, this.offset, this.shape.copyOf(), strides, this.dim)
+    return NDArray(view, offset, this.shape.copyOf(), strides, this.dim)
 }
 
 @PublishedApi
