@@ -25,7 +25,7 @@ public fun <T, D : Dimension> MultiArray<T, D>.isTransposed(): Boolean {
 
 // TODO: boolean array
 public infix fun <T : Number, D : Dimension> MultiArray<T, D>.and(other: MultiArray<T, D>): NDArray<Int, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
 
     val ret = mk.zeros<Int, D>(this.shape, DataType.IntDataType)
     val lIter = this.iterator()
@@ -61,7 +61,7 @@ public infix fun <T : Number, D : Dimension> MultiArray<T, D>.and(other: MultiAr
 }
 
 public infix fun <T : Number, D : Dimension> MultiArray<T, D>.or(other: MultiArray<T, D>): NDArray<Int, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
 
     val ret = mk.zeros<Int, D>(this.shape, DataType.IntDataType)
     val lIter = this.iterator()
@@ -796,7 +796,7 @@ public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.map(trans
  * Returns the element-wise minimum of array elements for [this] and [other].
  */
 public fun <T: Number, D : Dimension> MultiArray<T, D>.minimum(other: MultiArray<T, D>): NDArray<T, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     val ret = (this as NDArray).deepCopy()
     when (dtype) {
             DataType.DoubleDataType -> (ret as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> min(a, b) }
