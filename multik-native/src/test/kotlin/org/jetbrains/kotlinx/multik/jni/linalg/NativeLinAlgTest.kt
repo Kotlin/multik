@@ -256,4 +256,13 @@ class NativeLinAlgTest {
 
         assertComplexFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
     }
+
+    @Test
+    fun `compute eigenvalues`() {
+        val a = mk.ndarray(mk[mk[1.0, .0], mk[.0, 1.0]])
+        val (w, v) = NativeLinAlgEx.eig(a)
+
+        assertEquals(mk.ndarray(mk[ComplexDouble.one, ComplexDouble.one]), w)
+        assertEquals(mk.ndarray(mk[mk[ComplexDouble.one, ComplexDouble.zero], mk[ComplexDouble.zero, ComplexDouble.one]]), v)
+    }
 }
