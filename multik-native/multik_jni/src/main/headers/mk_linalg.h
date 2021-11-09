@@ -10,7 +10,6 @@
 #include "algorithm"
 #include <cstring>
 
-
 float vector_dot(int n, float *X, int incx, float *Y, int incy) {
   return cblas_sdot(n, X, incx, Y, incy);
 }
@@ -25,72 +24,6 @@ openblas_complex_float vector_dot_complex(int n, float *X, int incx, float *Y, i
 
 openblas_complex_double vector_dot_complex(int n, double *X, int incx, double *Y, int incy) {
   return cblas_zdotu(n, X, incx, Y, incy);
-}
-
-int solve_linear_system(int n, int nrhs, float *A, int lda, float *b, int ldb) {
-  int ipiv[n];
-
-  return LAPACKE_sgesv(LAPACK_ROW_MAJOR, n, nrhs, A, lda, ipiv, b, ldb);
-}
-
-int solve_linear_system(int n, int nrhs, double *A, int lda, double *b, int ldb) {
-  int ipiv[n];
-
-  return LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, A, lda, ipiv, b, ldb);
-}
-
-int solve_linear_system_complex(int n, int nrhs, float *A, int lda, float *B, int ldb) {
-  int ipiv[n];
-
-  lapack_complex_float *a = (lapack_complex_float *)A;
-  lapack_complex_float *b = (lapack_complex_float *)B;
-
-  return LAPACKE_cgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, ipiv, b, ldb);
-}
-
-int solve_linear_system_complex(int n, int nrhs, double *A, int lda, double *B, int ldb) {
-  int ipiv[n];
-
-  lapack_complex_double *a = (lapack_complex_double *)A;
-  lapack_complex_double *b = (lapack_complex_double *)B;
-
-  return LAPACKE_zgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, ipiv, b, ldb);
-}
-
-int inverse_matrix(int n, float *A, int lda) {
-  int ipiv[n];
-
-  LAPACKE_sgetrf(LAPACK_ROW_MAJOR, n, n, A, lda, ipiv);
-
-  return LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, A, lda, ipiv);
-}
-
-int inverse_matrix(int n, double *A, int lda) {
-  int ipiv[n];
-
-  LAPACKE_dgetrf(LAPACK_ROW_MAJOR, n, n, A, lda, ipiv);
-
-  return LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, A, lda, ipiv);
-}
-
-int inverse_matrix_complex(int n, float *A, int lda) {
-  int ipiv[n];
-
-  lapack_complex_float *a = (lapack_complex_float *)A;
-
-  LAPACKE_cgetrf(LAPACK_ROW_MAJOR, n, n, a, lda, ipiv);
-
-  return LAPACKE_cgetri(LAPACK_ROW_MAJOR, n, a, lda, ipiv);
-}
-
-int inverse_matrix_complex(int n, double *A, int lda) {
-  int ipiv[n];
-
-  lapack_complex_double *a = (lapack_complex_double *)A;
-
-  LAPACKE_zgetrf(LAPACK_ROW_MAJOR, n, n, a, lda, ipiv);
-
-  return LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, a, lda, ipiv);
 }
 
 int qr_matrix(int m, int n, float *AQ, int lda, float *R) {
@@ -162,21 +95,103 @@ int qr_matrix_complex(int m, int n, double *AQ, int lda, double *R) {
 }
 
 int plu_matrix(int m, int n, float *A, int lda, int *IPIV) {
-  return LAPACKE_sgetrf(LAPACK_ROW_MAJOR, m, n, A, lda, IPIV);
+  int num_threads = openblas_get_num_threads(); // TODO (fast fix for single threaded mode. Remove, wrap set in kotlin)
+  openblas_set_num_threads(1);
+  int info = LAPACKE_sgetrf(LAPACK_ROW_MAJOR, m, n, A, lda, IPIV);
+  openblas_set_num_threads(num_threads);
+  return info;
 }
 
 int plu_matrix(int m, int n, double *A, int lda, int *IPIV) {
-  return LAPACKE_dgetrf(LAPACK_ROW_MAJOR, m, n, A, lda, IPIV);
+  int num_threads = openblas_get_num_threads();
+  openblas_set_num_threads(1);
+  int info = LAPACKE_dgetrf(LAPACK_ROW_MAJOR, m, n, A, lda, IPIV);
+  openblas_set_num_threads(num_threads);
+  return info;
 }
 
 int plu_matrix_complex(int m, int n, float *A, int lda, int *IPIV) {
+  int num_threads = openblas_get_num_threads();
+  openblas_set_num_threads(1);
   lapack_complex_float *a = (lapack_complex_float *)A;
-  return LAPACKE_cgetrf(LAPACK_ROW_MAJOR, m, n, a, lda, IPIV);
+  int info = LAPACKE_cgetrf(LAPACK_ROW_MAJOR, m, n, a, lda, IPIV);
+  openblas_set_num_threads(num_threads);
+  return info;
 }
 
 int plu_matrix_complex(int m, int n, double *A, int lda, int *IPIV) {
+  int num_threads = openblas_get_num_threads();
+  openblas_set_num_threads(1);
   lapack_complex_double *a = (lapack_complex_double *)A;
-  return LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n, a, lda, IPIV);
+  int info = LAPACKE_zgetrf(LAPACK_ROW_MAJOR, m, n, a, lda, IPIV);
+  openblas_set_num_threads(num_threads);
+  return info;
+}
+
+int solve_linear_system(int n, int nrhs, float *A, int lda, float *b, int ldb) {
+  int ipiv[n];
+  int num_threads = openblas_get_num_threads();
+  openblas_set_num_threads(1);
+  int info = LAPACKE_sgesv(LAPACK_ROW_MAJOR, n, nrhs, A, lda, ipiv, b, ldb);
+  openblas_set_num_threads(num_threads);
+  return info;
+}
+
+int solve_linear_system(int n, int nrhs, double *A, int lda, double *b, int ldb) {
+  int ipiv[n];
+  int num_threads = openblas_get_num_threads();
+  openblas_set_num_threads(1);
+  int info = LAPACKE_dgesv(LAPACK_ROW_MAJOR, n, nrhs, A, lda, ipiv, b, ldb);
+  openblas_set_num_threads(num_threads);
+  return info;
+}
+
+int solve_linear_system_complex(int n, int nrhs, float *A, int lda, float *B, int ldb) {
+  int ipiv[n];
+  int num_threads = openblas_get_num_threads();
+  openblas_set_num_threads(1);
+  lapack_complex_float *a = (lapack_complex_float *)A;
+  lapack_complex_float *b = (lapack_complex_float *)B;
+  int info = LAPACKE_cgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, ipiv, b, ldb);
+  openblas_set_num_threads(num_threads);
+  return info;
+}
+
+int solve_linear_system_complex(int n, int nrhs, double *A, int lda, double *B, int ldb) {
+  int ipiv[n];
+  int num_threads = openblas_get_num_threads();
+  openblas_set_num_threads(1);
+  lapack_complex_double *a = (lapack_complex_double *)A;
+  lapack_complex_double *b = (lapack_complex_double *)B;
+  int info = LAPACKE_zgesv(LAPACK_ROW_MAJOR, n, nrhs, a, lda, ipiv, b, ldb);
+  openblas_set_num_threads(num_threads);
+  return info;
+}
+
+int inverse_matrix(int n, float *A, int lda) {
+  int ipiv[n];
+  plu_matrix(n, n, A, lda, ipiv);
+  return LAPACKE_sgetri(LAPACK_ROW_MAJOR, n, A, lda, ipiv);
+}
+
+int inverse_matrix(int n, double *A, int lda) {
+  int ipiv[n];
+  plu_matrix(n, n, A, lda, ipiv);
+  return LAPACKE_dgetri(LAPACK_ROW_MAJOR, n, A, lda, ipiv);
+}
+
+int inverse_matrix_complex(int n, float *A, int lda) {
+  int ipiv[n];
+  plu_matrix_complex(n, n, A, lda, ipiv);
+  lapack_complex_float *a = (lapack_complex_float *)A;
+  return LAPACKE_cgetri(LAPACK_ROW_MAJOR, n, a, lda, ipiv);
+}
+
+int inverse_matrix_complex(int n, double *A, int lda) {
+  int ipiv[n];
+  plu_matrix_complex(n, n, A, lda, ipiv);
+  lapack_complex_double *a = (lapack_complex_double *)A;
+  return LAPACKE_zgetri(LAPACK_ROW_MAJOR, n, a, lda, ipiv);
 }
 
 int eigen(int n, float *A, float *W, char computeV, float *VR) {

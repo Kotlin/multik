@@ -98,9 +98,9 @@ task installOpenBlas(dependsOn: unzipOpenBlas) {
                         "F_COMPILER=GFORTRAN",
                         "FEXTRALIB=${opblParam.fextralib}",
                         "USE_OPENMP=0",
-                        "NUM_THREADS=64",
                         "NO_AVX512=${opblParam.noAVX512}",
-                        "DYNAMIC_ARCH=1"
+                        "DYNAMIC_ARCH=1",
+                        "NUM_THREADS=64"
                 )
             }
             exec {
