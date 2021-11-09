@@ -814,7 +814,7 @@ public fun <T: Number, D : Dimension> MultiArray<T, D>.minimum(other: MultiArray
  * Returns the element-wise maximum of array elements for [this] and [other].
  */
 public fun <T: Number, D : Dimension> MultiArray<T, D>.maximum(other: MultiArray<T, D>): NDArray<T, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     val ret = (this as NDArray).deepCopy()
     when (dtype) {
         DataType.DoubleDataType -> (ret as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> max(a, b) }
