@@ -227,34 +227,34 @@ class NativeLinAlgTest {
 
     @Test
     fun `compute inverse matrix of float`() {
-        val a = data.getFloatM(2)
+        val a = data.getFloatM(117)
         val ainv = NativeLinAlg.inv(a)
 
-        assertFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+        assertFloatingNDArray(mk.identity(117), NativeLinAlg.dot(a, ainv), 1e-4f)
     }
 
     @Test
     fun `compute inverse matrix of double`() {
-        val a = data.getDoubleM(2)
+        val a = data.getDoubleM(376)
         val ainv = NativeLinAlg.inv(a)
 
-        assertFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+        assertFloatingNDArray(mk.identity(376), NativeLinAlg.dot(a, ainv))
     }
 
     @Test
     fun `compute inverse matrix of complex float`() {
-        val a = data.getComplexFloatM(2)
+        val a = data.getComplexFloatM(84)
         val ainv = NativeLinAlg.inv(a)
 
-        assertComplexFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+        assertComplexFloatingNDArray(mk.identity(84), NativeLinAlg.dot(a, ainv), 1e-4f)
     }
 
     @Test
     fun `compute inverse matrix of complex double`() {
-        val a = data.getComplexDoubleM(2)
+        val a = data.getComplexDoubleM(83)
         val ainv = NativeLinAlg.inv(a)
 
-        assertComplexFloatingNDArray(mk.identity(2), NativeLinAlg.dot(a, ainv))
+        assertComplexFloatingNDArray(mk.identity(83), NativeLinAlg.dot(a, ainv))
     }
 
     @Test
