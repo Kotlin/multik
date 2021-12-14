@@ -330,14 +330,14 @@ class IterableNDArrayTest {
     }
 
     @Test
-    fun `test minimum`() {
+    fun `test_minimum`() {
         val ndarray1 = mk.ndarray(mk[2, 3, 4])
         val ndarray2 = mk.ndarray(mk[1, 5, 2])
         assertEquals(mk.ndarray(mk[1, 3, 2]), ndarray1.minimum(ndarray2))
     }
 
     @Test
-    fun `test maximum`() {
+    fun `test_maximum`() {
         val ndarray1 = mk.ndarray(mk[2, 3, 4])
         val ndarray2 = mk.ndarray(mk[1, 5, 2])
         assertEquals(mk.ndarray(mk[2, 5, 4]), ndarray1.maximum(ndarray2))
