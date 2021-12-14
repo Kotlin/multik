@@ -5,6 +5,7 @@
 package org.jetbrains.kotlinx.multik.api
 
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDoubleArray
 import kotlin.native.concurrent.ThreadLocal
 

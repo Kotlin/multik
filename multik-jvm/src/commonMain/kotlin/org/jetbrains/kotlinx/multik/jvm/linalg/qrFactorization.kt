@@ -1,8 +1,14 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+@file:Suppress("DuplicatedCode")
+
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
-import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexDouble
@@ -154,7 +160,7 @@ internal fun householderTransformDouble(x: D2Array<Double>): Pair<Double, D1Arra
     }
     xnorm = sqrt(xnorm)
 
-    val v: D1Array<Double> = mk.empty<Double, D1>(x.shape[0])
+    val v = mk.zeros<Double>(x.shape[0])
     v[0] = 1.0
     if (xnorm == 0.0) {
         return Pair(0.0, v)
@@ -177,7 +183,7 @@ internal fun householderTransformFloat(x: D2Array<Float>): Pair<Float, D1Array<F
     }
     xnorm = sqrt(xnorm)
 
-    val v = mk.empty<Float, D1>(x.shape[0])
+    val v = mk.zeros<Float>(x.shape[0])
     v[0] = 1f
     if (xnorm == 0f) {
         return Pair(0f, v)
@@ -200,7 +206,7 @@ internal fun householderTransformComplexFloat(x: MultiArray<ComplexFloat, D2>): 
     }
     xnorm = sqrt(xnorm)
 
-    val v = mk.empty<ComplexFloat, D1>(x.shape[0])
+    val v = mk.zeros<ComplexFloat>(x.shape[0])
     v[0] = ComplexFloat.one
     if (xnorm == 0f) {
         return Pair(ComplexFloat.zero, v)
@@ -223,7 +229,7 @@ internal fun householderTransformComplexDouble(x: MultiArray<ComplexDouble, D2>)
     }
     xnorm = sqrt(xnorm)
 
-    val v: D1Array<ComplexDouble> = mk.empty<ComplexDouble, D1>(x.shape[0])
+    val v = mk.zeros<ComplexDouble>(x.shape[0])
     v[0] = ComplexDouble.one
     if (xnorm == 0.0) {
         return Pair(ComplexDouble.zero, v)

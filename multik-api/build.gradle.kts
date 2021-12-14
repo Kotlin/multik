@@ -4,13 +4,17 @@
 
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.dokka") version "1.5.0"
     id("maven-publish")
+    val dokka_version: String by System.getProperties()
+
+    id("org.jetbrains.dokka") version dokka_version
 }
 
 repositories {
     mavenCentral()
 }
+
+val common_csv_version: String by project
 
 kotlin {
     explicitApi()
@@ -51,7 +55,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("reflect"))
-                implementation("org.apache.commons:commons-csv:1.9.0")
+                implementation("org.apache.commons:commons-csv:$common_csv_version")
             }
         }
         val nativeCommonMain by creating {

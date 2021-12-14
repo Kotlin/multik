@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package org.jetbrains.kotlinx.multik.api.linalg
 
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
@@ -5,6 +9,9 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
+/**
+ * Extension interface for [LinAlg] for improved type support.
+ */
 public interface LinAlgEx {
     public fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2>
     public fun invF(mat: MultiArray<Float, D2>): NDArray<Float, D2>
@@ -22,9 +29,9 @@ public interface LinAlgEx {
     public fun pluF(mat: MultiArray<Float, D2>): Triple<D2Array<Float>, D2Array<Float>, D2Array<Float>>
     public fun <T : Complex> pluC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D2Array<T>, D2Array<T>>
 
-//    public fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>>
-//    public fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>>
-//    public fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>>
+    public fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>>
+    public fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>>
+    public fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>>
 
     public fun <T : Number> eigVals(mat: MultiArray<T, D2>): D1Array<ComplexDouble>
     public fun eigValsF(mat: MultiArray<Float, D2>): D1Array<ComplexFloat>

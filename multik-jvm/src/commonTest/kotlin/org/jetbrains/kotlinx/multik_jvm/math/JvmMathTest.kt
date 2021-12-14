@@ -8,8 +8,11 @@ import org.jetbrains.kotlinx.multik.api.initEnginesProvider
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.jvm.JvmEngine
-import org.jetbrains.kotlinx.multik.jvm.JvmMath
+import org.jetbrains.kotlinx.multik.jvm.math.JvmMath
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.D1
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -133,5 +136,11 @@ class JvmMathTest {
         assertEquals(expectedWith0Axis, mk.math.cumSum(ndarray, axis = 0))
         assertEquals(expectedWith1Axis, mk.math.cumSum(ndarray, axis = 1))
         assertEquals(expectedWith2Axis, mk.math.cumSum(ndarray, axis = 2))
+    }
+
+    @Test
+    fun `test_multiplication_of_complex_2d_ndarray`() {
+        val result = ComplexFloat(-2) * mk.identity(3)
+        assertEquals(ComplexFloat(-2), result[0, 0])
     }
 }

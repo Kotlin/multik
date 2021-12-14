@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
 import org.jetbrains.kotlinx.multik.api.identity
@@ -68,17 +72,17 @@ public object JvmLinAlgEx : LinAlgEx {
     override fun <T : Complex> pluC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D2Array<T>, D2Array<T>> =
         pluCommon(mat, mat.dtype)
 
-//    override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> {
-//        TODO("Not yet implemented")
-//    }
+    override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> {
+        TODO("Not yet implemented")
+    }
 
-//    override fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>> {
-//        TODO("Not yet implemented")
-//    }
+    override fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>> {
+        TODO("Not yet implemented")
+    }
 
-//    override fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>> {
-//        TODO("Not yet implemented")
-//    }
+    override fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>> {
+        TODO("Not yet implemented")
+    }
 
     override fun <T : Number> eigVals(mat: MultiArray<T, D2>): D1Array<ComplexDouble> =
         eigenValuesCommon(mat, DataType.ComplexDoubleDataType)

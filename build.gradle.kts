@@ -9,13 +9,15 @@ buildscript {
 }
 
 plugins {
-    val kotlinVersion: String by System.getProperties()
-    kotlin("multiplatform") version kotlinVersion apply false
-    id("io.codearte.nexus-staging") version "0.22.0"
+    val kotlin_version: String by System.getProperties()
+    val nexus_version: String by System.getProperties()
+
+    kotlin("multiplatform") version kotlin_version apply false
+    id("io.codearte.nexus-staging") version nexus_version
 }
 
-val kotlinVersion: String by System.getProperties()
-val multikVersion: String by project
+val kotlin_version: String by System.getProperties()
+val multik_version: String by project
 val unpublished = listOf("multik", "multik_jni")
 
 allprojects {
@@ -24,7 +26,7 @@ allprojects {
     }
 
     group = "org.jetbrains.kotlinx"
-    version = multikVersion
+    version = multik_version
 
 }
 

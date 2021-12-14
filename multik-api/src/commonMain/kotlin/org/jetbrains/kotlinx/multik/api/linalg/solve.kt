@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package org.jetbrains.kotlinx.multik.api.linalg
 
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
@@ -7,6 +11,9 @@ import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 import kotlin.jvm.JvmName
 
+/**
+ * Returns the solution to a system of linear equations
+ */
 @JvmName("solveF")
 public fun <D : Dim2> LinAlg.solve(a: MultiArray<Float, D2>, b: MultiArray<Float, D>): NDArray<Float, D> = this.linAlgEx.solveF(a, b)
 

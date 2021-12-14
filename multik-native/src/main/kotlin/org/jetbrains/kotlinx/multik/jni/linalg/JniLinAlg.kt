@@ -1,4 +1,11 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package org.jetbrains.kotlinx.multik.jni.linalg
+
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 
 internal object JniLinAlg {
     external fun pow(mat: FloatArray, n: Int, result: FloatArray)
@@ -30,8 +37,6 @@ internal object JniLinAlg {
     external fun pluC(m: Int, n: Int, a: FloatArray, lda: Int, ipiv: IntArray): Int
     external fun pluC(m: Int, n: Int, a: DoubleArray, lda: Int, ipiv: IntArray): Int
 
-    external fun eig(n: Int, a: FloatArray, wr: FloatArray, wi: FloatArray, computeV: Char, vr: FloatArray?): Int
-    external fun eig(n: Int, a: DoubleArray, wr: DoubleArray, wi: DoubleArray, computeV: Char, vr: DoubleArray?): Int
     external fun eig(n: Int, a: FloatArray, w: FloatArray, computeV: Char, vr: FloatArray?): Int
     external fun eig(n: Int, a: DoubleArray, w: DoubleArray, computeV: Char, vr: DoubleArray?): Int
 
@@ -93,6 +98,6 @@ internal object JniLinAlg {
      */
     external fun dotVV(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): Float
     external fun dotVV(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): Double
-    external fun dotVVC(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): Float
-    external fun dotVVC(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): Double
+    external fun dotVVC(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): ComplexFloat
+    external fun dotVVC(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): ComplexDouble
 }

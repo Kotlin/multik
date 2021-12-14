@@ -6,7 +6,9 @@ package org.jetbrains.kotlinx.multik.jni
 
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
+import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlg
+import org.jetbrains.kotlinx.multik.jni.math.NativeMath
 
 
 public class NativeEngine : Engine() {

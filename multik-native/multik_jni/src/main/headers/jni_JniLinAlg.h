@@ -138,22 +138,6 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_pl
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    eig
- * Signature: (I[F[F[FC[F)I
- */
-JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_eig__I_3F_3F_3FC_3F
-	(JNIEnv *, jobject, jint, jfloatArray, jfloatArray, jfloatArray, jchar, jfloatArray);
-
-/*
- * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
- * Method:    eig
- * Signature: (I[D[D[DC[D)I
- */
-JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_eig__I_3D_3D_3DC_3D
-	(JNIEnv *, jobject, jint, jdoubleArray, jdoubleArray, jdoubleArray, jchar, jdoubleArray);
-
-/*
- * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
- * Method:    eig
  * Signature: (I[F[FC[F)I
  */
 JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_eig__I_3F_3FC_3F
@@ -286,17 +270,17 @@ JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    dotVVC
- * Signature: (I[FI[FI)F
+ * Signature: (I[FI[FI)Lorg/jetbrains/kotlinx/multik/ndarray/complex/ComplexFloat;
  */
-JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotVVC__I_3FI_3FI
+JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotVVC__I_3FI_3FI
 	(JNIEnv *, jobject, jint, jfloatArray, jint, jfloatArray, jint);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
  * Method:    dotVVC
- * Signature: (I[DI[DI)D
+ * Signature: (I[DI[DI)Lorg/jetbrains/kotlinx/multik/ndarray/complex/ComplexDouble;
  */
-JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotVVC__I_3DI_3DI
+JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_dotVVC__I_3DI_3DI
 	(JNIEnv *, jobject, jint, jdoubleArray, jint, jdoubleArray, jint);
 
 #ifdef __cplusplus

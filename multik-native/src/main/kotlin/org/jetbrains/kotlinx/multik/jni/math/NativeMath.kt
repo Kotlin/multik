@@ -2,12 +2,17 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package org.jetbrains.kotlinx.multik.jni
+package org.jetbrains.kotlinx.multik.jni.math
 
-import org.jetbrains.kotlinx.multik.api.Math
+import org.jetbrains.kotlinx.multik.api.math.Math
+import org.jetbrains.kotlinx.multik.api.math.MathEx
+import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object NativeMath : Math {
+
+    override val mathEx: MathEx
+        get() = NativeMathEx
 
     override fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int {
         return if (a.consistent)
@@ -61,22 +66,6 @@ public object NativeMath : Math {
 
     override fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4> {
         TODO("Not yet implemented")
-    }
-
-    override fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): NDArray<Double, D> {
-        return mathOperation(a, JniMath::exp)
-    }
-
-    override fun <T : Number, D : Dimension> log(a: MultiArray<T, D>): NDArray<Double, D> {
-        return mathOperation(a, JniMath::log)
-    }
-
-    override fun <T : Number, D : Dimension> sin(a: MultiArray<T, D>): NDArray<Double, D> {
-        return mathOperation(a, JniMath::sin)
-    }
-
-    override fun <T : Number, D : Dimension> cos(a: MultiArray<T, D>): NDArray<Double, D> {
-        return mathOperation(a, JniMath::cos)
     }
 
     override fun <T : Number, D : Dimension> max(a: MultiArray<T, D>): T {
@@ -172,50 +161,4 @@ public object NativeMath : Math {
     override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>, axis: Int): NDArray<T, D> {
         TODO("Not yet implemented")
     }
-
-    private fun <T : Number, D : Dimension> mathOperation(
-        a: MultiArray<T, D>,
-        function: (arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: DoubleArray, dtype: Int) -> Boolean
-    ): NDArray<Double, D> {
-        val data = MemoryViewDoubleArray(DoubleArray(a.size))
-        if (a.consistent) {
-            function(a.data.data, a.offset, a.size, a.shape, null, data.data, a.dtype.nativeCode)
-        } else {
-            function(a.data.data, a.offset, a.size, a.shape, a.strides, data.data, a.dtype.nativeCode)
-        }
-        return NDArray(data, 0, a.shape, dim = a.dim)
-    }
-
-}
-
-private object JniMath {
-    external fun argMax(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int
-    external fun argMin(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int
-    external fun exp(
-        arr: Any, offset: Int, size: Int, shape: IntArray,
-        strides: IntArray?, out: DoubleArray, dtype: Int
-    ): Boolean
-
-    external fun log(
-        arr: Any, offset: Int, size: Int, shape: IntArray,
-        strides: IntArray?, out: DoubleArray, dtype: Int
-    ): Boolean
-
-    external fun sin(
-        arr: Any, offset: Int, size: Int, shape: IntArray,
-        strides: IntArray?, out: DoubleArray, dtype: Int
-    ): Boolean
-
-    external fun cos(
-        arr: Any, offset: Int, size: Int, shape: IntArray,
-        strides: IntArray?, out: DoubleArray, dtype: Int
-    ): Boolean
-
-    external fun <T : Number> max(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): T
-    external fun <T : Number> min(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): T
-    external fun <T : Number> sum(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): T
-    external fun cumSum(
-        arr: Any, offset: Int, size: Int, shape: IntArray,
-        strides: IntArray?, out: Any, axis: Int = -1, dtype: Int
-    ): Boolean
 }

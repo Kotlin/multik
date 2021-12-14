@@ -1,9 +1,15 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+@file:Suppress("DuplicatedCode")
+
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
 import org.jetbrains.kotlinx.multik.api.d1array
-import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexDouble
@@ -74,7 +80,7 @@ private fun qrShiftedFloat(
 ): Pair<D2Array<ComplexFloat>, D2Array<ComplexFloat>> {
     val (n, _) = a.shape
     val z = mk.identity<ComplexFloat>(a.shape[0])
-    val v = mk.empty<ComplexFloat, D1>(2)
+    val v = mk.zeros<ComplexFloat>(2)
 
     a as D2Array<ComplexFloat>
 
@@ -296,7 +302,7 @@ private fun qrShiftedDouble(
 ): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
     val (n, _) = a.shape
     val z = mk.identity<ComplexDouble>(a.shape[0])
-    val v = mk.empty<ComplexDouble, D1>(2)
+    val v = mk.zeros<ComplexDouble>(2)
 
     a as D2Array<ComplexDouble>
 

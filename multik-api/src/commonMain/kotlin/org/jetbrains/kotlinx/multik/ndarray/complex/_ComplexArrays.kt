@@ -684,13 +684,13 @@ public inline fun ComplexDoubleArray.dropWhile(predicate: (ComplexDouble) -> Boo
  * Returns a list containing only elements matching the given [predicate].
  */
 public inline fun ComplexFloatArray.filter(predicate: (ComplexFloat) -> Boolean): List<ComplexFloat> =
-    filterTo(ArrayList<ComplexFloat>(), predicate)
+    filterTo(ArrayList(), predicate)
 
 /**
  * Returns a list containing only elements matching the given [predicate].
  */
 public inline fun ComplexDoubleArray.filter(predicate: (ComplexDouble) -> Boolean): List<ComplexDouble> =
-    filterTo(ArrayList<ComplexDouble>(), predicate)
+    filterTo(ArrayList(), predicate)
 
 /**
  * Returns a list containing only elements matching the given [predicate].
@@ -698,7 +698,7 @@ public inline fun ComplexDoubleArray.filter(predicate: (ComplexDouble) -> Boolea
  * and returns the result of predicate evaluation on the element.
  */
 public inline fun ComplexFloatArray.filterIndexed(predicate: (index: Int, ComplexFloat) -> Boolean): List<ComplexFloat> =
-    filterIndexedTo(ArrayList<ComplexFloat>(), predicate)
+    filterIndexedTo(ArrayList(), predicate)
 
 /**
  * Returns a list containing only elements matching the given [predicate].
@@ -706,7 +706,7 @@ public inline fun ComplexFloatArray.filterIndexed(predicate: (index: Int, Comple
  * and returns the result of predicate evaluation on the element.
  */
 public inline fun ComplexDoubleArray.filterIndexed(predicate: (index: Int, ComplexDouble) -> Boolean): List<ComplexDouble> =
-    filterIndexedTo(ArrayList<ComplexDouble>(), predicate)
+    filterIndexedTo(ArrayList(), predicate)
 
 /**
  * Appends all elements matching the given [predicate] to the given [destination].
@@ -742,13 +742,13 @@ public inline fun <C : MutableCollection<in ComplexDouble>> ComplexDoubleArray.f
  * Returns a list containing all elements not matching the given [predicate].
  */
 public inline fun ComplexFloatArray.filterNot(predicate: (ComplexFloat) -> Boolean): List<ComplexFloat> =
-    filterNotTo(ArrayList<ComplexFloat>(), predicate)
+    filterNotTo(ArrayList(), predicate)
 
 /**
  * Returns a list containing all elements not matching the given [predicate].
  */
 public inline fun ComplexDoubleArray.filterNot(predicate: (ComplexDouble) -> Boolean): List<ComplexDouble> =
-    filterNotTo(ArrayList<ComplexDouble>(), predicate)
+    filterNotTo(ArrayList(), predicate)
 
 /**
  * Appends all elements not matching the given [predicate] to the given [destination].
@@ -1599,7 +1599,7 @@ public fun ComplexDoubleArray.toTypedArray(): Array<ComplexDouble> {
  */
 public inline fun <K, V> ComplexFloatArray.associate(transform: (ComplexFloat) -> Pair<K, V>): Map<K, V> {
     val capacity = mapCapacity(size).coerceAtLeast(16)
-    return associateTo(LinkedHashMap<K, V>(capacity), transform)
+    return associateTo(LinkedHashMap(capacity), transform)
 }
 
 /**
@@ -1612,7 +1612,7 @@ public inline fun <K, V> ComplexFloatArray.associate(transform: (ComplexFloat) -
  */
 public inline fun <K, V> ComplexDoubleArray.associate(transform: (ComplexDouble) -> Pair<K, V>): Map<K, V> {
     val capacity = mapCapacity(size).coerceAtLeast(16)
-    return associateTo(LinkedHashMap<K, V>(capacity), transform)
+    return associateTo(LinkedHashMap(capacity), transform)
 }
 
 /**
@@ -1625,7 +1625,7 @@ public inline fun <K, V> ComplexDoubleArray.associate(transform: (ComplexDouble)
  */
 public inline fun <K> ComplexFloatArray.associateBy(keySelector: (ComplexFloat) -> K): Map<K, ComplexFloat> {
     val capacity = mapCapacity(size).coerceAtLeast(16)
-    return associateByTo(LinkedHashMap<K, ComplexFloat>(capacity), keySelector)
+    return associateByTo(LinkedHashMap(capacity), keySelector)
 }
 
 /**
@@ -1638,7 +1638,7 @@ public inline fun <K> ComplexFloatArray.associateBy(keySelector: (ComplexFloat) 
  */
 public inline fun <K> ComplexDoubleArray.associateBy(keySelector: (ComplexDouble) -> K): Map<K, ComplexDouble> {
     val capacity = mapCapacity(size).coerceAtLeast(16)
-    return associateByTo(LinkedHashMap<K, ComplexDouble>(capacity), keySelector)
+    return associateByTo(LinkedHashMap(capacity), keySelector)
 }
 
 /**
@@ -1650,7 +1650,7 @@ public inline fun <K> ComplexDoubleArray.associateBy(keySelector: (ComplexDouble
  */
 public inline fun <K, V> ComplexFloatArray.associateBy(keySelector: (ComplexFloat) -> K, valueTransform: (ComplexFloat) -> V): Map<K, V> {
     val capacity = mapCapacity(size).coerceAtLeast(16)
-    return associateByTo(LinkedHashMap<K, V>(capacity), keySelector, valueTransform)
+    return associateByTo(LinkedHashMap(capacity), keySelector, valueTransform)
 }
 
 /**
@@ -1662,7 +1662,7 @@ public inline fun <K, V> ComplexFloatArray.associateBy(keySelector: (ComplexFloa
  */
 public inline fun <K, V> ComplexDoubleArray.associateBy(keySelector: (ComplexDouble) -> K, valueTransform: (ComplexDouble) -> V): Map<K, V> {
     val capacity = mapCapacity(size).coerceAtLeast(16)
-    return associateByTo(LinkedHashMap<K, V>(capacity), keySelector, valueTransform)
+    return associateByTo(LinkedHashMap(capacity), keySelector, valueTransform)
 }
 
 /**
@@ -1823,14 +1823,14 @@ public fun <C : MutableCollection<in ComplexDouble>> ComplexDoubleArray.toCollec
  * Returns a new [HashSet] of all elements.
  */
 public fun ComplexFloatArray.toHashSet(): HashSet<ComplexFloat> {
-    return toCollection(HashSet<ComplexFloat>(mapCapacity(size)))
+    return toCollection(HashSet(mapCapacity(size)))
 }
 
 /**
  * Returns a new [HashSet] of all elements.
  */
 public fun ComplexDoubleArray.toHashSet(): HashSet<ComplexDouble> {
-    return toCollection(HashSet<ComplexDouble>(mapCapacity(size)))
+    return toCollection(HashSet(mapCapacity(size)))
 }
 
 /**
@@ -1882,7 +1882,7 @@ public fun ComplexFloatArray.toSet(): Set<ComplexFloat> {
     return when (size) {
         0 -> emptySet()
         1 -> setOf(this[0])
-        else -> toCollection(LinkedHashSet<ComplexFloat>(mapCapacity(size)))
+        else -> toCollection(LinkedHashSet(mapCapacity(size)))
     }
 }
 
@@ -1895,7 +1895,7 @@ public fun ComplexDoubleArray.toSet(): Set<ComplexDouble> {
     return when (size) {
         0 -> emptySet()
         1 -> setOf(this[0])
-        else -> toCollection(LinkedHashSet<ComplexDouble>(mapCapacity(size)))
+        else -> toCollection(LinkedHashSet(mapCapacity(size)))
     }
 }
 
@@ -1903,14 +1903,14 @@ public fun ComplexDoubleArray.toSet(): Set<ComplexDouble> {
  * Returns a single list of all elements yielded from results of [transform] function being invoked on each element of original array.
  */
 public inline fun <R> ComplexFloatArray.flatMap(transform: (ComplexFloat) -> Iterable<R>): List<R> {
-    return flatMapTo(ArrayList<R>(), transform)
+    return flatMapTo(ArrayList(), transform)
 }
 
 /**
  * Returns a single list of all elements yielded from results of [transform] function being invoked on each element of original array.
  */
 public inline fun <R> ComplexDoubleArray.flatMap(transform: (ComplexDouble) -> Iterable<R>): List<R> {
-    return flatMapTo(ArrayList<R>(), transform)
+    return flatMapTo(ArrayList(), transform)
 }
 
 /**
@@ -1918,14 +1918,14 @@ public inline fun <R> ComplexDoubleArray.flatMap(transform: (ComplexDouble) -> I
  * and its index in the original array.
  */
 public inline fun <R> ComplexFloatArray.flatMapIndexed(transform: (index: Int, ComplexFloat) -> Iterable<R>): List<R> =
-    flatMapIndexedTo(ArrayList<R>(), transform)
+    flatMapIndexedTo(ArrayList(), transform)
 
 /**
  * Returns a single list of all elements yielded from results of [transform] function being invoked on each element
  * and its index in the original array.
  */
 public inline fun <R> ComplexDoubleArray.flatMapIndexed(transform: (index: Int, ComplexDouble) -> Iterable<R>): List<R> =
-    flatMapIndexedTo(ArrayList<R>(), transform)
+    flatMapIndexedTo(ArrayList(), transform)
 
 /**
  * Appends all elements yielded from results of [transform] function being invoked on each element
@@ -1982,7 +1982,7 @@ public inline fun <R, C : MutableCollection<in R>> ComplexDoubleArray.flatMapTo(
  * The returned map preserves the entry iteration order of the keys produced from the original array.
  */
 public inline fun <K> ComplexFloatArray.groupBy(keySelector: (ComplexFloat) -> K): Map<K, List<ComplexFloat>> {
-    return groupByTo(LinkedHashMap<K, MutableList<ComplexFloat>>(), keySelector)
+    return groupByTo(LinkedHashMap(), keySelector)
 }
 
 /**
@@ -1992,7 +1992,7 @@ public inline fun <K> ComplexFloatArray.groupBy(keySelector: (ComplexFloat) -> K
  * The returned map preserves the entry iteration order of the keys produced from the original array.
  */
 public inline fun <K> ComplexDoubleArray.groupBy(keySelector: (ComplexDouble) -> K): Map<K, List<ComplexDouble>> {
-    return groupByTo(LinkedHashMap<K, MutableList<ComplexDouble>>(), keySelector)
+    return groupByTo(LinkedHashMap(), keySelector)
 }
 
 /**
@@ -2003,7 +2003,7 @@ public inline fun <K> ComplexDoubleArray.groupBy(keySelector: (ComplexDouble) ->
  * The returned map preserves the entry iteration order of the keys produced from the original array.
  */
 public inline fun <K, V> ComplexFloatArray.groupBy(keySelector: (ComplexFloat) -> K, valueTransform: (ComplexFloat) -> V): Map<K, List<V>> {
-    return groupByTo(LinkedHashMap<K, MutableList<V>>(), keySelector, valueTransform)
+    return groupByTo(LinkedHashMap(), keySelector, valueTransform)
 }
 
 /**
@@ -2014,7 +2014,7 @@ public inline fun <K, V> ComplexFloatArray.groupBy(keySelector: (ComplexFloat) -
  * The returned map preserves the entry iteration order of the keys produced from the original array.
  */
 public inline fun <K, V> ComplexDoubleArray.groupBy(keySelector: (ComplexDouble) -> K, valueTransform: (ComplexDouble) -> V): Map<K, List<V>> {
-    return groupByTo(LinkedHashMap<K, MutableList<V>>(), keySelector, valueTransform)
+    return groupByTo(LinkedHashMap(), keySelector, valueTransform)
 }
 
 /**
@@ -2026,7 +2026,7 @@ public inline fun <K, V> ComplexDoubleArray.groupBy(keySelector: (ComplexDouble)
 public inline fun <K, M : MutableMap<in K, MutableList<ComplexFloat>>> ComplexFloatArray.groupByTo(destination: M, keySelector: (ComplexFloat) -> K): M {
     for (element in this) {
         val key = keySelector(element)
-        val list = destination.getOrPut(key) { ArrayList<ComplexFloat>() }
+        val list = destination.getOrPut(key) { ArrayList() }
         list.add(element)
     }
     return destination
@@ -2041,7 +2041,7 @@ public inline fun <K, M : MutableMap<in K, MutableList<ComplexFloat>>> ComplexFl
 public inline fun <K, M : MutableMap<in K, MutableList<ComplexDouble>>> ComplexDoubleArray.groupByTo(destination: M, keySelector: (ComplexDouble) -> K): M {
     for (element in this) {
         val key = keySelector(element)
-        val list = destination.getOrPut(key) { ArrayList<ComplexDouble>() }
+        val list = destination.getOrPut(key) { ArrayList() }
         list.add(element)
     }
     return destination
@@ -2057,7 +2057,7 @@ public inline fun <K, M : MutableMap<in K, MutableList<ComplexDouble>>> ComplexD
 public inline fun <K, V, M : MutableMap<in K, MutableList<V>>> ComplexFloatArray.groupByTo(destination: M, keySelector: (ComplexFloat) -> K, valueTransform: (ComplexFloat) -> V): M {
     for (element in this) {
         val key = keySelector(element)
-        val list = destination.getOrPut(key) { ArrayList<V>() }
+        val list = destination.getOrPut(key) { ArrayList() }
         list.add(valueTransform(element))
     }
     return destination
@@ -2073,7 +2073,7 @@ public inline fun <K, V, M : MutableMap<in K, MutableList<V>>> ComplexFloatArray
 public inline fun <K, V, M : MutableMap<in K, MutableList<V>>> ComplexDoubleArray.groupByTo(destination: M, keySelector: (ComplexDouble) -> K, valueTransform: (ComplexDouble) -> V): M {
     for (element in this) {
         val key = keySelector(element)
-        val list = destination.getOrPut(key) { ArrayList<V>() }
+        val list = destination.getOrPut(key) { ArrayList() }
         list.add(valueTransform(element))
     }
     return destination
@@ -2084,7 +2084,7 @@ public inline fun <K, V, M : MutableMap<in K, MutableList<V>>> ComplexDoubleArra
  * to each element in the original array.
  */
 public inline fun <R> ComplexFloatArray.map(transform: (ComplexFloat) -> R): List<R> {
-    return mapTo(ArrayList<R>(size), transform)
+    return mapTo(ArrayList(size), transform)
 }
 
 /**
@@ -2092,7 +2092,7 @@ public inline fun <R> ComplexFloatArray.map(transform: (ComplexFloat) -> R): Lis
  * to each element in the original array.
  */
 public inline fun <R> ComplexDoubleArray.map(transform: (ComplexDouble) -> R): List<R> {
-    return mapTo(ArrayList<R>(size), transform)
+    return mapTo(ArrayList(size), transform)
 }
 
 /**
@@ -2102,7 +2102,7 @@ public inline fun <R> ComplexDoubleArray.map(transform: (ComplexDouble) -> R): L
  * and returns the result of the transform applied to the element.
  */
 public inline fun <R> ComplexFloatArray.mapIndexed(transform: (index: Int, ComplexFloat) -> R): List<R> {
-    return mapIndexedTo(ArrayList<R>(size), transform)
+    return mapIndexedTo(ArrayList(size), transform)
 }
 
 /**
@@ -2112,7 +2112,7 @@ public inline fun <R> ComplexFloatArray.mapIndexed(transform: (index: Int, Compl
  * and returns the result of the transform applied to the element.
  */
 public inline fun <R> ComplexDoubleArray.mapIndexed(transform: (index: Int, ComplexDouble) -> R): List<R> {
-    return mapIndexedTo(ArrayList<R>(size), transform)
+    return mapIndexedTo(ArrayList(size), transform)
 }
 
 /**
@@ -2304,7 +2304,7 @@ public infix fun ComplexDoubleArray.subtract(other: Iterable<ComplexDouble>): Se
  * The returned set preserves the element iteration order of the original array.
  */
 public fun ComplexFloatArray.toMutableSet(): MutableSet<ComplexFloat> {
-    return toCollection(LinkedHashSet<ComplexFloat>(mapCapacity(size)))
+    return toCollection(LinkedHashSet(mapCapacity(size)))
 }
 
 /**
@@ -2313,7 +2313,7 @@ public fun ComplexFloatArray.toMutableSet(): MutableSet<ComplexFloat> {
  * The returned set preserves the element iteration order of the original array.
  */
 public fun ComplexDoubleArray.toMutableSet(): MutableSet<ComplexDouble> {
-    return toCollection(LinkedHashSet<ComplexDouble>(mapCapacity(size)))
+    return toCollection(LinkedHashSet(mapCapacity(size)))
 }
 
 /**

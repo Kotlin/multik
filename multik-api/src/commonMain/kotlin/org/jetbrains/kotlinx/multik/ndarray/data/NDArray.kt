@@ -4,6 +4,8 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
+import org.jetbrains.kotlinx.multik.ndarray.operations.concatenate
+
 public typealias D1Array<T> = NDArray<T, D1>
 public typealias D2Array<T> = NDArray<T, D2>
 public typealias D3Array<T> = NDArray<T, D3>
@@ -29,7 +31,7 @@ public class NDArray<T, D : Dimension> constructor(
 ) : MutableMultiArray<T, D> {
 
     init {
-        check(shape.isNotEmpty()) { "Shape can't be empty."}
+        check(shape.isNotEmpty()) { "Shape can't be empty." }
     }
 
     public override val data: MemoryView<T> = data as MemoryView<T>
@@ -79,7 +81,7 @@ public class NDArray<T, D : Dimension> constructor(
         if (consistent) {
             data = this.data.copyOf()
         } else {
-            data = initMemoryView<T>(this.size, this.dtype)
+            data = initMemoryView(this.size, this.dtype)
             var index = 0
             for (el in this)
                 data[index++] = el
@@ -208,28 +210,28 @@ public class NDArray<T, D : Dimension> constructor(
         )
     }
 
-    override fun cat(other: MultiArray<T, D>, axis: Int): NDArray<T, DN> {
+    override infix fun cat(other: MultiArray<T, D>): NDArray<T, D> =
+        cat(listOf(other), 0)
+
+    override fun cat(other: MultiArray<T, D>, axis: Int): NDArray<T, D> =
+        cat(listOf(other), axis)
+
+    override fun cat(other: List<MultiArray<T, D>>, axis: Int): NDArray<T, D> {
+        val actualAxis = actualAxis(axis)
+        require(actualAxis in 0 until dim.d) { "Axis $axis is out of bounds for array of dimension $dim" }
+        val arr = other.first()
         require(
             this.shape.withIndex()
-                .all { it.index == axis || it.value == other.shape[it.index] }) { "All dimensions of input arrays for the concatenation axis must match exactly." }
-
+                .all { it.index == axis || it.value == arr.shape[it.index] }) { "All dimensions of input arrays for the concatenation axis must match exactly." }
         val newShape = this.shape.copyOf()
-        newShape[axis] = this.shape[axis] + other.shape[axis]
-
-        val thisIt = this.iterator()
-        val otherIt = other.iterator()
-        var index = 0
-        val ret = NDArray<T, DN>(
-            initMemoryView(newShape.fold(1, Int::times), this.dtype),
-            0,
-            newShape,
-            dim = DN(newShape.size)
-        )
-        while (thisIt.hasNext())
-            ret.data[index++] = thisIt.next()
-        while (otherIt.hasNext())
-            ret.data[index++] = otherIt.next()
-        return ret
+        newShape[actualAxis] = this.shape[actualAxis] + other.sumOf { shape[actualAxis] }
+        val newSize = this.size + other.sumOf { size }
+        val arrays = other.toMutableList().also { it.add(0, this) }
+        val concatShape =
+            other.first().multiIndices.last.toMutableList().apply { add(actualAxis, arrays.size - 1) }.toIntArray()
+        val result = NDArray<T, D>(initMemoryView(newSize, dtype), 0, newShape, dim = dim)
+        concatenate(arrays, result, IntArray(concatShape.size)..concatShape, actualAxis)
+        return result
     }
 
     //todo extensions

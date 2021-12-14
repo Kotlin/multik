@@ -74,84 +74,118 @@ int array_argmin(const T *arr, int offset, int size, int dim, const int *shape, 
   return ret;
 }
 
-template<typename T>
-void array_exp(const T *arr, double *out, int size) {
+void array_exp(float *arr, size_t size) {
   for (int i = 0; i < size; ++i) {
-	*(out + i) = std::exp(static_cast<double>(*(arr + i)));
+	arr[i] = std::exp(arr[i]);
   }
 }
 
-template<typename T>
-void array_exp(const T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
-  int *index = new int[dim];
-  memset(index, 0, dim * 4);
-
+void array_exp(double *arr, size_t size) {
   for (int i = 0; i < size; ++i) {
-	int p = array_ptr(offset, index, strides, dim);
-	*(out + i) = std::exp(static_cast<double>(*(arr + p)));
-	index_increment(index, shape, dim);
-  }
-  delete[] index;
-}
-
-template<typename T>
-void array_log(const T *arr, double *out, int size) {
-  for (int i = 0; i < size; ++i) {
-	*(out + i) = std::log(static_cast<double>(*(arr + i)));
+	arr[i] = std::exp(arr[i]);
   }
 }
 
-template<typename T>
-void array_log(const T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
-  int *index = new int[dim];
-  memset(index, 0, dim * 4);
-
-  for (int i = 0; i < size; ++i) {
-	int p = array_ptr(offset, index, strides, dim);
-	*(out + i) = std::log(static_cast<double>(*(arr + p)));
-	index_increment(index, shape, dim);
-  }
-  delete[] index;
-}
-
-template<typename T>
-void array_sin(const T *arr, double *out, int size) {
-  for (int i = 0; i < size; ++i) {
-	*(out + i) = std::sin(static_cast<double>(*(arr + i)));
+void array_exp_complex(float *arr, size_t size) {
+  for (int i = 0; i < size; i += 2) {
+	float expReal = std::exp(arr[i]);
+	arr[i] = expReal * std::cos(arr[i + 1]);
+	arr[i + 1] = expReal * std::sin(arr[i + 1]);
   }
 }
 
-template<typename T>
-void array_sin(const T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
-  int *index = new int[dim];
-  memset(index, 0, dim * 4);
-
-  for (int i = 0; i < size; ++i) {
-	int p = array_ptr(offset, index, strides, dim);
-	*(out + i) = std::sin(static_cast<double>(*(arr + p)));
-	index_increment(index, shape, dim);
-  }
-  delete[] index;
-}
-
-template<typename T>
-void array_cos(const T *arr, double *out, int size) {
-  for (int i = 0; i < size; ++i) {
-	*(out + i) = std::cos(static_cast<double>(*(arr + i)));
+void array_exp_complex(double *arr, size_t size) {
+  for (int i = 0; i < size; i += 2) {
+	double expReal = std::exp(arr[i]);
+	arr[i] = expReal * std::cos(arr[i + 1]);
+	arr[i + 1] = expReal * std::sin(arr[i + 1]);
   }
 }
 
-template<typename T>
-void array_cos(const T *arr, double *out, int offset, int size, int dim, const int *shape, const int *strides) {
-  int *index = new int[dim];
-  memset(index, 0, dim * 4);
-
+void array_log(float *arr, size_t size) {
   for (int i = 0; i < size; ++i) {
-	int p = array_ptr(offset, index, strides, dim);
-	*(out + i) = std::cos(static_cast<double>(*(arr + p)));
-	index_increment(index, shape, dim);
+	arr[i] = std::log(arr[i]);
   }
-  delete[] index;
+}
+
+void array_log(double *arr, size_t size) {
+  for (int i = 0; i < size; ++i) {
+	arr[i] = std::log(arr[i]);
+  }
+}
+
+void array_log_complex(float *arr, size_t size) {
+  for (int i = 0; i < size; i += 2) {
+	float abs = std::sqrt(arr[i] * arr[i] + arr[i + 1] + arr[i + 1]);
+	float angle = std::atan2(arr[i + 1], arr[i]);
+	arr[i] = abs;
+	arr[i + 1] = angle;
+  }
+}
+
+void array_log_complex(double *arr, size_t size) {
+  for (int i = 0; i < size; i += 2) {
+	double abs = std::sqrt(arr[i] * arr[i] + arr[i + 1] + arr[i + 1]);
+	double angle = std::atan2(arr[i + 1], arr[i]);
+	arr[i] = abs;
+	arr[i + 1] = angle;
+  }
+}
+
+void array_sin(float *arr, size_t size) {
+  for (int i = 0; i < size; ++i) {
+	arr[i] = std::sin(arr[i]);
+  }
+}
+
+void array_sin(double *arr, size_t size) {
+  for (int i = 0; i < size; ++i) {
+	arr[i] = std::sin(arr[i]);
+  }
+}
+
+void array_sin_complex(float *arr, size_t size) {
+  for (int i = 0; i < size; i += 2) {
+	float cosRe = std::cos(arr[i]);
+	arr[i] = std::sin(arr[i]) * std::cosh(arr[i + 1]);
+	arr[i + 1] = cosRe * std::sinh(arr[i + 1]);
+  }
+}
+
+void array_sin_complex(double *arr, size_t size) {
+  for (int i = 0; i < size; i += 2) {
+	double cosRe = std::cos(arr[i]);
+	arr[i] = std::sin(arr[i]) * std::cosh(arr[i + 1]);
+	arr[i + 1] = cosRe * std::sinh(arr[i + 1]);
+  }
+}
+
+void array_cos(float *arr, size_t size) {
+  for (int i = 0; i < size; ++i) {
+	arr[i] = std::cos(arr[i]);
+  }
+}
+
+void array_cos(double *arr, size_t size) {
+  for (int i = 0; i < size; ++i) {
+	arr[i] = std::cos(arr[i]);
+  }
+}
+
+void array_cos_complex(float *arr, size_t size) {
+  for (int i = 0; i < size; i += 2) {
+	float sinRe = std::sin(arr[i]);
+	arr[i] = std::cos(arr[i]) * std::cosh(arr[i + 1]);
+	arr[i + 1] = sinRe * std::sinh(arr[i + 1]);
+  }
+}
+
+void array_cos_complex(double *arr, size_t size) {
+  for (int i = 0; i < size; i += 2) {
+	double sinRe = std::sin(arr[i]);
+	arr[i] = std::cos(arr[i]) * std::cosh(arr[i + 1]);
+	arr[i + 1] = sinRe * std::sinh(arr[i + 1]);
+  }
 }
 
 template<typename T>

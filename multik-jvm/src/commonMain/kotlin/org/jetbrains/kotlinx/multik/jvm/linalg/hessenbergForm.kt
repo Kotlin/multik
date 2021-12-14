@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
 import org.jetbrains.kotlinx.multik.api.identity
@@ -26,6 +30,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
  *
  *  NOTE: inplace function, change matrix [a]
  */
+@Suppress("DuplicatedCode")
 internal fun upperHessenbergFloat(a: MultiArray<ComplexFloat, D2>): Pair<D2Array<ComplexFloat>, D2Array<ComplexFloat>> {
     val (n, m) = a.shape
     var id = mk.identity<ComplexFloat>(n)
@@ -75,6 +80,7 @@ internal fun upperHessenbergFloat(a: MultiArray<ComplexFloat, D2>): Pair<D2Array
     return Pair(id, ans)
 }
 
+@Suppress("DuplicatedCode")
 internal fun upperHessenbergDouble(a: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
     val (n, m) = a.shape
     var id = mk.identity<ComplexDouble>(n)

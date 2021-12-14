@@ -1,3 +1,7 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 import org.gradle.internal.jvm.Jvm
 
 plugins {
@@ -6,22 +10,16 @@ plugins {
 
 apply(from = "$rootDir/gradle/openblas.gradle")
 
-val gccPath: String? = System.getenv("MinGW_x64_Bin_Path")
-val gfortranAndQuadmathPath: String? = System.getenv("path_to_gfortran")
-
-val linkList: List<String> = mutableListOf("$buildDir/openblas/lib/libopenblas.a").apply {
-    if (gfortranAndQuadmathPath != null) {
-        this.add("$gfortranAndQuadmathPath/libgfortran.a")
-        this.add("$gfortranAndQuadmathPath/libquadmath.a")
-    }
-}
+val gccMinGWPath: String? = System.getenv("MinGW_x64_Bin_Path")
+val gccLibPath: String = System.getenv("path_to_libgcc") ?: ""
+val gccDarwin: String = System.getenv("path_to_gcc_darwin") ?: gccLibPath
 
 library {
     source.from(file("src/main/cpp"))
 
     toolChains.configureEach {
-        if (this is Gcc && gccPath != null) {
-            this.path(gccPath)
+        if (this is Gcc && gccMinGWPath != null) {
+            this.path(gccMinGWPath)
         }
     }
 
@@ -38,7 +36,7 @@ library {
     binaries.configureEach {
         compileTask.get().compilerArgs.addAll(compileTask.get().targetPlatform.map {
             listOf(
-                "-std=c++14", "-O3", "-fno-exceptions", "-ffast-math",
+                "-std=c++14", "-O3", "-fno-exceptions", "-ffast-math", "-fPIC",
                 "-I", "${Jvm.current().javaHome.canonicalPath}/include",
                 "-I", "$buildDir/openblas/include/"
             ) + when {
@@ -57,11 +55,20 @@ tasks.withType(CppCompile::class.java).configureEach { dependsOn("installOpenBla
 tasks.withType(LinkSharedLibrary::class.java).configureEach {
     linkerArgs.addAll(
         targetPlatform.map {
-            linkList +
-                    if (it.operatingSystem.isWindows)
-                        listOf("-static-libgcc", "-static-libstdc++", "-static", "-lpthread")
-                    else
-                        emptyList()
+            listOf("$buildDir/openblas/lib/libopenblas.a") +
+                when {
+                    it.operatingSystem.isWindows ->
+                        listOf(
+                            "-static-libgcc", "-static-libstdc++", "-static", "-lpthread",
+                            "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a"
+                        )
+                    it.operatingSystem.isMacOsX ->
+                        listOf(
+                            "$gccDarwin/libgcc.a",
+                            "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a"
+                        )
+                    else -> emptyList()
+                }
         }
     )
 }

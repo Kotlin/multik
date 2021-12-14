@@ -1,7 +1,13 @@
+/*
+ * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ */
+
+@file:Suppress("DuplicatedCode")
+
 package org.jetbrains.kotlinx.multik.jvm.linalg
 
-import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
@@ -14,9 +20,9 @@ internal fun <T> pluCompressed(mat: MultiArray<T, D2>): Triple<D1Array<Int>, D2A
     val (n, m) = mat.shape
     val nm = min(n, m)
 
-    val perm = mk.empty<Int, D1>(nm)
-    val L = mk.empty<T, D2>(intArrayOf(n, nm), mat.dtype)
-    val U = mk.empty<T, D2>(intArrayOf(nm, m), mat.dtype)
+    val perm = mk.zeros<Int>(nm)
+    val L = mk.zeros<T, D2>(intArrayOf(n, nm), mat.dtype)
+    val U = mk.zeros<T, D2>(intArrayOf(nm, m), mat.dtype)
 
     when(mat.dtype) {
         DataType.DoubleDataType -> {
@@ -64,8 +70,8 @@ private fun <T> fillLowerMatrix(L: D2Array<T>, a: D2Array<T>, one: T) {
 
 /**
  * Solve inplace lower triangle system
- * Solves ax=b equation where [a] lower triangular matrix with units on diagonal,
- * rewrite [b] with solution
+ * Solves ax=b equation where a lower triangular matrix with units on diagonal,
+ * rewrite b with solution
  *
  * notice: intentionally there is no checks that a[i, i] == 1.0 and a[i, >i] == 0.0,
  * it is a contract of this method having no such checks

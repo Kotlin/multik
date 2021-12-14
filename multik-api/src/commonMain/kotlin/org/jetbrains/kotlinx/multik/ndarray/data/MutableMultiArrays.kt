@@ -33,8 +33,6 @@ public interface MutableMultiArray<T, D : Dimension> : MultiArray<T, D> {
     override fun squeeze(vararg axes: Int): MutableMultiArray<T, DN>
 
     override fun unsqueeze(vararg axes: Int): MutableMultiArray<T, DN>
-
-    override fun cat(other: MultiArray<T, D>, axis: Int): MutableMultiArray<T, DN>
 }
 
 //___________________________________________________WritableView_______________________________________________________
@@ -58,6 +56,7 @@ public inline fun <T, D : Dimension, reified M : Dimension> MultiArray<T, D>.wri
     )
 }
 
+@Suppress("DuplicatedCode")
 public inline fun <T, D : Dimension, reified M : Dimension> MultiArray<T, D>.writableView(
     indices: IntArray, axes: IntArray
 ): MutableMultiArray<T, M> {
@@ -182,6 +181,7 @@ public operator fun <T> MutableMultiArray<T, D3>.set(ind1: Int, ind2: Int, value
 }
 
 @JvmName("set5")
+@Suppress("DuplicatedCode")
 public operator fun <T> MutableMultiArray<T, D3>.set(ind1: Int, ind2: Int, ind3: Int, value: T) {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
     checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])
@@ -211,6 +211,7 @@ public operator fun <T> MutableMultiArray<T, D4>.set(ind1: Int, ind2: Int, ind3:
 }
 
 @JvmName("set9")
+@Suppress("DuplicatedCode")
 public operator fun <T> MutableMultiArray<T, D4>.set(ind1: Int, ind2: Int, ind3: Int, ind4: Int, value: T) {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
     checkBounds(ind2 in 0 until this.shape[1], ind2, 1, this.shape[1])

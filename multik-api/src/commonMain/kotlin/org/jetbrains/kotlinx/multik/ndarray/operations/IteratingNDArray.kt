@@ -7,10 +7,13 @@ package org.jetbrains.kotlinx.multik.ndarray.operations
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarrayCommon
 import org.jetbrains.kotlinx.multik.api.toCommonNDArray
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+import org.jetbrains.kotlinx.multik.api.zeros
+import org.jetbrains.kotlinx.multik.ndarray.complex.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import kotlin.experimental.and
+import kotlin.experimental.or
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.jvm.JvmName
 
@@ -19,6 +22,79 @@ public fun <T, D : Dimension> MultiArray<T, D>.isTransposed(): Boolean {
     if (x.dim == D1) return false
     return x.offset == 0 && x.size == x.data.size
         && x.strides.reversedArray().contentEquals(computeStrides(x.shape.reversedArray()))
+}
+
+// TODO: boolean array
+public infix fun <T : Number, D : Dimension> MultiArray<T, D>.and(other: MultiArray<T, D>): NDArray<Int, D> {
+    requireArraySizes(this.size, other.size)
+
+    val ret = mk.zeros<Int, D>(this.shape, DataType.IntDataType)
+    val lIter = this.iterator()
+    val rIter = other.iterator()
+    for (i in ret.data.indices) {
+        ret.data[i] = when (dtype) {
+            DataType.DoubleDataType -> {
+                val l = lIter.next().toDouble()
+                val r = rIter.next().toDouble()
+                when {
+                    l == 0.0 || r == 0.0 -> 0
+                    l.isNaN() || r.isNaN() -> 0
+                    else -> 1
+                }
+            }
+            DataType.FloatDataType -> {
+                val l = lIter.next().toFloat()
+                val r = rIter.next().toFloat()
+                when {
+                    l == 0f || r == 0f -> 0
+                    l.isNaN() || r.isNaN() -> 0
+                    else -> 1
+                }
+            }
+            DataType.IntDataType -> lIter.next().toInt() and rIter.next().toInt()
+            DataType.LongDataType -> (lIter.next().toLong() and rIter.next().toLong()).toInt()
+            DataType.ShortDataType -> (lIter.next().toShort() and rIter.next().toShort()).toInt()
+            DataType.ByteDataType -> (lIter.next().toByte() and rIter.next().toByte()).toInt()
+            else -> throw Exception("")
+        }
+    }
+    return ret
+}
+
+public infix fun <T : Number, D : Dimension> MultiArray<T, D>.or(other: MultiArray<T, D>): NDArray<Int, D> {
+    requireArraySizes(this.size, other.size)
+
+    val ret = mk.zeros<Int, D>(this.shape, DataType.IntDataType)
+    val lIter = this.iterator()
+    val rIter = other.iterator()
+    for (i in ret.data.indices) {
+        ret.data[i] = when (dtype) {
+            DataType.DoubleDataType -> {
+                val l = lIter.next().toDouble()
+                val r = rIter.next().toDouble()
+                when {
+                    l == 0.0 && r == 0.0 -> 0
+                    l.isNaN() && r.isNaN() -> 0
+                    else -> 1
+                }
+            }
+            DataType.FloatDataType -> {
+                val l = lIter.next().toFloat()
+                val r = rIter.next().toFloat()
+                when {
+                    l == 0f && r == 0f -> 0
+                    l.isNaN() && r.isNaN() -> 0
+                    else -> 1
+                }
+            }
+            DataType.IntDataType -> lIter.next().toInt() or rIter.next().toInt()
+            DataType.LongDataType -> (lIter.next().toLong() or rIter.next().toLong()).toInt()
+            DataType.ShortDataType -> (lIter.next().toShort() or rIter.next().toShort()).toInt()
+            DataType.ByteDataType -> (lIter.next().toByte() or rIter.next().toByte()).toInt()
+            else -> throw Exception("")
+        }
+    }
+    return ret
 }
 
 
@@ -715,6 +791,43 @@ public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.map(trans
     return NDArray(data, shape = shape, dim = dim)
 }
 
+
+/**
+ * Returns the element-wise minimum of array elements for [this] and [other].
+ */
+public fun <T: Number, D : Dimension> MultiArray<T, D>.minimum(other: MultiArray<T, D>): NDArray<T, D> {
+    requireArraySizes(this.size, other.size)
+    val ret = (this as NDArray).deepCopy()
+    when (dtype) {
+            DataType.DoubleDataType -> (ret as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> min(a, b) }
+            DataType.FloatDataType -> (ret as NDArray<Float, D>).commonAssignOp(other.iterator() as Iterator<Float>) { a, b -> min(a, b) }
+            DataType.IntDataType -> (ret as NDArray<Int, D>).commonAssignOp(other.iterator() as Iterator<Int>) { a, b -> min(a, b) }
+            DataType.LongDataType -> (ret as NDArray<Long, D>).commonAssignOp(other.iterator() as Iterator<Long>) { a, b -> min(a, b) }
+            DataType.ShortDataType -> (ret as NDArray<Short, D>).commonAssignOp(other.iterator() as Iterator<Short>) { a, b -> (minOf(a, b)) }
+            DataType.ByteDataType -> (ret as NDArray<Byte, D>).commonAssignOp(other.iterator() as Iterator<Byte>) { a, b -> (minOf(a, b)) }
+            else -> throw UnsupportedOperationException("The operations is not supported for the $dtype")
+        }
+    return ret
+}
+
+/**
+ * Returns the element-wise maximum of array elements for [this] and [other].
+ */
+public fun <T: Number, D : Dimension> MultiArray<T, D>.maximum(other: MultiArray<T, D>): NDArray<T, D> {
+    requireArraySizes(this.size, other.size)
+    val ret = (this as NDArray).deepCopy()
+    when (dtype) {
+        DataType.DoubleDataType -> (ret as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> max(a, b) }
+        DataType.FloatDataType -> (ret as NDArray<Float, D>).commonAssignOp(other.iterator() as Iterator<Float>) { a, b -> max(a, b) }
+        DataType.IntDataType -> (ret as NDArray<Int, D>).commonAssignOp(other.iterator() as Iterator<Int>) { a, b -> max(a, b) }
+        DataType.LongDataType -> (ret as NDArray<Long, D>).commonAssignOp(other.iterator() as Iterator<Long>) { a, b -> max(a, b) }
+        DataType.ShortDataType -> (ret as NDArray<Short, D>).commonAssignOp(other.iterator() as Iterator<Short>) { a, b ->(maxOf (a, b)) }
+        DataType.ByteDataType -> (ret as NDArray<Byte, D>).commonAssignOp(other.iterator() as Iterator<Byte>) { a, b ->(maxOf (a, b)) }
+        else -> throw UnsupportedOperationException("The operations is not supported for the $dtype")
+    }
+    return ret
+}
+
 /**
  * Return a new array contains elements after applying [transform].
  */
@@ -1052,6 +1165,7 @@ public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.scan(
  * each element, its index in this d1 ndarray and current accumulator value that starts with [initial] value.
  */
 @JvmName("scanD1Indexed")
+@Suppress("DuplicatedCode")
 public inline fun <T, reified R : Any> MultiArray<T, D1>.scanIndexed(
     initial: R, operation: (index: Int, acc: R, T) -> R
 ): D1Array<R> {
@@ -1072,6 +1186,7 @@ public inline fun <T, reified R : Any> MultiArray<T, D1>.scanIndexed(
  * Return a flat ndarray containing successive accumulation values generated by applying [operation] from left to right to
  * each element, its multi index in this dn ndarray and current accumulator value that starts with [initial] value.
  */
+@Suppress("DuplicatedCode")
 public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.scanMultiIndexed(
     initial: R, operation: (index: IntArray, acc: R, T) -> R
 ): NDArray<R, D> {
@@ -1185,6 +1300,114 @@ public fun <T, D : Dimension> MultiArray<T, D>.toList(): List<T> {
         1 -> listOf(this.first())
         else -> this.toMutableList()
     }
+}
+
+/**
+ * Returns a List<List<T>> containing all elements.
+ */
+public fun <T> MultiArray<T, D2>.toListD2(): List<List<T>> =
+    List(shape[0]) { i ->
+        List(shape[1]) { j ->
+            this[i, j]
+        }
+    }
+
+/**
+ * Returns a List<List<List<T>>> containing all elements.
+ */
+public fun <T> MultiArray<T, D3>.toListD3(): List<List<List<T>>> =
+    List(shape[0]) { i ->
+        List(shape[1]) { j ->
+            List(shape[2]) { k ->
+                this[i, j, k]
+            }
+        }
+    }
+
+/**
+ * Returns a List<List<List<List<T>>>> containing all elements.
+ */
+public fun <T> MultiArray<T, D4>.toListD4(): List<List<List<List<T>>>> =
+    List(shape[0]) { i ->
+        List(shape[1]) { j ->
+            List(shape[2]) { k ->
+                List(shape[3]) { l ->
+                    this[i, j, k, l]
+                }
+            }
+        }
+    }
+
+public fun <D : Dimension> MultiArray<Int, D>.toIntArray(): IntArray {
+    val result = IntArray(size)
+    if (this.consistent) {
+        data.getIntArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
+    return result
+}
+
+public fun <D : Dimension> MultiArray<Long, D>.toLongArray(): LongArray {
+    val result = LongArray(size)
+    if (this.consistent) {
+        data.getLongArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
+    return result
+}
+
+public fun <D : Dimension> MultiArray<Float, D>.toFloatArray(): FloatArray {
+    val result = FloatArray(size)
+    if (this.consistent) {
+        data.getFloatArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
+    return result
+}
+
+public fun <D : Dimension> MultiArray<Double, D>.toDoubleArray(): DoubleArray {
+    val result = DoubleArray(size)
+    if (this.consistent) {
+        data.getDoubleArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
+    return result
+}
+
+public fun <D : Dimension> MultiArray<ComplexFloat, D>.toComplexFloatArray(): ComplexFloatArray {
+    val result = ComplexFloatArray(size)
+    if (this.consistent) {
+        data.getComplexFloatArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
+    return result
+}
+
+public fun <D : Dimension> MultiArray<ComplexDouble, D>.toComplexDoubleArray(): ComplexDoubleArray {
+    val result = ComplexDoubleArray(size)
+    if (this.consistent) {
+        data.getComplexDoubleArray().copyInto(result)
+    } else {
+        var index = 0
+        for (element in this)
+            result[index++] = element
+    }
+    return result
 }
 
 /**

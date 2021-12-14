@@ -24,7 +24,6 @@ val os = when {
 }
 
 tasks.jar {
-    dependsOn("multik_jni:assembleRelease${os.capitalize()}")
     from("$buildDir/libs")
     exclude("*.jar")
 }
@@ -35,9 +34,6 @@ tasks.test {
     doFirst {
         copy {
             from(fileTree("${project.childProjects["multik_jni"]!!.buildDir}/lib/main/debug").files)
-//            from(fileTree("${project.childProjects["multik_jni"]!!.buildDir}/lib/main/release/${os}/").files.filter {
-//                "stripped" !in it.path
-//            })
             into("$buildDir/libs")
         }
     }
