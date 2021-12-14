@@ -26,7 +26,7 @@ public fun <T, D : Dimension> MultiArray<T, D>.isTransposed(): Boolean {
 
 // TODO: boolean array
 public infix fun <T : Number, D : Dimension> MultiArray<T, D>.and(other: MultiArray<T, D>): NDArray<Int, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
 
     val ret = mk.zeros<Int, D>(this.shape, DataType.IntDataType)
     val lIter = this.iterator()
@@ -62,7 +62,7 @@ public infix fun <T : Number, D : Dimension> MultiArray<T, D>.and(other: MultiAr
 }
 
 public infix fun <T : Number, D : Dimension> MultiArray<T, D>.or(other: MultiArray<T, D>): NDArray<Int, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
 
     val ret = mk.zeros<Int, D>(this.shape, DataType.IntDataType)
     val lIter = this.iterator()
@@ -568,6 +568,7 @@ public inline fun <reified T, D : Dimension, K> MultiArray<T, D>.groupNDArrayBy(
  * with the key returned by [keySelector] applied to each element,
  * and returns a map where each group key is associated with an ndarray of matching values.
  */
+// TODO: complex number
 public inline fun <T, D : Dimension, K, reified V : Number> MultiArray<T, D>.groupNDArrayBy(
     keySelector: (T) -> K, valueTransform: (T) -> V
 ): Map<K, NDArray<V, D1>> {
@@ -796,7 +797,7 @@ public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.map(trans
  * Returns the element-wise minimum of array elements for [this] and [other].
  */
 public fun <T: Number, D : Dimension> MultiArray<T, D>.minimum(other: MultiArray<T, D>): NDArray<T, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     val ret = (this as NDArray).deepCopy()
     when (dtype) {
             DataType.DoubleDataType -> (ret as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> min(a, b) }
@@ -814,7 +815,7 @@ public fun <T: Number, D : Dimension> MultiArray<T, D>.minimum(other: MultiArray
  * Returns the element-wise maximum of array elements for [this] and [other].
  */
 public fun <T: Number, D : Dimension> MultiArray<T, D>.maximum(other: MultiArray<T, D>): NDArray<T, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     val ret = (this as NDArray).deepCopy()
     when (dtype) {
         DataType.DoubleDataType -> (ret as NDArray<Double, D>).commonAssignOp(other.iterator() as Iterator<Double>) { a, b -> max(a, b) }
@@ -1440,6 +1441,22 @@ public fun <T, D : Dimension> MultiArray<T, D>.toSet(): Set<T> {
 }
 
 /**
+ * Returns a [SortedSet][java.util.SortedSet] of all elements.
+ */
+public fun <T : Number, D : Dimension> MultiArray<T, D>.toSortedSet(): java.util.SortedSet<T> {
+    return toCollection(java.util.TreeSet())
+}
+
+/**
+ * Returns a [SortedSet][java.util.SortedSet] of all elements.
+ *
+ * Elements in the set returned are sorted according to the given [comparator].
+ */
+public fun <T, D : Dimension> MultiArray<T, D>.toSortedSet(comparator: Comparator<in T>): java.util.SortedSet<T> {
+    return toCollection(java.util.TreeSet(comparator))
+}
+
+/**
  *
  */
 public enum class CopyStrategy { FULL, MEANINGFUL }
@@ -1465,15 +1482,18 @@ public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(
 
     val size: Int
     val iterData: Iterator<T>
+    val offset: Int
     val strides: IntArray
 
     if (copy == CopyStrategy.FULL) {
         size = this.data.size
         iterData = this.data.iterator()
+        offset = this.offset
         strides = this.strides.copyOf()
     } else {
         size = this.size
         iterData = this.iterator()
+        offset = 0
         strides = computeStrides(this.shape)
     }
 
@@ -1575,7 +1595,7 @@ public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(
         }
         else -> throw Exception()
     }
-    return NDArray(view, this.offset, this.shape.copyOf(), strides, this.dim)
+    return NDArray(view, offset, this.shape.copyOf(), strides, this.dim)
 }
 
 @PublishedApi

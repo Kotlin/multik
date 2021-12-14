@@ -24,7 +24,7 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.unaryMinus(): NDArray<T,
  * Create a new array as the sum of [this] and [other].
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.plus(other: MultiArray<T, D>): NDArray<T, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret += other
     return ret
@@ -40,7 +40,7 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.plus(other: T): NDArray<
  * Add [other] to [this]. Inplace operator.
  */
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: MultiArray<T, D>) {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     if (this.consistent && other.consistent) {
         this.data += (other.data as MemoryView)
     } else {
@@ -82,7 +82,7 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.plusAssign(other:
  * Create a new array as difference between [this] and [other].
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.minus(other: MultiArray<T, D>): NDArray<T, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret -= other
     return ret
@@ -98,7 +98,7 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.minus(other: T): NDArray
  * Subtract [other] from [this]. Inplace operator.
  */
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: MultiArray<T, D>) {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     if (this.consistent && other.consistent) {
         this.data -= (other.data as MemoryView)
     } else {
@@ -139,7 +139,7 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.minusAssign(other
  * Create a new array as product of [this] and [other].
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.times(other: MultiArray<T, D>): NDArray<T, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret *= other
     return ret
@@ -155,7 +155,7 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.times(other: T): NDArray
  * Multiply [this] by [other]. Inplace operator.
  */
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: MultiArray<T, D>) {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     if (this.consistent && other.consistent) {
         this.data *= (other.data as MemoryView)
     } else {
@@ -196,7 +196,7 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.timesAssign(other
  * Create a new array as division of [this] by [other].
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.div(other: MultiArray<T, D>): NDArray<T, D> {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
     ret /= other
     return ret
@@ -212,7 +212,7 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.div(other: T): NDArray<T
  * Divide [this] by [other]. Inplace operator.
  */
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.divAssign(other: MultiArray<T, D>) {
-    requireArraySizes(this.size, other.size)
+    requireEqualShape(this.shape, other.shape)
     if (this.consistent && other.consistent) {
         this.data /= (other.data as MemoryView)
     } else {

@@ -101,16 +101,18 @@ public fun <T, D : Dimension> MultiArray<T, D>.repeat(n: Int): D1Array<T> {
     }
 
     for (i in size until (size * n) step size) {
-        val startIndex = (i - size) * 2
-        val endIndex = startIndex + size * 2
+        val startIndex = i - size
+        val endIndex = i
+        val startIndexComplex = startIndex * 2
+        val endIndexComplex = startIndexComplex + (size * 2)
         when (this.dtype) {
             DataType.ComplexFloatDataType ->
-                data.getFloatArray().copyInto(data.getFloatArray(), i * 2, startIndex, endIndex)
+                data.getFloatArray().copyInto(data.getFloatArray(), i * 2, startIndexComplex, endIndexComplex)
                 //System.arraycopy(data.getFloatArray(), (i - size) * 2, data.getFloatArray(), i * 2, size * 2)
             DataType.ComplexDoubleDataType ->
-                data.getDoubleArray().copyInto(data.getDoubleArray(), i * 2, startIndex, endIndex)
+                data.getDoubleArray().copyInto(data.getDoubleArray(), i * 2, startIndexComplex, endIndexComplex)
                 //System.arraycopy(data.getDoubleArray(), (i - size) * 2, data.getDoubleArray(), i * 2, size * 2)
-            else -> (data.data as Array<*>).copyInto(data.data as Array<Any?>, 0, i - size, i)
+            else -> (data.data as Array<*>).copyInto(data.data as Array<Any?>, i, i - size, endIndex)
             //else -> System.arraycopy(data.data, i - size, data.data, i, size)
         }
     }
@@ -147,21 +149,23 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
     axis: Int = 0
 ): NDArray<T, O> {
     if (axis == 0) {
+        var offset = 0
         arrays.forEachIndexed { i: Int, arr: MultiArray<T, D> ->
             if (arr.consistent) {
                 when (dest.dtype) {
                     DataType.ComplexFloatDataType -> arr.data.getComplexFloatArray()
-                        .copyInto(dest.data.getComplexFloatArray(), i * arr.size)
+                        .copyInto(dest.data.getComplexFloatArray(), offset)
                     DataType.ComplexDoubleDataType -> arr.data.getComplexDoubleArray()
-                        .copyInto(dest.data.getComplexDoubleArray(), i * arr.size)
-                    else -> (arr.data.data as Array<*>).copyInto(dest.data.data as Array<Any?>, i * arr.size, 0, arr.size)
-                    //else -> System.arraycopy(arr.data.data, 0, dest.data.data, i * arr.size, arr.size)
+                        .copyInto(dest.data.getComplexDoubleArray(), offset)
+                    else -> (arr.data.data as Array<*>).copyInto(dest.data.data as Array<Any?>, offset, 0, arr.size)
+                    //else -> System.arraycopy(arr.data.data, 0, dest.data.data, offset, arr.size)
                 }
             } else {
-                var index = i * arr.size
+                var index = offset
                 for (el in arr)
                     dest.data[index++] = el
             }
+            offset += arr.size
         }
     } else {
         when (arrays.first().dim) {

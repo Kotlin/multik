@@ -224,8 +224,8 @@ public class NDArray<T, D : Dimension> constructor(
             this.shape.withIndex()
                 .all { it.index == axis || it.value == arr.shape[it.index] }) { "All dimensions of input arrays for the concatenation axis must match exactly." }
         val newShape = this.shape.copyOf()
-        newShape[actualAxis] = this.shape[actualAxis] + other.sumOf { shape[actualAxis] }
-        val newSize = this.size + other.sumOf { size }
+        newShape[actualAxis] = this.shape[actualAxis] + other.sumOf { it.shape[actualAxis] }
+        val newSize = this.size + other.sumOf { it.size }
         val arrays = other.toMutableList().also { it.add(0, this) }
         val concatShape =
             other.first().multiIndices.last.toMutableList().apply { add(actualAxis, arrays.size - 1) }.toIntArray()

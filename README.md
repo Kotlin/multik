@@ -26,8 +26,8 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:multik-api:0.0.1"
-    implementation "org.jetbrains.kotlinx:multik-default:0.0.1"
+    implementation "org.jetbrains.kotlinx:multik-api:0.1.1"
+    implementation "org.jetbrains.kotlinx:multik-default:0.1.1"
 }
 ```
 
@@ -38,8 +38,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:multik-api:0.0.1")
-    implementation("org.jetbrains.kotlinx:multik-default:0.0.1")
+    implementation("org.jetbrains.kotlinx:multik-api:0.1.1")
+    implementation("org.jetbrains.kotlinx:multik-default:0.1.1")
 }
 ```
 
@@ -52,11 +52,13 @@ Visit [Multik documentation](https://kotlin.github.io/multik) for a detailed fea
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3])
 /* [1, 2, 3] */
+
 val b = mk.ndarray(mk[mk[1.5, 2.1, 3.0], mk[4.0, 5.0, 6.0]])
 /*
 [[1.5, 2.1, 3.0],
 [4.0, 5.0, 6.0]]
 */
+
 val c = mk.ndarray(mk[mk[mk[1.5f, 2f, 3f], mk[4f, 5f, 6f]], mk[mk[3f, 2f, 1f], mk[4f, 5f, 6f]]])
 /*
 [[[1.5, 2.0, 3.0],
@@ -67,7 +69,7 @@ val c = mk.ndarray(mk[mk[mk[1.5f, 2f, 3f], mk[4f, 5f, 6f]], mk[mk[3f, 2f, 1f], m
 */
 
 
-mk.empty<Double, D2>(3, 4) // create an array of zeros
+mk.zeros<Double>(3, 4) // create an array of zeros
 /*
 [[0.0, 0.0, 0.0, 0.0],
 [0.0, 0.0, 0.0, 0.0],
@@ -91,10 +93,20 @@ mk.d3array(2, 2, 3) { it * it } // create an array of 3 dimension
 [[36, 49, 64],
 [81, 100, 121]]]
 */
+
+mk.d2arrayIndices(3, 3) { i, j -> ComplexFloat(i, j) }
+/*
+[[0.0+(0.0)i, 0.0+(1.0)i, 0.0+(2.0)i],
+[1.0+(0.0)i, 1.0+(1.0)i, 1.0+(2.0)i],
+[2.0+(0.0)i, 2.0+(1.0)i, 2.0+(2.0)i]]
+ */
+
 mk.arange<Long>(10, 25, 5) // creare an array with elements in the interval [19, 25) with step 5
 /* [10, 15, 20] */
+
 mk.linspace<Double>(0, 2, 9) // create an array of 9 elements in the interval [0, 2]
 /* [0.0, 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0] */
+
 val e = mk.identity<Double>(3) // create an identity array of shape (3, 3)
 /*
 [[1.0, 0.0, 0.0],
@@ -141,12 +153,14 @@ f * d // multiplication
 
 #### Array mathematics
 ```kotlin
-mk.math.sin(a) // element-wise sin 
-mk.math.cos(a) // element-wise cos
-mk.math.log(b) // element-wise natural logarithm
-mk.math.exp(b) // element-wise epx
-mk.linalg.dot(d, e) // dot product
+a.sin() // element-wise sin, equivalent to mk.math.sin(a)
+a.cos() // element-wise cos, equivalent to mk.math.cos(a)
+b.log() // element-wise natural logarithm, equivalent to mk.math.log(b)
+b.exp() // element-wise exp, equivalent to mk.math.exp(b)
+d dot e // dot product, equivalent to mk.linalg.dot(d, e)
 ```
+
+See [documentation](https://kotlin.github.io/multik) for other linear algebra methods.
 
 #### Aggregate functions
 ```kotlin
@@ -160,7 +174,7 @@ mk.stat.median(b) // meadian
 
 #### Copying arrays
 ```kotlin
-val f = a.clone() // create a copy of the array and its data
+val f = a.copy() // create a copy of the array and its data
 val h = b.deepCopy() // create a copy of the array and copy the meaningful data
 ```
 
@@ -177,7 +191,7 @@ c.sorted() // sort elements
 a[2] // select the element at the 2 index
 b[1, 2] // select the element at row 1 column 2
 b[1] // select row 1 
-b[0.r..2, 1] // select elements at rows 0 and 1 in column 1
+b[0..2, 1] // select elements at rows 0 and 1 in column 1
 b[0..1..1] // select all elements at row 0
 
 for (el in b) {
@@ -215,11 +229,14 @@ a.inplace {
 ```
 
 ## Building
-Multik uses blas for implementing algebraic operations. Therefore, you would need a C ++ compiler.
+Multik uses BLAS and LAPACK for implementing algebraic operations. 
+Therefore, you would need a C ++ compiler and gfortran.
 Run `./gradlew assemble` to build all modules.
 * To build api module run `./gradlew multik-api:assemble`.
 * To build jvm module run `./gradlew multik-jvm:assemble`.
-* To build native module run `./gradlew multik-native:assemble`.
+* To build native module run `./gradlew multik-native:assemble`. 
+To reuse `multik-native` in the future, you must first build `multik_jni` and place the native library in 
+`multik-native/build/libs`
 * To build default module run `./gradlew multik-native:assemble` then `./gradlew multik-default:assemble`.
 
 ## Testing
@@ -227,7 +244,9 @@ Run `./gradlew assemble` to build all modules.
 
 ## Contributing
 There is an opportunity to contribute to the project:
-1. Implement [math](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/Math.kt) and [linalg](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/LinAlg.kt) interfaces.
+1. Implement [math](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/math/Math.kt),
+[linalg](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/linalg/LinAlg.kt),
+[stat](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/Statistics.kt) interfaces.
 2. Create your own engine successor from [Engine](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/Engine.kt), for example - [JvmEngine](multik-jvm/src/main/kotlin/org/jetbrains/kotlinx/multik/jvm/JvmEngine.kt).
 3. Use [mk.addEngine](https://github.com/devcrocod/multik/blob/972b18cfd2952abd811fabf34461d238e55c5587/multik-api/src/main/kotlin/org/jetbrains/multik/api/Multik.kt#L23) and [mk.setEngine](https://github.com/devcrocod/multik/blob/972b18cfd2952abd811fabf34461d238e55c5587/multik-api/src/main/kotlin/org/jetbrains/multik/api/Multik.kt#L27)
 to use your implementation.

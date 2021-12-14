@@ -63,10 +63,9 @@ tasks.withType(LinkSharedLibrary::class.java).configureEach {
                             "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a"
                         )
                     it.operatingSystem.isMacOsX ->
-                        listOf(
-                            "$gccDarwin/libgcc.a",
-                            "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a"
-                        )
+                        listOf("$gccDarwin/libgcc.a", "$gccLibPath/libgfortran.a", "$gccLibPath/libquadmath.a")
+                    it.operatingSystem.isLinux ->
+                        listOf("-static-libgcc", "-static-libgfortran", "$gccLibPath/libquadmath.a")
                     else -> emptyList()
                 }
         }

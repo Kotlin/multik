@@ -31,6 +31,11 @@ internal inline fun requireArraySizes(rightSize: Int, otherSize: Int) {
 }
 
 @Suppress("NOTHING_TO_INLINE")
+internal inline fun requireEqualShape(left: IntArray, right: IntArray) {
+    require(left.contentEquals(right)) { "Array shapes don't match: ${left.contentToString()} != ${right.contentToString()}" }
+}
+
+@Suppress("NOTHING_TO_INLINE")
 internal inline fun requirePositiveShape(dim: Int) {
     require(dim > 0) { "Shape must be positive but was $dim." }
 }
