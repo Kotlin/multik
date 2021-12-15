@@ -8,7 +8,6 @@ import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.zeros
-import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
@@ -19,11 +18,6 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.toType
 import kotlin.math.min
 
 public object NativeLinAlgEx : LinAlgEx {
-
-    init {
-        NativeEngine
-    }
-
     override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> =
         invCommon(mat.toType(CopyStrategy.MEANINGFUL))
 
