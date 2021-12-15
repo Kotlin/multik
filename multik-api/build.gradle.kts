@@ -34,8 +34,21 @@ kotlin {
     iosSimulatorArm64()
     iosX64()
     js {
-        browser()
-        nodejs()
+        val timeoutMs = "1000000"
+        browser{
+            testTask {
+                useMocha {
+                    timeout = timeoutMs
+                }
+            }
+        }
+        nodejs{
+            testTask {
+                useMocha {
+                    timeout = timeoutMs
+                }
+            }
+        }
     }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
