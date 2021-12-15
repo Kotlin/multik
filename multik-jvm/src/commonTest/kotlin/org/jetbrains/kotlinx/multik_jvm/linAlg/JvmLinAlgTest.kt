@@ -388,7 +388,7 @@ class JvmLinAlgTest {
 
     @Test
     fun `test_qr`() {
-        val n = 2
+        val n = 100
         val mat = getRandomMatrixComplexDouble(n, n)
         val (q, r) = qrComplexDouble(mat)
 
