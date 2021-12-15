@@ -57,7 +57,8 @@ public object JvmStatistics : Statistics {
             val t = a.slice<T, D, O>(indexMap)
             var count = 0
             for (element in t) {
-                retData[count++] += element.toDouble()
+                retData[count] += element.toDouble()
+                count++
             }
         }
 
