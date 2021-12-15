@@ -16,7 +16,7 @@ class JvmStatisticsTest {
 
     @BeforeTest
     fun setup() {
-        // init engines on native. This does nothing on jvm which uses reflection
+        // init engines on non-jvm builds. This does nothing on jvm which uses reflection
         initEnginesProvider(listOf(JvmEngine()))
     }
 

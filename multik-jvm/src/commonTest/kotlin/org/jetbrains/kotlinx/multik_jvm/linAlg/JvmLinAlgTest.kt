@@ -29,7 +29,7 @@ class JvmLinAlgTest {
 
     @BeforeTest
     fun setup() {
-        // init engines on native. This does nothing on jvm which uses reflection
+        // init engines on non-jvm builds. This does nothing on jvm which uses reflection
         initEnginesProvider(listOf(JvmEngine()))
     }
 
@@ -388,7 +388,7 @@ class JvmLinAlgTest {
 
     @Test
     fun `test_qr`() {
-        val n = 100
+        val n = 2
         val mat = getRandomMatrixComplexDouble(n, n)
         val (q, r) = qrComplexDouble(mat)
 
