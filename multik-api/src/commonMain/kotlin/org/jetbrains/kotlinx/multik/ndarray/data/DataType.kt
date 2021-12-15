@@ -57,7 +57,7 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
                 6 -> DoubleDataType
                 7 -> ComplexFloatDataType
                 8 -> ComplexDoubleDataType
-                else -> throw IllegalStateException("One of the primitive types was expected")
+                else -> throw IllegalStateException("One of the primitive types indexes was expected, got $i")
             }
         }
 
@@ -65,7 +65,8 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
          * Returns [DataType] by class of [element].
          */
         public inline fun <reified T> of(element: T): DataType {
-            return when (T::class) {
+            element ?: throw IllegalStateException("Element is null cannot find type")
+            return when (element!!::class) {
                 Byte::class -> ByteDataType
                 Short::class -> ShortDataType
                 Int::class -> IntDataType
@@ -74,7 +75,8 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
                 Double::class -> DoubleDataType
                 ComplexFloat::class -> ComplexFloatDataType
                 ComplexDouble::class -> ComplexDoubleDataType
-                else -> throw IllegalStateException("One of the primitive types was expected")
+                else -> throw IllegalStateException("One of the primitive types was expected, " +
+                        "got ${element!!::class.simpleName}")
             }
         }
 

@@ -377,12 +377,12 @@ public inline fun <reified T : Complex, D : Dimension> Multik.ndarray(
     ndarrayCommon(elements, shape, dim)
 
 @PublishedApi
-internal inline fun <reified T, D : Dimension> ndarrayCommon(elements: Collection<T>, shape: IntArray, dim: D): NDArray<T, D> {
+internal inline fun <reified T: Any, D : Dimension> ndarrayCommon(elements: Collection<T>, shape: IntArray, dim: D): NDArray<T, D> {
     requireShapeEmpty(shape)
     requireDimension(dim, shape.size)
     requireElementsWithShape(elements.size, shape.fold(1, Int::times))
     val size = shape.reduce { acc, el -> acc * el }
-    val dtype = DataType.of(elements.first())
+    val dtype = DataType.ofKClass(T::class)
     val data = initMemoryView<T>(size, dtype).apply {
         var count = 0
         for (el in elements)
@@ -1240,7 +1240,7 @@ public inline fun <reified T : Any> Multik.d2array(sizeD1: Int, sizeD2: Int, noi
 public inline fun <reified T : Any> Multik.d2arrayIndices(
     sizeD1: Int, sizeD2: Int, init: (i: Int, j: Int) -> T
 ): D2Array<T> {
-    val dtype = DataType.of(T::class)
+    val dtype = DataType.ofKClass(T::class)
     val shape = intArrayOf(sizeD1, sizeD2)
     for (i in shape.indices) {
         require(shape[i] > 0) { "Dimension $i must be positive." }
@@ -1282,7 +1282,7 @@ public inline fun <reified T : Any> Multik.d3array(
 public inline fun <reified T : Any> Multik.d3arrayIndices(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, init: (i: Int, j: Int, k: Int) -> T
 ): D3Array<T> {
-    val dtype = DataType.of(T::class)
+    val dtype = DataType.ofKClass(T::class)
     val shape = intArrayOf(sizeD1, sizeD2, sizeD3)
     for (i in shape.indices) {
         require(shape[i] > 0) { "Dimension $i must be positive." }
@@ -1326,7 +1326,7 @@ public inline fun <reified T : Any> Multik.d4array(
 public inline fun <reified T : Any> Multik.d4arrayIndices(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, init: (i: Int, j: Int, k: Int, m: Int) -> T
 ): D4Array<T> {
-    val dtype = DataType.of(T::class)
+    val dtype = DataType.ofKClass(T::class)
     val shape = intArrayOf(sizeD1, sizeD2, sizeD3, sizeD4)
     for (i in shape.indices) {
         require(shape[i] > 0) { "Dimension $i must be positive." }
@@ -1405,8 +1405,8 @@ public inline fun <reified T : Number> Multik.ndarrayOf(vararg items: T): D1Arra
 @JvmName("ndarrayOfComplex")
 public inline fun <reified T : Complex> Multik.ndarrayOf(vararg items: T): D1Array<T> = ndarrayOfCommon(items)
 
-public inline fun <reified T> ndarrayOfCommon(items: Array<out T>): D1Array<T> {
-    val dtype = DataType.of(items.first())
+public inline fun <reified T: Any> ndarrayOfCommon(items: Array<out T>): D1Array<T> {
+    val dtype = DataType.ofKClass(T::class)
     val shape = intArrayOf(items.size)
     val data = initMemoryView(items.size, dtype) { items[it] }
     return D1Array(data, shape = shape, dim = D1)
@@ -1565,7 +1565,7 @@ public inline fun <reified T : Number> List<List<List<List<T>>>>.toNDArray(): D4
 public inline fun <reified T : Complex> List<List<List<List<T>>>>.toNDArray(): D4Array<T> = Multik.ndarray(this)
 
 @PublishedApi
-internal inline fun <reified T> Iterable<T>.toCommonNDArray(): D1Array<T> {
+internal inline fun <reified T: Any> Iterable<T>.toCommonNDArray(): D1Array<T> {
     if (this is Collection<T>)
         return ndarrayCommon(this, intArrayOf(this.size), D1)
 

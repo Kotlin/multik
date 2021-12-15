@@ -294,13 +294,13 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.count(predicate: (T) -> Bo
 /**
  * Returns a new array containing only distinct elements from the given array.
  */
-public inline fun <reified T, D : Dimension> MultiArray<T, D>.distinct(): NDArray<T, D1> = this.toMutableSet().toCommonNDArray()
+public inline fun <reified T: Any, D : Dimension> MultiArray<T, D>.distinct(): NDArray<T, D1> = this.toMutableSet().toCommonNDArray()
 
 /**
  * Returns a new array containing only elements from the given array
  * having distinct keys returned by the given [selector] function.
  */
-public inline fun <reified T, D : Dimension, K> MultiArray<T, D>.distinctBy(selector: (T) -> K): NDArray<T, D1> {
+public inline fun <reified T: Any, D : Dimension, K> MultiArray<T, D>.distinctBy(selector: (T) -> K): NDArray<T, D1> {
     val set = HashSet<K>()
     val list = ArrayList<T>()
     for (e in this) {
@@ -327,7 +327,7 @@ public fun <T> MultiArray<T, D1>.drop(n: Int): D1Array<T> {
 /**
  * Drops elements that don't satisfy the [predicate].
  */
-public inline fun <reified  T> MultiArray<T, D1>.dropWhile(predicate: (T) -> Boolean): NDArray<T, D1> {
+public inline fun <reified  T: Any> MultiArray<T, D1>.dropWhile(predicate: (T) -> Boolean): NDArray<T, D1> {
     var yielding = false
     val list = ArrayList<T>()
     for (item in this)
@@ -343,7 +343,7 @@ public inline fun <reified  T> MultiArray<T, D1>.dropWhile(predicate: (T) -> Boo
 /**
  * Return a new array contains elements matching filter.
  */
-public inline fun <reified T, D : Dimension> MultiArray<T, D>.filter(predicate: (T) -> Boolean): D1Array<T> {
+public inline fun <reified T: Any, D : Dimension> MultiArray<T, D>.filter(predicate: (T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     forEach { if (predicate(it)) list.add(it) }
     return list.toCommonNDArray()
@@ -353,7 +353,7 @@ public inline fun <reified T, D : Dimension> MultiArray<T, D>.filter(predicate: 
  * Return a new array contains elements matching filter.
  */
 @JvmName("filterD1Indexed")
-public inline fun <reified T> MultiArray<T, D1>.filterIndexed(predicate: (index: Int, T) -> Boolean): D1Array<T> {
+public inline fun <reified T: Any> MultiArray<T, D1>.filterIndexed(predicate: (index: Int, T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     forEachIndexed { index, element -> if (predicate(index, element)) list.add(element) }
     return list.toCommonNDArray()
@@ -364,7 +364,7 @@ public inline fun <reified T> MultiArray<T, D1>.filterIndexed(predicate: (index:
  * Return a new array contains elements matching filter.
  */
 @JvmName("filterDNIndexed")
-public inline fun <reified T, D : Dimension> MultiArray<T, D>.filterMultiIndexed(predicate: (index: IntArray, T) -> Boolean): D1Array<T> {
+public inline fun <reified T: Any, D : Dimension> MultiArray<T, D>.filterMultiIndexed(predicate: (index: IntArray, T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     forEachMultiIndexed { index, element -> if (predicate(index, element)) list.add(element) }
     return list.toCommonNDArray()
@@ -373,7 +373,7 @@ public inline fun <reified T, D : Dimension> MultiArray<T, D>.filterMultiIndexed
 /**
  * Return a new array contains elements matching filter.
  */
-public inline fun <reified T, D : Dimension> MultiArray<T, D>.filterNot(predicate: (T) -> Boolean): D1Array<T> {
+public inline fun <reified T: Any, D : Dimension> MultiArray<T, D>.filterNot(predicate: (T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     for (element in this) if (!predicate(element)) list.add(element)
     return list.toCommonNDArray()
@@ -430,7 +430,7 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.firstOrNull(predicate: (T)
  * Returns a flat ndarray of all elements resulting from calling the [transform] function on each element
  * in this ndarray.
  */
-public inline fun <T, D : Dimension, reified R> MultiArray<T, D>.flatMap(transform: (T) -> Iterable<R>): D1Array<R> {
+public inline fun <T, D : Dimension, reified R: Any> MultiArray<T, D>.flatMap(transform: (T) -> Iterable<R>): D1Array<R> {
     val destination = ArrayList<R>()
     for (element in this) {
         val list = transform(element)
@@ -444,7 +444,7 @@ public inline fun <T, D : Dimension, reified R> MultiArray<T, D>.flatMap(transfo
  * index in this d1 ndarray.
  */
 @JvmName("flatMapD1Indexed")
-public inline fun <T, reified R> MultiArray<T, D1>.flatMapIndexed(transform: (index: Int, T) -> Iterable<R>): D1Array<R> {
+public inline fun <T: Any, reified R: Any> MultiArray<T, D1>.flatMapIndexed(transform: (index: Int, T) -> Iterable<R>): D1Array<R> {
     var index = 0
     val destination = ArrayList<R>()
     for (element in this) {
@@ -459,7 +459,7 @@ public inline fun <T, reified R> MultiArray<T, D1>.flatMapIndexed(transform: (in
  * index in this dn ndarray.
  */
 @JvmName("flatMapDNIndexed")
-public inline fun <T, reified R> MultiArray<T, D1>.flatMapMultiIndexed(transform: (index: IntArray, T) -> Iterable<R>): D1Array<R> {
+public inline fun <T, reified R: Any> MultiArray<T, D1>.flatMapMultiIndexed(transform: (index: IntArray, T) -> Iterable<R>): D1Array<R> {
     val indexIter = this.multiIndices.iterator()
     val destination = ArrayList<R>()
     for (element in this) {
@@ -559,7 +559,7 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.forEachMultiIndexed(action
  * Groups elements of a given ndarray by the key returned by [keySelector] for each element,
  * and returns a map where each group key is associated with an ndarray of matching elements.
  */
-public inline fun <reified T, D : Dimension, K> MultiArray<T, D>.groupNDArrayBy(keySelector: (T) -> K): Map<K, NDArray<T, D1>> {
+public inline fun <reified T: Any, D : Dimension, K> MultiArray<T, D>.groupNDArrayBy(keySelector: (T) -> K): Map<K, NDArray<T, D1>> {
     return groupNDArrayByTo(LinkedHashMap(), keySelector)
 }
 
@@ -579,7 +579,7 @@ public inline fun <T, D : Dimension, K, reified V : Number> MultiArray<T, D>.gro
  * Groups elements of the given array by the key returned by [keySelector] function applied to each
  * element and puts to the [destination] map each group key associated with an ndarray of corresponding elements.
  */
-public inline fun <reified T, D : Dimension, K, M : MutableMap<in K, NDArray<T, D1>>> MultiArray<T, D>.groupNDArrayByTo(
+public inline fun <reified T: Any, D : Dimension, K, M : MutableMap<in K, NDArray<T, D1>>> MultiArray<T, D>.groupNDArrayByTo(
     destination: M, keySelector: (T) -> K
 ): M {
     val map = LinkedHashMap<K, MutableList<T>>()
@@ -598,7 +598,7 @@ public inline fun <reified T, D : Dimension, K, M : MutableMap<in K, NDArray<T, 
  * returned by [keySelector] function applied to the element and puts to the destination map each group key
  * associated with an ndarray of corresponding values.
  */
-public inline fun <T, D : Dimension, K, reified V, M : MutableMap<in K, NDArray<V, D1>>> MultiArray<T, D>.groupNDArrayByTo(
+public inline fun <T, D : Dimension, K, reified V: Any, M : MutableMap<in K, NDArray<V, D1>>> MultiArray<T, D>.groupNDArrayByTo(
     destination: M, keySelector: (T) -> K, valueTransform: (T) -> V
 ): M {
     val map = LinkedHashMap<K, MutableList<V>>()
@@ -1004,7 +1004,7 @@ public inline fun <T, D : Dimension, C : MultiArray<T, D>> C.onEach(action: (T) 
  * where *first* list contains elements for which [predicate] yielded `true`,
  * while *second* list contains elements for which [predicate] yielded `false`.
  */
-public inline fun <reified T, D : Dimension> MultiArray<T, D>.partition(predicate: (T) -> Boolean): Pair<NDArray<T, D1>, NDArray<T, D1>> {
+public inline fun <reified T: Any, D : Dimension> MultiArray<T, D>.partition(predicate: (T) -> Boolean): Pair<NDArray<T, D1>, NDArray<T, D1>> {
     val first = ArrayList<T>()
     val second = ArrayList<T>()
     for (element in this) {
