@@ -1296,7 +1296,7 @@ public fun ComplexDoubleArray.copyInto(destination: ComplexDoubleArray, destinat
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ComplexFloatArray.copyOf(): ComplexFloatArray {
     val ret = ComplexFloatArray(size)
-    this.getFlatArray().copyInto(ret.getFlatArray(), 0,0, ret.size)
+    this.getFlatArray().copyInto(ret.getFlatArray(), 0,0, ret.size * 2)
     return ret
 }
 
@@ -1306,7 +1306,7 @@ public inline fun ComplexFloatArray.copyOf(): ComplexFloatArray {
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ComplexDoubleArray.copyOf(): ComplexDoubleArray {
     val ret = ComplexDoubleArray(size)
-    this.getFlatArray().copyInto(ret.getFlatArray(), 0,0, ret.size)
+    this.getFlatArray().copyInto(ret.getFlatArray(), 0,0, ret.size * 2)
     return ret
 }
 
