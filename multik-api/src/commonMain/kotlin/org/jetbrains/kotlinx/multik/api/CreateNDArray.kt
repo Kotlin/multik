@@ -81,21 +81,21 @@ public fun <T, D : Dimension> Multik.zeros(dims: IntArray, dtype: DataType): NDA
  * Returns a new ones array of type [T] with the specified shape.
  */
 public inline fun <reified T : Any> Multik.ones(dim1: Int): D1Array<T> =
-    zeros(intArrayOf(dim1), DataType.ofKClass(T::class))
+    ones(intArrayOf(dim1), DataType.ofKClass(T::class))
 
 public inline fun <reified T : Any> Multik.ones(dim1: Int, dim2: Int): D2Array<T> =
-    zeros(intArrayOf(dim1, dim2), DataType.ofKClass(T::class))
+    ones(intArrayOf(dim1, dim2), DataType.ofKClass(T::class))
 
 public inline fun <reified T : Any> Multik.ones(dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
-    zeros(intArrayOf(dim1, dim2, dim3), DataType.ofKClass(T::class))
+    ones(intArrayOf(dim1, dim2, dim3), DataType.ofKClass(T::class))
 
 public inline fun <reified T : Any> Multik.ones(dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<T> =
-    zeros(intArrayOf(dim1, dim2, dim3, dim4), DataType.ofKClass(T::class))
+    ones(intArrayOf(dim1, dim2, dim3, dim4), DataType.ofKClass(T::class))
 
 public inline fun <reified T : Any> Multik.ones(
     dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
 ): NDArray<T, DN> =
-    zeros(intArrayOf(dim1, dim2, dim3, dim4) + dims, DataType.ofKClass(T::class))
+    ones(intArrayOf(dim1, dim2, dim3, dim4) + dims, DataType.ofKClass(T::class))
 
 public fun <T, D : Dimension> Multik.ones(dims: IntArray, dtype: DataType): NDArray<T, D> {
     val dim = dimensionOf<D>(dims.size)
