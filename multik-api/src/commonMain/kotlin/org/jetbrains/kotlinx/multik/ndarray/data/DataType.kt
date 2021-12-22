@@ -64,7 +64,7 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
         /**
          * Returns [DataType] by class of [element].
          */
-        public inline fun <reified T> of(element: T): DataType {
+        public inline fun <T> of(element: T): DataType {
             element ?: throw IllegalStateException("Element is null cannot find type")
             return when (element!!::class) {
                 Byte::class -> ByteDataType

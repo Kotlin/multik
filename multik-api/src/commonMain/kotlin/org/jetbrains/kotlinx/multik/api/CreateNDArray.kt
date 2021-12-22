@@ -322,11 +322,10 @@ internal inline fun <reified T : Any> ndarrayCommon4D(arg: List<List<List<List<T
  * @return [NDArray] of [D] dimension.
  * @sample samples.NDArrayTest.ndarrayCollections
  */
-public inline fun <reified T : Number, reified D : Dimension> Multik.ndarray(
-    elements: Collection<T>,
-    shape: IntArray
+public inline fun <T : Number, reified D : Dimension> Multik.ndarray(
+    elements: Collection<T>, shape: IntArray
 ): NDArray<T, D> =
-    ndarrayCommon(elements, shape, dimensionClassOf<D>(shape.size))
+    ndarrayCommon(elements, shape, dimensionClassOf(shape.size))
 
 /**
  * Returns a new array given [shape] from collection.
@@ -337,11 +336,10 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.ndarray(
  * @sample samples.NDArrayTest.ndarrayCollections
  */
 @JvmName("ndarrayComplex")
-public inline fun <reified T : Complex, reified D : Dimension> Multik.ndarray(
-    elements: Collection<T>,
-    shape: IntArray
+public inline fun <T : Complex, reified D : Dimension> Multik.ndarray(
+    elements: Collection<T>, shape: IntArray
 ): NDArray<T, D> =
-    ndarrayCommon(elements, shape, dimensionClassOf<D>(shape.size))
+    ndarrayCommon(elements, shape, dimensionClassOf(shape.size))
 
 /**
  * Returns a new array given shape and dimension from collection.
@@ -354,7 +352,7 @@ public inline fun <reified T : Complex, reified D : Dimension> Multik.ndarray(
  * @return [NDArray] of [D] dimension.
  * @sample samples.NDArrayTest.ndarrayCollectionsWithDim
  */
-public inline fun <reified T : Number, D : Dimension> Multik.ndarray(elements: Collection<T>, shape: IntArray, dim: D): NDArray<T, D> =
+public fun <T : Number, D : Dimension> Multik.ndarray(elements: Collection<T>, shape: IntArray, dim: D): NDArray<T, D> =
     ndarrayCommon(elements, shape, dim)
 
 /**
@@ -369,7 +367,7 @@ public inline fun <reified T : Number, D : Dimension> Multik.ndarray(elements: C
  * @sample samples.NDArrayTest.ndarrayCollectionsWithDim
  */
 @JvmName("ndarrayComplex")
-public inline fun <reified T : Complex, D : Dimension> Multik.ndarray(
+public fun <T : Complex, D : Dimension> Multik.ndarray(
     elements: Collection<T>,
     shape: IntArray,
     dim: D
@@ -377,13 +375,14 @@ public inline fun <reified T : Complex, D : Dimension> Multik.ndarray(
     ndarrayCommon(elements, shape, dim)
 
 @PublishedApi
-internal inline fun <reified T: Any, D : Dimension> ndarrayCommon(elements: Collection<T>, shape: IntArray, dim: D): NDArray<T, D> {
+internal fun <T, D : Dimension> ndarrayCommon(elements: Collection<T>, shape: IntArray, dim: D, dtype : DataType? = null): NDArray<T, D> {
     requireShapeEmpty(shape)
     requireDimension(dim, shape.size)
     requireElementsWithShape(elements.size, shape.fold(1, Int::times))
     val size = shape.reduce { acc, el -> acc * el }
-    val dtype = DataType.ofKClass(T::class)
-    val data = initMemoryView<T>(size, dtype).apply {
+
+    val dtypeFromFirst = DataType.of(elements.first())
+    val data = initMemoryView<T>(size, dtype ?: dtypeFromFirst).apply {
         var count = 0
         for (el in elements)
             this[count++] = el
@@ -400,7 +399,7 @@ internal inline fun <reified T: Any, D : Dimension> ndarrayCommon(elements: Coll
  * @return [D1Array]
  * @sample samples.NDArrayTest.ndarrayCollections1D
  */
-public inline fun <reified T : Number> Multik.ndarray(elements: Collection<T>): D1Array<T> =
+public fun <T : Number> Multik.ndarray(elements: Collection<T>): D1Array<T> =
     ndarray(elements, intArrayOf(elements.size), D1)
 
 /**
@@ -411,7 +410,7 @@ public inline fun <reified T : Number> Multik.ndarray(elements: Collection<T>): 
  * @sample samples.NDArrayTest.ndarrayCollections1D
  */
 @JvmName("ndarrayComplex")
-public inline fun <reified T : Complex> Multik.ndarray(elements: Collection<T>): D1Array<T> =
+public fun <T : Complex> Multik.ndarray(elements: Collection<T>): D1Array<T> =
     ndarray(elements, intArrayOf(elements.size), D1)
 
 /**
@@ -519,7 +518,7 @@ public fun Multik.ndarray(args: ComplexDoubleArray): D1Array<ComplexDouble> {
  * @return [D2Array].
  * @sample samples.NDArrayTest.ndarrayCollections2D
  */
-public inline fun <reified T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int): D2Array<T> =
+public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int): D2Array<T> =
     ndarray(elements, intArrayOf(dim1, dim2), D2)
 
 /**
@@ -532,7 +531,7 @@ public inline fun <reified T : Number> Multik.ndarray(elements: Collection<T>, d
  * @sample samples.NDArrayTest.ndarrayCollections2D
  */
 @JvmName("ndarrayComplex")
-public inline fun <reified T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int): D2Array<T> =
+public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int): D2Array<T> =
     ndarray(elements, intArrayOf(dim1, dim2), D2)
 
 /**
@@ -665,7 +664,7 @@ public fun Multik.ndarray(args: ComplexDoubleArray, dim1: Int, dim2: Int): D2Arr
  * @return [D3Array].
  * @sample samples.NDArrayTest.ndarrayCollections3D
  */
-public inline fun <reified T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
+public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
     ndarray(elements, intArrayOf(dim1, dim2, dim3), D3)
 
 /**
@@ -679,7 +678,7 @@ public inline fun <reified T : Number> Multik.ndarray(elements: Collection<T>, d
  * @sample samples.NDArrayTest.ndarrayCollections3D
  */
 @JvmName("ndarrayComplex")
-public inline fun <reified T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
+public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
     ndarray(elements, intArrayOf(dim1, dim2, dim3), D3)
 
 /**
@@ -821,7 +820,7 @@ public fun Multik.ndarray(args: ComplexDoubleArray, dim1: Int, dim2: Int, dim3: 
  * @return [D4Array].
  * @sample samples.NDArrayTest.ndarrayCollections4D
  */
-public inline fun <reified  T : Number> Multik.ndarray(
+public fun <T : Number> Multik.ndarray(
     elements: Collection<T>,
     dim1: Int,
     dim2: Int,
@@ -842,7 +841,7 @@ public inline fun <reified  T : Number> Multik.ndarray(
  * @sample samples.NDArrayTest.ndarrayCollections4D
  */
 @JvmName("ndarrayComplex")
-public inline fun <reified T : Complex> Multik.ndarray(
+public fun <T : Complex> Multik.ndarray(
     elements: Collection<T>,
     dim1: Int,
     dim2: Int,
@@ -1005,7 +1004,7 @@ public fun Multik.ndarray(
  * @return [NDArray] of [DN] dimension.
  * @sample samples.NDArrayTest.ndarrayCollectionsDN
  */
-public inline fun <reified T : Number> Multik.ndarray(
+public fun <T : Number> Multik.ndarray(
     elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
 ): NDArray<T, DN> {
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
@@ -1025,7 +1024,7 @@ public inline fun <reified T : Number> Multik.ndarray(
  * @sample samples.NDArrayTest.ndarrayCollectionsDN
  */
 @JvmName("ndarrayComplex")
-public inline fun <reified T : Complex> Multik.ndarray(
+public fun <T : Complex> Multik.ndarray(
     elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
 ): NDArray<T, DN> {
     val shape = intArrayOf(dim1, dim2, dim3, dim4) + dims
@@ -1393,20 +1392,17 @@ public inline fun <reified T : Any, reified D : Dimension> Multik.dnarray(
  * @return [D1Array].
  * @sample samples.NDArrayTest.ndarrayOf
  */
-public inline fun <reified T : Number> Multik.ndarrayOf(vararg items: T): D1Array<T> = ndarrayOfCommon(items)
+public fun Multik.ndarrayOf(vararg items: Byte): D1Array<Byte> = ndarrayOfCommon(items.toTypedArray(), DataType.ByteDataType)
+public fun Multik.ndarrayOf(vararg items: Short): D1Array<Short> = ndarrayOfCommon(items.toTypedArray(), DataType.ShortDataType)
+public fun Multik.ndarrayOf(vararg items: Int): D1Array<Int> = ndarrayOfCommon(items.toTypedArray(), DataType.IntDataType)
+public fun Multik.ndarrayOf(vararg items: Long): D1Array<Long> = ndarrayOfCommon(items.toTypedArray(), DataType.LongDataType)
+public fun Multik.ndarrayOf(vararg items: Float): D1Array<Float> = ndarrayOfCommon(items.toTypedArray(), DataType.FloatDataType)
+public fun Multik.ndarrayOf(vararg items: Double): D1Array<Double> = ndarrayOfCommon(items.toTypedArray(), DataType.DoubleDataType)
+public fun Multik.ndarrayOf(vararg items: ComplexFloat): D1Array<ComplexFloat> = ndarrayOfCommon(items, DataType.ComplexFloatDataType)
+public fun Multik.ndarrayOf(vararg items: ComplexDouble): D1Array<ComplexDouble> = ndarrayOfCommon(items, DataType.ComplexDoubleDataType)
 
-/**
- * Returns a new 1-dimension array from [items].
- *
- * @param items specified elements.
- * @return [D1Array].
- * @sample samples.NDArrayTest.ndarrayOf
- */
-@JvmName("ndarrayOfComplex")
-public inline fun <reified T : Complex> Multik.ndarrayOf(vararg items: T): D1Array<T> = ndarrayOfCommon(items)
 
-public inline fun <reified T: Any> ndarrayOfCommon(items: Array<out T>): D1Array<T> {
-    val dtype = DataType.ofKClass(T::class)
+private fun <T> ndarrayOfCommon(items: Array<out T>, dtype: DataType): D1Array<T> {
     val shape = intArrayOf(items.size)
     val data = initMemoryView(items.size, dtype) { items[it] }
     return D1Array(data, shape = shape, dim = D1)
@@ -1565,13 +1561,27 @@ public inline fun <reified T : Number> List<List<List<List<T>>>>.toNDArray(): D4
 public inline fun <reified T : Complex> List<List<List<List<T>>>>.toNDArray(): D4Array<T> = Multik.ndarray(this)
 
 @PublishedApi
-internal inline fun <reified T: Any> Iterable<T>.toCommonNDArray(): D1Array<T> {
+internal fun <T> Iterable<T>.toCommonNDArray(dtype: DataType): D1Array<T> {
     if (this is Collection<T>)
-        return ndarrayCommon(this, intArrayOf(this.size), D1)
+        return ndarrayCommon(this, intArrayOf(this.size), D1, dtype) as D1Array<T>
 
     val tmp = ArrayList<T>()
     for (item in this) {
         tmp.add(item)
     }
-    return ndarrayCommon(tmp, intArrayOf(tmp.size), D1)
+    return ndarrayCommon(tmp, intArrayOf(tmp.size), D1, dtype) as D1Array<T>
 }
+
+@PublishedApi
+internal inline fun <reified T: Any> Iterable<T>.toCommonNDArray(): D1Array<T> {
+    val dtype: DataType = DataType.ofKClass(T::class)
+    if (this is Collection<T>)
+        return ndarrayCommon(this, intArrayOf(this.size), D1, dtype) as D1Array<T>
+
+    val tmp = ArrayList<T>()
+    for (item in this) {
+        tmp.add(item)
+    }
+    return ndarrayCommon(tmp, intArrayOf(tmp.size), D1, dtype) as D1Array<T>
+}
+
