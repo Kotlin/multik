@@ -33,7 +33,7 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     iosX64()
-    js {
+    js(IR) {
         val timeoutMs = "1000000"
         browser{
             testTask {

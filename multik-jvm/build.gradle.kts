@@ -52,7 +52,7 @@ kotlin {
         }
     }
 
-    js {
+    js(IR) {
         val timeoutMs = "1000000"
         browser{
             testTask {
