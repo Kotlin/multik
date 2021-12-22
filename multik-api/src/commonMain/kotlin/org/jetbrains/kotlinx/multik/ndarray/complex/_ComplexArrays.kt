@@ -1241,12 +1241,12 @@ public infix fun ComplexDoubleArray?.contentEquals(other: ComplexDoubleArray?): 
 /**
  * Returns a hash code based on the contents of this array as if it is [List].
  */
-public fun ComplexFloatArray?.contentHashCode(): Int = this?.getFlatArray().hashCode()
+public fun ComplexFloatArray?.contentHashCode(): Int = this?.getFlatArray().contentHashCode()
 
 /**
  * Returns a hash code based on the contents of this array as if it is [List].
  */
-public fun ComplexDoubleArray?.contentHashCode(): Int = this?.getFlatArray().hashCode()
+public fun ComplexDoubleArray?.contentHashCode(): Int = this?.getFlatArray().contentHashCode()
 
 /**
  * Copies this array or its subrange into the [destination] array and returns that array.
