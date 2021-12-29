@@ -6,7 +6,6 @@ package org.jetbrains.kotlinx.multik.api
 
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.math.Math
-import kotlin.native.concurrent.ThreadLocal
 
 public sealed class EngineType(public val name: String)
 
@@ -42,7 +41,6 @@ public abstract class Engine {
      */
     public abstract fun getStatistics(): Statistics
 
-    @ThreadLocal
     internal companion object : Engine() {
 
         init {

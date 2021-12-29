@@ -1,8 +1,6 @@
 package org.jetbrains.kotlinx.multik.api
 
-import kotlin.native.concurrent.ThreadLocal
 
-@ThreadLocal
 private val _enginesProvider : HashMap<EngineType, Engine> = HashMap()
 
 public actual val enginesProvider : Map<EngineType, Engine>
