@@ -12,9 +12,6 @@ import org.jetbrains.kotlinx.multik.jvm.math.JvmMath
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object DefaultMath : Math {
-    init {
-        NativeEngine
-    }
 
     override val mathEx: MathEx
         get() = DefaultMathEx

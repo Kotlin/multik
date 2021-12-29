@@ -13,9 +13,6 @@ import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
 public object DefaultLinAlg : LinAlg {
-    init {
-        NativeEngine
-    }
 
     override val linAlgEx: LinAlgEx
         get() = DefaultLinAlgEx

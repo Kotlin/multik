@@ -13,10 +13,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.Dimension
 import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
-object DefaultMathEx : MathEx {
-    init {
-        NativeEngine
-    }
+public object DefaultMathEx : MathEx {
 
     override fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): NDArray<Double, D> = NativeMathEx.exp(a)
     override fun <D : Dimension> expF(a: MultiArray<Float, D>): NDArray<Float, D> = NativeMathEx.expF(a)

@@ -17,10 +17,6 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object DefaultLinAlgEx : LinAlgEx {
 
-    init {
-        NativeEngine
-    }
-
     override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> =
         NativeLinAlgEx.inv(mat)
 
