@@ -10,9 +10,6 @@ import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object NativeMath : Math {
-    init {
-        NativeEngine
-    }
 
     override val mathEx: MathEx
         get() = NativeMathEx

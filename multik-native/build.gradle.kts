@@ -4,10 +4,15 @@
 
 import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
+plugins {
+    kotlin("jvm")
+}
+
 apply(from = "$rootDir/gradle/openblas.gradle")
 
 dependencies {
     api(project(":multik-api"))
+    testImplementation(kotlin("test"))
 }
 
 private val currentOS = DefaultNativePlatform.getCurrentOperatingSystem()

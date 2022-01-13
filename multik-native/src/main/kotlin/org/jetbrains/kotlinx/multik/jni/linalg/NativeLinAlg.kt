@@ -6,15 +6,11 @@ package org.jetbrains.kotlinx.multik.jni.linalg
 
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
-import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.ndarray.data.D2
 import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
 public object NativeLinAlg : LinAlg {
-    init {
-        NativeEngine
-    }
 
     override val linAlgEx: LinAlgEx
         get() = NativeLinAlgEx

@@ -11,13 +11,8 @@ import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlg
 import org.jetbrains.kotlinx.multik.jni.math.NativeMath
 
 
-public class NativeEngineProvider : EngineProvider {
-    override fun getEngine(): Engine {
-        return NativeEngine
-    }
-}
+public class NativeEngine : Engine() {
 
-public object NativeEngine : Engine() {
     override val name: String
         get() = type.name
 

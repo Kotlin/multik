@@ -15,9 +15,6 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.CopyStrategy
 import org.jetbrains.kotlinx.multik.ndarray.operations.toType
 
 object NativeMathEx : MathEx {
-    init {
-        NativeEngine
-    }
 
     override fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): NDArray<Double, D> =
         mathOperationD(a, JniMath::exp)
