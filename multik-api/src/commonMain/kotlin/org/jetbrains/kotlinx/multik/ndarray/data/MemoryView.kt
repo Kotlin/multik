@@ -246,14 +246,12 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
 
     override fun copyOf(): MemoryView<Byte> = MemoryViewByteArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            other != null && this::class != other::class -> false
-            other !is MemoryViewByteArray -> false
-            size != other.size -> false
-            else -> (0 until size).all { this.data[it] == other.data[it] }
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        other != null && this::class != other::class -> false
+        other !is MemoryViewByteArray -> false
+        size != other.size -> false
+        else -> this.data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int =
@@ -334,14 +332,12 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
 
     override fun copyOf(): MemoryView<Short> = MemoryViewShortArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            other != null && this::class != other::class -> false
-            other !is MemoryViewShortArray -> false
-            size != other.size -> false
-            else -> this.data.contentEquals(other.data)
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        other != null && this::class != other::class -> false
+        other !is MemoryViewShortArray -> false
+        size != other.size -> false
+        else -> this.data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int =
@@ -422,14 +418,12 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
 
     override fun copyOf(): MemoryView<Int> = MemoryViewIntArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            other != null && this::class != other::class -> false
-            other !is MemoryViewIntArray -> false
-            size != other.size -> false
-            else -> (0 until size).all { this.data[it] == other.data[it] }
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        other != null && this::class != other::class -> false
+        other !is MemoryViewIntArray -> false
+        size != other.size -> false
+        else -> this.data.contentEquals(other.data)
     }
 
 
@@ -511,14 +505,12 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
 
     override fun copyOf(): MemoryView<Long> = MemoryViewLongArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            other != null && this::class != other::class -> false
-            other !is MemoryViewLongArray -> false
-            size != other.size -> false
-            else -> this.data.contentEquals(other.data)
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        other != null && this::class != other::class -> false
+        other !is MemoryViewLongArray -> false
+        size != other.size -> false
+        else -> this.data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int =
@@ -599,14 +591,12 @@ public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Fl
 
     override fun copyOf(): MemoryView<Float> = MemoryViewFloatArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            other != null && this::class != other::class -> false
-            other !is MemoryViewFloatArray -> false
-            size != other.size -> false
-            else -> this.data.contentEquals(other.data)
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        other != null && this::class != other::class -> false
+        other !is MemoryViewFloatArray -> false
+        size != other.size -> false
+        else -> this.data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int =
@@ -687,14 +677,12 @@ public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<
 
     override fun copyOf(): MemoryView<Double> = MemoryViewDoubleArray(data.copyOf())
 
-    override fun equals(other: Any?): Boolean {
-        return when {
-            this === other -> true
-            other != null && this::class != other::class -> false
-            other !is MemoryViewDoubleArray -> false
-            size != other.size -> false
-            else -> this.data.contentEquals(other.data)
-        }
+    override fun equals(other: Any?): Boolean = when {
+        this === other -> true
+        other != null && this::class != other::class -> false
+        other !is MemoryViewDoubleArray -> false
+        size != other.size -> false
+        else -> this.data.contentEquals(other.data)
     }
 
     override fun hashCode(): Int =
@@ -927,7 +915,7 @@ public class MemoryViewComplexDoubleArray(override val data: ComplexDoubleArray)
     }
 }
 
-public inline fun <reified T: Any> initMemoryView(size: Int): MemoryView<T> =
+public inline fun <reified T : Any> initMemoryView(size: Int): MemoryView<T> =
     initMemoryView(size, DataType.ofKClass(T::class))
 
 /**
@@ -961,8 +949,18 @@ public fun <T> initMemoryView(size: Int, dataType: DataType, init: (Int) -> T): 
         DataType.LongDataType -> MemoryViewLongArray(LongArray(size, init as (Int) -> Long))
         DataType.FloatDataType -> MemoryViewFloatArray(FloatArray(size, init as (Int) -> Float))
         DataType.DoubleDataType -> MemoryViewDoubleArray(DoubleArray(size, init as (Int) -> Double))
-        DataType.ComplexFloatDataType -> MemoryViewComplexFloatArray(ComplexFloatArray(size, init as (Int) -> ComplexFloat))
-        DataType.ComplexDoubleDataType -> MemoryViewComplexDoubleArray(ComplexDoubleArray(size, init as (Int) -> ComplexDouble))
+        DataType.ComplexFloatDataType -> MemoryViewComplexFloatArray(
+            ComplexFloatArray(
+                size,
+                init as (Int) -> ComplexFloat
+            )
+        )
+        DataType.ComplexDoubleDataType -> MemoryViewComplexDoubleArray(
+            ComplexDoubleArray(
+                size,
+                init as (Int) -> ComplexDouble
+            )
+        )
     }
     return t as MemoryView<T>
 }
