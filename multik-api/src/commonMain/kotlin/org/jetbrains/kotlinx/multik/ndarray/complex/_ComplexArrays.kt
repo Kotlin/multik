@@ -1320,7 +1320,7 @@ public inline fun ComplexDoubleArray.copyOf(): ComplexDoubleArray {
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ComplexFloatArray.copyOf(newSize: Int): ComplexFloatArray {
     val ret = ComplexFloatArray(newSize)
-    this.getFlatArray().copyInto(ret.getFlatArray(), 0,0, min(ret.size, newSize) * 2)
+    this.getFlatArray().copyInto(ret.getFlatArray(), 0,0, min(this.size, newSize) * 2)
     return ret
 }
 
@@ -1334,7 +1334,7 @@ public inline fun ComplexFloatArray.copyOf(newSize: Int): ComplexFloatArray {
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ComplexDoubleArray.copyOf(newSize: Int): ComplexDoubleArray {
     val ret = ComplexDoubleArray(newSize)
-    this.getFlatArray().copyInto(ret.getFlatArray(), 0,0, min(ret.size, newSize) * 2)
+    this.getFlatArray().copyInto(ret.getFlatArray(), 0,0, min(this.size, newSize) * 2)
     return ret
 }
 
@@ -1501,8 +1501,7 @@ public operator fun ComplexFloatArray.plus(elements: ComplexFloatArray): Complex
     val thisSize = size
     val arraySize = elements.size
     val result = this.copyOf(thisSize + arraySize)
-    val endIndex = thisSize * 2 + arraySize * 2
-    elements.getFlatArray().copyInto(result.getFlatArray(), thisSize * 2,0, endIndex)
+    elements.copyInto(result, thisSize, 0, arraySize)
     return result
 }
 
@@ -1513,8 +1512,7 @@ public operator fun ComplexDoubleArray.plus(elements: ComplexDoubleArray): Compl
     val thisSize = size
     val arraySize = elements.size
     val result = this.copyOf(thisSize + arraySize)
-    val endIndex = thisSize * 2 + arraySize * 2
-    elements.getFlatArray().copyInto(result.getFlatArray(), thisSize * 2,0, endIndex)
+    elements.copyInto(result, thisSize, 0, arraySize)
     return result
 }
 
