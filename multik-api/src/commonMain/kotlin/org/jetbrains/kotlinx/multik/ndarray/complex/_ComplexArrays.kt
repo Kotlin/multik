@@ -1349,13 +1349,11 @@ public inline fun ComplexDoubleArray.copyOf(newSize: Int): ComplexDoubleArray {
  */
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ComplexFloatArray.copyOfRange(fromIndex: Int, toIndex: Int): ComplexFloatArray {
-    if (toIndex > size) throw IndexOutOfBoundsException("toIndex: $toIndex, size: $size")
+    if (toIndex > size) throw IndexOutOfBoundsException("toIndex ($toIndex) is greater than size ($size)")
     val newLength = toIndex - fromIndex
     require(newLength >= 0) { "$fromIndex > $toIndex" }
     val ret = ComplexFloatArray(newLength)
-    this.getFlatArray().copyInto(ret.getFlatArray(), 0,fromIndex, toIndex)
-    val endIndex = min(this.size - fromIndex, newLength) * 2
-    this.getFlatArray().copyInto(ret.getFlatArray(), fromIndex,0, endIndex)
+    this.copyInto(ret, 0, fromIndex, toIndex)
     return ret
 }
 
@@ -1370,12 +1368,11 @@ public inline fun ComplexFloatArray.copyOfRange(fromIndex: Int, toIndex: Int): C
  */
 @Suppress("NOTHING_TO_INLINE")
 public inline fun ComplexDoubleArray.copyOfRange(fromIndex: Int, toIndex: Int): ComplexDoubleArray {
-    if (toIndex > size) throw IndexOutOfBoundsException("toIndex: $toIndex, size: $size")
+    if (toIndex > size) throw IndexOutOfBoundsException("toIndex ($toIndex) is greater than size ($size)")
     val newLength = toIndex - fromIndex
     require(newLength >= 0) { "$fromIndex > $toIndex" }
     val ret = ComplexDoubleArray(newLength)
-    val endIndex = min(this.size - fromIndex, newLength) * 2
-    this.getFlatArray().copyInto(ret.getFlatArray(), fromIndex,0, endIndex)
+    this.copyInto(ret, 0, fromIndex, toIndex)
     return ret
 }
 
