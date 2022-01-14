@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 class ComplexMultiArrayTest {
 
     @Test
-    fun `re_and_im_properties_returns_real_and_imaginary_portion_of_float_complex_number_array`() {
+    fun re_and_im_properties_returns_real_and_imaginary_portion_of_float_complex_number_array() {
         val complex = mk.d2arrayIndices(3, 3) { i, j -> ComplexFloat(i, j) }
         val real = complex.re
         val im = complex.im
@@ -24,7 +24,7 @@ class ComplexMultiArrayTest {
     }
 
     @Test
-    fun `re_and_im_properties_returns_real_and_imaginary_portion_of_double_complex_number_array`() {
+    fun re_and_im_properties_returns_real_and_imaginary_portion_of_double_complex_number_array() {
         val complex = mk.d2arrayIndices(3, 3) { i, j -> ComplexDouble(i, j) }
         val real = complex.re
         val im = complex.im
@@ -38,7 +38,7 @@ class ComplexMultiArrayTest {
     }
 
     @Test
-    fun `re_and_im_properties_work_for_empty_complex_double_arrays`() {
+    fun re_and_im_properties_work_for_empty_complex_double_arrays() {
         val complex = mk.ndarray(emptyList<ComplexDouble>())
         val real = complex.re
         val im = complex.im
@@ -50,7 +50,7 @@ class ComplexMultiArrayTest {
     }
 
     @Test
-    fun `re_and_im_properties_work_for_empty_complex_float_arrays`() {
+    fun re_and_im_properties_work_for_empty_complex_float_arrays() {
         val complex = mk.ndarray(emptyList<ComplexFloat>())
         val real = complex.re
         val im = complex.im
@@ -62,7 +62,7 @@ class ComplexMultiArrayTest {
     }
 
     @Test
-    fun `conj_returns_array_of_conjugated_complex_doubles`() {
+    fun conj_returns_array_of_conjugated_complex_doubles() {
         val complex = mk.d2arrayIndices(3, 3) { i, j -> ComplexDouble(i, j) }
         val expected = mk.d2arrayIndices(3, 3) { i, j -> ComplexDouble(i, -j) }
         val actual = complex.conj()
@@ -72,7 +72,7 @@ class ComplexMultiArrayTest {
     }
 
     @Test
-    fun `conj_returns_array_of_conjugated_complex_floats`() {
+    fun conj_returns_array_of_conjugated_complex_floats() {
         val complex = mk.d2arrayIndices(3, 3) { i, j -> ComplexFloat(i, j) }
         val expected = mk.d2arrayIndices(3, 3) { i, j -> ComplexFloat(i, -j) }
         val actual = complex.conj()
@@ -82,7 +82,7 @@ class ComplexMultiArrayTest {
     }
 
     @Test
-    fun `conj_for_empty_complex_float_arrays`() {
+    fun conj_for_empty_complex_float_arrays() {
         val complex = mk.ndarray(emptyList<ComplexFloat>())
         val conj = complex.conj()
 
@@ -91,13 +91,11 @@ class ComplexMultiArrayTest {
     }
 
     @Test
-    fun `conj_for_empty_complex_double_arrays`() {
+    fun conj_for_empty_complex_double_arrays() {
         val complex = mk.ndarray(emptyList<ComplexDouble>())
         val conj = complex.conj()
 
         assertEquals(complex.shape, conj.shape)
         assertTrue(conj.isEmpty())
     }
-
-
 }
