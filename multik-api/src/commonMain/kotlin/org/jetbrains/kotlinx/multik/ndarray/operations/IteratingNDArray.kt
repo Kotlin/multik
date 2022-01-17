@@ -12,10 +12,10 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.experimental.and
 import kotlin.experimental.or
+import kotlin.jvm.JvmName
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.jvm.JvmName
 
 public fun <T, D : Dimension> MultiArray<T, D>.isTransposed(): Boolean {
     val x = this as NDArray<T, D>
@@ -1364,13 +1364,13 @@ public fun <D : Dimension> MultiArray<Int, D>.toIntArray(): IntArray {
     return result
 }
 
-public fun MultiArray<Int, D2>.toIntArrayD2(): Array<IntArray> =
+public fun MultiArray<Int, D2>.toArray(): Array<IntArray> =
     Array(shape[0]) { i ->
         this[i].toIntArray()
     }
 
 
-public fun MultiArray<Int, D3>.toIntArrayD3(): Array<Array<IntArray>> =
+public fun MultiArray<Int, D3>.toArray(): Array<Array<IntArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             this[i, j].toIntArray()
@@ -1378,7 +1378,7 @@ public fun MultiArray<Int, D3>.toIntArrayD3(): Array<Array<IntArray>> =
     }
 
 
-public fun MultiArray<Int, D4>.toIntArrayD4(): Array<Array<Array<IntArray>>> =
+public fun MultiArray<Int, D4>.toArray(): Array<Array<Array<IntArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             Array(shape[2]) { k ->
@@ -1400,13 +1400,13 @@ public fun <D : Dimension> MultiArray<Long, D>.toLongArray(): LongArray {
     return result
 }
 
-public fun MultiArray<Long, D2>.toLongArrayD2(): Array<LongArray> =
+public fun MultiArray<Long, D2>.toArray(): Array<LongArray> =
     Array(shape[0]) { i ->
         this[i].toLongArray()
     }
 
 
-public fun MultiArray<Long, D3>.toLongArrayD3(): Array<Array<LongArray>> =
+public fun MultiArray<Long, D3>.toArray(): Array<Array<LongArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             this[i, j].toLongArray()
@@ -1414,7 +1414,7 @@ public fun MultiArray<Long, D3>.toLongArrayD3(): Array<Array<LongArray>> =
     }
 
 
-public fun MultiArray<Long, D4>.toLongArrayD4(): Array<Array<Array<LongArray>>> =
+public fun MultiArray<Long, D4>.toArray(): Array<Array<Array<LongArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             Array(shape[2]) { k ->
@@ -1436,13 +1436,13 @@ public fun <D : Dimension> MultiArray<Float, D>.toFloatArray(): FloatArray {
     return result
 }
 
-public fun MultiArray<Float, D2>.toFloatArrayD2(): Array<FloatArray> =
+public fun MultiArray<Float, D2>.toArray(): Array<FloatArray> =
     Array(shape[0]) { i ->
         this[i].toFloatArray()
     }
 
 
-public fun MultiArray<Float, D3>.toFloatArrayD3(): Array<Array<FloatArray>> =
+public fun MultiArray<Float, D3>.toArray(): Array<Array<FloatArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             this[i, j].toFloatArray()
@@ -1450,7 +1450,7 @@ public fun MultiArray<Float, D3>.toFloatArrayD3(): Array<Array<FloatArray>> =
     }
 
 
-public fun MultiArray<Float, D4>.toFloatArrayD4(): Array<Array<Array<FloatArray>>> =
+public fun MultiArray<Float, D4>.toArray(): Array<Array<Array<FloatArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             Array(shape[2]) { k ->
@@ -1472,13 +1472,13 @@ public fun <D : Dimension> MultiArray<Double, D>.toDoubleArray(): DoubleArray {
     return result
 }
 
-public fun MultiArray<Double, D2>.toDoubleArrayD2(): Array<DoubleArray> =
+public fun MultiArray<Double, D2>.toArray(): Array<DoubleArray> =
     Array(shape[0]) { i ->
         this[i].toDoubleArray()
     }
 
 
-public fun MultiArray<Double, D3>.toDoubleArrayD3(): Array<Array<DoubleArray>> =
+public fun MultiArray<Double, D3>.toArray(): Array<Array<DoubleArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             this[i, j].toDoubleArray()
@@ -1486,7 +1486,7 @@ public fun MultiArray<Double, D3>.toDoubleArrayD3(): Array<Array<DoubleArray>> =
     }
 
 
-public fun MultiArray<Double, D4>.toDoubleArrayD4(): Array<Array<Array<DoubleArray>>> =
+public fun MultiArray<Double, D4>.toArray(): Array<Array<Array<DoubleArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             Array(shape[2]) { k ->
@@ -1508,13 +1508,13 @@ public fun <D : Dimension> MultiArray<ComplexFloat, D>.toComplexFloatArray(): Co
     return result
 }
 
-public fun MultiArray<ComplexFloat, D2>.toComplexFloatArrayD2(): Array<ComplexFloatArray> =
+public fun MultiArray<ComplexFloat, D2>.toArray(): Array<ComplexFloatArray> =
     Array(shape[0]) { i ->
         this[i].toComplexFloatArray()
     }
 
 
-public fun MultiArray<ComplexFloat, D3>.toComplexFloatArrayD3(): Array<Array<ComplexFloatArray>> =
+public fun MultiArray<ComplexFloat, D3>.toArray(): Array<Array<ComplexFloatArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             this[i, j].toComplexFloatArray()
@@ -1522,7 +1522,7 @@ public fun MultiArray<ComplexFloat, D3>.toComplexFloatArrayD3(): Array<Array<Com
     }
 
 
-public fun MultiArray<ComplexFloat, D4>.toComplexFloatArrayD4(): Array<Array<Array<ComplexFloatArray>>> =
+public fun MultiArray<ComplexFloat, D4>.toArray(): Array<Array<Array<ComplexFloatArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             Array(shape[2]) { k ->
@@ -1544,13 +1544,13 @@ public fun <D : Dimension> MultiArray<ComplexDouble, D>.toComplexDoubleArray(): 
     return result
 }
 
-public fun MultiArray<ComplexDouble, D2>.toComplexDoubleArrayD2(): Array<ComplexDoubleArray> =
+public fun MultiArray<ComplexDouble, D2>.toArray(): Array<ComplexDoubleArray> =
     Array(shape[0]) { i ->
         this[i].toComplexDoubleArray()
     }
 
 
-public fun MultiArray<ComplexDouble, D3>.toComplexDoubleArrayD3(): Array<Array<ComplexDoubleArray>> =
+public fun MultiArray<ComplexDouble, D3>.toArray(): Array<Array<ComplexDoubleArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             this[i, j].toComplexDoubleArray()
@@ -1558,7 +1558,7 @@ public fun MultiArray<ComplexDouble, D3>.toComplexDoubleArrayD3(): Array<Array<C
     }
 
 
-public fun MultiArray<ComplexDouble, D4>.toComplexDoubleArrayD4(): Array<Array<Array<ComplexDoubleArray>>> =
+public fun MultiArray<ComplexDouble, D4>.toArray(): Array<Array<Array<ComplexDoubleArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
             Array(shape[2]) { k ->
