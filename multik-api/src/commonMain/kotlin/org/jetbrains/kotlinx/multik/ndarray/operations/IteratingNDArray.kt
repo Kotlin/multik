@@ -1364,6 +1364,30 @@ public fun <D : Dimension> MultiArray<Int, D>.toIntArray(): IntArray {
     return result
 }
 
+public fun MultiArray<Int, D2>.toIntArrayD2(): Array<IntArray> =
+    Array(shape[0]) { i ->
+        this[i].toIntArray()
+    }
+
+
+public fun MultiArray<Int, D3>.toIntArrayD3(): Array<Array<IntArray>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            this[i, j].toIntArray()
+        }
+    }
+
+
+public fun MultiArray<Int, D4>.toIntArrayD4(): Array<Array<Array<IntArray>>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            Array(shape[2]) { k ->
+                this[i, j, k].toIntArray()
+            }
+        }
+    }
+
+
 public fun <D : Dimension> MultiArray<Long, D>.toLongArray(): LongArray {
     val result = LongArray(size)
     if (this.consistent) {
@@ -1375,6 +1399,30 @@ public fun <D : Dimension> MultiArray<Long, D>.toLongArray(): LongArray {
     }
     return result
 }
+
+public fun MultiArray<Long, D2>.toLongArrayD2(): Array<LongArray> =
+    Array(shape[0]) { i ->
+        this[i].toLongArray()
+    }
+
+
+public fun MultiArray<Long, D3>.toLongArrayD3(): Array<Array<LongArray>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            this[i, j].toLongArray()
+        }
+    }
+
+
+public fun MultiArray<Long, D4>.toLongArrayD4(): Array<Array<Array<LongArray>>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            Array(shape[2]) { k ->
+                this[i, j, k].toLongArray()
+            }
+        }
+    }
+
 
 public fun <D : Dimension> MultiArray<Float, D>.toFloatArray(): FloatArray {
     val result = FloatArray(size)
@@ -1388,6 +1436,30 @@ public fun <D : Dimension> MultiArray<Float, D>.toFloatArray(): FloatArray {
     return result
 }
 
+public fun MultiArray<Float, D2>.toFloatArrayD2(): Array<FloatArray> =
+    Array(shape[0]) { i ->
+        this[i].toFloatArray()
+    }
+
+
+public fun MultiArray<Float, D3>.toFloatArrayD3(): Array<Array<FloatArray>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            this[i, j].toFloatArray()
+        }
+    }
+
+
+public fun MultiArray<Float, D4>.toFloatArrayD4(): Array<Array<Array<FloatArray>>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            Array(shape[2]) { k ->
+                this[i, j, k].toFloatArray()
+            }
+        }
+    }
+
+
 public fun <D : Dimension> MultiArray<Double, D>.toDoubleArray(): DoubleArray {
     val result = DoubleArray(size)
     if (this.consistent) {
@@ -1399,6 +1471,30 @@ public fun <D : Dimension> MultiArray<Double, D>.toDoubleArray(): DoubleArray {
     }
     return result
 }
+
+public fun MultiArray<Double, D2>.toDoubleArrayD2(): Array<DoubleArray> =
+    Array(shape[0]) { i ->
+        this[i].toDoubleArray()
+    }
+
+
+public fun MultiArray<Double, D3>.toDoubleArrayD3(): Array<Array<DoubleArray>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            this[i, j].toDoubleArray()
+        }
+    }
+
+
+public fun MultiArray<Double, D4>.toDoubleArrayD4(): Array<Array<Array<DoubleArray>>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            Array(shape[2]) { k ->
+                this[i, j, k].toDoubleArray()
+            }
+        }
+    }
+
 
 public fun <D : Dimension> MultiArray<ComplexFloat, D>.toComplexFloatArray(): ComplexFloatArray {
     val result = ComplexFloatArray(size)
@@ -1412,6 +1508,30 @@ public fun <D : Dimension> MultiArray<ComplexFloat, D>.toComplexFloatArray(): Co
     return result
 }
 
+public fun MultiArray<ComplexFloat, D2>.toComplexFloatArrayD2(): Array<ComplexFloatArray> =
+    Array(shape[0]) { i ->
+        this[i].toComplexFloatArray()
+    }
+
+
+public fun MultiArray<ComplexFloat, D3>.toComplexFloatArrayD3(): Array<Array<ComplexFloatArray>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            this[i, j].toComplexFloatArray()
+        }
+    }
+
+
+public fun MultiArray<ComplexFloat, D4>.toComplexFloatArrayD4(): Array<Array<Array<ComplexFloatArray>>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            Array(shape[2]) { k ->
+                this[i, j, k].toComplexFloatArray()
+            }
+        }
+    }
+
+
 public fun <D : Dimension> MultiArray<ComplexDouble, D>.toComplexDoubleArray(): ComplexDoubleArray {
     val result = ComplexDoubleArray(size)
     if (this.consistent) {
@@ -1423,6 +1543,30 @@ public fun <D : Dimension> MultiArray<ComplexDouble, D>.toComplexDoubleArray(): 
     }
     return result
 }
+
+public fun MultiArray<ComplexDouble, D2>.toComplexDoubleArrayD2(): Array<ComplexDoubleArray> =
+    Array(shape[0]) { i ->
+        this[i].toComplexDoubleArray()
+    }
+
+
+public fun MultiArray<ComplexDouble, D3>.toComplexDoubleArrayD3(): Array<Array<ComplexDoubleArray>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            this[i, j].toComplexDoubleArray()
+        }
+    }
+
+
+public fun MultiArray<ComplexDouble, D4>.toComplexDoubleArrayD4(): Array<Array<Array<ComplexDoubleArray>>> =
+    Array(shape[0]) { i ->
+        Array(shape[1]) { j ->
+            Array(shape[2]) { k ->
+                this[i, j, k].toComplexDoubleArray()
+            }
+        }
+    }
+
 
 /**
  * Returns a [MutableList] filled with all elements of this collection.
