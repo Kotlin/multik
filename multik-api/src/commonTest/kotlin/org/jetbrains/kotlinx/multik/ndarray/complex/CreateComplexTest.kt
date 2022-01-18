@@ -1,8 +1,12 @@
+package org.jetbrains.kotlinx.multik.ndarray.complex
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class CreateComplexTest {
 
     @Test
-    fun `test easy complex creation`() {
+    fun test_easy_complex_creation() {
         assertEquals(Complex.i(0x01.toDouble()), 0x01.i)
         assertEquals(Complex.i(1.toShort().toDouble()), 1.toShort().i)
         assertEquals(Complex.i(1.toDouble()), 1.i)
