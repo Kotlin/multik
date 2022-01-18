@@ -61,3 +61,16 @@ public operator fun Int.div(other: ComplexDouble): ComplexDouble = ComplexDouble
 public operator fun Long.div(other: ComplexDouble): ComplexDouble = ComplexDouble(this.toDouble(), 0.0) / other
 public operator fun Float.div(other: ComplexDouble): ComplexDouble = ComplexDouble(this.toDouble(), 0.0) / other
 public operator fun Double.div(other: ComplexDouble): ComplexDouble = ComplexDouble(this, 0.0) / other
+
+public val Byte.i: ComplexDouble
+    get() = ComplexDouble(0, this.toDouble())
+public val Short.i: ComplexDouble
+    get() = ComplexDouble(0, this.toDouble())
+public val Int.i: ComplexDouble
+    get() = ComplexDouble(0, this.toDouble())
+public val Long.i: ComplexDouble
+    get() = ComplexDouble(0, this.toDouble())
+public val Float.i: ComplexFloat
+    get() = ComplexFloat(0, this)
+public val Double.i: ComplexDouble
+    get() = ComplexDouble(0, this)
