@@ -5,7 +5,6 @@
 package org.jetbrains.kotlinx.multik.ndarray.operations
 
 import org.jetbrains.kotlinx.multik.api.Multik
-import org.jetbrains.kotlinx.multik.ndarray.complex.copyInto
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.jvm.JvmName
 
@@ -65,7 +64,10 @@ public fun <T> Multik.stack(vararg arr: MultiArray<T, D4>, axis: Int = 0): NDArr
 public fun <T> Multik.stack(arrays: List<MultiArray<T, D4>>, axis: Int = 0): NDArray<T, DN> =
     stackArrays(arrays, axis)
 
-private fun <T, ID: Dimension, OD: Dimension> stackArrays(arrays: List<MultiArray<T, ID>>, axis: Int = 0): NDArray<T, OD> {
+private fun <T, ID : Dimension, OD : Dimension> stackArrays(
+    arrays: List<MultiArray<T, ID>>,
+    axis: Int = 0
+): NDArray<T, OD> {
     require(arrays.isNotEmpty() && arrays.size > 1) { "Arrays list is empty or contains one element." }
     val firstArray = arrays.first()
     val actualAxis = firstArray.actualAxis(axis)
@@ -88,22 +90,7 @@ public fun <T, D : Dimension> MultiArray<T, D>.repeat(n: Int): D1Array<T> {
     require(n >= 1) { "The number of repetitions must be more than one." }
     val data = initMemoryView<T>(size * n, dtype)
     if (consistent) {
-        when (this.dtype) {
-            DataType.ByteDataType -> this.data.getByteArray()
-                .copyInto(data.getByteArray(), 0, 0, this.size)
-            DataType.ShortDataType -> this.data.getShortArray()
-                .copyInto(data.getShortArray(), 0, 0, this.size)
-            DataType.IntDataType -> this.data.getIntArray()
-                .copyInto(data.getIntArray(), 0, 0, this.size)
-            DataType.LongDataType -> this.data.getLongArray()
-                .copyInto(data.getLongArray(), 0, 0, this.size)
-            DataType.FloatDataType -> this.data.getFloatArray()
-                .copyInto(data.getFloatArray(), 0, 0, this.size)
-            DataType.DoubleDataType -> this.data.getDoubleArray()
-                .copyInto(data.getDoubleArray(), 0, 0, this.size)
-            DataType.ComplexFloatDataType -> this.data.getComplexFloatArray().copyInto(data.getComplexFloatArray())
-            DataType.ComplexDoubleDataType -> this.data.getComplexDoubleArray().copyInto(data.getComplexDoubleArray())
-        }
+        this.data.copyInto(data)
     } else {
         var index = 0
         for (el in this)
@@ -115,25 +102,13 @@ public fun <T, D : Dimension> MultiArray<T, D>.repeat(n: Int): D1Array<T> {
         val endIndex = i
         val startIndexComplex = startIndex * 2
         val endIndexComplex = startIndexComplex + (size * 2)
+
         when (this.dtype) {
-            DataType.ByteDataType -> data.getByteArray()
-                .copyInto(data.getByteArray(), i, i - size, endIndex)
-            DataType.ShortDataType -> data.getShortArray()
-                .copyInto(data.getShortArray(), i, i - size, endIndex)
-            DataType.IntDataType -> data.getIntArray()
-                .copyInto(data.getIntArray(), i, i - size, endIndex)
-            DataType.LongDataType -> data.getLongArray()
-                .copyInto(data.getLongArray(), i, i - size, endIndex)
-            DataType.FloatDataType -> data.getFloatArray()
-                .copyInto(data.getFloatArray(), i, i - size, endIndex)
-            DataType.DoubleDataType -> data.getDoubleArray()
-                .copyInto(data.getDoubleArray(), i, i - size, endIndex)
             DataType.ComplexFloatDataType ->
                 data.getFloatArray().copyInto(data.getFloatArray(), i * 2, startIndexComplex, endIndexComplex)
-                //System.arraycopy(data.getFloatArray(), (i - size) * 2, data.getFloatArray(), i * 2, size * 2)
             DataType.ComplexDoubleDataType ->
                 data.getDoubleArray().copyInto(data.getDoubleArray(), i * 2, startIndexComplex, endIndexComplex)
-                //System.arraycopy(data.getDoubleArray(), (i - size) * 2, data.getDoubleArray(), i * 2, size * 2)
+            else -> data.copyInto(data, i, i - size, endIndex)
         }
     }
     return D1Array(data, shape = intArrayOf(size * n), dim = D1)
@@ -143,22 +118,7 @@ public fun <T, D : Dimension> MultiArray<T, D>.repeat(n: Int): D1Array<T> {
 internal fun <T, D : Dimension> MultiArray<T, D>.copyFromTwoArrays(iter: Iterator<T>, size: Int): MemoryView<T> {
     val data = initMemoryView<T>(size, this.dtype)
     if (this.consistent) {
-        when (this.dtype) {
-            DataType.ByteDataType -> this.data.getByteArray()
-                .copyInto(data.getByteArray(), 0, 0, this.size)
-            DataType.ShortDataType -> this.data.getShortArray()
-                .copyInto(data.getShortArray(), 0, 0, this.size)
-            DataType.IntDataType -> this.data.getIntArray()
-                .copyInto(data.getIntArray(), 0, 0, this.size)
-            DataType.LongDataType -> this.data.getLongArray()
-                .copyInto(data.getLongArray(), 0, 0, this.size)
-            DataType.FloatDataType -> this.data.getFloatArray()
-                .copyInto(data.getFloatArray(), 0, 0, this.size)
-            DataType.DoubleDataType -> this.data.getDoubleArray()
-                .copyInto(data.getDoubleArray(), 0, 0, this.size)
-            DataType.ComplexFloatDataType -> this.data.getComplexFloatArray().copyInto(data.getComplexFloatArray())
-            DataType.ComplexDoubleDataType -> this.data.getComplexDoubleArray().copyInto(data.getComplexDoubleArray())
-        }
+        this.data.copyInto(data, 0, 0, this.size)
     } else {
         var index = 0
         for (el in this)
@@ -173,33 +133,13 @@ internal fun <T, D : Dimension> MultiArray<T, D>.copyFromTwoArrays(iter: Iterato
 }
 
 internal fun <T, D : Dimension, O : Dimension> concatenate(
-    arrays: List<MultiArray<T, D>>,
-    dest: NDArray<T, O>,
-    indices: MultiIndexProgression = dest.multiIndices,
-    axis: Int = 0
+    arrays: List<MultiArray<T, D>>, dest: NDArray<T, O>, axis: Int = 0
 ): NDArray<T, O> {
     if (axis == 0) {
         var offset = 0
-        arrays.forEachIndexed { i: Int, arr: MultiArray<T, D> ->
+        arrays.forEachIndexed { _: Int, arr: MultiArray<T, D> ->
             if (arr.consistent) {
-                when (dest.dtype) {
-                    DataType.ByteDataType -> arr.data.getByteArray()
-                        .copyInto(dest.data.getByteArray(), offset, 0, arr.size)
-                    DataType.ShortDataType -> arr.data.getShortArray()
-                        .copyInto(dest.data.getShortArray(), offset, 0, arr.size)
-                    DataType.IntDataType -> arr.data.getIntArray()
-                        .copyInto(dest.data.getIntArray(), offset, 0, arr.size)
-                    DataType.LongDataType -> arr.data.getLongArray()
-                        .copyInto(dest.data.getLongArray(), offset, 0, arr.size)
-                    DataType.FloatDataType -> arr.data.getFloatArray()
-                        .copyInto(dest.data.getFloatArray(), offset, 0, arr.size)
-                    DataType.DoubleDataType -> arr.data.getDoubleArray()
-                        .copyInto(dest.data.getDoubleArray(), offset, 0, arr.size)
-                    DataType.ComplexFloatDataType -> arr.data.getComplexFloatArray()
-                        .copyInto(dest.data.getComplexFloatArray(), offset)
-                    DataType.ComplexDoubleDataType -> arr.data.getComplexDoubleArray()
-                        .copyInto(dest.data.getComplexDoubleArray(), offset)
-                }
+                arr.data.copyInto(dest.data, offset, 0, arr.size)
             } else {
                 var index = offset
                 for (el in arr)
@@ -208,77 +148,120 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
             offset += arr.size
         }
     } else {
-        when (arrays.first().dim) {
-            D1 -> {
-                (arrays as List<MultiArray<T, D1>>).apply {
-                    copy(dest, indices) { i, k -> this[k][i] }
-                }
-            }
-            D2 -> {
-                (arrays as List<MultiArray<T, D2>>).apply {
-                    when (axis) {
-                        1 -> copy(dest, indices) { i, k, j -> this[k][i, j] }
-                        2 -> copy(dest, indices) { i, j, k -> this[k][i, j] }
+        var index = 0
+        val arrDim = arrays.first().dim
+        for (i in 0 until dest.shape[0]) {
+            when (arrDim) {
+                D1 -> {
+                    arrays as List<MultiArray<T, D1>>
+                    for (array in arrays) {
+                        dest.data[index++] = array[i]
                     }
                 }
-            }
-            D3 -> {
-                (arrays as List<MultiArray<T, D3>>).apply {
+                D2 -> {
+                    arrays as List<MultiArray<T, D2>>
                     when (axis) {
-                        1 -> copy(dest, indices) { i, k, j, l -> this[k][i, j, l] }
-                        2 -> copy(dest, indices) { i, j, k, l -> this[k][i, j, l] }
-                        3 -> copy(dest, indices) { i, j, l, k -> this[k][i, j, l] }
+                        1 -> {
+                            for (array in arrays) {
+                                for (j in 0 until array.shape[1]) {
+                                    dest.data[index++] = array[i, j]
+                                }
+                            }
+                        }
+                        2 -> {
+                            for (j in 0 until dest.shape[1]) {
+                                for (array in arrays) {
+                                    dest.data[index++] = array[i, j]
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            D4 -> {
-                (arrays as List<MultiArray<T, D4>>).apply {
+                D3 -> {
+                    arrays as List<MultiArray<T, D3>>
                     when (axis) {
-                        1 -> copy(dest, indices) { i, k, j, l, h -> this[k][i, j, l, h] }
-                        2 -> copy(dest, indices) { i, j, k, l, h -> this[k][i, j, l, h] }
-                        3 -> copy(dest, indices) { i, j, l, k, h -> this[k][i, j, l, h] }
-                        4 -> copy(dest, indices) { i, j, l, h, k -> this[k][i, j, l, h] }
+                        1 -> {
+                            for (array in arrays) {
+                                for (j in 0 until array.shape[1]) {
+                                    for (l in 0 until dest.shape[2]) {
+                                        dest.data[index++] = array[i, j, l]
+                                    }
+                                }
+                            }
+                        }
+                        2 -> {
+                            for (j in 0 until dest.shape[1]) {
+                                for (array in arrays) {
+                                    for (l in 0 until array.shape[2]) {
+                                        dest.data[index++] = array[i, j, l]
+                                    }
+                                }
+                            }
+                        }
+                        3 -> {
+                            for (j in 0 until dest.shape[1]) {
+                                for (l in 0 until dest.shape[2]) {
+                                    for (array in arrays) {
+                                        dest.data[index++] = array[i, j, l]
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+                D4 -> {
+                    arrays as List<MultiArray<T, D4>>
+                    when (axis) {
+                        1 -> {
+                            for (array in arrays) {
+                                for (j in 0 until array.shape[1]) {
+                                    for (l in 0 until dest.shape[2]) {
+                                        for (h in 0 until dest.shape[3]) {
+                                            dest.data[index++] = array[i, j, l, h]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        2 -> {
+                            for (j in 0 until dest.shape[1]) {
+                                for (array in arrays) {
+                                    for (l in 0 until array.shape[2]) {
+                                        for (h in 0 until dest.shape[3]) {
+                                            dest.data[index++] = array[i, j, l, h]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        3 -> {
+                            for (j in 0 until dest.shape[1]) {
+                                for (l in 0 until dest.shape[2]) {
+                                    for (array in arrays) {
+                                        for (h in 0 until array.shape[3]) {
+                                            dest.data[index++] = array[i, j, l, h]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        4 -> {
+                            for (j in 0 until dest.shape[1]) {
+                                for (l in 0 until dest.shape[2]) {
+                                    for (h in 0 until dest.shape[3]) {
+                                        for (array in arrays) {
+                                            dest.data[index++] = array[i, j, l, h]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else -> throw UnsupportedOperationException()
             }
-            else -> throw UnsupportedOperationException()
         }
     }
     return dest
 }
 
-private inline fun <T, D : Dimension> copy(
-    destination: NDArray<T, D>, indices: MultiIndexProgression, copy: (Int, Int) -> T
-) {
-    var index = 0
-    for (i in indices) {
-        destination.data[index++] = copy(i[0], i[1])
-    }
-}
-
-private inline fun <T, D : Dimension> copy(
-    destination: NDArray<T, D>, indices: MultiIndexProgression, copy: (Int, Int, Int) -> T
-) {
-    var index = 0
-    for (i in indices) {
-        destination.data[index++] = copy(i[0], i[1], i[2])
-    }
-}
-
-private inline fun <T, D : Dimension> copy(
-    destination: NDArray<T, D>, indices: MultiIndexProgression, copy: (Int, Int, Int, Int) -> T
-) {
-    var index = 0
-    for (i in indices) {
-        destination.data[index++] = copy(i[0], i[1], i[2], i[3])
-    }
-}
-
-private inline fun <T, D : Dimension> copy(
-    destination: NDArray<T, D>, indices: MultiIndexProgression, copy: (Int, Int, Int, Int, Int) -> T
-) {
-    var index = 0
-    for (i in indices) {
-        destination.data[index++] = copy(i[0], i[1], i[2], i[3], i[4])
-    }
-}

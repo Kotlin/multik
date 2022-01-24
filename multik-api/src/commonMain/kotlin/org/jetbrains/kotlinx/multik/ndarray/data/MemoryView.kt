@@ -36,6 +36,13 @@ public interface ImmutableMemoryView<T> : Iterable<T> {
     public fun copyOf(): ImmutableMemoryView<T>
 
     /**
+     *
+     */
+    public fun copyInto(
+        destination: MemoryView<T>, destinationOffset: Int = 0, startIndex: Int = 0, endIndex: Int = size
+    ): MemoryView<T>
+
+    /**
      * Returns [ByteArray] if it is [MemoryViewByteArray].
      */
     public fun getByteArray(): ByteArray
@@ -246,6 +253,13 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
 
     override fun copyOf(): MemoryView<Byte> = MemoryViewByteArray(data.copyOf())
 
+    override fun copyInto(
+        destination: MemoryView<Byte>, destinationOffset: Int, startIndex: Int, endIndex: Int
+    ): MemoryView<Byte> {
+        this.data.copyInto(destination.getByteArray(), destinationOffset, startIndex, endIndex)
+        return destination
+    }
+
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
         other != null && this::class != other::class -> false
@@ -332,6 +346,13 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
 
     override fun copyOf(): MemoryView<Short> = MemoryViewShortArray(data.copyOf())
 
+    override fun copyInto(
+        destination: MemoryView<Short>, destinationOffset: Int, startIndex: Int, endIndex: Int
+    ): MemoryView<Short> {
+        this.data.copyInto(destination.getShortArray(), destinationOffset, startIndex, endIndex)
+        return destination
+    }
+
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
         other != null && this::class != other::class -> false
@@ -417,6 +438,13 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
     override fun iterator(): Iterator<Int> = data.iterator()
 
     override fun copyOf(): MemoryView<Int> = MemoryViewIntArray(data.copyOf())
+
+    override fun copyInto(
+        destination: MemoryView<Int>, destinationOffset: Int, startIndex: Int, endIndex: Int
+    ): MemoryView<Int> {
+        this.data.copyInto(destination.getIntArray(), destinationOffset, startIndex, endIndex)
+        return destination
+    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
@@ -505,6 +533,13 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
 
     override fun copyOf(): MemoryView<Long> = MemoryViewLongArray(data.copyOf())
 
+    override fun copyInto(
+        destination: MemoryView<Long>, destinationOffset: Int, startIndex: Int, endIndex: Int
+    ): MemoryView<Long> {
+        this.data.copyInto(destination.getLongArray(), destinationOffset, startIndex, endIndex)
+        return destination
+    }
+
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
         other != null && this::class != other::class -> false
@@ -591,6 +626,13 @@ public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Fl
 
     override fun copyOf(): MemoryView<Float> = MemoryViewFloatArray(data.copyOf())
 
+    override fun copyInto(
+        destination: MemoryView<Float>, destinationOffset: Int, startIndex: Int, endIndex: Int
+    ): MemoryView<Float> {
+        this.data.copyInto(destination.getFloatArray(), destinationOffset, startIndex, endIndex)
+        return destination
+    }
+
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
         other != null && this::class != other::class -> false
@@ -676,6 +718,13 @@ public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<
     override fun iterator(): Iterator<Double> = data.iterator()
 
     override fun copyOf(): MemoryView<Double> = MemoryViewDoubleArray(data.copyOf())
+
+    override fun copyInto(
+        destination: MemoryView<Double>, destinationOffset: Int, startIndex: Int, endIndex: Int
+    ): MemoryView<Double> {
+        this.data.copyInto(destination.getDoubleArray(), destinationOffset, startIndex, endIndex)
+        return destination
+    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
@@ -765,6 +814,13 @@ public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) :
 
     override fun copyOf(): MemoryView<ComplexFloat> = MemoryViewComplexFloatArray(data.copyOf())
 
+    override fun copyInto(
+        destination: MemoryView<ComplexFloat>, destinationOffset: Int, startIndex: Int, endIndex: Int
+    ): MemoryView<ComplexFloat> {
+        this.data.copyInto(destination.getComplexFloatArray(), destinationOffset, startIndex, endIndex)
+        return destination
+    }
+
     override fun equals(other: Any?): Boolean = when {
         this === other -> true
         other != null && this::class != other::class -> false
@@ -852,6 +908,13 @@ public class MemoryViewComplexDoubleArray(override val data: ComplexDoubleArray)
     override fun iterator(): Iterator<ComplexDouble> = data.iterator()
 
     override fun copyOf(): MemoryView<ComplexDouble> = MemoryViewComplexDoubleArray(data.copyOf())
+
+    override fun copyInto(
+        destination: MemoryView<ComplexDouble>, destinationOffset: Int, startIndex: Int, endIndex: Int
+    ): MemoryView<ComplexDouble> {
+        this.data.copyInto(destination.getComplexDoubleArray(), destinationOffset, startIndex, endIndex)
+        return destination
+    }
 
     override fun equals(other: Any?): Boolean = when {
         this === other -> true

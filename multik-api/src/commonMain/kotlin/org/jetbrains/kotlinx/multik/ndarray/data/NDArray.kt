@@ -227,10 +227,8 @@ public class NDArray<T, D : Dimension> constructor(
         newShape[actualAxis] = this.shape[actualAxis] + other.sumOf { it.shape[actualAxis] }
         val newSize = this.size + other.sumOf { it.size }
         val arrays = other.toMutableList().also { it.add(0, this) }
-        val concatShape =
-            other.first().multiIndices.last.toMutableList().apply { add(actualAxis, arrays.size - 1) }.toIntArray()
         val result = NDArray<T, D>(initMemoryView(newSize, dtype), 0, newShape, dim = dim)
-        concatenate(arrays, result, IntArray(concatShape.size)..concatShape, actualAxis)
+        concatenate(arrays, result, actualAxis)
         return result
     }
 
