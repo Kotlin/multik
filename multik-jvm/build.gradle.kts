@@ -16,14 +16,14 @@ kotlin {
     }
     mingwX64()
     linuxX64()
-    macosX64(){
+    macosX64() {
         binaries {
             framework {
                 baseName = "multik-jvm"
             }
         }
     }
-    macosArm64(){
+    macosArm64() {
         binaries {
             framework {
                 baseName = "multik-jvm"
@@ -54,14 +54,14 @@ kotlin {
 
     js(IR) {
         val timeoutMs = "1000000"
-        browser{
+        browser {
             testTask {
                 useMocha {
                     timeout = timeoutMs
                 }
             }
         }
-        nodejs{
+        nodejs {
             testTask {
                 useMocha {
                     timeout = timeoutMs
@@ -91,6 +91,19 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(kotlin("reflect"))
+            }
+        }
+        val jsMain by getting {
+            dependsOn(commonMain)
+        }
+        val nativeMain by creating {
+            dependsOn(commonMain)
+        }
+        names.forEach { n ->
+            if (n.contains("X64Main") || n.contains("Arm64Main")){
+                this@sourceSets.getByName(n).apply{
+                    dependsOn(nativeMain)
+                }
             }
         }
     }

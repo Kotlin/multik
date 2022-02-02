@@ -15,6 +15,7 @@ public object JvmEngineType : EngineType("JVM")
 
 public object NativeEngineType : EngineType("NATIVE")
 
+public expect fun enginesProvider(): Map<EngineType, Engine>
 
 /**
  * This class gives access to different implementations of [LinAlg], [Math], [Statistics].
@@ -43,11 +44,7 @@ public abstract class Engine {
 
     internal companion object : Engine() {
 
-        init {
-            if (enginesProvider.isNotEmpty()) {
-                loadEngine()
-            }
-        }
+        private val enginesProvider: Map<EngineType, Engine> = enginesProvider()
 
         public var defaultEngine: EngineType? = null
 
@@ -74,27 +71,26 @@ public abstract class Engine {
 
         override fun getMath(): Math {
             if (enginesProvider.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide Math implementation.")
+            if (defaultEngine == null) loadEngine()
             return enginesProvider[defaultEngine]?.getMath()
                 ?: throw EngineMultikException("The used engine type is not defined.")
         }
 
         override fun getLinAlg(): LinAlg {
             if (enginesProvider.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide LinAlg implementation.")
+            if (defaultEngine == null) loadEngine()
             return enginesProvider[defaultEngine]?.getLinAlg()
                 ?: throw throw EngineMultikException("The used engine type is not defined.")
         }
 
         override fun getStatistics(): Statistics {
             if (enginesProvider.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide Statistics implementation.")
+            if (defaultEngine == null) loadEngine()
             return enginesProvider[defaultEngine]?.getStatistics()
                 ?: throw throw EngineMultikException("The used engine type is not defined.")
         }
     }
 }
-
-public expect val enginesProvider : Map<EngineType, Engine>
-
-public expect fun initEnginesProvider(engines: List<Engine>)
 
 public class EngineMultikException(message: String) : Exception(message) {
     public constructor() : this("")

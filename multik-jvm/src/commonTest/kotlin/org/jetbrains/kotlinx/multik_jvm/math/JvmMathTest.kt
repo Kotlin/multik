@@ -4,30 +4,22 @@
 
 package org.jetbrains.kotlinx.multik_jvm.math
 
-import org.jetbrains.kotlinx.multik.api.initEnginesProvider
-import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.identity
+import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
-import org.jetbrains.kotlinx.multik.jvm.JvmEngine
 import org.jetbrains.kotlinx.multik.jvm.math.JvmMath
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.D1
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.operations.times
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 class JvmMathTest {
 
-    @BeforeTest
-    fun setup() {
-        // init engines on non-jvm builds. This does nothing on jvm which uses reflection
-        initEnginesProvider(listOf(JvmEngine()))
-    }
-
     @Test
-    fun `test_of_argMax_function_Double`() {
+    fun test_of_argMax_function_Double() {
         val ndarray1 = mk.ndarray(mk[0.008830892, 0.7638366187, -0.0401326368965, -0.269757419187])
         val ndarray2 = mk.ndarray(mk[0.0088308926050, 0.763836618743, Double.NaN, -0.2697574191872])
 
@@ -36,7 +28,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test_of_argMax_function_with_axis`() {
+    fun test_of_argMax_function_with_axis() {
         val ndarray = mk.ndarray(mk[mk[mk[50, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[0, 2], mk[2, 2]])
@@ -48,7 +40,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test_of_argMin_function_with_axis`() {
+    fun test_of_argMin_function_with_axis() {
         val ndarray = mk.ndarray(mk[mk[mk[50, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[1, 0], mk[0, 0]])
@@ -60,7 +52,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test_of_max_function_with_axis`() {
+    fun test_of_max_function_with_axis() {
         val ndarray = mk.ndarray(mk[mk[mk[0, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[7, 9], mk[10, 11]])
@@ -73,7 +65,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test_of_min_function_with_axis`() {
+    fun test_of_min_function_with_axis() {
         val ndarray = mk.ndarray(mk[mk[mk[0, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[0, 3], mk[1, 4]])
@@ -86,13 +78,13 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test_of_sum_function_with_axis_on_flat_ndarray`() {
+    fun test_of_sum_function_with_axis_on_flat_ndarray() {
         val ndarray = mk.ndarray(mk[0, 3, 1, 4])
         assertFailsWith<IllegalArgumentException> { JvmMath.sum<Int, D1, D1>(ndarray, 0) }
     }
 
     @Test
-    fun `test_of_sum_function_with_axis_on_2d_ndarray`() {
+    fun test_of_sum_function_with_axis_on_2d_ndarray() {
         val ndarray = mk.ndarray(mk[mk[0, 3], mk[1, 4]])
 
         val expectedWith0Axis = mk.ndarray(mk[1, 7])
@@ -103,7 +95,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test_of_sum_function_with_axis_on_3d_ndarray`() {
+    fun test_of_sum_function_with_axis_on_3d_ndarray() {
         val ndarray = mk.ndarray(mk[mk[mk[0, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis = mk.ndarray(mk[mk[9, 17], mk[17, 23]])
@@ -116,13 +108,13 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test_of_sum_function_with_third_axis_on_2d_ndarray`() {
+    fun test_of_sum_function_with_third_axis_on_2d_ndarray() {
         val ndarray = mk.ndarray(mk[mk[0, 3], mk[1, 4]])
         assertFailsWith<IllegalArgumentException> { JvmMath.sumD2(ndarray, 2) }
     }
 
     @Test
-    fun `test_of_cumSum_function_with_axis_on_3d_ndarray`() {
+    fun test_of_cumSum_function_with_axis_on_3d_ndarray() {
         val ndarray = mk.ndarray(mk[mk[mk[0, 3], mk[1, 4]], mk[mk[2, 5], mk[6, 8]], mk[mk[7, 9], mk[10, 11]]])
 
         val expectedWith0Axis =
@@ -139,7 +131,7 @@ class JvmMathTest {
     }
 
     @Test
-    fun `test_multiplication_of_complex_2d_ndarray`() {
+    fun test_multiplication_of_complex_2d_ndarray() {
         val result = ComplexFloat(-2) * mk.identity(3)
         assertEquals(ComplexFloat(-2), result[0, 0])
     }

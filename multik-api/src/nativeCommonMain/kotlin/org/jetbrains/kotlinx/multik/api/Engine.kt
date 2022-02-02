@@ -1,14 +1,7 @@
 package org.jetbrains.kotlinx.multik.api
 
+public actual fun enginesProvider(): Map<EngineType, Engine> = engines
 
-private val _enginesProvider : HashMap<EngineType, Engine> = HashMap()
-
-public actual val enginesProvider : Map<EngineType, Engine>
-    get() = _enginesProvider
-
-public actual fun initEnginesProvider(engines: List<Engine>) {
-    engines.forEach {
-        _enginesProvider[it.type] = it
-    }
-    Engine.loadEngine()
+public val engines: MutableMap<EngineType, Engine> by lazy {
+    mutableMapOf<EngineType, Engine>()
 }

@@ -7,7 +7,6 @@ package org.jetbrains.kotlinx.multik_jvm.linAlg
 
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.api.linalg.dot
-import org.jetbrains.kotlinx.multik.jvm.JvmEngine
 import org.jetbrains.kotlinx.multik.jvm.linalg.*
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solve
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlgEx.solveC
@@ -27,14 +26,8 @@ import kotlin.test.*
 
 class JvmLinAlgTest {
 
-    @BeforeTest
-    fun setup() {
-        // init engines on non-jvm builds. This does nothing on jvm which uses reflection
-        initEnginesProvider(listOf(JvmEngine()))
-    }
-
     @Test
-    fun `test_of_norm_function_with_p_equals_1`() {
+    fun test_of_norm_function_with_p_equals_1() {
         val d2arrayDouble1 = mk.ndarray(mk[mk[1.0, 2.0], mk[3.0, 4.0]])
         val d2arrayDouble2 = mk.ndarray(mk[mk[-1.0, -2.0], mk[-3.0, -4.0]])
 
@@ -75,7 +68,7 @@ class JvmLinAlgTest {
     }
 
     @Test
-    fun `test_plu`() {
+    fun test_plu() {
 
         // Number case
         val procedurePrecision = 1e-5
@@ -131,7 +124,7 @@ class JvmLinAlgTest {
     }
 
     @Test
-    fun `solve_test`() {
+    fun solve_test() {
         // double case
         val procedurePrecision = 1e-5
         val rnd = Random(424242)
@@ -362,7 +355,7 @@ class JvmLinAlgTest {
     }
 
     @Test
-    fun `test_upper_hessenberg_form`() {
+    fun test_upper_hessenberg_form() {
         val n = 300
         val mat = getRandomMatrixComplexDouble(n, n)
         val (Q, H) = upperHessenbergDouble(mat.deepCopy())
@@ -387,7 +380,7 @@ class JvmLinAlgTest {
 
 
     @Test
-    fun `test_qr`() {
+    fun test_qr() {
         val n = 100
         val mat = getRandomMatrixComplexDouble(n, n)
         val (q, r) = qrComplexDouble(mat)
@@ -409,7 +402,7 @@ class JvmLinAlgTest {
     }
 
     @Test
-    fun `test_Schur_decomposition`() {
+    fun test_Schur_decomposition() {
         for (attempt in 0 until 5) {
 
             val n = when(attempt) {
@@ -443,7 +436,7 @@ class JvmLinAlgTest {
 
 
     @Test
-    fun `test_eigenvalues`() {
+    fun test_eigenvalues() {
         val precision = 1e-2
         val n = 50
         val R = getRandomMatrixComplexDouble(n, n, -1000.0, 1000.0)
