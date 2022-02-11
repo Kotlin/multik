@@ -265,3 +265,27 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
     return dest
 }
 
+/**
+ * Clips the values in ndarray if value is not in range min..max
+ *
+ * values bigger than [max] are set to [max]
+ *
+ * values smaller than [min] are set to [min]
+ *
+ * @param min minimum value for clipping where any value in ndarray
+ * that is smaller than [min] are clipped and set to [min]
+ * @param max maximum value for clipping where any value in ndarray
+ * that is bigger than [max] are clipped and set to [max]
+ * @return NDArray of which all of its elements are in range min..max
+ * @throws IllegalArgumentException if min > max
+ */
+internal fun <T: Comparable<T>, D: Dimension> MultiArray<T, D>.clip(min: T, max: T): NDArray<T,D> {
+    require(min <= max) {
+        "min value for clipping should be lower than or equal to the [max] value"
+    }
+    val clippedData = initMemoryView(size, dtype) { index ->
+        val e = data[index]
+        if (e < min) min else if (e > max) max else e
+    }
+    return NDArray(data = clippedData, shape = shape, dim = dim)
+}
