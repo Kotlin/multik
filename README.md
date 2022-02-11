@@ -101,7 +101,7 @@ mk.d2arrayIndices(3, 3) { i, j -> ComplexFloat(i, j) }
 [2.0+(0.0)i, 2.0+(1.0)i, 2.0+(2.0)i]]
  */
 
-mk.arange<Long>(10, 25, 5) // creare an array with elements in the interval [19, 25) with step 5
+mk.arange<Long>(10, 25, 5) // creare an array with elements in the interval [10, 25) with step 5
 /* [10, 15, 20] */
 
 mk.linspace<Double>(0, 2, 9) // create an array of 9 elements in the interval [0, 2]
