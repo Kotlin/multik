@@ -34,12 +34,15 @@ class TransformationTest {
 
     @Test
     fun clip2dFloatDataType() {
+        val absoluteTolerance = 0.01f
         val a = mk.ndarray(mk[ mk[1f, 2f, 3f, 4f, 5f], mk[6f, 7f, 8f, 9f, 10f]])
         val min = 3.5f
         val max = 7.1f
         val expected = listOf(3.5f, 3.5f, 3.5f, 4f, 5f, 6f, 7f, 7.1f, 7.1f, 7.1f)
-        val result = a.clip(min, max)
-        assertContentEquals(expected, result.toList())
+        val result = a.clip(min, max).toList()
+        for (i in expected.indices){ // run assert with absolute tolerance because of floating number is not stable when we test for js
+            assertEquals(expected[i], result[i], absoluteTolerance = absoluteTolerance)
+        }
     }
 
     @Test
