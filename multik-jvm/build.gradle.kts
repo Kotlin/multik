@@ -73,6 +73,12 @@ kotlin {
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         binaries.all {
             freeCompilerArgs = freeCompilerArgs + "-Xallocator=mimalloc"
+            freeCompilerArgs = freeCompilerArgs + "-Xgc=cms"
+        }
+
+        binaries.getTest("debug").apply {
+            debuggable = false
+            optimized = true
         }
     }
 
