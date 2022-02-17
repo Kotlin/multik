@@ -4,7 +4,10 @@
 
 package org.jetbrains.kotlinx.multik.jni
 
-import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.Engine
+import org.jetbrains.kotlinx.multik.api.EngineType
+import org.jetbrains.kotlinx.multik.api.NativeEngineType
+import org.jetbrains.kotlinx.multik.api.Statistics
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlg
@@ -19,7 +22,7 @@ public class NativeEngine : Engine() {
     override val type: EngineType
         get() = NativeEngineType
 
-    private val loader: Loader by lazy { Loader("multik_jni") }
+    private val loader: Loader by lazy { libLoader("multik_jni") }
 
     init {
         if(!loader.loading) loader.load()
