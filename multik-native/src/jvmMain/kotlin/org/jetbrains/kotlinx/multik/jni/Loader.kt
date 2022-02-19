@@ -1,17 +1,17 @@
-/*
- * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.jni
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
 
-internal class Loader(private val name: String) {
+internal actual fun libLoader(name: String): Loader = JvmLoader(name)
 
-    var loading: Boolean = false
-        private set
+internal class JvmLoader(private val name: String) : Loader {
+
+    override val loading: Boolean
+        get() = _loading
+
+    private var _loading: Boolean = false
 
     private val os: String by lazy {
         val osProperty: String = System.getProperty("os.name").lowercase()
@@ -43,7 +43,7 @@ internal class Loader(private val name: String) {
 //        append(arch)
     }
 
-    fun load(): Boolean {
+    override fun load(): Boolean {
         val resource = System.mapLibraryName(nativeNameLib)
         val inputStream = Loader::class.java.getResourceAsStream("/$resource")
         var libraryPath: Path? = null
@@ -55,7 +55,7 @@ internal class Loader(private val name: String) {
             } else {
                 System.loadLibrary(nativeNameLib)
             }
-            loading = true
+            _loading = true
             true
         } catch (e: Throwable) {
             libraryPath?.toFile()?.delete()
@@ -63,7 +63,7 @@ internal class Loader(private val name: String) {
         }
     }
 
-    fun manualLoad(javaPath: String? = null): Boolean {
+    override fun manualLoad(javaPath: String?): Boolean {
         if (javaPath.isNullOrEmpty()) {
             System.loadLibrary(name)
         } else {
@@ -71,7 +71,7 @@ internal class Loader(private val name: String) {
             val fullPath = if (os == "win") "$javaPath\\$libFullName" else "$javaPath/$libFullName"
             System.load(fullPath)
         }
-        loading = true
+        _loading = true
         return true
     }
 }

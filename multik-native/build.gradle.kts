@@ -2,41 +2,73 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
-
 plugins {
-    kotlin("jvm")
+    kotlin("multiplatform")
 }
 
-apply(from = "$rootDir/gradle/openblas.gradle")
-
-dependencies {
-    api(project(":multik-api"))
-    testImplementation(kotlin("test"))
-}
-
-private val currentOS = DefaultNativePlatform.getCurrentOperatingSystem()
-val os = when {
-    currentOS.isMacOsX -> "macos"
-    currentOS.isLinux -> "linux"
-    currentOS.isWindows -> "windows"
-    else -> throw Exception("Unsupported platform")
-}
-
-tasks.jar {
-    from("$buildDir/libs")
-    exclude("*.jar")
-}
-
-tasks.test {
-    dependsOn("multik_jni:build")
-
-    doFirst {
-        copy {
-            from(fileTree("${project.childProjects["multik_jni"]!!.buildDir}/lib/main/debug").files)
-            into("$buildDir/libs")
+kotlin {
+    jvm {
+        compilations.all {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+        withJava()
+        testRuns["test"].executionTask.configure {
+            useJUnit()
+        }
+    }
+    mingwX64()
+    linuxX64()
+    macosX64 {
+        binaries {
+            framework {
+                baseName = "multik-native"
+            }
+        }
+    }
+    macosArm64 {
+        binaries {
+            framework {
+                baseName = "multik-native"
+            }
+        }
+    }
+    iosArm64 {
+        binaries {
+            framework {
+                baseName = "multik-native"
+            }
         }
     }
 
-    systemProperty("java.library.path", "$buildDir/libs")
+    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        binaries.all {
+            freeCompilerArgs = freeCompilerArgs + "-Xallocator=mimalloc"
+        }
+    }
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                api(project(":multik-api"))
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                api(project(":multik-api"))
+                implementation(kotlin("test"))
+            }
+        }
+        val jvmMain by getting
+        val nativeMain by creating {
+            dependsOn(commonMain)
+        }
+        names.forEach { n ->
+            if (n.contains("X64Main") || n.contains("Arm64Main")){
+                this@sourceSets.getByName(n).apply{
+                    dependsOn(nativeMain)
+                }
+            }
+        }
+    }
 }
+
