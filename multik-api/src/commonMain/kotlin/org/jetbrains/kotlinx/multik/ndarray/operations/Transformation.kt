@@ -279,7 +279,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
  * @return NDArray of which all of its elements are in range min..max
  * @throws IllegalArgumentException if min > max
  */
-internal fun <T: Comparable<T>, D: Dimension> MultiArray<T, D>.clip(min: T, max: T): NDArray<T,D> {
+public fun <T, D: Dimension> MultiArray<T, D>.clip(min: T, max: T): NDArray<T,D> where T : Comparable<T>, T: Number{
     require(min <= max) {
         "min value for clipping should be lower than or equal to the [max] value"
     }
@@ -287,5 +287,5 @@ internal fun <T: Comparable<T>, D: Dimension> MultiArray<T, D>.clip(min: T, max:
         val e = data[index]
         if (e < min) min else if (e > max) max else e
     }
-    return NDArray(data = clippedData, shape = shape, dim = dim)
+    return NDArray(data = clippedData, shape = shape.copyOf(), dim = dim)
 }
