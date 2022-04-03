@@ -6,7 +6,6 @@ package org.jetbrains.kotlinx.multik.jni.math
 
 import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.api.math.MathEx
-import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public object NativeMath : Math {
@@ -70,9 +69,9 @@ public object NativeMath : Math {
 
     override fun <T : Number, D : Dimension> max(a: MultiArray<T, D>): T {
         return if (a.consistent)
-            JniMath.max(a.data.data, a.offset, a.size, a.shape, null, a.dtype.nativeCode)
+            JniMath.array_max(a.data.data, a.offset, a.size, a.shape, null, a.dtype.nativeCode)
         else
-            JniMath.max(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)
+            JniMath.array_max(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)
     }
 
     override fun <T : Number, D : Dimension, O : Dimension> max(a: MultiArray<T, D>, axis: Int): NDArray<T, O> {
@@ -97,9 +96,9 @@ public object NativeMath : Math {
 
     override fun <T : Number, D : Dimension> min(a: MultiArray<T, D>): T {
         return if (a.consistent)
-            JniMath.min(a.data.data, a.offset, a.size, a.shape, null, a.dtype.nativeCode)
+            JniMath.array_min(a.data.data, a.offset, a.size, a.shape, null, a.dtype.nativeCode)
         else
-            JniMath.min(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)
+            JniMath.array_min(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)
     }
 
     override fun <T : Number, D : Dimension, O : Dimension> min(a: MultiArray<T, D>, axis: Int): NDArray<T, O> {

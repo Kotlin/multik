@@ -26,7 +26,7 @@ class NativeLinAlgTest {
 
     @BeforeTest
     fun load() {
-        Loader("multik_jni").manualLoad()
+        libLoader("multik_jni").manualLoad()
 
         data = DataStructure(42)
     }

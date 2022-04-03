@@ -7,9 +7,9 @@ package org.jetbrains.kotlinx.multik.jni.math
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.jni.DataStructure
-import org.jetbrains.kotlinx.multik.jni.Loader
 import org.jetbrains.kotlinx.multik.jni.assertFloatingNDArray
 import org.jetbrains.kotlinx.multik.jni.assertFloatingNumber
+import org.jetbrains.kotlinx.multik.jni.libLoader
 import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -22,7 +22,7 @@ class NativeMathTest {
 
     @BeforeTest
     fun load() {
-        Loader("multik_jni").manualLoad()
+        libLoader("multik_jni").manualLoad("/Users/pavel.gorgulov/Projects/main_project/multik/multik-native/multik_jni/build/lib/main/debug/macos")
 
         data = DataStructure(42)
         ndarray = data.getFloatM(2)
@@ -67,11 +67,11 @@ class NativeMathTest {
     }
 
     @Test
-    fun maxTest() = assertEquals(0.97374254f, NativeMath.max(ndarray))
+    fun maxTest() = assertEquals(0.97374254f, mk.math.max(ndarray))
 
     @Test
-    fun minTest() = assertEquals(0.22631526f, NativeMath.min(ndarray))
+    fun minTest() = assertEquals(0.22631526f, mk.math.min(ndarray))
 
     @Test
-    fun sumTest() = assertFloatingNumber(2.5102746f, NativeMath.sum(ndarray))
+    fun sumTest() = assertFloatingNumber(2.5102746f, mk.math.sum(ndarray))
 }

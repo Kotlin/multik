@@ -9,8 +9,8 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.plusAssign
 import org.jetbrains.kotlinx.multik.ndarray.operations.stack
 import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
-import kotlin.math.ceil
 import kotlin.jvm.JvmName
+import kotlin.math.ceil
 
 
 /**
@@ -382,7 +382,7 @@ internal fun <T, D : Dimension> ndarrayCommon(elements: Collection<T>, shape: In
     val size = shape.reduce { acc, el -> acc * el }
 
     val dtypeFromFirst = DataType.of(elements.first())
-    val data = initMemoryView<T>(size, dtype ?: dtypeFromFirst).apply {
+    val data = initMemoryView<T>(size, dtype ?: dtypeFromFirst).apply {// TODO: boxing/unboxing!!! Find all usages
         var count = 0
         for (el in elements)
             this[count++] = el

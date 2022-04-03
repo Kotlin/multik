@@ -5,7 +5,6 @@
 package org.jetbrains.kotlinx.multik.jni.math
 
 import org.jetbrains.kotlinx.multik.api.math.MathEx
-import org.jetbrains.kotlinx.multik.jni.NativeEngine
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.Dimension

@@ -59,7 +59,7 @@ internal class JvmLoader(private val name: String) : Loader {
             true
         } catch (e: Throwable) {
             libraryPath?.toFile()?.delete()
-            throw e
+            throw e // TODO (message)!!!
         }
     }
 

@@ -14,19 +14,13 @@ import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlg
 import org.jetbrains.kotlinx.multik.jni.math.NativeMath
 
 
-public class NativeEngine : Engine() {
+public open class NativeEngine : Engine() {
 
     override val name: String
         get() = type.name
 
     override val type: EngineType
         get() = NativeEngineType
-
-    private val loader: Loader by lazy { libLoader("multik_jni") }
-
-    init {
-        if(!loader.loading) loader.load()
-    }
 
     override fun getMath(): Math {
         return NativeMath
