@@ -41,6 +41,20 @@ kotlin {
     }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+        compilations.getByName("main") {
+            cinterops {
+                val libmultik by creating {
+                    defFile(project.file(("src/cinterop/libmultik.def")))
+                    packageName("org.jetbrains.kotlinx.multik.jni")
+//                    extraOpts("-Xsource-compiler-option", "-I/Users/pavel.gorgulov/Projects/main_project/multik/multik-native/multik_jni/src/main/headers")
+//                    extraOpts("-Xsource-compiler-option", "-DONLY_C_LOCALE=1")
+                    extraOpts("-Xsource-compiler-option", "-std=c++17")
+//                    compilerOpts("-I/Users/pavel.gorgulov/Projects/main_project/multik/multik-native/multik_jni/src/main/headers")
+                    includeDirs("/Users/pavel.gorgulov/Projects/main_project/multik/multik-native/multik_jni/src/main/headers")
+//                    includeDirs.allHeaders("path")
+                }
+            }
+        }
         binaries.all {
             freeCompilerArgs = freeCompilerArgs + "-Xallocator=mimalloc"
         }
@@ -63,8 +77,8 @@ kotlin {
             dependsOn(commonMain)
         }
         names.forEach { n ->
-            if (n.contains("X64Main") || n.contains("Arm64Main")){
-                this@sourceSets.getByName(n).apply{
+            if (n.contains("X64Main") || n.contains("Arm64Main")) {
+                this@sourceSets.getByName(n).apply {
                     dependsOn(nativeMain)
                 }
             }

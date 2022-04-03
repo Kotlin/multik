@@ -55,7 +55,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_in
 	(JNIEnv *env, jobject jobj, jint n, jfloatArray j_a, jint lda) {
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
 
-  int info = inverse_matrix(n, A, lda);
+  int info = inverse_matrix_float(n, A, lda);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
 
@@ -71,7 +71,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_in
 	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_a, jint lda) {
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
 
-  int info = inverse_matrix(n, A, lda);
+  int info = inverse_matrix_double(n, A, lda);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
 
@@ -87,7 +87,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_in
 	(JNIEnv *env, jobject jobj, jint n, jfloatArray j_a, jint lda) {
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
 
-  int info = inverse_matrix_complex(n, A, lda);
+  int info = inverse_matrix_complex_float(n, A, lda);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
 
@@ -103,7 +103,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_in
 	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_a, jint lda) {
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
 
-  int info = inverse_matrix_complex(n, A, lda);
+  int info = inverse_matrix_complex_double(n, A, lda);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
 
@@ -120,7 +120,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qr
   auto *AQ = (float *)env->GetPrimitiveArrayCritical(j_aq, nullptr);
   auto *R = (float *)env->GetPrimitiveArrayCritical(j_r, nullptr);
 
-  int info = qr_matrix(m, n, AQ, lda, R);
+  int info = qr_matrix_float(m, n, AQ, lda, R);
 
   env->ReleasePrimitiveArrayCritical(j_aq, AQ, 0);
   env->ReleasePrimitiveArrayCritical(j_r, R, 0);
@@ -138,7 +138,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qr
   auto *AQ = (double *)env->GetPrimitiveArrayCritical(j_aq, nullptr);
   auto *R = (double *)env->GetPrimitiveArrayCritical(j_r, nullptr);
 
-  int info = qr_matrix(m, n, AQ, lda, R);
+  int info = qr_matrix_double(m, n, AQ, lda, R);
 
   env->ReleasePrimitiveArrayCritical(j_aq, AQ, 0);
   env->ReleasePrimitiveArrayCritical(j_r, R, 0);
@@ -156,7 +156,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qr
   auto *AQ = (float *)env->GetPrimitiveArrayCritical(j_aq, nullptr);
   auto *R = (float *)env->GetPrimitiveArrayCritical(j_r, nullptr);
 
-  int info = qr_matrix_complex(m, n, AQ, lda, R);
+  int info = qr_matrix_complex_float(m, n, AQ, lda, R);
 
   env->ReleasePrimitiveArrayCritical(j_aq, AQ, 0);
   env->ReleasePrimitiveArrayCritical(j_r, R, 0);
@@ -174,7 +174,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_qr
   auto *AQ = (double *)env->GetPrimitiveArrayCritical(j_aq, nullptr);
   auto *R = (double *)env->GetPrimitiveArrayCritical(j_r, nullptr);
 
-  int info = qr_matrix_complex(m, n, AQ, lda, R);
+  int info = qr_matrix_complex_double(m, n, AQ, lda, R);
 
   env->ReleasePrimitiveArrayCritical(j_aq, AQ, 0);
   env->ReleasePrimitiveArrayCritical(j_r, R, 0);
@@ -192,7 +192,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_pl
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *IPIV = (int *)env->GetPrimitiveArrayCritical(j_ipiv, nullptr);
 
-  int info = plu_matrix(m, n, A, lda, IPIV);
+  int info = plu_matrix_float(m, n, A, lda, IPIV);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_ipiv, IPIV, 0);
@@ -210,7 +210,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_pl
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *IPIV = (int *)env->GetPrimitiveArrayCritical(j_ipiv, nullptr);
 
-  int info = plu_matrix(m, n, A, lda, IPIV);
+  int info = plu_matrix_double(m, n, A, lda, IPIV);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_ipiv, IPIV, 0);
@@ -228,7 +228,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_pl
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *IPIV = (int *)env->GetPrimitiveArrayCritical(j_ipiv, nullptr);
 
-  int info = plu_matrix_complex(m, n, A, lda, IPIV);
+  int info = plu_matrix_complex_float(m, n, A, lda, IPIV);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_ipiv, IPIV, 0);
@@ -246,7 +246,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_pl
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *IPIV = (int *)env->GetPrimitiveArrayCritical(j_ipiv, nullptr);
 
-  int info = plu_matrix_complex(m, n, A, lda, IPIV);
+  int info = plu_matrix_complex_double(m, n, A, lda, IPIV);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_ipiv, IPIV, 0);
@@ -270,7 +270,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_ei
 	V = (float *)env->GetPrimitiveArrayCritical(j_v, nullptr);
   }
 
-  int info = eigen(n, A, W, (char)compute_v, V);
+  int info = eigen_float(n, A, W, (char)compute_v, V);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_w, W, 0);
@@ -297,7 +297,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_ei
 	V = (double *)env->GetPrimitiveArrayCritical(j_v, nullptr);
   }
 
-  int info = eigen(n, A, W, (char)compute_v, V);
+  int info = eigen_double(n, A, W, (char)compute_v, V);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_w, W, 0);
@@ -318,7 +318,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_so
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *B = (float *)env->GetPrimitiveArrayCritical(j_b, nullptr);
 
-  int info = solve_linear_system(n, nrhs, A, lda, B, ldb);
+  int info = solve_linear_system_float(n, nrhs, A, lda, B, ldb);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);
@@ -336,7 +336,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_so
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *B = (double *)env->GetPrimitiveArrayCritical(j_b, nullptr);
 
-  int info = solve_linear_system(n, nrhs, A, lda, B, ldb);
+  int info = solve_linear_system_double(n, nrhs, A, lda, B, ldb);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);
@@ -354,7 +354,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_so
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *B = (float *)env->GetPrimitiveArrayCritical(j_b, nullptr);
 
-  int info = solve_linear_system_complex(n, nrhs, A, lda, B, ldb);
+  int info = solve_linear_system_complex_float(n, nrhs, A, lda, B, ldb);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);
@@ -372,7 +372,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_so
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *B = (double *)env->GetPrimitiveArrayCritical(j_b, nullptr);
 
-  int info = solve_linear_system_complex(n, nrhs, A, lda, B, ldb);
+  int info = solve_linear_system_complex_double(n, nrhs, A, lda, B, ldb);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);
@@ -392,7 +392,7 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_do
   auto *B = (float *)env->GetPrimitiveArrayCritical(j_b, nullptr);
   auto *C = (float *)env->GetPrimitiveArrayCritical(j_c, nullptr);
 
-  matrix_dot(trans_a, offset_a, A, lda, m, n, k, trans_b, offset_b, B, ldb, C);
+  matrix_dot_float(trans_a, offset_a, A, lda, m, n, k, trans_b, offset_b, B, ldb, C);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);
@@ -411,7 +411,7 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_do
   auto *B = (double *)env->GetPrimitiveArrayCritical(j_b, nullptr);
   auto *C = (double *)env->GetPrimitiveArrayCritical(j_c, nullptr);
 
-  matrix_dot(trans_a, offset_a, A, lda, m, n, k, trans_b, offset_b, B, ldb, C);
+  matrix_dot_double(trans_a, offset_a, A, lda, m, n, k, trans_b, offset_b, B, ldb, C);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);
@@ -430,7 +430,7 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_do
   auto *B = (float *)env->GetPrimitiveArrayCritical(j_b, nullptr);
   auto *C = (float *)env->GetPrimitiveArrayCritical(j_c, nullptr);
 
-  matrix_dot_complex(trans_a, offset_a, A, lda, m, n, k, trans_b, offset_b, B, ldb, C);
+  matrix_dot_complex_float(trans_a, offset_a, A, lda, m, n, k, trans_b, offset_b, B, ldb, C);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);
@@ -449,7 +449,7 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_do
   auto *B = (double *)env->GetPrimitiveArrayCritical(j_b, nullptr);
   auto *C = (double *)env->GetPrimitiveArrayCritical(j_c, nullptr);
 
-  matrix_dot_complex(trans_a, offset_a, A, lda, m, n, k, trans_b, offset_b, B, ldb, C);
+  matrix_dot_complex_double(trans_a, offset_a, A, lda, m, n, k, trans_b, offset_b, B, ldb, C);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_b, B, 0);
@@ -468,7 +468,7 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_do
   auto *X = (float *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (float *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  matrix_dot(trans_a, offset_a, A, lda, m, n, X, incx, Y);
+  matrix_dot_vector_float(trans_a, offset_a, A, lda, m, n, X, incx, Y);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
@@ -487,7 +487,7 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_do
   auto *X = (double *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (double *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  matrix_dot(trans_a, offset_a, A, lda, m, n, X, incx, Y);
+  matrix_dot_vector_double(trans_a, offset_a, A, lda, m, n, X, incx, Y);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
@@ -506,7 +506,7 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_do
   auto *X = (float *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (float *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  matrix_dot_complex(trans_a, offset_a, A, lda, m, n, X, incx, Y);
+  matrix_dot_complex_vector_float(trans_a, offset_a, A, lda, m, n, X, incx, Y);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
@@ -525,7 +525,7 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_do
   auto *X = (double *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (double *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  matrix_dot_complex(trans_a, offset_a, A, lda, m, n, X, incx, Y);
+  matrix_dot_complex_vector_double(trans_a, offset_a, A, lda, m, n, X, incx, Y);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
@@ -542,7 +542,7 @@ JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg_
   auto *X = (float *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (float *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  float ret = vector_dot(n, X, incx, Y, incy);
+  float ret = vector_dot_float(n, X, incx, Y, incy);
 
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
   env->ReleasePrimitiveArrayCritical(j_y, Y, 0);
@@ -560,7 +560,7 @@ JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
   auto *X = (double *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (double *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  double ret = vector_dot(n, X, incx, Y, incy);
+  double ret = vector_dot_double(n, X, incx, Y, incy);
 
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
   env->ReleasePrimitiveArrayCritical(j_y, Y, 0);
@@ -578,7 +578,7 @@ JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *B = (float *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  openblas_complex_float cf = vector_dot_complex(n, A, incx, B, incy);
+  mk_complex_float cf = vector_dot_complex_float(n, A, incx, B, incy);
   jobject ret = newComplexFloat(env, cf.real, cf.imag);
 
   env->ReleasePrimitiveArrayCritical(j_x, A, 0);
@@ -597,7 +597,7 @@ JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_linalg_JniLinAlg
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *B = (double *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  openblas_complex_double cd = vector_dot_complex(n, A, incx, B, incy);
+  mk_complex_double cd = vector_dot_complex_double(n, A, incx, B, incy);
   jobject ret = newComplexDouble(env, cd.real, cd.imag);
 
   env->ReleasePrimitiveArrayCritical(j_x, A, 0);
