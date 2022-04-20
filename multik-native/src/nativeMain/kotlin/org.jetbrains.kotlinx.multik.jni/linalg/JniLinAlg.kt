@@ -2,7 +2,7 @@ package org.jetbrains.kotlinx.multik.jni.linalg
 
 import kotlinx.cinterop.toCValues
 import kotlinx.cinterop.useContents
-import org.jetbrains.kotlinx.multik.jni.*
+import org.jetbrains.kotlinx.multik.cinterop.*
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 

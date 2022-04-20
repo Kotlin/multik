@@ -6,6 +6,8 @@ plugins {
     kotlin("multiplatform")
 }
 
+apply(from = "$rootDir/gradle/multik_jni-cmake.gradle")
+
 kotlin {
     jvm {
         compilations.all {
@@ -44,14 +46,17 @@ kotlin {
         compilations.getByName("main") {
             cinterops {
                 val libmultik by creating {
-                    defFile(project.file(("src/cinterop/libmultik.def")))
-                    packageName("org.jetbrains.kotlinx.multik.jni")
-//                    extraOpts("-Xsource-compiler-option", "-I/Users/pavel.gorgulov/Projects/main_project/multik/multik-native/multik_jni/src/main/headers")
-//                    extraOpts("-Xsource-compiler-option", "-DONLY_C_LOCALE=1")
-                    extraOpts("-Xsource-compiler-option", "-std=c++17")
-//                    compilerOpts("-I/Users/pavel.gorgulov/Projects/main_project/multik/multik-native/multik_jni/src/main/headers")
-                    includeDirs("/Users/pavel.gorgulov/Projects/main_project/multik/multik-native/multik_jni/src/main/headers")
-//                    includeDirs.allHeaders("path")
+                    val cinteropDir = "$projectDir/cinterop"
+                    val headersDir = "$projectDir/multik_jni/src/main/headers/"
+                    val cppDir = "$projectDir/multik_jni/src/main/cpp"
+                    headers("$headersDir/mk_math.h", "$headersDir/mk_linalg.h")
+                    defFile(project.file(("$cinteropDir/libmultik.def")))
+
+                    extraOpts("-Xsource-compiler-option", "-std=c++14")
+                    extraOpts("-Xsource-compiler-option", "-I$headersDir")
+                    extraOpts("-Xsource-compiler-option", "-I$buildDir/cmake-build/openblas-install/include")
+                    extraOpts("-Xcompile-source", "$cppDir/mk_math.cpp")
+                    extraOpts("-Xcompile-source", "$cppDir/mk_linalg.cpp")
                 }
             }
         }

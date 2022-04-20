@@ -2,7 +2,7 @@ package org.jetbrains.kotlinx.multik.jni.math
 
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.toCValues
-import org.jetbrains.kotlinx.multik.jni.*
+import org.jetbrains.kotlinx.multik.cinterop.*
 
 internal actual object JniMath {
     actual fun argMin(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int =

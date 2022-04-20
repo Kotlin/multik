@@ -1,0 +1,27 @@
+def cmake_path = "${rootDir}/multik-native/multik_jni"
+def path_to_build = file("${buildDir}/cmake-build")
+
+task createBuildDir() {
+    mkdir(project.buildDir)
+    mkdir(file("${project.buildDir}/cmake-build"))
+}
+
+task config_cmake(dependsOn: createBuildDir) {
+    def type_build = "-DCMAKE_BUILD_TYPE=Release"
+    def gen = "CodeBlocks - Unix Makefiles"
+    doLast {
+        exec {
+            commandLine("cmake", type_build, "-G", gen, "-S", cmake_path, "-B", path_to_build)
+        }
+    }
+
+}
+
+
+task build_cmake(dependsOn: config_cmake) {
+    doLast {
+        exec {
+            commandLine("cmake", "--build", path_to_build, "--target", "all", "--", "-j", "12")
+        }
+    }
+}
