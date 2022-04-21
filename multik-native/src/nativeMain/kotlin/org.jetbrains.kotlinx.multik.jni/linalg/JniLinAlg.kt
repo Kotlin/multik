@@ -55,10 +55,10 @@ internal actual object JniLinAlg {
     actual fun pluC(m: Int, n: Int, a: DoubleArray, lda: Int, ipiv: IntArray): Int =
         plu_matrix_complex_double(m, n, a.toCValues(), lda, ipiv.toCValues())
 
-    actual fun eig(n: Int, a: FloatArray, w: FloatArray, computeV: Char, vr: FloatArray?): Int =
-        eigen_float(n, a.toCValues(), w.toCValues(), computeV.toByte(), vr?.toCValues())
-    actual fun eig(n: Int, a: DoubleArray, w: DoubleArray, computeV: Char, vr: DoubleArray?): Int =
-        eigen_double(n, a.toCValues(), w.toCValues(), computeV.toByte(), vr?.toCValues())
+    actual fun eig(n: Int, a: FloatArray, w: FloatArray, computeV: Char, vr: FloatArray?): Int = TODO()
+//        eigen_float(n, a.toCValues(), w.toCValues(), computeV.toByte(), vr?.toCValues())
+    actual fun eig(n: Int, a: DoubleArray, w: DoubleArray, computeV: Char, vr: DoubleArray?): Int = TODO()
+//        eigen_double(n, a.toCValues(), w.toCValues(), computeV.toByte(), vr?.toCValues())
 
     /**
      * @param n
@@ -134,6 +134,6 @@ internal actual object JniLinAlg {
         vector_dot_double(n, x.toCValues(), incX, y.toCValues(), incY)
     actual fun dotVVC(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): ComplexFloat =
         vector_dot_complex_float(n, x.toCValues(), incX, y.toCValues(), incY).useContents { ComplexFloat(real, imag) }
-    actual fun dotVVC(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): ComplexDouble=
+    actual fun dotVVC(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): ComplexDouble =
         vector_dot_complex_double(n, x.toCValues(), incX, y.toCValues(), incY).useContents { ComplexDouble(real, imag) }
 }
