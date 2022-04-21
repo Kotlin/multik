@@ -11,71 +11,121 @@ internal actual object JniMath {
         argmax(StableRef.create(arr).asCPointer(), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype)
 
     actual fun exp(arr: FloatArray, size: Int): Boolean {
-        array_exp_float(arr.toCValues(), size)
+        for (i in 0 until size) {
+            arr[i] = kotlin.math.exp(arr[i])
+        }
         return true
     }
     actual fun exp(arr: DoubleArray, size: Int): Boolean {
-        array_exp_double(arr.toCValues(), size)
+        for (i in 0 until size) {
+            arr[i] = kotlin.math.exp(arr[i])
+        }
         return true
     }
     actual fun expC(arr: FloatArray, size: Int): Boolean {
-        array_exp_complex_float(arr.toCValues(), size)
+        for (i in 0 until size step 2) {
+            val expReal = kotlin.math.exp(arr[i])
+            arr[i] = expReal * kotlin.math.cos(arr[i + 1])
+            arr[i + 1] = expReal * kotlin.math.sin(arr[i + 1])
+        }
         return true
     }
     actual fun expC(arr: DoubleArray, size: Int): Boolean {
-        array_exp_complex_double(arr.toCValues(), size)
+        for (i in 0 until size step 2) {
+            val expReal = kotlin.math.exp(arr[i])
+            arr[i] = expReal * kotlin.math.cos(arr[i + 1])
+            arr[i + 1] = expReal * kotlin.math.sin(arr[i + 1])
+        }
         return true
     }
 
 
     actual fun log(arr: FloatArray, size: Int): Boolean {
-        array_log_float(arr.toCValues(), size)
+        for (i in 0 until size) {
+            arr[i] = kotlin.math.ln(arr[i])
+        }
         return true
     }
     actual fun log(arr: DoubleArray, size: Int): Boolean {
-        array_log_double(arr.toCValues(), size)
+        for (i in 0 until size) {
+            arr[i] = kotlin.math.ln(arr[i])
+        }
         return true
     }
     actual fun logC(arr: FloatArray, size: Int): Boolean {
-        array_log_complex_float(arr.toCValues(), size)
+        for (i in 0 until size step 2) {
+            val abs = kotlin.math.sqrt(arr[i] * arr[i] + arr[i + 1] + arr[i + 1])
+            val angle = kotlin.math.atan2(arr[i + 1], arr[i])
+            arr[i] = abs
+            arr[i + 1] = angle
+        }
         return true
     }
     actual fun logC(arr: DoubleArray, size: Int): Boolean {
-        array_log_complex_double(arr.toCValues(), size)
+        for (i in 0 until size step 2) {
+            val abs = kotlin.math.sqrt(arr[i] * arr[i] + arr[i + 1] + arr[i + 1])
+            val angle = kotlin.math.atan2(arr[i + 1], arr[i])
+            arr[i] = abs
+            arr[i + 1] = angle
+        }
         return true
     }
 
     actual fun sin(arr: FloatArray, size: Int): Boolean {
-        array_log_float(arr.toCValues(), size)
+        for (i in 0 until size) {
+            arr[i] = kotlin.math.sin(arr[i])
+        }
         return true
     }
     actual fun sin(arr: DoubleArray, size: Int): Boolean {
-        array_log_double(arr.toCValues(), size)
+        for (i in 0 until size) {
+            arr[i] = kotlin.math.sin(arr[i])
+        }
         return true
     }
     actual fun sinC(arr: FloatArray, size: Int): Boolean {
-        array_log_complex_float(arr.toCValues(), size)
+        for (i in 0 until size step 2) {
+            val cosRe = kotlin.math.cos(arr[i])
+            arr[i] = kotlin.math.sin(arr[i]) * kotlin.math.cosh(arr[i + 1])
+            arr[i + 1] = cosRe * kotlin.math.sinh(arr[i + 1])
+        }
         return true
     }
     actual fun sinC(arr: DoubleArray, size: Int): Boolean {
-        array_log_complex_double(arr.toCValues(), size)
+        for (i in 0 until size step 2) {
+            val cosRe = kotlin.math.cos(arr[i])
+            arr[i] = kotlin.math.sin(arr[i]) * kotlin.math.cosh(arr[i + 1])
+            arr[i + 1] = cosRe * kotlin.math.sinh(arr[i + 1])
+        }
         return true
     }
 
     actual fun cos(arr: FloatArray, size: Int): Boolean {
-        array_cos_float(arr.toCValues(), size)
+        for (i in 0 until size) {
+            arr[i] = kotlin.math.cos(arr[i])
+        }
         return true
     }
     actual fun cos(arr: DoubleArray, size: Int): Boolean {
-        array_cos_double(arr.toCValues(), size)
+        for (i in 0 until size) {
+            arr[i] = kotlin.math.cos(arr[i])
+        }
         return true
     }
     actual fun cosC(arr: FloatArray, size: Int): Boolean {
-        array_cos_complex_float(arr.toCValues(), size)
+        for (i in 0 until size step 2) {
+            val sinRe = kotlin.math.sin(arr[i])
+            arr[i] = kotlin.math.cos(arr[i]) * kotlin.math.cosh(arr[i + 1])
+            arr[i + 1] = sinRe * kotlin.math.sinh(arr[i + 1])
+        }
         return true
     }
     actual fun cosC(arr: DoubleArray, size: Int): Boolean {
-        array_cos_complex_double(arr.toCValues(), size)
+        for (i in 0 until size step 2) {
+            val sinRe = kotlin.math.sin(arr[i])
+            arr[i] = kotlin.math.cos(arr[i]) * kotlin.math.cosh(arr[i + 1])
+            arr[i + 1] = sinRe * kotlin.math.sinh(arr[i + 1])
+        }
         return true
     }
 
