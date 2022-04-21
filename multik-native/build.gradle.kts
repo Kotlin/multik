@@ -2,6 +2,12 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
+import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
+import org.jetbrains.kotlin.konan.target.Architecture.ARM64
+import org.jetbrains.kotlin.konan.target.Architecture.X64
+import org.jetbrains.kotlin.konan.target.Family.*
+
 plugins {
     kotlin("multiplatform")
 }
@@ -18,45 +24,35 @@ kotlin {
             useJUnit()
         }
     }
-    mingwX64()
-    linuxX64()
-    macosX64 {
-        binaries {
-            framework {
-                baseName = "multik-native"
-            }
+    val hostOs = System.getProperty("os.name")
+    val hostArch = System.getProperty("os.arch")
+    val hostTarget = when {
+        hostOs == "Mac OS X" && hostArch == "x86_64" -> macosX64()
+        hostOs == "Mac OS X" && hostArch == "aarch64" -> {
+            macosArm64()
+            iosArm64()
         }
+        hostOs == "Linux" && hostArch == "x86_64" -> linuxX64()
+        hostOs.startsWith("Windows") && hostArch == "x86_64" -> mingwX64()
+        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
-    macosArm64 {
+
+
+    hostTarget.apply {
         binaries {
-            framework {
-                baseName = "multik-native"
-            }
-        }
-    }
-    iosArm64 {
-        binaries {
-            framework {
-                baseName = "multik-native"
-            }
+            framework { baseName = "multik-native" }
         }
     }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
         compilations.getByName("main") {
             cinterops {
-                val libmultik by creating {
-                    val cinteropDir = "$projectDir/cinterop"
-                    val headersDir = "$projectDir/multik_jni/src/main/headers/"
-                    val cppDir = "$projectDir/multik_jni/src/main/cpp"
-                    headers("$headersDir/mk_math.h", "$headersDir/mk_linalg.h")
-                    defFile(project.file(("$cinteropDir/libmultik.def")))
-
-                    extraOpts("-Xsource-compiler-option", "-std=c++14")
-                    extraOpts("-Xsource-compiler-option", "-I$headersDir")
-                    extraOpts("-Xsource-compiler-option", "-I$buildDir/cmake-build/openblas-install/include")
-                    extraOpts("-Xcompile-source", "$cppDir/mk_math.cpp")
-                    extraOpts("-Xcompile-source", "$cppDir/mk_linalg.cpp")
+                when {
+                    konanTarget.family == OSX && konanTarget.architecture == X64 -> settingCinteropMultik()
+                    konanTarget.family == LINUX && konanTarget.architecture == X64 -> settingCinteropMultik()
+                    konanTarget.family == MINGW && konanTarget.architecture == X64 -> settingCinteropMultik()
+                    konanTarget.family == OSX && konanTarget.architecture == ARM64 -> settingCinteropMultik()
+                    konanTarget.family == IOS && konanTarget.architecture == ARM64 -> settingCinteropMultik()
                 }
             }
         }
@@ -91,3 +87,20 @@ kotlin {
     }
 }
 
+tasks.withType(CInteropProcess::class.java).configureEach { dependsOn("build_cmake") }
+
+fun KotlinNativeCompilation.settingCinteropMultik() {
+    val libmultik by cinterops.creating {
+        val cinteropDir = "${projectDir}/cinterop"
+        val headersDir = "${projectDir}/multik_jni/src/main/headers/"
+        val cppDir = "${projectDir}/multik_jni/src/main/cpp"
+        headers("$headersDir/mk_math.h", "$headersDir/mk_linalg.h")
+        defFile(project.file(("$cinteropDir/libmultik.def")))
+
+        extraOpts("-Xsource-compiler-option", "-std=c++14")
+        extraOpts("-Xsource-compiler-option", "-I$headersDir")
+        extraOpts("-Xsource-compiler-option", "-I${buildDir}/cmake-build/openblas-install/include")
+        extraOpts("-Xcompile-source", "$cppDir/mk_math.cpp")
+        extraOpts("-Xcompile-source", "$cppDir/mk_linalg.cpp")
+    }
+}
