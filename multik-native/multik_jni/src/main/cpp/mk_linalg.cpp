@@ -18,12 +18,12 @@ double vector_dot_double(int n, double *X, int incx, double *Y, int incy) {
 
 mk_complex_float vector_dot_complex_float(int n, float *X, int incx, float *Y, int incy) {
   openblas_complex_float ret = cblas_cdotu(n, X, incx, Y, incy);
-  return mk_complex_float{ret.real, ret.imag};
+  return mk_complex_float{openblas_complex_float_real(ret), openblas_complex_float_imag(ret)};
 }
 
 mk_complex_double vector_dot_complex_double(int n, double *X, int incx, double *Y, int incy) {
   openblas_complex_double ret = cblas_zdotu(n, X, incx, Y, incy);
-  return mk_complex_double{ret.real, ret.imag};
+  return mk_complex_double{openblas_complex_double_real(ret), openblas_complex_double_imag(ret)};
 }
 
 int qr_matrix_float(int m, int n, float *AQ, int lda, float *R) {
