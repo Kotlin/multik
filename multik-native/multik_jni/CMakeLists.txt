@@ -8,8 +8,7 @@ set(PLATFORM ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR})
 #### PARAMETERS FOR OPENBLAS ####
 set(OPENBLAS_VERSION 0.3.20)
 
-#if (${PLATFORM} MATCHES "Windows-x86_64")
-if (${PLATFORM} MATCHES "Windows-x86_64")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}-x64.zip")
 else ()
     set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/v${OPENBLAS_VERSION}.zip")
@@ -36,7 +35,7 @@ elseif (${PLATFORM} MATCHES "Darwin-x86_64")
     set(FC "/usr/local/bin/gfortran-11")
     set(FEXTRALIB "-lgfortran")
     set(NO_AVX512 1)
-elseif (${PLATFORM} MATCHES "Windows-x86_64")
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     set(FC "gfortran -m64")
     set(FEXTRALIB "-lgfortran -lquadmath")
     set(NO_AVX512 1)
@@ -48,7 +47,7 @@ endif ()
 
 #### DOWNLOAD AND INSTALL OPENBLAS ####
 include(ExternalProject)
-if (${PLATFORM} MATCHES "Windows-x86_64")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     ExternalProject_Add(openblas
             URL                 ${URL_OPENBLAS}
             PREFIX              ${CMAKE_CURRENT_BINARY_DIR}/openblas
@@ -106,31 +105,26 @@ set(SRC_FILES_FOR_STATIC
         src/main/cpp/mk_linalg.cpp)
 ########################
 
-#### BUILD INTERMEDIATE STATIC LIBRARY ####
-add_library(static_multik_jni STATIC ${SRC_FILES_FOR_STATIC})
-target_compile_options(static_multik_jni PRIVATE -std=c++14
-                                                -O3
-                                                -fno-exceptions
-                                                -ffast-math)
-add_dependencies(static_multik_jni openblas)
-########################
-
 ### FIND GFORTRAN AND QUADMATH LIBRARIES ###
 if (${GCC_LIB_PATH})
     message("Path to gcc libs does not defined")
 endif ()
-find_library(LIB_GFORTRAN NAMES libgfortran.a PATHS ${GCC_LIB_PATH})
-if(NOT LIB_GFORTRAN)
-    message("don't find libgfotran.a")
-    set(LIB_GFORTRAN "${GCC_LIB_PATH}/libgfortran.a")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    set(LIB_GFORTRAN -static-libgfortran)
+else()
+    find_library(LIB_GFORTRAN NAMES libgfortran.a PATHS ${GCC_LIB_PATH})
+    if(NOT LIB_GFORTRAN)
+        message("don't find libgfotran.a")
+        set(LIB_GFORTRAN "${GCC_LIB_PATH}/libgfortran.a")
+    endif ()
 endif ()
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    set(LIB_GCC "-static-libgcc -static-libstdc++ -static -lpthread")
+else()
+    set(LIB_GCC "-static-libgcc")
+endif()
 set(LIB_QUADMATH "${GCC_LIB_PATH}/libquadmath.a")
-########################
 
-#### BUILD FAT STATIC LIBRARY ####
-add_custom_target(bundled_static_multik_jni
-        COMMAND libtool -static -o libmultik_jni.a $<TARGET_FILE:static_multik_jni> ${STATIC_OPENBLAS} ${LIB_GFORTRAN} ${LIB_QUADMATH} ${LIB_GCC}
-        )
 ########################
 
 #### Find JNI files ####
@@ -149,8 +143,10 @@ target_compile_options(multik_jni PRIVATE -std=c++14
                                                     -fno-exceptions
                                                     -ffast-math)
 target_include_directories(multik_jni PUBLIC ${JNI_INCLUDE_DIRS})
-target_link_libraries(multik_jni ${STATIC_OPENBLAS})
-target_link_libraries(multik_jni ${LIB_GFORTRAN})
-target_link_libraries(multik_jni ${LIB_QUADMATH})
-target_link_libraries(multik_jni -static-libgcc)
+target_link_libraries(multik_jni
+        ${STATIC_OPENBLAS}
+        ${LIB_GFORTRAN}
+        ${LIB_QUADMATH}
+        ${LIB_GCC}
+        )
 add_dependencies(multik_jni openblas)
