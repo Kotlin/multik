@@ -47,13 +47,13 @@ endif ()
 
 #### DOWNLOAD AND INSTALL OPENBLAS ####
 include(ExternalProject)
-find_program(MAKE_EXE NAMES make)
+find_program(MAKE_EXE NAMES make mingw32-make)
 ExternalProject_Add(openblas
         URL                 ${URL_OPENBLAS}
         PREFIX              ${CMAKE_CURRENT_BINARY_DIR}/openblas
         INSTALL_DIR         ${CMAKE_CURRENT_BINARY_DIR}/openblas-install
         CONFIGURE_COMMAND   ""
-        BUILD_COMMAND       make
+        BUILD_COMMAND       ${MAKE_EXE}
                             -C <SOURCE_DIR> -s -j
                             CC=${CC}
                             FC=${FC}
@@ -65,7 +65,7 @@ ExternalProject_Add(openblas
                             NO_AVX512=${NO_AVX512}
                             DYNAMIC_ARCH=${DYNAMIC_ARCH}
                             NUM_THREADS=${NUM_THREADS}
-        INSTALL_COMMAND     make -C <SOURCE_DIR> install PREFIX=<INSTALL_DIR> CC=${CC}
+        INSTALL_COMMAND     ${MAKE_EXE} -C <SOURCE_DIR> install PREFIX=<INSTALL_DIR> CC=${CC}
         )
 ########################
 

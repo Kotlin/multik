@@ -5,6 +5,10 @@ def cmake_c_compiler = System.getenv("CMAKE_C_COMPILER") ?: "gcc"
 def cmake_cxx_compiler = System.getenv("CMAKE_CXX_COMPILER") ?: "g++"
 def lib_gcc_path = System.getenv("GCC_LIB_Path") ?: ""
 
+static boolean isWindows() {
+    return System.getProperty('os.name').toLowerCase().contains('windows')
+}
+
 task createBuildDir() {
     mkdir(project.buildDir)
     mkdir(file("${project.buildDir}/cmake-build"))
@@ -12,7 +16,7 @@ task createBuildDir() {
 
 task config_cmake(dependsOn: createBuildDir) {
     def type_build = "-DCMAKE_BUILD_TYPE=Release"
-    def gen = "CodeBlocks - Unix Makefiles"
+    def gen = isWindows() ? "CodeBlocks - MinGW Makefiles" : "CodeBlocks - Unix Makefiles"
     def c_compiler = "-DCMAKE_C_COMPILER=$cmake_c_compiler"
     def cxx_compiler = "-DCMAKE_CXX_COMPILER=$cmake_cxx_compiler"
     def path_to_gcc_lib = "-DGCC_LIB_PATH=$lib_gcc_path"
