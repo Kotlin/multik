@@ -3,10 +3,6 @@ project(multik_jni)
 
 set(CMAKE_CXX_STANDARD 14)
 
-
-set(CMAKE_C_COMPILER gcc-11)
-set(CMAKE_CXX_COMPILER g++-11)
-
 set(PLATFORM ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR})
 
 #### PARAMETERS FOR OPENBLAS ####
@@ -18,7 +14,7 @@ else ()
     set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/v${OPENBLAS_VERSION}.zip")
 endif ()
 
-set(CC gcc)
+set(CC ${CMAKE_C_COMPILER})
 set(HOSTCC gcc)
 set(BINARY 64)
 set(F_COMPILER GFORTRAN)
@@ -105,10 +101,14 @@ add_dependencies(static_multik_jni openblas)
 ########################
 
 ### FIND GFORTRAN AND QUADMATH LIBRARIES ###
-if (NOT DEFINED ${GCC_LIB_PATH})
+if (${GCC_LIB_PATH})
     message("Path to gcc libs does not defined")
 endif ()
-find_library(LIB_GFORTRAN NAMES libgfortran.a PATHS ${GCC_LIB_PATH} REQUIRED)
+find_library(LIB_GFORTRAN NAMES libgfortran.a PATHS ${GCC_LIB_PATH})
+if(NOT LIB_GFORTRAN)
+    message("don't find libgfotran.a")
+    set(LIB_GFORTRAN "${GCC_LIB_PATH}/libgfortran.a")
+endif ()
 set(LIB_QUADMATH "${GCC_LIB_PATH}/libquadmath.a")
 ########################
 

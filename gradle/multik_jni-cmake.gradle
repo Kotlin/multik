@@ -3,7 +3,7 @@ def path_to_build = file("${buildDir}/cmake-build")
 
 def cmake_c_compiler = System.getenv("CMAKE_C_COMPILER") ?: "gcc"
 def cmake_cxx_compiler = System.getenv("CMAKE_CXX_COMPILER") ?: "g++"
-def lib_gcc_path = System.getenv("GCC_LIB_Path") ?: "/usr/local/Cellar/gcc/11.2.0_3/lib/gcc/11"
+def lib_gcc_path = System.getenv("GCC_LIB_Path") ?: ""
 
 task createBuildDir() {
     mkdir(project.buildDir)
@@ -20,12 +20,12 @@ task config_cmake(dependsOn: createBuildDir) {
         exec {
             commandLine("cmake",
                     type_build,
+                    c_compiler,
+                    cxx_compiler,
+                    path_to_gcc_lib,
                     "-G", gen,
                     "-S", cmake_path,
                     "-B", path_to_build,
-                    c_compiler,
-                    cxx_compiler,
-                    path_to_gcc_lib
             )
         }
     }
