@@ -27,21 +27,26 @@ kotlin {
     val hostOs = System.getProperty("os.name")
     val hostArch = System.getProperty("os.arch")
     val hostTarget = when {
-        hostOs == "Mac OS X" && hostArch == "x86_64" -> macosX64()
+        hostOs == "Mac OS X" && hostArch == "x86_64" -> macosX64 {
+            binaries {
+                framework { baseName = "multik-native" }
+            }
+        }
         hostOs == "Mac OS X" && hostArch == "aarch64" -> {
-            macosArm64()
-            iosArm64()
+            macosArm64 {
+                binaries {
+                    framework { baseName = "multik-native" }
+                }
+            }
+            iosArm64 {
+                        binaries {
+            framework { baseName = "multik-native" }
+        }
+            }
         }
         hostOs == "Linux" -> linuxX64()
         hostOs.startsWith("Windows") -> mingwX64()
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
-
-
-    hostTarget.apply {
-        binaries {
-            framework { baseName = "multik-native" }
-        }
     }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
