@@ -8,6 +8,7 @@ set(PLATFORM ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR})
 #### PARAMETERS FOR OPENBLAS ####
 set(OPENBLAS_VERSION 0.3.20)
 
+#if (${PLATFORM} MATCHES "Windows-x86_64")
 if (${PLATFORM} MATCHES "Windows-x86_64")
     set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}-x64.zip")
 else ()
@@ -47,31 +48,45 @@ endif ()
 
 #### DOWNLOAD AND INSTALL OPENBLAS ####
 include(ExternalProject)
-find_program(MAKE_EXE NAMES make mingw32-make)
-ExternalProject_Add(openblas
-        URL                 ${URL_OPENBLAS}
-        PREFIX              ${CMAKE_CURRENT_BINARY_DIR}/openblas
-        INSTALL_DIR         ${CMAKE_CURRENT_BINARY_DIR}/openblas-install
-        CONFIGURE_COMMAND   ""
-        BUILD_COMMAND       ${MAKE_EXE}
-                            -C <SOURCE_DIR> -s -j
-                            CC=${CC}
-                            FC=${FC}
-                            HOSTCC=${HOSTCC}
-                            BINARY=${BINARY}
-                            F_COMPILER=${F_COMPILER}
-                            FEXTRALIB=${FEXTRALIB}
-                            USE_OPENMP=${USE_OPENMP}
-                            NO_AVX512=${NO_AVX512}
-                            DYNAMIC_ARCH=${DYNAMIC_ARCH}
-                            NUM_THREADS=${NUM_THREADS}
-        INSTALL_COMMAND     ${MAKE_EXE} -C <SOURCE_DIR> install PREFIX=<INSTALL_DIR> CC=${CC}
-        )
-########################
+if (${PLATFORM} MATCHES "Windows-x86_64")
+    ExternalProject_Add(openblas
+            URL                 ${URL_OPENBLAS}
+            PREFIX              ${CMAKE_CURRENT_BINARY_DIR}/openblas
+            SOURCE_DIR          ${CMAKE_CURRENT_BINARY_DIR}/openblas-install
+            CONFIGURE_COMMAND   ""
+            BUILD_COMMAND       ""
+            INSTALL_COMMAND     ""
+            )
+    #### INCLUDE OPENBLAS ####
+    ExternalProject_Get_property(openblas SOURCE_DIR)
+    set(OPENBLAS_INSTALL_DIR ${SOURCE_DIR})
+    ########################
+else ()
+    find_program(MAKE_EXE NAMES make mingw32-make)
+    ExternalProject_Add(openblas
+            URL                 ${URL_OPENBLAS}
+            PREFIX              ${CMAKE_CURRENT_BINARY_DIR}/openblas
+            INSTALL_DIR         ${CMAKE_CURRENT_BINARY_DIR}/openblas-install
+            CONFIGURE_COMMAND   ""
+            BUILD_COMMAND       ${MAKE_EXE}
+                                -C <SOURCE_DIR> -s -j
+                                CC=${CC}
+                                FC=${FC}
+                                HOSTCC=${HOSTCC}
+                                BINARY=${BINARY}
+                                F_COMPILER=${F_COMPILER}
+                                FEXTRALIB=${FEXTRALIB}
+                                USE_OPENMP=${USE_OPENMP}
+                                NO_AVX512=${NO_AVX512}
+                                DYNAMIC_ARCH=${DYNAMIC_ARCH}
+                                NUM_THREADS=${NUM_THREADS}
+            INSTALL_COMMAND     ${MAKE_EXE} -C <SOURCE_DIR> install PREFIX=<INSTALL_DIR> CC=${CC}
+            )
+    #### INCLUDE OPENBLAS ####
+    ExternalProject_Get_property(openblas INSTALL_DIR)
+    set(OPENBLAS_INSTALL_DIR ${INSTALL_DIR})
+endif()
 
-#### INCLUDE OPENBLAS ####
-ExternalProject_Get_property(openblas INSTALL_DIR)
-set(OPENBLAS_INSTALL_DIR ${INSTALL_DIR})
 include_directories(${OPENBLAS_INSTALL_DIR}/include)
 set(STATIC_OPENBLAS ${OPENBLAS_INSTALL_DIR}/lib/libopenblas.a)
 ########################
