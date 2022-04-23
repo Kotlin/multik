@@ -119,11 +119,12 @@ else()
     endif ()
 endif ()
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    set(LIB_QUADMATH "/msys64/mingw64/lib/libquadmath.a")
     set(LIB_GCC "-static-libgcc -static-libstdc++ -static -lpthread")
 else()
+    set(LIB_QUADMATH "${GCC_LIB_PATH}/libquadmath.a")
     set(LIB_GCC "-static-libgcc")
 endif()
-set(LIB_QUADMATH "${GCC_LIB_PATH}/libquadmath.a")
 
 ########################
 
