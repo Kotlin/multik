@@ -62,7 +62,7 @@ public abstract class Engine {
         override val type: EngineType
             get() = throw EngineMultikException("For a companion object, the type is undefined.")
 
-        internal fun getDefaultEngine(): String? = defaultEngine?.name
+        internal fun getDefaultEngine(): String? = defaultEngine?.name ?: loadEngine().let { defaultEngine?.name }
 
         internal fun setDefaultEngine(type: EngineType) {
             if (!enginesProvider.containsKey(type)) throw EngineMultikException("This type of engine is not available.")
