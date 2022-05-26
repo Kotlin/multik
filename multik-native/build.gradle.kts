@@ -38,11 +38,6 @@ kotlin {
                     framework { baseName = "multik-native" }
                 }
             }
-            iosArm64 {
-                        binaries {
-            framework { baseName = "multik-native" }
-        }
-            }
         }
         hostOs == "Linux" -> linuxX64()
         hostOs.startsWith("Windows") -> mingwX64()
