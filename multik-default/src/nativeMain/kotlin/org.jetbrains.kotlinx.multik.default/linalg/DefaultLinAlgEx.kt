@@ -6,7 +6,6 @@ package org.jetbrains.kotlinx.multik.default.linalg
 
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.linalg.dot
-import org.jetbrains.kotlinx.multik.jni.JvmNativeEngine
 import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlg
 import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlgEx
 import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlg
@@ -16,9 +15,6 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public actual object DefaultLinAlgEx : LinAlgEx {
-    init {
-        JvmNativeEngine()
-    }
 
     actual override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> = NativeLinAlgEx.inv(mat)
 

@@ -5,7 +5,6 @@
 package org.jetbrains.kotlinx.multik.default.math
 
 import org.jetbrains.kotlinx.multik.api.math.MathEx
-import org.jetbrains.kotlinx.multik.jni.JvmNativeEngine
 import org.jetbrains.kotlinx.multik.jni.math.NativeMathEx
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
@@ -14,9 +13,6 @@ import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
 public actual object DefaultMathEx : MathEx {
-    init {
-        JvmNativeEngine()
-    }
 
     actual override fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): NDArray<Double, D> = NativeMathEx.exp(a)
     actual override fun <D : Dimension> expF(a: MultiArray<Float, D>): NDArray<Float, D> = NativeMathEx.expF(a)
