@@ -48,7 +48,7 @@ kotlin {
     val hostOs = System.getProperty("os.name")
     val hostArch = System.getProperty("os.arch")
     val hostTarget = when {
-        hostOs == "Mac OS X" && hostArch == "X86_64" -> macosX64 {
+        hostOs == "Mac OS X" && hostArch == "x86_64" -> macosX64 {
             binaries { framework { baseName = "multik-default" } }
         }
         hostOs == "Mac OS X" && hostArch == "aarch64" -> macosArm64 {

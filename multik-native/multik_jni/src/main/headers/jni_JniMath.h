@@ -153,18 +153,18 @@ JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_jni_math_JniMath_co
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_math_JniMath
- * Method:    max
+ * Method:    array_max
  * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_math_JniMath_max
+JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_math_JniMath_array_1max
 	(JNIEnv *, jobject, jobject, jint, jint, jintArray, jintArray, jint);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_jni_math_JniMath
- * Method:    min
+ * Method:    array_min
  * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_math_JniMath_min
+JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_jni_math_JniMath_array_1min
 	(JNIEnv *, jobject, jobject, jint, jint, jintArray, jintArray, jint);
 
 /*
