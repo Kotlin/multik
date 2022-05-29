@@ -23,15 +23,6 @@ kotlin {
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
-        //        val jvmJar by tasks.getting(org.gradle.jvm.tasks.Jar::class) {
-//            doFirst {
-//                manifest {
-//                    attributes["Implementation-Title"] = project.name
-//                    attributes["Implementation-Version"] = project.version
-//                }
-//                from(configurations.getByName("runtimeClasspath").map { if (it.isDirectory) it else zipTree(it) })
-//            }
-//        }
         val jvmTest by tasks.getting(Test::class) {
             systemProperty("java.library.path", "$buildDir/cmake-build")
         }
