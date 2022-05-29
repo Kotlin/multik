@@ -23,6 +23,18 @@ kotlin {
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
+        //        val jvmJar by tasks.getting(org.gradle.jvm.tasks.Jar::class) {
+//            doFirst {
+//                manifest {
+//                    attributes["Implementation-Title"] = project.name
+//                    attributes["Implementation-Version"] = project.version
+//                }
+//                from(configurations.getByName("runtimeClasspath").map { if (it.isDirectory) it else zipTree(it) })
+//            }
+//        }
+        val jvmTest by tasks.getting(Test::class) {
+            systemProperty("java.library.path", "$buildDir/cmake-build")
+        }
     }
     val hostOs = System.getProperty("os.name")
     val hostArch = System.getProperty("os.arch")
@@ -32,11 +44,9 @@ kotlin {
                 framework { baseName = "multik-native" }
             }
         }
-        hostOs == "Mac OS X" && hostArch == "aarch64" -> {
-            macosArm64 {
-                binaries {
-                    framework { baseName = "multik-native" }
-                }
+        hostOs == "Mac OS X" && hostArch == "aarch64" -> macosArm64 {
+            binaries {
+                framework { baseName = "multik-native" }
             }
         }
         hostOs == "Linux" -> linuxX64()

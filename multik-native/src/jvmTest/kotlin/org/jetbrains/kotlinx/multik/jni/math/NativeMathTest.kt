@@ -22,7 +22,7 @@ class NativeMathTest {
 
     @BeforeTest
     fun load() {
-        libLoader("multik_jni").manualLoad("/Users/pavel.gorgulov/Projects/main_project/multik/multik-native/multik_jni/build/lib/main/debug/macos")
+        libLoader("multik_jni").manualLoad()
 
         data = DataStructure(42)
         ndarray = data.getFloatM(2)
