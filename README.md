@@ -43,7 +43,11 @@ dependencies {
 }
 ```
 
+If using Android Studio, you may need to go `File -> Invalidate Caches -> Restart` in order for the IDE to recognise MultiK.
+
 ## Quickstart
+
+Import MultiK with `import org.jetbrains.kotlinx.multik.api.*`
 
 Visit [Multik documentation](https://kotlin.github.io/multik) for a detailed feature overview.
 
