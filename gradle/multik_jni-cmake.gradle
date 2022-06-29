@@ -1,5 +1,30 @@
+
 def cmake_path = "${rootDir}/multik-native/multik_jni"
 def path_to_build = file("${buildDir}/cmake-build")
+
+def String getTargetOSAndArch() {
+    String hostOs = System.getProperty('os.name').toLowerCase()
+    String hostArch = System.getProperty('os.arch').toLowerCase()
+    if (hostOs == "mac os x" && hostArch == "x86_64")
+        return 'macosX64'
+    else if(hostOs == "mac os x" && hostArch == "aarch64")
+        return 'macosArm64'
+    else if(hostOs == "linux")
+        return 'linuxX64'
+    else if(hostOs.startsWith("windows"))
+        return 'mingwX64'
+    else
+        throw GradleException("""
+        Failed to detect platform. Please use the following platforms:
+            macosX64
+            macosArm64
+            linuxX64
+            mingwX64 (Windows X64 with mingw)
+        Or specify explicitly, for example `export androidArm64`
+                """)
+}
+
+def targetOS = System.getenv("TARGET_OS") ?: getTargetOSAndArch()
 
 def cmake_c_compiler = System.getenv("CMAKE_C_COMPILER") ?: "gcc"
 def cmake_cxx_compiler = System.getenv("CMAKE_CXX_COMPILER") ?: "g++"
@@ -27,6 +52,7 @@ task config_cmake(dependsOn: createBuildDir) {
                     c_compiler,
                     cxx_compiler,
                     path_to_gcc_lib,
+                    "-DTARGET_OS=$targetOS",
                     "-G", gen,
                     "-S", cmake_path,
                     "-B", path_to_build,
@@ -40,7 +66,7 @@ task config_cmake(dependsOn: createBuildDir) {
 task build_cmake(dependsOn: config_cmake) {
     doLast {
         exec {
-            commandLine("cmake", "--build", path_to_build, "--target", "multik_jni", "--", "-j", "12")
+            commandLine("cmake", "--build", path_to_build, "--target", "multik_jni-$targetOS", "--", "-j", "12")
         }
     }
 }
