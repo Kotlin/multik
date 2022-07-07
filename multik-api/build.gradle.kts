@@ -4,7 +4,6 @@
 
 plugins {
     kotlin("multiplatform")
-    id("maven-publish")
     val dokka_version: String by System.getProperties()
 
     id("org.jetbrains.dokka") version dokka_version
