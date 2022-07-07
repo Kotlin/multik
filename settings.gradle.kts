@@ -10,5 +10,4 @@ include(
     ":multik-default",
     ":multik-jvm",
     ":multik-native",
-    "multik-native:multik_jni",
 )

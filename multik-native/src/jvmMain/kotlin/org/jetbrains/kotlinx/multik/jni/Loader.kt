@@ -16,9 +16,10 @@ internal class JvmLoader(private val name: String) : Loader {
     private val os: String by lazy {
         val osProperty: String = System.getProperty("os.name").lowercase()
         when {
-            osProperty.contains("mac") -> "darwin"
+            osProperty.contains("mac") -> "macos"
+            System.getProperty("java.vm.name").contains("Dalvik") -> "android"
             osProperty.contains("nux") -> "linux"
-            osProperty.contains("win") -> "win"
+            osProperty.contains("win") -> "mingw"
             else -> error("Unsupported operating system: $osProperty")
         }
     }
@@ -26,7 +27,8 @@ internal class JvmLoader(private val name: String) : Loader {
     // TODO(add different arch)
     private val arch: String
         get() = when (val arch: String = System.getProperty("os.arch")) {
-            "amd64", "x86_64" -> "x86_64"
+            "amd64", "x86_64" -> "x64"
+            "arm64", "aarch64" -> "arm64"
             else -> error("Unsupported architecture: $arch")
         }
 
@@ -39,8 +41,9 @@ internal class JvmLoader(private val name: String) : Loader {
 
     private val nativeNameLib = buildString {
         append(name)
-//        append("$os.")
-//        append(arch)
+        append('-')
+        append(os)
+        append(arch)
     }
 
     override fun load(): Boolean {
@@ -65,9 +68,9 @@ internal class JvmLoader(private val name: String) : Loader {
 
     override fun manualLoad(javaPath: String?): Boolean {
         if (javaPath.isNullOrEmpty()) {
-            System.loadLibrary(name)
+            System.loadLibrary(nativeNameLib)
         } else {
-            val libFullName = System.mapLibraryName(name)
+            val libFullName = System.mapLibraryName(nativeNameLib)
             val fullPath = if (os == "win") "$javaPath\\$libFullName" else "$javaPath/$libFullName"
             System.load(fullPath)
         }

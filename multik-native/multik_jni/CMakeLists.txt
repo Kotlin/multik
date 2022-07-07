@@ -2,13 +2,16 @@ cmake_minimum_required(VERSION 3.16)
 project(multik_jni)
 
 set(CMAKE_CXX_STANDARD 14)
-
 set(PLATFORM ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR})
+
+if (NOT DEFINED TARGET_OS)
+    set(TARGET_OS ${PLATFORM})
+endif ()
 
 #### PARAMETERS FOR OPENBLAS ####
 set(OPENBLAS_VERSION 0.3.20)
 
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+if (${TARGET_OS} STREQUAL "mingwX64" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}-x64.zip")
 else ()
     set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/v${OPENBLAS_VERSION}.zip")
@@ -18,31 +21,42 @@ set(CC ${CMAKE_C_COMPILER})
 set(HOSTCC gcc)
 set(BINARY 64)
 set(F_COMPILER GFORTRAN)
+set(CROSS_SUFFIX )
 set(USE_OPENMP 0)
-set(DYNAMIC_ARCH 1)
 set(NUM_THREADS 64)
 
-if (${PLATFORM} MATCHES "android-arm64")
-elseif (${PLATFORM} MATCHES "ios-arm")
-elseif (${PLATFORM} MATCHES "ios-arm64")
-elseif (${PLATFORM} MATCHES "Linux-x86_64")
+if (${TARGET_OS} MATCHES "androidArm64")
+    set(suffix androidArm64)
+    set(CC aarch64-linux-android-gcc)
+    set(FC aarch64-linux-android-gfortran)
+    set(CROSS_SUFFIX aarch64-linux-android-)
+    set(NO_AVX512 1)
+elseif (${TARGET_OS} MATCHES "linuxX64")
+    set(suffix linuxX64)
     set(FC "gfortran -m64")
     set(FEXTRALIB -lgfortran)
     set(NO_AVX512 0)
-elseif (${PLATFORM} MATCHES "Darwin-arm64")
+    set(DYNAMIC_ARCH 1)
+elseif (${TARGET_OS} MATCHES "macosArm64" OR ${PLATFORM} MATCHES "Darwin-arm64")
+    set(suffix macosArm64)
     set(CC "/opt/homebrew/bin/gcc-11")
     set(FC "/opt/homebrew/bin/gfortran-11")
     set(FEXTRALIB "-lgfortran")
     set(NO_AVX512 1)
-elseif (${PLATFORM} MATCHES "Darwin-x86_64")
+    set(DYNAMIC_ARCH 1)
+elseif (${TARGET_OS} MATCHES "macosX64" OR ${PLATFORM} MATCHES "Darwin-x86_64")
+    set(suffix macosX64)
     set(CC "/usr/local/bin/gcc-11")
     set(FC "/usr/local/bin/gfortran-11")
     set(FEXTRALIB "-lgfortran")
     set(NO_AVX512 1)
-elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+    set(DYNAMIC_ARCH 1)
+elseif (${TARGET_OS} MATCHES "mingwX64")
+    set(suffix mingwX64)
     set(FC "gfortran -m64")
     set(FEXTRALIB "-lgfortran -lquadmath")
     set(NO_AVX512 1)
+    set(DYNAMIC_ARCH 1)
 else()
     message(SEND_ERROR "Platform ${PLATFORM} is not supported")
     return()
@@ -51,7 +65,7 @@ endif ()
 
 #### DOWNLOAD AND INSTALL OPENBLAS ####
 include(ExternalProject)
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+if (${TARGET_OS} STREQUAL "mingwX64")
     ExternalProject_Add(openblas
             URL                 ${URL_OPENBLAS}
             PREFIX              ${CMAKE_CURRENT_BINARY_DIR}/openblas
@@ -72,7 +86,8 @@ else ()
             INSTALL_DIR         ${CMAKE_CURRENT_BINARY_DIR}/openblas-install
             CONFIGURE_COMMAND   ""
             BUILD_COMMAND       ${MAKE_EXE}
-                                -C <SOURCE_DIR> -s -j
+                                -C <SOURCE_DIR> -s
+                                CROSS_SUFFIX=${CROSS_SUFFIX}
                                 CC=${CC}
                                 FC=${FC}
                                 HOSTCC=${HOSTCC}
@@ -122,9 +137,11 @@ else()
         set(LIB_GFORTRAN "${GCC_LIB_PATH}/libgfortran.a")
     endif ()
 endif ()
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
+if (${TARGET_OS} STREQUAL "mingwX64")
     set(LIB_QUADMATH "/msys64/mingw64/lib/libquadmath.a")
     set(LIB_GCC "-static-libgcc -static-libstdc++ -static -lpthread")
+elseif(${TARGET_OS} STREQUAL "androidArm64")
+    set(LIB_GCC "-static-libgcc -static-libstdc++")
 else()
     set(LIB_QUADMATH "${GCC_LIB_PATH}/libquadmath.a")
     set(LIB_GCC "-static-libgcc")
@@ -133,25 +150,25 @@ endif()
 ########################
 
 #### Find JNI files ####
-find_package(JNI REQUIRED)
-if (NOT JNI_FOUND)
-    message(SEND_ERROR "Failed to find JNI")
-    return()
+if (NOT ${TARGET_OS} STREQUAL androidArm64)
+    find_package(JNI REQUIRED)
 endif ()
 ########################
 
 #### BUILD SHARED LIBRARY ####
-add_library(multik_jni SHARED ${SRC_FILES_FOR_SHARED})
-target_compile_options(multik_jni PRIVATE -std=c++14
+set(LIB_NAME multik_jni-${suffix})
+
+add_library(${LIB_NAME} SHARED ${SRC_FILES_FOR_SHARED})
+target_compile_options(${LIB_NAME} PRIVATE -std=c++14
                                                     -fPIC
                                                     -O3
                                                     -fno-exceptions
                                                     -ffast-math)
-target_include_directories(multik_jni PUBLIC ${JNI_INCLUDE_DIRS})
-target_link_libraries(multik_jni
+target_include_directories(${LIB_NAME} PUBLIC ${JNI_INCLUDE_DIRS})
+target_link_libraries(${LIB_NAME} optimized
         ${STATIC_OPENBLAS}
         ${LIB_GFORTRAN}
         ${LIB_QUADMATH}
         ${LIB_GCC}
         )
-add_dependencies(multik_jni openblas)
+add_dependencies(${LIB_NAME} openblas)

@@ -9,33 +9,30 @@ apply from: project.rootProject.file('gradle/maven-metadata.gradle')
 def sonatypeUser = System.getenv('SONATYPE_USER')
 def sonatypePassword = System.getenv('SONATYPE_PASSWORD')
 
-task sourcesJar(type: Jar) {
-    classifier 'sources'
-    from sourceSets.main.allSource
-}
-
 task javadocJar(type: Jar) {
-    classifier 'javadoc'
-    from javadoc
-}
-
-nexusStaging {
-    username sonatypeUser
-    password sonatypePassword
-    packageGroup project.group.toString()
-    repositoryDescription "kotlinx.multik staging repository, version: $version"
+    archiveClassifier = 'javadoc'
 }
 
 publishing {
-    publications {
-        maven(MavenPublication) {
+    def variantName = "${project.name}"
+    publications.all {
+        def type = it.name
+            switch (type) {
+                case 'kotlinMultiplatform':
+                    it.artifactId = variantName
+                    apply from: "$rootDir/gradle/publish-mpp-root-module-in-platform.gradle"
+                    break
+                case 'metadata':
+                case 'jvm':
+                case 'js':
+                    it.artifactId = "$variantName-$type"
+                    break
+            }
             pom.withXml(configureMavenCentralMetadata)
-            from components.java
             groupId project.group
-            artifactId project.name
             version project.version
-            artifact sourcesJar { classifier "sources" }
-            artifact javadocJar { classifier "javadoc" }
+        if (name != "kotlinMultiplatform") {
+            artifact javadocJar
         }
     }
     repositories {
