@@ -4,6 +4,8 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
+import kotlin.jvm.JvmInline
+
 /**
  * Marker class. Serves to share slice and simple indexes.
  */
@@ -105,7 +107,8 @@ public val Int.r: RInt get() = RInt(this)
 /**
  * Helper class for indexing. Since the standard rangeTo overrides the rangeTo for slices.
  */
-public inline class RInt(internal val data: Int) : Indexing {
+@JvmInline
+public value class RInt(internal val data: Int) : Indexing {
 
     public operator fun plus(r: RInt): RInt = RInt(this.data + r.data)
     public operator fun minus(r: RInt): RInt = RInt(this.data - r.data)
