@@ -24,7 +24,6 @@ internal class JvmLoader(private val name: String) : Loader {
         }
     }
 
-    // TODO(add different arch)
     private val arch: String
         get() = when (val arch: String = System.getProperty("os.arch")) {
             "amd64", "x86_64" -> "x64"
@@ -40,6 +39,8 @@ internal class JvmLoader(private val name: String) : Loader {
 
 
     private val nativeNameLib = buildString {
+        if (os == "mingw")
+            append("lib")
         append(name)
         append('-')
         append(os)
