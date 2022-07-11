@@ -2,11 +2,8 @@
  * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeCompilation
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
-import org.jetbrains.kotlin.konan.target.Architecture.ARM64
-import org.jetbrains.kotlin.konan.target.Architecture.X64
-import org.jetbrains.kotlin.konan.target.Family.*
+import org.jetbrains.kotlin.konan.target.Family.LINUX
 
 plugins {
     kotlin("multiplatform")
@@ -45,15 +42,28 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
+    hostTarget.apply {
         compilations.getByName("main") {
             cinterops {
-                when {
-                    konanTarget.family == OSX && konanTarget.architecture == X64 -> settingCinteropMultik("osxX64")
-                    konanTarget.family == LINUX && konanTarget.architecture == X64 -> settingCinteropMultik("linux")
-                    konanTarget.family == MINGW && konanTarget.architecture == X64 -> settingCinteropMultik("mingw")
-                    konanTarget.family == OSX && konanTarget.architecture == ARM64 -> settingCinteropMultik("osxArm64")
-                    konanTarget.family == IOS && konanTarget.architecture == ARM64 -> settingCinteropMultik("iosArm64")
+                val libmultik by creating {
+                    val cinteropDir = "${projectDir}/cinterop"
+                    val headersDir = "${projectDir}/multik_jni/src/main/headers/"
+                    val cppDir = "${projectDir}/multik_jni/src/main/cpp"
+                    headers("$headersDir/mk_math.h", "$headersDir/mk_linalg.h")
+                    defFile(project.file(("$cinteropDir/libmultik.def")))
+
+                    when (konanTarget.family) {
+                        LINUX -> extraOpts("-Xsource-compiler-option", "-DFORCE_OPENBLAS_COMPLEX_STRUCT=1")
+                        else -> {
+                            // Nothing
+                        }
+                    }
+
+                    extraOpts("-Xsource-compiler-option", "-std=c++14")
+                    extraOpts("-Xsource-compiler-option", "-I$headersDir")
+                    extraOpts("-Xsource-compiler-option", "-I${buildDir}/cmake-build/openblas-install/include")
+                    extraOpts("-Xcompile-source", "$cppDir/mk_math.cpp")
+                    extraOpts("-Xcompile-source", "$cppDir/mk_linalg.cpp")
                 }
             }
         }
@@ -89,23 +99,3 @@ kotlin {
 }
 
 tasks.withType(CInteropProcess::class.java).configureEach { dependsOn("build_cmake") }
-
-fun KotlinNativeCompilation.settingCinteropMultik(osName: String) {
-    val libmultik by cinterops.creating {
-        val cinteropDir = "${projectDir}/cinterop"
-        val headersDir = "${projectDir}/multik_jni/src/main/headers/"
-        val cppDir = "${projectDir}/multik_jni/src/main/cpp"
-        headers("$headersDir/mk_math.h", "$headersDir/mk_linalg.h")
-        defFile(project.file(("$cinteropDir/libmultik.def")))
-
-        when (osName) {
-            "linux" -> extraOpts("-Xsource-compiler-option", "-DFORCE_OPENBLAS_COMPLEX_STRUCT=1")
-        }
-
-        extraOpts("-Xsource-compiler-option", "-std=c++14")
-        extraOpts("-Xsource-compiler-option", "-I$headersDir")
-        extraOpts("-Xsource-compiler-option", "-I${buildDir}/cmake-build/openblas-install/include")
-        extraOpts("-Xcompile-source", "$cppDir/mk_math.cpp")
-        extraOpts("-Xcompile-source", "$cppDir/mk_linalg.cpp")
-    }
-}
