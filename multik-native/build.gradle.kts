@@ -49,11 +49,11 @@ kotlin {
         compilations.getByName("main") {
             cinterops {
                 when {
-                    konanTarget.family == OSX && konanTarget.architecture == X64 -> settingCinteropMultik()
-                    konanTarget.family == LINUX && konanTarget.architecture == X64 -> settingCinteropMultik()
-                    konanTarget.family == MINGW && konanTarget.architecture == X64 -> settingCinteropMultik()
-                    konanTarget.family == OSX && konanTarget.architecture == ARM64 -> settingCinteropMultik()
-                    konanTarget.family == IOS && konanTarget.architecture == ARM64 -> settingCinteropMultik()
+                    konanTarget.family == OSX && konanTarget.architecture == X64 -> settingCinteropMultik("osxX64")
+                    konanTarget.family == LINUX && konanTarget.architecture == X64 -> settingCinteropMultik("linux")
+                    konanTarget.family == MINGW && konanTarget.architecture == X64 -> settingCinteropMultik("mingw")
+                    konanTarget.family == OSX && konanTarget.architecture == ARM64 -> settingCinteropMultik("osxArm64")
+                    konanTarget.family == IOS && konanTarget.architecture == ARM64 -> settingCinteropMultik("iosArm64")
                 }
             }
         }
