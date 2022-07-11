@@ -65,12 +65,12 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":multik-api"))
+                api(project(":multik-core"))
             }
         }
         val commonTest by getting {
             dependencies {
-                api(project(":multik-api"))
+                api(project(":multik-core"))
                 implementation(kotlin("test"))
             }
         }
@@ -90,13 +90,17 @@ kotlin {
 
 tasks.withType(CInteropProcess::class.java).configureEach { dependsOn("build_cmake") }
 
-fun KotlinNativeCompilation.settingCinteropMultik() {
+fun KotlinNativeCompilation.settingCinteropMultik(osName: String) {
     val libmultik by cinterops.creating {
         val cinteropDir = "${projectDir}/cinterop"
         val headersDir = "${projectDir}/multik_jni/src/main/headers/"
         val cppDir = "${projectDir}/multik_jni/src/main/cpp"
         headers("$headersDir/mk_math.h", "$headersDir/mk_linalg.h")
         defFile(project.file(("$cinteropDir/libmultik.def")))
+
+        when (osName) {
+            "linux" -> extraOpts("-Xsource-compiler-option", "-DFORCE_OPENBLAS_COMPLEX_STRUCT=1")
+        }
 
         extraOpts("-Xsource-compiler-option", "-std=c++14")
         extraOpts("-Xsource-compiler-option", "-I$headersDir")

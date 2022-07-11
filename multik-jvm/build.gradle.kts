@@ -84,12 +84,12 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":multik-api"))
+                api(project(":multik-core"))
             }
         }
         val commonTest by getting {
             dependencies {
-                api(project(":multik-api"))
+                api(project(":multik-core"))
                 implementation(kotlin("test"))
             }
         }

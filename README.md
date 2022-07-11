@@ -1,6 +1,6 @@
 [![Kotlin Alpha](https://kotl.in/badges/alpha.svg)](https://kotlinlang.org/docs/components-stability.html)
 [![JetBrains incubator project](https://jb.gg/badges/incubator.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
-[![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlinx/multik-api)](https://mvnrepository.com/artifact/org.jetbrains.kotlinx/multik-api)
+[![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlinx/multik-core)](https://mvnrepository.com/artifact/org.jetbrains.kotlinx/multik-core)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
 # Multik
@@ -8,7 +8,7 @@
 Multidimensional array library for Kotlin.
 
 ## Modules
-* multik-api &mdash; contains ndarrays, methods called on them and [math], [stat] and [linalg] interfaces.
+* multik-core &mdash; contains ndarrays, methods called on them and [math], [stat] and [linalg] interfaces.
 * multik-default &mdash; implementation including `jvm` and `native` for performance.
 * multik-jvm &mdash; implementation of [math], [stat] and [linalg] interfaces on JVM.
 * multik-native &mdash; implementation of [math], [stat] and [linalg] interfaces in native code using OpenBLAS.
@@ -16,7 +16,7 @@ Multidimensional array library for Kotlin.
 ## Using in your projects
 In your Gradle build script:
 1. Add the Maven Central Repository.
-2. Add the `org.jetbrains.kotlinx:multik-api:$multik_version` api dependency.
+2. Add the `org.jetbrains.kotlinx:multik-core:$multik_version` api dependency.
 3. Add an implementation dependency: `org.jetbrains.kotlinx:multik-default:$multik_version`,
 `org.jetbrains.kotlinx:multik-jvm:$multik_version` or `org.jetbrains.kotlinx:multik-native:$multik_version`.
 
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:multik-api:0.1.1"
+    implementation "org.jetbrains.kotlinx:multik-core:0.1.1"
     implementation "org.jetbrains.kotlinx:multik-default:0.1.1"
 }
 ```
@@ -39,7 +39,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:multik-api:0.1.1")
+    implementation("org.jetbrains.kotlinx:multik-core:0.1.1")
     implementation("org.jetbrains.kotlinx:multik-default:0.1.1")
 }
 ```
@@ -233,7 +233,7 @@ a.inplace {
 Multik uses BLAS and LAPACK for implementing algebraic operations. 
 Therefore, you would need a C ++ compiler and gfortran.
 Run `./gradlew assemble` to build all modules.
-* To build api module run `./gradlew multik-api:assemble`.
+* To build api module run `./gradlew multik-core:assemble`.
 * To build jvm module run `./gradlew multik-jvm:assemble`.
 * To build native module run `./gradlew multik-native:assemble`. 
 To reuse `multik-native` in the future, you must first build `multik_jni` and place the native library in 
@@ -245,9 +245,9 @@ To reuse `multik-native` in the future, you must first build `multik_jni` and pl
 
 ## Contributing
 There is an opportunity to contribute to the project:
-1. Implement [math](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/math/Math.kt),
-[linalg](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/linalg/LinAlg.kt),
-[stat](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/Statistics.kt) interfaces.
-2. Create your own engine successor from [Engine](multik-api/src/main/kotlin/org/jetbrains/kotlinx/multik/api/Engine.kt), for example - [JvmEngine](multik-jvm/src/main/kotlin/org/jetbrains/kotlinx/multik/jvm/JvmEngine.kt).
-3. Use [mk.addEngine](https://github.com/devcrocod/multik/blob/972b18cfd2952abd811fabf34461d238e55c5587/multik-api/src/main/kotlin/org/jetbrains/multik/api/Multik.kt#L23) and [mk.setEngine](https://github.com/devcrocod/multik/blob/972b18cfd2952abd811fabf34461d238e55c5587/multik-api/src/main/kotlin/org/jetbrains/multik/api/Multik.kt#L27)
+1. Implement [math](multik-core/src/main/kotlin/org/jetbrains/kotlinx/multik/api/math/Math.kt),
+[linalg](multik-core/src/main/kotlin/org/jetbrains/kotlinx/multik/api/linalg/LinAlg.kt),
+[stat](multik-core/src/main/kotlin/org/jetbrains/kotlinx/multik/api/Statistics.kt) interfaces.
+2. Create your own engine successor from [Engine](multik-core/src/main/kotlin/org/jetbrains/kotlinx/multik/api/Engine.kt), for example - [JvmEngine](multik-jvm/src/main/kotlin/org/jetbrains/kotlinx/multik/jvm/JvmEngine.kt).
+3. Use [mk.addEngine](https://github.com/devcrocod/multik/blob/972b18cfd2952abd811fabf34461d238e55c5587/multik-core/src/main/kotlin/org/jetbrains/multik/api/Multik.kt#L23) and [mk.setEngine](https://github.com/devcrocod/multik/blob/972b18cfd2952abd811fabf34461d238e55c5587/multik-core/src/main/kotlin/org/jetbrains/multik/api/Multik.kt#L27)
 to use your implementation.

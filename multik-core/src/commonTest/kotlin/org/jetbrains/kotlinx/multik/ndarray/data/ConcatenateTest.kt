@@ -2,13 +2,12 @@ package org.jetbrains.kotlinx.multik.ndarray.data
 
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.zeros
-import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
-import org.jetbrains.kotlinx.multik.ndarray.data.Slice
-import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.operations.asSequence
 import org.jetbrains.kotlinx.multik.ndarray.operations.plus
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertFalse
 
 class ConcatenateTest {
     @Test
