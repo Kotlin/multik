@@ -8,8 +8,8 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import kotlin.math.*
 import kotlin.jvm.JvmName
+import kotlin.math.*
 
 private fun unsupported(): Nothing = throw UnsupportedOperationException("Not supported for local property reference.")
 

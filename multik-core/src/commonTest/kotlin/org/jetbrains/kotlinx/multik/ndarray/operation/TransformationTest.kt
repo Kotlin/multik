@@ -2,12 +2,12 @@ package org.jetbrains.kotlinx.multik.ndarray.operation
 
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloatArray
 import org.jetbrains.kotlinx.multik.ndarray.operations.clip
 import org.jetbrains.kotlinx.multik.ndarray.operations.toList
 import kotlin.random.Random
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertContentEquals
+import kotlin.test.assertEquals
 
 class TransformationTest {
 

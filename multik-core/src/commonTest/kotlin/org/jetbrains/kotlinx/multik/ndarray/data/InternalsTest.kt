@@ -1,6 +1,5 @@
 package org.jetbrains.kotlinx.multik.ndarray.data
 
-import org.jetbrains.kotlinx.multik.api.empty
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.zeros
 import kotlin.test.Test
