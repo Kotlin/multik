@@ -26,8 +26,8 @@ internal class JvmLoader(private val name: String) : Loader {
 
     private val arch: String
         get() = when (val arch: String = System.getProperty("os.arch")) {
-            "amd64", "x86_64" -> "x64"
-            "arm64", "aarch64" -> "arm64"
+            "amd64", "x86_64" -> "X64"
+            "arm64", "aarch64" -> "Arm64"
             else -> error("Unsupported architecture: $arch")
         }
 
