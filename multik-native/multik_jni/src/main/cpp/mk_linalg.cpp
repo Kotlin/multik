@@ -7,7 +7,6 @@
 #include "lapacke.h"
 #include "algorithm"
 #include <cstring>
-#include "complex.h"
 
 float vector_dot_float(int n, float *X, int incx, float *Y, int incy) {
   return cblas_sdot(n, X, incx, Y, incy);
