@@ -106,7 +106,7 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                implementation(project(":multik-native"))
+                implementation(project(":multik-openblas"))
                 implementation(kotlin("reflect"))
             }
         }
@@ -130,7 +130,7 @@ kotlin {
         val nativeMain by creating {
             dependsOn(commonMain)
             dependencies {
-                implementation(project(":multik-native"))
+                implementation(project(":multik-openblas"))
             }
         }
 

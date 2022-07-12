@@ -6,9 +6,9 @@ package org.jetbrains.kotlinx.multik.default.math
 
 import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.api.math.MathEx
-import org.jetbrains.kotlinx.multik.jni.math.NativeMath
 import org.jetbrains.kotlinx.multik.kotlin.math.KEMath
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.openblas.math.NativeMath
 
 public actual object DefaultMath : Math {
 

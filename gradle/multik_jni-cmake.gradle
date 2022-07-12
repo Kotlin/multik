@@ -1,5 +1,5 @@
 
-def cmake_path = "${rootDir}/multik-native/multik_jni"
+def cmake_path = "${rootDir}/multik-openblas/multik_jni"
 def path_to_build = file("${buildDir}/cmake-build")
 
 def String getTargetOSAndArch() {
@@ -59,7 +59,6 @@ task config_cmake(dependsOn: createBuildDir) {
             )
         }
     }
-
 }
 
 

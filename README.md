@@ -11,14 +11,14 @@ Multidimensional array library for Kotlin.
 * multik-core &mdash; contains ndarrays, methods called on them and [math], [stat] and [linalg] interfaces.
 * multik-default &mdash; implementation including `jvm` and `native` for performance.
 * multik-kotlin &mdash; implementation of [math], [stat] and [linalg] interfaces on JVM.
-* multik-native &mdash; implementation of [math], [stat] and [linalg] interfaces in native code using OpenBLAS.
+* multik-openblas &mdash; implementation of [math], [stat] and [linalg] interfaces in native code using OpenBLAS.
 
 ## Using in your projects
 In your Gradle build script:
 1. Add the Maven Central Repository.
 2. Add the `org.jetbrains.kotlinx:multik-core:$multik_version` api dependency.
 3. Add an implementation dependency: `org.jetbrains.kotlinx:multik-default:$multik_version`,
-`org.jetbrains.kotlinx:multik-kotlin:$multik_version` or `org.jetbrains.kotlinx:multik-native:$multik_version`.
+`org.jetbrains.kotlinx:multik-kotlin:$multik_version` or `org.jetbrains.kotlinx:multik-openblas:$multik_version`.
 
 `build.gradle`:
 ```groovy
@@ -235,10 +235,10 @@ Therefore, you would need a C ++ compiler and gfortran.
 Run `./gradlew assemble` to build all modules.
 * To build api module run `./gradlew multik-core:assemble`.
 * To build jvm module run `./gradlew multik-kotlin:assemble`.
-* To build native module run `./gradlew multik-native:assemble`. 
-To reuse `multik-native` in the future, you must first build `multik_jni` and place the native library in 
-`multik-native/build/libs`
-* To build default module run `./gradlew multik-native:assemble` then `./gradlew multik-default:assemble`.
+* To build native module run `./gradlew multik-openblas:assemble`. 
+To reuse `multik-openblas` in the future, you must first build `multik_jni` and place the native library in 
+`multik-openblas/build/libs`
+* To build default module run `./gradlew multik-openblas:assemble` then `./gradlew multik-default:assemble`.
 
 ## Testing
 `./gradlew test`
