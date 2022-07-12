@@ -23,6 +23,11 @@ kotlin {
         val jvmTest by tasks.getting(Test::class) {
             systemProperty("java.library.path", "$buildDir/cmake-build")
         }
+        val jvmJar by tasks.getting(Jar::class) {
+            from("$buildDir/cmake-build") {
+                include("*.dylib", "*.so", "*.dll")
+            }
+        }
     }
     val hostOs = System.getProperty("os.name")
     val hostArch = System.getProperty("os.arch")
