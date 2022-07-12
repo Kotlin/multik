@@ -8,7 +8,7 @@ import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlg
 import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlgEx
-import org.jetbrains.kotlinx.multik.jvm.linalg.JvmLinAlg
+import org.jetbrains.kotlinx.multik.kotlin.linalg.KELinAlg
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
@@ -67,7 +67,7 @@ public actual object DefaultLinAlgEx : LinAlgEx {
     actual override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> =
         when (a.dtype) {
             DataType.FloatDataType, DataType.DoubleDataType -> NativeLinAlg.dot(a, b)
-            else -> JvmLinAlg.dot(a, b)
+            else -> KELinAlg.dot(a, b)
         }
 
     actual override fun <T : Complex> dotMMComplex(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> =
@@ -76,7 +76,7 @@ public actual object DefaultLinAlgEx : LinAlgEx {
     actual override fun <T : Number> dotMV(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> =
         when (a.dtype) {
             DataType.FloatDataType, DataType.DoubleDataType -> NativeLinAlg.dot(a, b)
-            else -> JvmLinAlg.dot(a, b)
+            else -> KELinAlg.dot(a, b)
         }
 
     actual override fun <T : Complex> dotMVComplex(a: MultiArray<T, D2>, b: MultiArray<T, D1>): NDArray<T, D1> =
@@ -85,7 +85,7 @@ public actual object DefaultLinAlgEx : LinAlgEx {
     actual override fun <T : Number> dotVV(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T =
         when (a.dtype) {
             DataType.FloatDataType, DataType.DoubleDataType -> NativeLinAlg.dot(a, b)
-            else -> JvmLinAlg.dot(a, b)
+            else -> KELinAlg.dot(a, b)
         }
 
     actual override fun <T : Complex> dotVVComplex(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T =

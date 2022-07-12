@@ -37,7 +37,7 @@ public object Multik {
 
     private val _engines: MutableMap<String, EngineType> = mutableMapOf(
         "DEFAULT" to DefaultEngineType,
-        "JVM" to JvmEngineType,
+        "JVM" to KEEngineType,
         "NATIVE" to NativeEngineType
     )
 
