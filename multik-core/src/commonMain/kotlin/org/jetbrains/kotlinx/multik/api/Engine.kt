@@ -11,7 +11,7 @@ public sealed class EngineType(public val name: String)
 
 public object DefaultEngineType : EngineType("DEFAULT")
 
-public object JvmEngineType : EngineType("JVM")
+public object KEEngineType : EngineType("KOTLIN")
 
 public object NativeEngineType : EngineType("NATIVE")
 

@@ -9,7 +9,7 @@ public actual fun enginesProvider(): Map<EngineType, Engine> {
         error(
             """Fail to find engine. Consider to add one of the following dependencies: 
  - multik-default
- - multik-jvm
+ - multik-kotlin
  - multik-native"""
         )
     }

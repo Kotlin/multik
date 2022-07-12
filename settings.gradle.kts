@@ -8,6 +8,6 @@ rootProject.name = "multik"
 include(
     ":multik-core",
     ":multik-default",
-    ":multik-jvm",
+    ":multik-kotlin",
     ":multik-native",
 )
