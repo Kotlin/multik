@@ -5,13 +5,13 @@
 package org.jetbrains.kotlinx.multik.default.math
 
 import org.jetbrains.kotlinx.multik.api.math.MathEx
-import org.jetbrains.kotlinx.multik.jni.JvmNativeEngine
-import org.jetbrains.kotlinx.multik.jni.math.NativeMathEx
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.Dimension
 import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
+import org.jetbrains.kotlinx.multik.openblas.JvmNativeEngine
+import org.jetbrains.kotlinx.multik.openblas.math.NativeMathEx
 
 public actual object DefaultMathEx : MathEx {
     init {

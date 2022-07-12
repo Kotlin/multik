@@ -9,5 +9,5 @@ include(
     ":multik-core",
     ":multik-default",
     ":multik-kotlin",
-    ":multik-native",
+    ":multik-openblas",
 )

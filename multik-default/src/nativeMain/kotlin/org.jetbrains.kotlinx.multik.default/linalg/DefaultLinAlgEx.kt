@@ -6,13 +6,13 @@ package org.jetbrains.kotlinx.multik.default.linalg
 
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.linalg.dot
-import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlg
-import org.jetbrains.kotlinx.multik.jni.linalg.NativeLinAlgEx
 import org.jetbrains.kotlinx.multik.kotlin.linalg.KELinAlg
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.openblas.linalg.NativeLinAlg
+import org.jetbrains.kotlinx.multik.openblas.linalg.NativeLinAlgEx
 
 public actual object DefaultLinAlgEx : LinAlgEx {
 
