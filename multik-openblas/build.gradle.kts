@@ -24,7 +24,7 @@ kotlin {
             systemProperty("java.library.path", "$buildDir/cmake-build")
         }
         val jvmJar by tasks.getting(Jar::class) {
-            from("$buildDir/cmake-build") {
+            from("$buildDir/libs") {
                 include("*.dylib", "*.so", "*.dll")
             }
         }

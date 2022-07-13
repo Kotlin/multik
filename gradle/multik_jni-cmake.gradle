@@ -67,5 +67,10 @@ task build_cmake(dependsOn: config_cmake) {
         exec {
             commandLine("cmake", "--build", path_to_build, "--target", "multik_jni-$targetOS", "--", "-j", "12")
         }
+        copy {
+            from("${project.buildDir}/cmake-build")
+            include("*.dylib", "*.so", "*.dll")
+            into("${project.buildDir}/libs")
+        }
     }
 }
