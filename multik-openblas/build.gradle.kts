@@ -25,8 +25,26 @@ kotlin {
         }
         val jvmJar by tasks.getting(Jar::class) {
             from("$buildDir/libs") {
-                include("*.dylib", "*.so", "*.dll")
+                include("libmultik_jni-androidArm64.so")
+                into("lib/arm64-v8a")
             }
+            from("$buildDir/libs") {
+                include("libmultik_jni-linuxX64.so")
+                into("lib/linuxX64")
+            }
+            from("$buildDir/libs") {
+                include("libmultik_jni-macosArm64.dylib")
+                into("lib/macosArm64")
+            }
+            from("$buildDir/libs") {
+                include("libmultik_jni-macosX64.dylib")
+                into("lib/macosX64")
+            }
+            from("$buildDir/libs") {
+                include("libmultik_jni-mingwX64.dll")
+                into("lib/mingwX64")
+            }
+
         }
     }
     val hostOs = System.getProperty("os.name")

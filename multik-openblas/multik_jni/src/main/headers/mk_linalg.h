@@ -50,9 +50,10 @@ int inverse_matrix_complex_float(int n, float *A, int lda);
 
 int inverse_matrix_complex_double(int n, double *A, int lda);
 
-int eigen_float(int n, float *A, float *W, char computeV, float *VR);
+// TODO(_concat_fortran_string)
+//int eigen_float(int n, float *A, float *W, char computeV, float *VR);
 
-int eigen_double(int n, double *A, double *W, char computeV, double *VR);
+//int eigen_double(int n, double *A, double *W, char computeV, double *VR);
 
 void matrix_dot_float(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,
 				bool trans_b, int offsetB, float *B, int ldb, float *C);
