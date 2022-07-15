@@ -22,7 +22,7 @@ internal inline fun requireShapeEmpty(shape: IntArray) {
 
 @Suppress("NOTHING_TO_INLINE")
 public inline fun requireElementsWithShape(elementSize: Int, shapeSize: Int) {
-    require(elementSize == shapeSize) { "The number of elements doen't match the shape: $elementSize!=$shapeSize" }
+    require(elementSize == shapeSize) { "The number of elements doesn't match the shape: $elementSize!=$shapeSize" }
 }
 
 @Suppress("NOTHING_TO_INLINE")

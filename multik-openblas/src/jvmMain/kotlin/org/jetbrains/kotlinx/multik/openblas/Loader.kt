@@ -13,21 +13,22 @@ internal class JvmLoader(private val name: String) : Loader {
 
     private var _loading: Boolean = false
 
-    private val os: String by lazy {
-        val osProperty: String = System.getProperty("os.name").lowercase()
-        when {
-            osProperty.contains("mac") -> "macos"
-            System.getProperty("java.vm.name").contains("Dalvik") -> "android"
-            osProperty.contains("nux") -> "linux"
-            osProperty.contains("win") -> "mingw"
-            else -> error("Unsupported operating system: $osProperty")
+    private val os: String
+        get() {
+            val osProperty: String = System.getProperty("os.name").lowercase()
+            return when {
+                osProperty.contains("mac") -> "macos"
+                System.getProperty("java.vm.name").contains("Dalvik") -> "android"
+                osProperty.contains("nux") -> "linux"
+                osProperty.contains("win") -> "mingw"
+                else -> error("Unsupported operating system: $osProperty")
+            }
         }
-    }
 
     private val arch: String
-        get() = when (val arch: String = System.getProperty("os.arch")) {
-            "amd64", "x86_64" -> "X64"
-            "arm64", "aarch64" -> "Arm64"
+        get() = when (val arch: String = System.getProperty("os.arch").lowercase()) {
+            "amd64", "x86_64", "x86-64", "x64" -> "X64"
+            "arm64", "aarch64", "armv8" -> "Arm64"
             else -> error("Unsupported architecture: $arch")
         }
 
@@ -47,9 +48,22 @@ internal class JvmLoader(private val name: String) : Loader {
         append(arch)
     }
 
+    private val prefixPath = when (os) {
+        "android" -> "lib/arm64-v8a/"
+        "linux" -> "lib/linuxX64/"
+        "macos" -> {
+            if (arch == "Arm64")
+                "lib/macosArm64/"
+            else
+                "lib/macosX64/"
+        }
+
+        else -> "lib/mingwX64/"
+    }
+
     override fun load(): Boolean {
         val resource = System.mapLibraryName(nativeNameLib)
-        val inputStream = Loader::class.java.getResourceAsStream("/$resource")
+        val inputStream = Loader::class.java.classLoader.getResourceAsStream("$prefixPath$resource")
         var libraryPath: Path? = null
         return try {
             if (inputStream != null) {

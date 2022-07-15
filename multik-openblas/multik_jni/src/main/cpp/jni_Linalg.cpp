@@ -14,6 +14,7 @@
  */
 JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_pow___3FI_3F
 	(JNIEnv *env, jobject jobj, jfloatArray mat, jint n, jfloatArray result) {
+  // TODO(Optimize pow)
 }
 
 /*
@@ -23,6 +24,7 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
  */
 JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_pow___3DI_3D
 	(JNIEnv *env, jobject jobj, jdoubleArray mat, jint n, jdoubleArray result) {
+  // TODO(Optimize pow)
 }
 
 
@@ -261,24 +263,25 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
  */
 JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_eig__I_3F_3FC_3F
 	(JNIEnv *env, jobject jobj, jint n, jfloatArray j_a, jfloatArray j_w, jchar compute_v, jfloatArray j_v) {
-  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
-  auto *W = (float *)env->GetPrimitiveArrayCritical(j_w, nullptr);
-  float *V;
-  if (j_v == nullptr) {
-	V = nullptr;
-  } else {
-	V = (float *)env->GetPrimitiveArrayCritical(j_v, nullptr);
-  }
-
-  int info = eigen_float(n, A, W, (char)compute_v, V);
-
-  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
-  env->ReleasePrimitiveArrayCritical(j_w, W, 0);
-  if (j_v != nullptr) {
-	env->ReleasePrimitiveArrayCritical(j_v, V, 0);
-  }
-
-  return info;
+//  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+//  auto *W = (float *)env->GetPrimitiveArrayCritical(j_w, nullptr);
+//  float *V;
+//  if (j_v == nullptr) {
+//	V = nullptr;
+//  } else {
+//	V = (float *)env->GetPrimitiveArrayCritical(j_v, nullptr);
+//  }
+//
+//  int info = eigen_float(n, A, W, (char)compute_v, V);
+//
+//  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+//  env->ReleasePrimitiveArrayCritical(j_w, W, 0);
+//  if (j_v != nullptr) {
+//	env->ReleasePrimitiveArrayCritical(j_v, V, 0);
+//  }
+//
+//  return info;
+	return -1;
 }
 
 /*
@@ -288,24 +291,25 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
  */
 JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_eig__I_3D_3DC_3D
 	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_a, jdoubleArray j_w, jchar compute_v, jdoubleArray j_v) {
-  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
-  auto *W = (double *)env->GetPrimitiveArrayCritical(j_w, nullptr);
-  double *V;
-  if (j_v == nullptr) {
-	V = nullptr;
-  } else {
-	V = (double *)env->GetPrimitiveArrayCritical(j_v, nullptr);
-  }
-
-  int info = eigen_double(n, A, W, (char)compute_v, V);
-
-  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
-  env->ReleasePrimitiveArrayCritical(j_w, W, 0);
-  if (j_v != nullptr) {
-	env->ReleasePrimitiveArrayCritical(j_v, V, 0);
-  }
-
-  return info;
+//  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+//  auto *W = (double *)env->GetPrimitiveArrayCritical(j_w, nullptr);
+//  double *V;
+//  if (j_v == nullptr) {
+//	V = nullptr;
+//  } else {
+//	V = (double *)env->GetPrimitiveArrayCritical(j_v, nullptr);
+//  }
+//
+//  int info = eigen_double(n, A, W, (char)compute_v, V);
+//
+//  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+//  env->ReleasePrimitiveArrayCritical(j_w, W, 0);
+//  if (j_v != nullptr) {
+//	env->ReleasePrimitiveArrayCritical(j_v, V, 0);
+//  }
+//
+//  return info;
+	return -1;
 }
 
 /*
