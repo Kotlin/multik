@@ -7,6 +7,7 @@ package org.jetbrains.kotlinx.multik.default.linalg
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.kotlin.linalg.KELinAlg
+import org.jetbrains.kotlinx.multik.kotlin.linalg.KELinAlgEx
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
@@ -49,20 +50,20 @@ public actual object DefaultLinAlgEx : LinAlgEx {
         NativeLinAlgEx.pluC(mat)
 
     actual override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> =
-        NativeLinAlgEx.eig(mat)
+        KELinAlgEx.eig(mat)
 
     actual override fun eigF(mat: MultiArray<Float, D2>): Pair<D1Array<ComplexFloat>, D2Array<ComplexFloat>> =
-        NativeLinAlgEx.eigF(mat)
+        KELinAlgEx.eigF(mat)
 
     actual override fun <T : Complex> eigC(mat: MultiArray<T, D2>): Pair<D1Array<T>, D2Array<T>> =
-        NativeLinAlgEx.eigC(mat)
+        KELinAlgEx.eigC(mat)
 
     actual override fun <T : Number> eigVals(mat: MultiArray<T, D2>): D1Array<ComplexDouble> =
-        NativeLinAlgEx.eigVals(mat)
+        KELinAlgEx.eigVals(mat)
 
-    actual override fun eigValsF(mat: MultiArray<Float, D2>): D1Array<ComplexFloat> = NativeLinAlgEx.eigValsF(mat)
+    actual override fun eigValsF(mat: MultiArray<Float, D2>): D1Array<ComplexFloat> = KELinAlgEx.eigValsF(mat)
 
-    actual override fun <T : Complex> eigValsC(mat: MultiArray<T, D2>): D1Array<T> = NativeLinAlgEx.eigValsC(mat)
+    actual override fun <T : Complex> eigValsC(mat: MultiArray<T, D2>): D1Array<T> = KELinAlgEx.eigValsC(mat)
 
     actual override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> =
         when (a.dtype) {
