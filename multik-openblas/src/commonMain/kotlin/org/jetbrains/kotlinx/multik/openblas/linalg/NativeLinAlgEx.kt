@@ -357,6 +357,6 @@ private fun requireDotShape(aShape: IntArray, bShape: IntArray) = require(aShape
 }
 
 
-private fun requireSquare(shape: IntArray) = require(shape[0] == shape[1]) {
+internal fun requireSquare(shape: IntArray) = require(shape[0] == shape[1]) {
     "Ndarray must be square: shape = ${shape.joinToString(",", "(", ")")}"
 }
