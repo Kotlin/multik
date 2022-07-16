@@ -1748,7 +1748,6 @@ internal fun mapCapacity(size: Int): Int {
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
 @PublishedApi
 internal inline fun checkIndexOverflow(index: Int): Int {
     if (index < 0) throw ArithmeticException("Index overflow has happened.")

@@ -97,6 +97,7 @@ public inline fun <reified T : Any> Multik.ones(
 ): NDArray<T, DN> =
     ones(intArrayOf(dim1, dim2, dim3, dim4) + dims, DataType.ofKClass(T::class))
 
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
 public fun <T, D : Dimension> Multik.ones(dims: IntArray, dtype: DataType): NDArray<T, D> {
     val dim = dimensionOf<D>(dims.size)
     requireDimension(dim, dims.size)
@@ -1561,6 +1562,7 @@ public inline fun <reified T : Number> List<List<List<List<T>>>>.toNDArray(): D4
 public inline fun <reified T : Complex> List<List<List<List<T>>>>.toNDArray(): D4Array<T> = Multik.ndarray(this)
 
 @PublishedApi
+@Suppress("UNCHECKED_CAST")
 internal fun <T> Iterable<T>.toCommonNDArray(dtype: DataType): D1Array<T> {
     if (this is Collection<T>)
         return ndarrayCommon(this, intArrayOf(this.size), D1, dtype) as D1Array<T>
@@ -1573,6 +1575,7 @@ internal fun <T> Iterable<T>.toCommonNDArray(dtype: DataType): D1Array<T> {
 }
 
 @PublishedApi
+@Suppress("UNCHECKED_CAST")
 internal inline fun <reified T: Any> Iterable<T>.toCommonNDArray(): D1Array<T> {
     val dtype: DataType = DataType.ofKClass(T::class)
     if (this is Collection<T>)

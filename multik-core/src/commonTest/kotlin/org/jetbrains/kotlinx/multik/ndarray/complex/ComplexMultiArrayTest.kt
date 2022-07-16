@@ -14,8 +14,8 @@ class ComplexMultiArrayTest {
         val complex = mk.d2arrayIndices(3, 3) { i, j -> ComplexFloat(i, j) }
         val real = complex.re
         val im = complex.im
-        val expectedReal = mk.d2arrayIndices(3, 3) { i, j -> i.toFloat() }
-        val expectedIm = mk.d2arrayIndices(3, 3) { i, j -> j.toFloat() }
+        val expectedReal = mk.d2arrayIndices(3, 3) { i, _ -> i.toFloat() }
+        val expectedIm = mk.d2arrayIndices(3, 3) { _, j -> j.toFloat() }
 
         assertEquals(complex.shape, real.shape)
         assertEquals(complex.shape, im.shape)
@@ -28,8 +28,8 @@ class ComplexMultiArrayTest {
         val complex = mk.d2arrayIndices(3, 3) { i, j -> ComplexDouble(i, j) }
         val real = complex.re
         val im = complex.im
-        val expectedReal = mk.d2arrayIndices(3, 3) { i, j -> i.toDouble() }
-        val expectedIm = mk.d2arrayIndices(3, 3) { i, j -> j.toDouble() }
+        val expectedReal = mk.d2arrayIndices(3, 3) { i, _ -> i.toDouble() }
+        val expectedIm = mk.d2arrayIndices(3, 3) { _, j -> j.toDouble() }
 
         assertEquals(complex.shape, real.shape)
         assertEquals(complex.shape, im.shape)
