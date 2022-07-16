@@ -4,11 +4,15 @@
 
 package org.jetbrains.kotlinx.multik.default
 
-import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.DefaultEngineType
+import org.jetbrains.kotlinx.multik.api.Engine
+import org.jetbrains.kotlinx.multik.api.EngineType
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.math.Math
+import org.jetbrains.kotlinx.multik.api.stat.Statistics
 import org.jetbrains.kotlinx.multik.default.linalg.DefaultLinAlg
 import org.jetbrains.kotlinx.multik.default.math.DefaultMath
+import org.jetbrains.kotlinx.multik.default.stat.DefaultStatistics
 
 public class DefaultEngine : Engine() {
     override val name: String
