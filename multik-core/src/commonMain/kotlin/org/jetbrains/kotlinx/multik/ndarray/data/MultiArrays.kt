@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package org.jetbrains.kotlinx.multik.ndarray.data
@@ -460,7 +460,7 @@ public operator fun <T> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Closed
     slice(mapOf(0 to ind1.r, 1 to ind2.r, 2 to ind3.toSlice(), 3 to ind4.toSlice()))
 
 @JvmName("get44")
-public operator fun <T> MultiArray<T, D4>.get(ind1: Int, ind2: ClosedRange<Int>, ind3: Slice, ind4: Int): MultiArray<T, D2> =
+public operator fun <T> MultiArray<T, D4>.get(ind1: Int, ind2: ClosedRange<Int>, ind3: ClosedRange<Int>, ind4: Int): MultiArray<T, D2> =
     slice(mapOf(0 to ind1.r, 1 to ind2.toSlice(), 2 to ind3.toSlice(), 3 to ind4.r))
 
 @JvmName("get45")

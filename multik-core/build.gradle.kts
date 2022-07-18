@@ -70,13 +70,13 @@ kotlin {
                 implementation("org.apache.commons:commons-csv:$common_csv_version")
             }
         }
-        val nativeCommonMain by creating {
+        val nativeMain by creating {
             dependsOn(commonMain)
         }
         names.forEach { n ->
             if (n.contains("X64Main") || n.contains("Arm64Main")){
                 this@sourceSets.getByName(n).apply{
-                    dependsOn(nativeCommonMain)
+                    dependsOn(nativeMain)
                 }
             }
         }

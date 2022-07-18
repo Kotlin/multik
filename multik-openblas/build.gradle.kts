@@ -72,7 +72,7 @@ kotlin {
                     val cinteropDir = "${projectDir}/cinterop"
                     val headersDir = "${projectDir}/multik_jni/src/main/headers/"
                     val cppDir = "${projectDir}/multik_jni/src/main/cpp"
-                    headers("$headersDir/mk_math.h", "$headersDir/mk_linalg.h")
+                    headers("$headersDir/mk_math.h", "$headersDir/mk_linalg.h", "$headersDir/mk_stat.h")
                     defFile(project.file(("$cinteropDir/libmultik.def")))
 
                     when (konanTarget.family) {
@@ -87,6 +87,7 @@ kotlin {
                     extraOpts("-Xsource-compiler-option", "-I${buildDir}/cmake-build/openblas-install/include")
                     extraOpts("-Xcompile-source", "$cppDir/mk_math.cpp")
                     extraOpts("-Xcompile-source", "$cppDir/mk_linalg.cpp")
+                    extraOpts("-Xcompile-source", "$cppDir/mk_stat.cpp")
                 }
             }
         }

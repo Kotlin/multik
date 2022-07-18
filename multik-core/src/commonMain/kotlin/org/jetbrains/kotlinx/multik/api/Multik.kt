@@ -11,6 +11,7 @@ import org.jetbrains.kotlinx.multik.api.Multik.math
 import org.jetbrains.kotlinx.multik.api.Multik.stat
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.math.Math
+import org.jetbrains.kotlinx.multik.api.stat.Statistics
 
 /**
  * Abbreviated name for [Multik].

@@ -1,11 +1,10 @@
 /*
- * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package org.jetbrains.kotlinx.multik.kotlin
+package org.jetbrains.kotlinx.multik.kotlin.stat
 
-import org.jetbrains.kotlinx.multik.api.Statistics
-import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.stat.Statistics
 import org.jetbrains.kotlinx.multik.kotlin.math.KEMath
 import org.jetbrains.kotlinx.multik.kotlin.math.remove
 import org.jetbrains.kotlinx.multik.ndarray.data.*
@@ -34,7 +33,7 @@ public object KEStatistics : Statistics {
 
     override fun <T : Number, D : Dimension> average(a: MultiArray<T, D>, weights: MultiArray<T, D>?): Double {
         if (weights == null) return mean(a)
-        return mk.math.sum(a * weights).toDouble() / mk.math.sum(weights).toDouble()
+        return KEMath.sum(a * weights).toDouble() / KEMath.sum(weights).toDouble()
     }
 
     override fun <T : Number, D : Dimension> mean(a: MultiArray<T, D>): Double {

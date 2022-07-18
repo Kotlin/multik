@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package org.jetbrains.kotlinx.multik.ndarray.operations
@@ -106,8 +106,10 @@ public fun <T, D : Dimension> MultiArray<T, D>.repeat(n: Int): D1Array<T> {
         when (this.dtype) {
             DataType.ComplexFloatDataType ->
                 data.getFloatArray().copyInto(data.getFloatArray(), i * 2, startIndexComplex, endIndexComplex)
+
             DataType.ComplexDoubleDataType ->
                 data.getDoubleArray().copyInto(data.getDoubleArray(), i * 2, startIndexComplex, endIndexComplex)
+
             else -> data.copyInto(data, i, i - size, endIndex)
         }
     }
@@ -158,6 +160,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                         dest.data[index++] = array[i]
                     }
                 }
+
                 D2 -> {
                     arrays as List<MultiArray<T, D2>>
                     when (axis) {
@@ -168,6 +171,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                                 }
                             }
                         }
+
                         2 -> {
                             for (j in 0 until dest.shape[1]) {
                                 for (array in arrays) {
@@ -177,6 +181,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                         }
                     }
                 }
+
                 D3 -> {
                     arrays as List<MultiArray<T, D3>>
                     when (axis) {
@@ -189,6 +194,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                                 }
                             }
                         }
+
                         2 -> {
                             for (j in 0 until dest.shape[1]) {
                                 for (array in arrays) {
@@ -198,6 +204,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                                 }
                             }
                         }
+
                         3 -> {
                             for (j in 0 until dest.shape[1]) {
                                 for (l in 0 until dest.shape[2]) {
@@ -209,6 +216,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                         }
                     }
                 }
+
                 D4 -> {
                     arrays as List<MultiArray<T, D4>>
                     when (axis) {
@@ -223,6 +231,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                                 }
                             }
                         }
+
                         2 -> {
                             for (j in 0 until dest.shape[1]) {
                                 for (array in arrays) {
@@ -234,6 +243,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                                 }
                             }
                         }
+
                         3 -> {
                             for (j in 0 until dest.shape[1]) {
                                 for (l in 0 until dest.shape[2]) {
@@ -245,6 +255,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                                 }
                             }
                         }
+
                         4 -> {
                             for (j in 0 until dest.shape[1]) {
                                 for (l in 0 until dest.shape[2]) {
@@ -258,6 +269,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                         }
                     }
                 }
+
                 else -> throw UnsupportedOperationException()
             }
         }
@@ -279,7 +291,7 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
  * @return NDArray of which all of its elements are in range min..max
  * @throws IllegalArgumentException if min > max
  */
-public fun <T, D: Dimension> MultiArray<T, D>.clip(min: T, max: T): NDArray<T,D> where T : Comparable<T>, T: Number{
+public fun <T, D : Dimension> MultiArray<T, D>.clip(min: T, max: T): NDArray<T, D> where T : Comparable<T>, T : Number {
     require(min <= max) {
         "min value for clipping should be lower than or equal to the [max] value"
     }
@@ -289,3 +301,53 @@ public fun <T, D: Dimension> MultiArray<T, D>.clip(min: T, max: T): NDArray<T,D>
     }
     return NDArray(data = clippedData, shape = shape.copyOf(), dim = dim)
 }
+
+/**
+ * Returns a ndarray with an expanded shape.
+ */
+@JvmName("expandDimsD1")
+public fun <T> MultiArray<T, D1>.expandDims(axis: Int): MultiArray<T, D2> {
+    val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
+    // TODO(get rid of copying)
+    val newData = if (consistent) this.data else this.deepCopy().data
+    val newBase = if (consistent) base ?: this else null
+    return D2Array(newData, this.offset, newShape, dim = D2, base = newBase)
+}
+
+/**
+ * Returns a ndarray with an expanded shape.
+ */
+@JvmName("expandDimsD2")
+public fun <T> MultiArray<T, D2>.expandDims(axis: Int): MultiArray<T, D3> {
+    val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
+    // TODO(get rid of copying)
+    val newData = if (consistent) this.data else this.deepCopy().data
+    val newBase = if (consistent) base ?: this else null
+    return D3Array(newData, this.offset, newShape, dim = D3, base = newBase)
+}
+
+/**
+ * Returns a ndarray with an expanded shape.
+ */
+@JvmName("expandDimsD3")
+public fun <T> MultiArray<T, D3>.expandDims(axis: Int): MultiArray<T, D4> {
+    val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
+    // TODO(get rid of copying)
+    val newData = if (consistent) this.data else this.deepCopy().data
+    val newBase = if (consistent) base ?: this else null
+    return D4Array(newData, this.offset, newShape, dim = D4, base = newBase)
+}
+
+/**
+ * Returns a ndarray with an expanded shape.
+ */
+@JvmName("expandDimsD4")
+public fun <T> MultiArray<T, D4>.expandDims(axis: Int): MultiArray<T, DN> = this.unsqueeze()
+
+/**
+ * Returns a ndarray with an expanded shape.
+ *
+ * @see MultiArray.unsqueeze
+ */
+@JvmName("expandDimsDN")
+public fun <T, D : Dimension> MultiArray<T, D>.expandNDims(vararg axes: Int): MultiArray<T, DN> = this.unsqueeze()

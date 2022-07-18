@@ -114,14 +114,17 @@ include_directories("src/main/headers")
 set(SRC_FILES_FOR_SHARED
         src/main/cpp/jni_Linalg.cpp
         src/main/cpp/jni_JniMath.cpp
+        src/main/cpp/JniStat.cpp
         src/main/cpp/ComplexDouble.cpp
         src/main/cpp/ComplexFloat.cpp
         src/main/cpp/mk_math.cpp
         src/main/cpp/mk_linalg.cpp
+        src/main/cpp/mk_stat.cpp
         )
 set(SRC_FILES_FOR_STATIC
         src/main/cpp/mk_math.cpp
-        src/main/cpp/mk_linalg.cpp)
+        src/main/cpp/mk_linalg.cpp
+        src/main/cpp/mk_stat.cpp)
 ########################
 
 ### FIND GFORTRAN AND QUADMATH LIBRARIES ###
@@ -141,7 +144,9 @@ if (${TARGET_OS} STREQUAL "mingwX64")
     set(LIB_QUADMATH "/msys64/mingw64/lib/libquadmath.a")
     set(LIB_GCC "-static-libgcc -static-libstdc++ -static -lpthread")
 elseif(${TARGET_OS} STREQUAL "androidArm64")
-    #set(LIB_GCC "-static-libgcc -static-libstdc++")
+    set(LIB_GCC "-static-libgcc -static-libstdc++ -Wl,--no-whole-archive -ldl -lm")
+elseif(${TARGET_OS} STREQUAL "linuxX64")
+    set(LIB_QUADMATH "${GCC_LIB_PATH}/libquadmath.a")
     set(LIB_GCC "-static-libgcc -static-libstdc++ -Wl,--no-whole-archive -ldl -lm")
 else()
     set(LIB_QUADMATH "${GCC_LIB_PATH}/libquadmath.a")

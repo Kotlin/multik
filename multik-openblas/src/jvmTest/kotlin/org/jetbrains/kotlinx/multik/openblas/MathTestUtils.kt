@@ -4,7 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.openblas
 
-import org.jetbrains.kotlinx.multik.api.abs
+import org.jetbrains.kotlinx.multik.api.stat.abs
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.Dimension

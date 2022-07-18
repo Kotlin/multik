@@ -1,24 +1,34 @@
 /*
- * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package org.jetbrains.kotlinx.multik.openblas
+package org.jetbrains.kotlinx.multik.openblas.stat
 
-import org.jetbrains.kotlinx.multik.api.Statistics
+import org.jetbrains.kotlinx.multik.api.stat.Statistics
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.operations.first
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
+import org.jetbrains.kotlinx.multik.openblas.math.NativeMath
 
 public object NativeStatistics : Statistics {
 
     override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? {
-        TODO("Not yet implemented")
+        val size = a.size
+        return when {
+            size == 1 -> a.first().toDouble()
+            size > 1 -> JniStat.median(a.deepCopy().data.data, size, a.dtype.nativeCode)
+            else -> null
+        }
     }
 
     override fun <T : Number, D : Dimension> average(a: MultiArray<T, D>, weights: MultiArray<T, D>?): Double {
-        TODO("Not yet implemented")
+        if (weights == null) return mean(a)
+        return NativeMath.sum(a * weights).toDouble() / NativeMath.sum(weights).toDouble()
     }
 
     override fun <T : Number, D : Dimension> mean(a: MultiArray<T, D>): Double {
-        TODO("Not yet implemented")
+        val ret = NativeMath.sum(a)
+        return ret.toDouble() / a.size
     }
 
     override fun <T : Number, D : Dimension, O : Dimension> mean(a: MultiArray<T, D>, axis: Int): NDArray<Double, O> {

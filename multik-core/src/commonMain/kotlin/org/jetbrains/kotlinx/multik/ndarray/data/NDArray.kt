@@ -107,10 +107,14 @@ public class NDArray<T, D : Dimension> constructor(
         requirePositiveShape(dim1)
         require(dim1 == size) { "Cannot reshape array of size $size into a new shape ($dim1)" }
 
+        // TODO(get rid of copying)
+        val newData = if (consistent) this.data else this.deepCopy().data
+        val newBase = if (consistent) base ?: this else null
+
         return if (this.dim.d == 1 && this.shape.first() == dim1) {
             this as D1Array<T>
         } else {
-            D1Array(this.data, this.offset, intArrayOf(dim1), dim = D1, base = base ?: this)
+            D1Array(newData, this.offset, intArrayOf(dim1), dim = D1, base = newBase)
         }
     }
 
@@ -119,10 +123,14 @@ public class NDArray<T, D : Dimension> constructor(
         newShape.forEach { requirePositiveShape(it) }
         require(dim1 * dim2 == size) { "Cannot reshape array of size $size into a new shape ($dim1, $dim2)" }
 
+        // TODO(get rid of copying)
+        val newData = if (consistent) this.data else this.deepCopy().data
+        val newBase = if (consistent) base ?: this else null
+
         return if (this.shape.contentEquals(newShape)) {
             this as D2Array<T>
         } else {
-            D2Array(this.data, this.offset, newShape, dim = D2, base = base ?: this)
+            D2Array(newData, this.offset, newShape, dim = D2, base = newBase)
         }
     }
 
@@ -131,10 +139,14 @@ public class NDArray<T, D : Dimension> constructor(
         newShape.forEach { requirePositiveShape(it) }
         require(dim1 * dim2 * dim3 == size) { "Cannot reshape array of size $size into a new shape ($dim1, $dim2, $dim3)" }
 
+        // TODO(get rid of copying)
+        val newData = if (consistent) this.data else this.deepCopy().data
+        val newBase = if (consistent) base ?: this else null
+
         return if (this.shape.contentEquals(newShape)) {
             this as D3Array<T>
         } else {
-            D3Array(this.data, this.offset, newShape, dim = D3, base = base ?: this)
+            D3Array(newData, this.offset, newShape, dim = D3, base = newBase)
         }
     }
 
@@ -143,10 +155,14 @@ public class NDArray<T, D : Dimension> constructor(
         newShape.forEach { requirePositiveShape(it) }
         require(dim1 * dim2 * dim3 * dim4 == size) { "Cannot reshape array of size $size into a new shape ($dim1, $dim2, $dim3, $dim4)" }
 
+        // TODO(get rid of copying)
+        val newData = if (consistent) this.data else this.deepCopy().data
+        val newBase = if (consistent) base ?: this else null
+
         return if (this.shape.contentEquals(newShape)) {
             this as D4Array<T>
         } else {
-            D4Array(this.data, this.offset, newShape, dim = D4, base = base ?: this)
+            D4Array(newData, this.offset, newShape, dim = D4, base = newBase)
         }
     }
 
@@ -157,10 +173,14 @@ public class NDArray<T, D : Dimension> constructor(
             "Cannot reshape array of size $size into a new shape ${newShape.joinToString(prefix = "(", postfix = ")")}"
         }
 
+        // TODO(get rid of copying)
+        val newData = if (consistent) this.data else this.deepCopy().data
+        val newBase = if (consistent) base ?: this else null
+
         return if (this.shape.contentEquals(newShape)) {
             this as NDArray<T, DN>
         } else {
-            NDArray(this.data, this.offset, newShape, dim = DN(newShape.size), base = base ?: this)
+            NDArray(newData, this.offset, newShape, dim = DN(newShape.size), base = newBase)
         }
     }
 
@@ -201,13 +221,11 @@ public class NDArray<T, D : Dimension> constructor(
         for (axis in axes.sorted()) {
             newShape.add(axis, 1)
         }
-        return NDArray(
-            this.data,
-            this.offset,
-            newShape.toIntArray(),
-            dim = DN(newShape.size),
-            base = base ?: this
-        )
+        // TODO(get rid of copying)
+        val newData = if (consistent) this.data else this.deepCopy().data
+        val newBase = if (consistent) base ?: this else null
+
+        return NDArray(newData, this.offset, newShape.toIntArray(), dim = DN(newShape.size), base = newBase)
     }
 
     override infix fun cat(other: MultiArray<T, D>): NDArray<T, D> =
