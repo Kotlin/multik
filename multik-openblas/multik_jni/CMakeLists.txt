@@ -141,13 +141,13 @@ else()
     endif ()
 endif ()
 if (${TARGET_OS} STREQUAL "mingwX64")
-    set(LIB_QUADMATH "/msys64/mingw64/lib/libquadmath.a")
+#    set(LIB_QUADMATH "/msys64/mingw64/lib/libquadmath.a")
     set(LIB_GCC "-static-libgcc -static-libstdc++ -static -lpthread")
 elseif(${TARGET_OS} STREQUAL "androidArm64")
     set(LIB_GCC "-static-libgcc -static-libstdc++ -Wl,--no-whole-archive -ldl -lm")
 else()
-    set(LIB_QUADMATH "${GCC_LIB_PATH}/libquadmath.a")
-    set(LIB_GCC "-static-libgcc")
+#    set(LIB_QUADMATH "${GCC_LIB_PATH}/libquadmath.a")
+#    set(LIB_GCC "-static-libgcc")
 endif()
 
 ########################
@@ -171,7 +171,7 @@ target_include_directories(${LIB_NAME} PUBLIC ${JNI_INCLUDE_DIRS})
 target_link_libraries(${LIB_NAME} optimized
         ${STATIC_OPENBLAS}
         ${LIB_GFORTRAN}
-        ${LIB_QUADMATH}
+#        ${LIB_QUADMATH}
         ${LIB_GCC}
         )
 add_dependencies(${LIB_NAME} openblas)
