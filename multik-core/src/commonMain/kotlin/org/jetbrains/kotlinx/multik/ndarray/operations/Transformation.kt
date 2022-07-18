@@ -306,34 +306,43 @@ public fun <T, D : Dimension> MultiArray<T, D>.clip(min: T, max: T): NDArray<T, 
  * Returns a ndarray with an expanded shape.
  */
 @JvmName("expandDimsD1")
-public fun <T, D : Dimension> MultiArray<T, D1>.expandDims(axis: Int): MultiArray<T, D2> {
+public fun <T> MultiArray<T, D1>.expandDims(axis: Int): MultiArray<T, D2> {
     val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
-    return D2Array(this.data, this.offset, newShape, dim = D2, base = base ?: this)
+    // TODO(get rid of copying)
+    val newData = if (consistent) this.data else this.deepCopy().data
+    val newBase = if (consistent) base ?: this else null
+    return D2Array(newData, this.offset, newShape, dim = D2, base = newBase)
 }
 
 /**
  * Returns a ndarray with an expanded shape.
  */
 @JvmName("expandDimsD2")
-public fun <T, D : Dimension> MultiArray<T, D2>.expandDims(axis: Int): MultiArray<T, D3> {
+public fun <T> MultiArray<T, D2>.expandDims(axis: Int): MultiArray<T, D3> {
     val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
-    return D3Array(this.data, this.offset, newShape, dim = D3, base = base ?: this)
+    // TODO(get rid of copying)
+    val newData = if (consistent) this.data else this.deepCopy().data
+    val newBase = if (consistent) base ?: this else null
+    return D3Array(newData, this.offset, newShape, dim = D3, base = newBase)
 }
 
 /**
  * Returns a ndarray with an expanded shape.
  */
 @JvmName("expandDimsD3")
-public fun <T, D : Dimension> MultiArray<T, D3>.expandDims(axis: Int): MultiArray<T, D4> {
+public fun <T> MultiArray<T, D3>.expandDims(axis: Int): MultiArray<T, D4> {
     val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
-    return D4Array(this.data, this.offset, newShape, dim = D4, base = base ?: this)
+    // TODO(get rid of copying)
+    val newData = if (consistent) this.data else this.deepCopy().data
+    val newBase = if (consistent) base ?: this else null
+    return D4Array(newData, this.offset, newShape, dim = D4, base = newBase)
 }
 
 /**
  * Returns a ndarray with an expanded shape.
  */
 @JvmName("expandDimsD4")
-public fun <T, D : Dimension> MultiArray<T, D4>.expandDims(axis: Int): MultiArray<T, DN> = this.unsqueeze()
+public fun <T> MultiArray<T, D4>.expandDims(axis: Int): MultiArray<T, DN> = this.unsqueeze()
 
 /**
  * Returns a ndarray with an expanded shape.
@@ -341,4 +350,4 @@ public fun <T, D : Dimension> MultiArray<T, D4>.expandDims(axis: Int): MultiArra
  * @see MultiArray.unsqueeze
  */
 @JvmName("expandDimsDN")
-public fun <T, D : Dimension> MultiArray<T, D>.expandDims(vararg axes: Int): MultiArray<T, DN> = this.unsqueeze()
+public fun <T, D : Dimension> MultiArray<T, D>.expandNDims(vararg axes: Int): MultiArray<T, DN> = this.unsqueeze()
