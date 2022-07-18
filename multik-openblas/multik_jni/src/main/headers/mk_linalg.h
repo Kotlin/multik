@@ -18,6 +18,10 @@ mk_complex_float vector_dot_complex_float(int n, float *X, int incx, float *Y, i
 
 mk_complex_double vector_dot_complex_double(int n, double *X, int incx, double *Y, int incy);
 
+float norm_matrix_float(char norm, int m, int n, float *A, int lda);
+
+double norm_matrix_double(char norm, int m, int n, double *A, int lda);
+
 int qr_matrix_float(int m, int n, float *AQ, int lda, float *R);
 
 int qr_matrix_double(int m, int n, double *AQ, int lda, double *R);

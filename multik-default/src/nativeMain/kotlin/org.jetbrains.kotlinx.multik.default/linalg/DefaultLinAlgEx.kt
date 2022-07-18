@@ -5,6 +5,7 @@
 package org.jetbrains.kotlinx.multik.default.linalg
 
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
+import org.jetbrains.kotlinx.multik.api.linalg.Norm
 import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.kotlin.linalg.KELinAlg
 import org.jetbrains.kotlinx.multik.kotlin.linalg.KELinAlgEx
@@ -31,6 +32,10 @@ public actual object DefaultLinAlgEx : LinAlgEx {
 
     actual override fun <T : Complex, D : Dim2> solveC(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D> =
         NativeLinAlgEx.solveC(a, b)
+
+    actual override fun normF(mat: MultiArray<Float, D2>, norm: Norm): Float = NativeLinAlgEx.normF(mat, norm)
+
+    actual override fun norm(mat: MultiArray<Double, D2>, norm: Norm): Double = NativeLinAlgEx.norm(mat, norm)
 
     actual override fun <T : Number> qr(mat: MultiArray<T, D2>): Pair<D2Array<Double>, D2Array<Double>> =
         NativeLinAlgEx.qr(mat)

@@ -27,8 +27,4 @@ public object NativeLinAlg : LinAlg {
             NativeLinAlgEx.dotMM(mat, pow(mat, n - 1))
         }
     }
-
-    override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
-        TODO("Not yet implemented")
-    }
 }

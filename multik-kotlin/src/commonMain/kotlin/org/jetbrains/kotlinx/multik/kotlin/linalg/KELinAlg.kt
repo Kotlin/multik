@@ -10,7 +10,6 @@ import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.data.D2
-import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
@@ -30,19 +29,19 @@ public object KELinAlg : LinAlg {
         }
     }
 
-    override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
-        require(p > 0) { "Power $p must be positive" }
-
-        return when (mat.dtype) {
-            DataType.DoubleDataType -> {
-                norm(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
-            }
-            DataType.FloatDataType -> {
-                norm(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
-            }
-            else -> {
-                norm(mat.data, mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
-            }
-        }
-    }
+//    override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double {
+//        require(p > 0) { "Power $p must be positive" }
+//
+//        return when (mat.dtype) {
+//            DataType.DoubleDataType -> {
+//                norm(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+//            }
+//            DataType.FloatDataType -> {
+//                norm(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+//            }
+//            else -> {
+//                norm(mat.data, mat.offset, mat.strides, mat.shape[0], mat.shape[1], p, mat.consistent)
+//            }
+//        }
+//    }
 }

@@ -31,21 +31,27 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    norm
- * Signature: ([FI)D
+ * Signature: (CII[FI)F
  */
-JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_norm___3FI
-	(JNIEnv *env, jobject jobj, jfloatArray mat, jint p) {
-  return NULL;
+JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_norm__CII_3FI
+	(JNIEnv *env, jobject jobj, jchar jnorm, jint m, jint n, jfloatArray jarr, jint lda) {
+  auto *A = (float *)env->GetPrimitiveArrayCritical(jarr, nullptr);
+  float ret = norm_matrix_float((char)jnorm, m, n, A, lda);
+  env->ReleasePrimitiveArrayCritical(jarr, A, 0);
+  return ret;
 }
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    norm
- * Signature: ([DI)D
+ * Signature: (CII[DI)D
  */
-JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_norm___3DI
-	(JNIEnv *env, jobject jobj, jdoubleArray mat, jint p) {
-  return NULL;
+JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_norm__CII_3DI
+	(JNIEnv *env, jobject jobj, jchar jnorm, jint m, jint n, jdoubleArray jarr, jint lda) {
+  auto *A = (double *)env->GetPrimitiveArrayCritical(jarr, nullptr);
+  double ret = norm_matrix_double((char)jnorm, m, n, A, lda);
+  env->ReleasePrimitiveArrayCritical(jarr, A, 0);
+  return ret;
 }
 
 /*
@@ -281,7 +287,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
 //  }
 //
 //  return info;
-	return -1;
+  return -1;
 }
 
 /*
@@ -309,7 +315,7 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
 //  }
 //
 //  return info;
-	return -1;
+  return -1;
 }
 
 /*

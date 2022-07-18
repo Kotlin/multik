@@ -10,8 +10,8 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 internal expect object JniLinAlg {
     fun pow(mat: FloatArray, n: Int, result: FloatArray)
     fun pow(mat: DoubleArray, n: Int, result: DoubleArray)
-    fun norm(mat: FloatArray, p: Int): Double
-    fun norm(mat: DoubleArray, p: Int): Double
+    fun norm(norm: Char, m: Int, n: Int, mat: FloatArray, lda: Int): Float
+    fun norm(norm: Char, m: Int, n: Int, mat: DoubleArray, lda: Int): Double
 
     /**
      * @param n number of rows and columns of the matrix [mat]

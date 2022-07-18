@@ -17,6 +17,4 @@ public actual object DefaultLinAlg : LinAlg {
         get() = DefaultLinAlgEx
 
     actual override fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2> = KELinAlg.pow(mat, n)
-
-    actual override fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int): Double = KELinAlg.norm(mat, p)
 }
