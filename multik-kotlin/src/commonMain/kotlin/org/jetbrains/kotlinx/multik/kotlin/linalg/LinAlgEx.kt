@@ -6,6 +6,7 @@ package org.jetbrains.kotlinx.multik.kotlin.linalg
 
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
+import org.jetbrains.kotlinx.multik.api.linalg.Norm
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
@@ -49,6 +50,20 @@ public object KELinAlgEx : LinAlgEx {
             else -> throw UnsupportedOperationException()
         }
         return (if (b.dim.d == 2) ans else ans.reshape(ans.shape[0])) as NDArray<O, D>
+    }
+
+    override fun normF(mat: MultiArray<Float, D2>, norm: Norm): Float {
+        return when (norm) {
+            Norm.Fro -> norm(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], 2, mat.consistent)
+            else -> TODO("Not yet implemented")
+        }
+    }
+
+    override fun norm(mat: MultiArray<Double, D2>, norm: Norm): Double {
+        return when (norm) {
+            Norm.Fro -> norm(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], 2, mat.consistent)
+            else -> TODO("Not yet implemented")
+        }
     }
 
     override fun <T : Number> qr(mat: MultiArray<T, D2>): Pair<D2Array<Double>, D2Array<Double>> =

@@ -4,16 +4,16 @@
 
 package org.jetbrains.kotlinx.multik.openblas.linalg
 
+import org.jetbrains.kotlinx.multik.api.arange
 import org.jetbrains.kotlinx.multik.api.identity
-import org.jetbrains.kotlinx.multik.api.linalg.dot
-import org.jetbrains.kotlinx.multik.api.linalg.inv
-import org.jetbrains.kotlinx.multik.api.linalg.solve
+import org.jetbrains.kotlinx.multik.api.linalg.*
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.rangeTo
+import org.jetbrains.kotlinx.multik.ndarray.operations.minus
 import org.jetbrains.kotlinx.multik.openblas.*
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
@@ -266,5 +266,16 @@ class NativeLinAlgTest {
 
         assertEquals(mk.ndarray(mk[ComplexDouble.one, ComplexDouble.one]), w)
         assertEquals(mk.ndarray(mk[mk[ComplexDouble.one, ComplexDouble.zero], mk[ComplexDouble.zero, ComplexDouble.one]]), v)
+    }
+
+    @Test
+    fun `compute norm`() {
+        val a = mk.arange<Double>(9) - 4.0
+        val b = a.reshape(3, 3)
+
+        assertFloatingNumber(7.745966692414834, NativeLinAlg.norm(b, Norm.Fro))
+        assertFloatingNumber(9.0, NativeLinAlg.norm(b, Norm.Inf))
+        assertFloatingNumber(7.0, NativeLinAlg.norm(b, Norm.N1))
+        assertFloatingNumber(4.0, NativeLinAlg.norm(b, Norm.Max))
     }
 }

@@ -7,6 +7,7 @@ package org.jetbrains.kotlinx.multik_kotlin.linAlg
 
 import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.api.linalg.dot
+import org.jetbrains.kotlinx.multik.api.linalg.norm
 import org.jetbrains.kotlinx.multik.kotlin.linalg.*
 import org.jetbrains.kotlinx.multik.kotlin.linalg.KELinAlgEx.solve
 import org.jetbrains.kotlinx.multik.kotlin.linalg.KELinAlgEx.solveC
@@ -31,40 +32,18 @@ class KELinAlgTest {
         val d2arrayDouble1 = mk.ndarray(mk[mk[1.0, 2.0], mk[3.0, 4.0]])
         val d2arrayDouble2 = mk.ndarray(mk[mk[-1.0, -2.0], mk[-3.0, -4.0]])
 
-        assertEquals(10.0, mk.linalg.norm(d2arrayDouble1, 1))
-        assertEquals(10.0, mk.linalg.norm(d2arrayDouble2, 1))
+        var doubleDiff = abs(5.477225575051661 - mk.linalg.norm(d2arrayDouble1))
+        assertTrue(doubleDiff < 1e-8)
+        doubleDiff = abs(5.477225575051661 - mk.linalg.norm(d2arrayDouble2))
+        assertTrue(doubleDiff < 1e-8)
 
-        val d2arrayShort1 = mk.ndarray(mk[mk[1.toShort(), 2.toShort()], mk[3.toShort(), 4.toShort()]])
-        val d2arrayShort2 = mk.ndarray(mk[mk[(-1).toShort(), (-2).toShort()], mk[(-3).toShort(), (-4).toShort()]])
+        val d2arrayFloat1 = mk.ndarray(mk[mk[1f, 2f], mk[3f, 4f]])
+        val d2arrayFloat2 = mk.ndarray(mk[mk[-1f, -2f], mk[-3f, -4f]])
 
-        assertEquals(10.0, mk.linalg.norm(d2arrayShort1, 1))
-        assertEquals(10.0, mk.linalg.norm(d2arrayShort2, 1))
-
-        val d2arrayInt1 = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
-        val d2arrayInt2 = mk.ndarray(mk[mk[-1, -2], mk[-3, -4]])
-
-        assertEquals(10.0, mk.linalg.norm(d2arrayInt1, 1))
-        assertEquals(10.0, mk.linalg.norm(d2arrayInt2, 1))
-
-        val d2arrayByte1 = mk.ndarray(mk[mk[1.toByte(), 2.toByte()], mk[3.toByte(), 4.toByte()]])
-        val d2arrayByte2 = mk.ndarray(mk[mk[(-1).toByte(), (-2).toByte()], mk[(-3).toByte(), (-4).toByte()]])
-
-        assertEquals(10.0, mk.linalg.norm(d2arrayByte1, 1))
-        assertEquals(10.0, mk.linalg.norm(d2arrayByte2, 1))
-
-        val d2arrayFloat1 = mk.ndarray(mk[mk[1.0.toFloat(), 2.0.toFloat()], mk[3.0.toFloat(), 4.0.toFloat()]])
-        val d2arrayFloat2 =
-            mk.ndarray(mk[mk[(-1.0).toFloat(), (-2.0).toFloat()], mk[(-3.0).toFloat(), (-4.0).toFloat()]])
-
-        assertEquals(10.0, mk.linalg.norm(d2arrayFloat1, 1))
-        assertEquals(10.0, mk.linalg.norm(d2arrayFloat2, 1))
-
-        val d2arrayLong1 = mk.ndarray(mk[mk[1.toLong(), 2.toLong()], mk[3.toLong(), 4.toLong()]])
-        val d2arrayLong2 = mk.ndarray(mk[mk[(-1).toLong(), (-2).toLong()], mk[(-3).toLong(), (-4).toLong()]])
-
-        assertEquals(10.0, mk.linalg.norm(d2arrayLong1, 1))
-        assertEquals(10.0, mk.linalg.norm(d2arrayLong2, 1))
-
+        var floatDiff = abs(5.477226f - mk.linalg.norm(d2arrayFloat1))
+        assertTrue(floatDiff < 1e-6f)
+        floatDiff = abs(5.477226f - mk.linalg.norm(d2arrayFloat2))
+        assertTrue(floatDiff < 1e-6f)
     }
 
     @Test

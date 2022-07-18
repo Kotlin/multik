@@ -6,8 +6,8 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 internal actual object JniLinAlg {
     actual external fun pow(mat: FloatArray, n: Int, result: FloatArray)
     actual external fun pow(mat: DoubleArray, n: Int, result: DoubleArray)
-    actual external fun norm(mat: FloatArray, p: Int): Double
-    actual external fun norm(mat: DoubleArray, p: Int): Double
+    actual external fun norm(norm: Char, m: Int, n: Int, mat: FloatArray, lda: Int): Float
+    actual external fun norm(norm: Char, m: Int, n: Int, mat: DoubleArray, lda: Int): Double
 
     /**
      * @param n number of rows and columns of the matrix [mat]

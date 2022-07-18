@@ -15,12 +15,12 @@ internal actual object JniLinAlg {
         TODO()
     }
 
-    actual fun norm(mat: FloatArray, p: Int): Double {
-        TODO()
+    actual fun norm(norm: Char, m: Int, n: Int, mat: FloatArray, lda: Int): Float {
+        return norm_matrix_float(norm.code.toByte(), m, n, mat.toCValues(), lda)
     }
 
-    actual fun norm(mat: DoubleArray, p: Int): Double {
-        TODO()
+    actual fun norm(norm: Char, m: Int, n: Int, mat: DoubleArray, lda: Int): Double {
+        return norm_matrix_double(norm.code.toByte(), m, n, mat.toCValues(), lda)
     }
 
     /**

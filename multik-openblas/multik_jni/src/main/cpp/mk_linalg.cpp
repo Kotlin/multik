@@ -26,6 +26,14 @@ mk_complex_double vector_dot_complex_double(int n, double *X, int incx, double *
   return mk_complex_double{openblas_complex_double_real(ret), openblas_complex_double_imag(ret)};
 }
 
+float norm_matrix_float(char norm, int m, int n, float *A, int lda) {
+  return LAPACKE_slange(LAPACK_ROW_MAJOR, norm, m, n, A, lda);
+}
+
+double norm_matrix_double(char norm, int m, int n, double *A, int lda) {
+  return LAPACKE_dlange(LAPACK_ROW_MAJOR, norm, m, n, A, lda);
+}
+
 int qr_matrix_float(int m, int n, float *AQ, int lda, float *R) {
   int mn = std::min(m, n);
   float tau[mn];

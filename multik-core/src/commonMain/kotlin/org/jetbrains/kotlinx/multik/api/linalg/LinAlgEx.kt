@@ -21,6 +21,10 @@ public interface LinAlgEx {
     public fun <D : Dim2> solveF(a: MultiArray<Float, D2>, b: MultiArray<Float, D>): NDArray<Float, D>
     public fun <T : Complex, D : Dim2> solveC(a: MultiArray<T, D2>, b: MultiArray<T, D>): NDArray<T, D>
 
+    public fun normF(mat: MultiArray<Float, D2>, norm: Norm = Norm.Fro): Float
+
+    public fun norm(mat: MultiArray<Double, D2>, norm: Norm = Norm.Fro): Double
+
     public fun <T : Number> qr(mat: MultiArray<T, D2>): Pair<D2Array<Double>, D2Array<Double>>
     public fun qrF(mat: MultiArray<Float, D2>): Pair<D2Array<Float>, D2Array<Float>>
     public fun <T : Complex> qrC(mat: MultiArray<T, D2>): Pair<D2Array<T>, D2Array<T>>

@@ -4,14 +4,13 @@
 
 package org.jetbrains.kotlinx.multik.kotlin.linalg
 
-import org.jetbrains.kotlinx.multik.ndarray.data.ImmutableMemoryView
 import kotlin.math.abs
 import kotlin.math.pow
 
 @Suppress("DuplicatedCode")
 internal fun norm(
     mat: FloatArray, matOffset: Int, matStrides: IntArray, n: Int, m: Int, power: Int, consistent: Boolean
-): Double {
+): Float {
     var result = 0.0
 
     val (matStride_0, matStride_1) = matStrides
@@ -30,7 +29,7 @@ internal fun norm(
         }
     }
 
-    return result.pow(1.0 / power)
+    return result.pow(1.0 / power).toFloat()
 }
 
 @Suppress("DuplicatedCode")
@@ -57,24 +56,24 @@ internal fun norm(
     return result.pow(1.0 / power)
 }
 
-internal fun <T : Number> norm(
-    mat: ImmutableMemoryView<T>, matOffset: Int, matStrides: IntArray, n: Int, m: Int, power: Int, consistent: Boolean
-): Double {
-    var result = 0.0
-
-    val (matStride_0, matStride_1) = matStrides
-
-    if (consistent) {
-        result = mat.sumOf { abs(it.toDouble()).pow(power) }
-    } else {
-        for (i in 0 until n) {
-            val matInd = i * matStride_0 + matOffset
-            for (k in 0 until m) {
-                val absValue = abs(mat[matInd + k * matStride_1].toDouble())
-                result += absValue.pow(power)
-            }
-        }
-    }
-
-    return result.pow(1.0 / power)
-}
+//internal fun <T : Number> norm(
+//    mat: ImmutableMemoryView<T>, matOffset: Int, matStrides: IntArray, n: Int, m: Int, power: Int, consistent: Boolean
+//): Double {
+//    var result = 0.0
+//
+//    val (matStride_0, matStride_1) = matStrides
+//
+//    if (consistent) {
+//        result = mat.sumOf { abs(it.toDouble()).pow(power) }
+//    } else {
+//        for (i in 0 until n) {
+//            val matInd = i * matStride_0 + matOffset
+//            for (k in 0 until m) {
+//                val absValue = abs(mat[matInd + k * matStride_1].toDouble())
+//                result += absValue.pow(power)
+//            }
+//        }
+//    }
+//
+//    return result.pow(1.0 / power)
+//}

@@ -6,6 +6,7 @@ package org.jetbrains.kotlinx.multik.openblas.linalg
 
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
+import org.jetbrains.kotlinx.multik.api.linalg.Norm
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
@@ -83,6 +84,18 @@ public object NativeLinAlgEx : LinAlgEx {
         }
 
         return b as NDArray<T, D>
+    }
+
+    override fun normF(mat: MultiArray<Float, D2>, norm: Norm): Float {
+        val (m, n) = mat.shape
+        val array = if (mat.consistent) mat else mat.deepCopy()
+        return JniLinAlg.norm(norm.lapackCode, m, n, array.data.getFloatArray(), mat.strides[0])
+    }
+
+    override fun norm(mat: MultiArray<Double, D2>, norm: Norm): Double {
+        val (m, n) = mat.shape
+        val array = if (mat.consistent) mat else mat.deepCopy()
+        return JniLinAlg.norm(norm.lapackCode, m, n, array.data.getDoubleArray(), mat.strides[0])
     }
 
     override fun <T : Number> qr(mat: MultiArray<T, D2>): Pair<D2Array<Double>, D2Array<Double>> =
