@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package org.jetbrains.kotlinx.multik.ndarray.data
@@ -71,15 +71,15 @@ class SliceTest {
         val a2 = a.reshape(3, 2)
         val b2 = b.reshape(4, 1)
         assertSame(a, a2.base)
-        assertSame(a, b2.base)
+        assertSame(null, b2.base)
 
         val d1 = b2.squeeze()
         val d2 = d1.unsqueeze()
-        assertSame(a, d1.base)
-        assertSame(a, d2.base)
+        assertSame(b2, d1.base)
+        assertSame(b2, d2.base)
 
         val e = b2.transpose()
-        assertSame(a, e.base)
+        assertSame(b2, e.base)
 
         val f = a2[1]
         assertSame(a, f.base)
