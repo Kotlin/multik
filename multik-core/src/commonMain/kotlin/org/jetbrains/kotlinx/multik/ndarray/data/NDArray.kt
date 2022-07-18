@@ -109,12 +109,13 @@ public class NDArray<T, D : Dimension> constructor(
 
         // TODO(get rid of copying)
         val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) base ?: this else null
+        val newBase = if (consistent) this.base ?: this else null
+        val newOffset = if (consistent) this.offset else 0
 
         return if (this.dim.d == 1 && this.shape.first() == dim1) {
             this as D1Array<T>
         } else {
-            D1Array(newData, this.offset, intArrayOf(dim1), dim = D1, base = newBase)
+            D1Array(newData, newOffset, intArrayOf(dim1), dim = D1, base = newBase)
         }
     }
 
@@ -125,12 +126,13 @@ public class NDArray<T, D : Dimension> constructor(
 
         // TODO(get rid of copying)
         val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) base ?: this else null
+        val newBase = if (consistent) this.base ?: this else null
+        val newOffset = if (consistent) this.offset else 0
 
         return if (this.shape.contentEquals(newShape)) {
             this as D2Array<T>
         } else {
-            D2Array(newData, this.offset, newShape, dim = D2, base = newBase)
+            D2Array(newData, newOffset, newShape, dim = D2, base = newBase)
         }
     }
 
@@ -142,11 +144,12 @@ public class NDArray<T, D : Dimension> constructor(
         // TODO(get rid of copying)
         val newData = if (consistent) this.data else this.deepCopy().data
         val newBase = if (consistent) base ?: this else null
+        val newOffset = if (consistent) this.offset else 0
 
         return if (this.shape.contentEquals(newShape)) {
             this as D3Array<T>
         } else {
-            D3Array(newData, this.offset, newShape, dim = D3, base = newBase)
+            D3Array(newData, newOffset, newShape, dim = D3, base = newBase)
         }
     }
 
@@ -157,12 +160,13 @@ public class NDArray<T, D : Dimension> constructor(
 
         // TODO(get rid of copying)
         val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) base ?: this else null
+        val newBase = if (consistent) this.base ?: this else null
+        val newOffset = if (consistent) this.offset else 0
 
         return if (this.shape.contentEquals(newShape)) {
             this as D4Array<T>
         } else {
-            D4Array(newData, this.offset, newShape, dim = D4, base = newBase)
+            D4Array(newData, newOffset, newShape, dim = D4, base = newBase)
         }
     }
 
@@ -175,12 +179,13 @@ public class NDArray<T, D : Dimension> constructor(
 
         // TODO(get rid of copying)
         val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) base ?: this else null
+        val newBase = if (consistent) this.base ?: this else null
+        val newOffset = if (consistent) this.offset else 0
 
         return if (this.shape.contentEquals(newShape)) {
             this as NDArray<T, DN>
         } else {
-            NDArray(newData, this.offset, newShape, dim = DN(newShape.size), base = newBase)
+            NDArray(newData, newOffset, newShape, dim = DN(newShape.size), base = newBase)
         }
     }
 
@@ -223,9 +228,10 @@ public class NDArray<T, D : Dimension> constructor(
         }
         // TODO(get rid of copying)
         val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) base ?: this else null
+        val newBase = if (consistent) this.base ?: this else null
+        val newOffset = if (consistent) this.offset else 0
 
-        return NDArray(newData, this.offset, newShape.toIntArray(), dim = DN(newShape.size), base = newBase)
+        return NDArray(newData, newOffset, newShape.toIntArray(), dim = DN(newShape.size), base = newBase)
     }
 
     override infix fun cat(other: MultiArray<T, D>): NDArray<T, D> =

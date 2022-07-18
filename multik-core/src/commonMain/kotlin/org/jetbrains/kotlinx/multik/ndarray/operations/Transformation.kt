@@ -310,8 +310,9 @@ public fun <T> MultiArray<T, D1>.expandDims(axis: Int): MultiArray<T, D2> {
     val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
     // TODO(get rid of copying)
     val newData = if (consistent) this.data else this.deepCopy().data
-    val newBase = if (consistent) base ?: this else null
-    return D2Array(newData, this.offset, newShape, dim = D2, base = newBase)
+    val newBase = if (consistent) this.base ?: this else null
+    val newOffset = if (consistent) this.offset else 0
+    return D2Array(newData, newOffset, newShape, dim = D2, base = newBase)
 }
 
 /**
@@ -322,8 +323,9 @@ public fun <T> MultiArray<T, D2>.expandDims(axis: Int): MultiArray<T, D3> {
     val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
     // TODO(get rid of copying)
     val newData = if (consistent) this.data else this.deepCopy().data
-    val newBase = if (consistent) base ?: this else null
-    return D3Array(newData, this.offset, newShape, dim = D3, base = newBase)
+    val newBase = if (consistent) this.base ?: this else null
+    val newOffset = if (consistent) this.offset else 0
+    return D3Array(newData, newOffset, newShape, dim = D3, base = newBase)
 }
 
 /**
@@ -334,8 +336,9 @@ public fun <T> MultiArray<T, D3>.expandDims(axis: Int): MultiArray<T, D4> {
     val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
     // TODO(get rid of copying)
     val newData = if (consistent) this.data else this.deepCopy().data
-    val newBase = if (consistent) base ?: this else null
-    return D4Array(newData, this.offset, newShape, dim = D4, base = newBase)
+    val newBase = if (consistent) this.base ?: this else null
+    val newOffset = if (consistent) this.offset else 0
+    return D4Array(newData, newOffset, newShape, dim = D4, base = newBase)
 }
 
 /**
