@@ -11,6 +11,9 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
  */
 public interface Math {
 
+    /**
+     * instance of [MathEx]
+     */
     public val mathEx: MathEx
 
     /**

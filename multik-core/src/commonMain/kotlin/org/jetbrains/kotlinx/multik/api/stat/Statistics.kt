@@ -68,6 +68,9 @@ public fun <D : Dimension> abs(a: MultiArray<Byte, D>): NDArray<Byte, D> {
     return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
+/**
+ * Returns the absolute value of the given ndarray [a].
+ */
 @JvmName("absShort")
 public fun <D : Dimension> abs(a: MultiArray<Short, D>): NDArray<Short, D> {
     val ret = initMemoryView<Short>(a.size, a.dtype)
@@ -78,6 +81,9 @@ public fun <D : Dimension> abs(a: MultiArray<Short, D>): NDArray<Short, D> {
     return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
+/**
+ * Returns the absolute value of the given ndarray [a].
+ */
 @JvmName("absInt")
 public fun <D : Dimension> abs(a: MultiArray<Int, D>): NDArray<Int, D> {
     val ret = initMemoryView<Int>(a.size, a.dtype)
@@ -88,6 +94,9 @@ public fun <D : Dimension> abs(a: MultiArray<Int, D>): NDArray<Int, D> {
     return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
+/**
+ * Returns the absolute value of the given ndarray [a].
+ */
 @JvmName("absLong")
 public fun <D : Dimension> abs(a: MultiArray<Long, D>): NDArray<Long, D> {
     val ret = initMemoryView<Long>(a.size, a.dtype)
@@ -98,6 +107,9 @@ public fun <D : Dimension> abs(a: MultiArray<Long, D>): NDArray<Long, D> {
     return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
+/**
+ * Returns the absolute value of the given ndarray [a].
+ */
 @JvmName("absFloat")
 public fun <D : Dimension> abs(a: MultiArray<Float, D>): NDArray<Float, D> {
     val ret = initMemoryView<Float>(a.size)
@@ -108,6 +120,9 @@ public fun <D : Dimension> abs(a: MultiArray<Float, D>): NDArray<Float, D> {
     return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
+/**
+ * Returns the absolute value of the given ndarray [a].
+ */
 @JvmName("absDouble")
 public fun <D : Dimension> abs(a: MultiArray<Double, D>): NDArray<Double, D> {
     val ret = initMemoryView<Double>(a.size)
@@ -118,6 +133,9 @@ public fun <D : Dimension> abs(a: MultiArray<Double, D>): NDArray<Double, D> {
     return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
+/**
+ * Returns the absolute value of the given ndarray [a].
+ */
 @JvmName("absComplexFloat")
 public fun <D : Dimension> abs(a: MultiArray<ComplexFloat, D>): NDArray<Float, D> {
     val ret = initMemoryView<Float>(a.size)
@@ -128,6 +146,9 @@ public fun <D : Dimension> abs(a: MultiArray<ComplexFloat, D>): NDArray<Float, D
     return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
+/**
+ * Returns the absolute value of the given ndarray [a].
+ */
 @JvmName("absComplexDouble")
 public fun <D : Dimension> abs(a: MultiArray<ComplexDouble, D>): NDArray<Double, D> {
     val ret = initMemoryView<Double>(a.size)
@@ -138,6 +159,12 @@ public fun <D : Dimension> abs(a: MultiArray<ComplexDouble, D>): NDArray<Double,
     return NDArray(ret, 0, a.shape.copyOf(), dim = a.dim)
 }
 
+/**
+ * Returns the absolute value of the given value [a].
+ */
 private inline fun absByte(a: Byte): Byte = if (a < 0) (-a).toByte() else a
 
+/**
+ * Returns the absolute value of the given value [a].
+ */
 private inline fun absShort(a: Short): Short = if (a < 0) (-a).toShort() else a

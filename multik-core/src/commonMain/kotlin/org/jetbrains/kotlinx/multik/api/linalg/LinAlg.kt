@@ -14,6 +14,9 @@ import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
  */
 public interface LinAlg {
 
+    /**
+     * instance of [LinAlgEx]
+     */
     public val linAlgEx: LinAlgEx
 
     /**
@@ -21,8 +24,4 @@ public interface LinAlg {
      */
     public fun <T : Number> pow(mat: MultiArray<T, D2>, n: Int): NDArray<T, D2>
 
-//    /**
-//     * Matrix ov vector norm. The default is Frobenius norm.
-//     */
-//    public fun <T : Number> norm(mat: MultiArray<T, D2>, p: Int = 2): Double
 }

@@ -4,6 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.complex
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.Complex.Companion.i
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.sqrt
@@ -14,12 +15,24 @@ import kotlin.math.sqrt
 public interface Complex {
     public companion object {
 
+        /**
+         * Returns the [ComplexFloat] with the [re]al part.
+         */
         public fun r(re: Float): ComplexFloat = ComplexFloat(re, 0f)
 
+        /**
+         * Returns the [ComplexDouble] with the [re]al part.
+         */
         public fun r(re: Double): ComplexDouble = ComplexDouble(re, 0.0)
 
+        /**
+         * Returns the [ComplexFloat] with the [i]maginary part.
+         */
         public fun i(im: Float): ComplexFloat = ComplexFloat(0f, im)
 
+        /**
+         * Returns the [ComplexDouble] with the [i]maginary part.
+         */
         public fun i(im: Double): ComplexDouble = ComplexDouble(0.0, im)
     }
 }
@@ -29,8 +42,14 @@ public interface Complex {
  */
 public class ComplexFloat(public val re: Float, public val im: Float) : Complex {
 
+    /**
+     * Creates a [ComplexFloat] where the real part is one.
+     */
     public constructor(re: Number, im: Number): this(re.toFloat(), im.toFloat())
 
+    /**
+     * Creates a zero [ComplexFloat].
+     */
     public constructor(re: Number): this(re.toFloat(), 0f)
 
     public companion object {
@@ -223,12 +242,21 @@ public class ComplexDouble(public val re: Double, public val im: Double) : Compl
     public constructor(re: Number): this(re.toDouble(), 0.0)
 
     public companion object {
+        /**
+         * Creates a [ComplexFloat] where the real part is one.
+         */
         public val one: ComplexDouble
             get() = ComplexDouble(1.0, 0.0)
 
+        /**
+         * Creates a zero [ComplexDouble].
+         */
         public val zero: ComplexDouble
             get() = ComplexDouble(0.0, 0.0)
 
+        /**
+         * Creates a [ComplexDouble] where the real part and the imaginary part are NaN.
+         */
         public val NaN: ComplexDouble
             get() = ComplexDouble(Double.NaN, Double.NaN)
     }

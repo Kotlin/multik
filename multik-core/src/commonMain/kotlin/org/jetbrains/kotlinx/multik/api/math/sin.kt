@@ -17,11 +17,20 @@ import kotlin.jvm.JvmName
 @JvmName("sin")
 public fun <T : Number, D : Dimension> Math.sin(a: MultiArray<T, D>): NDArray<Double, D> = this.mathEx.sin(a)
 
+/**
+ * Returns an ndarray of Float from the given ndarray to each element of which a sin function has been applied.
+ */
 @JvmName("sinFloat")
 public fun <D : Dimension> Math.sin(a: MultiArray<Float, D>): NDArray<Float, D> = this.mathEx.sinF(a)
 
+/**
+ * Returns an ndarray of [ComplexFloat] from the given ndarray to each element of which a sin function has been applied.
+ */
 @JvmName("sinComplexFloat")
 public fun <D : Dimension> Math.sin(a: MultiArray<ComplexFloat, D>): NDArray<ComplexFloat, D> = this.mathEx.sinCF(a)
 
+/**
+ * Returns an ndarray of [ComplexDouble] from the given ndarray to each element of which a sin function has been applied.
+ */
 @JvmName("sinComplexDouble")
 public fun <D : Dimension> Math.sin(a: MultiArray<ComplexDouble, D>): NDArray<ComplexDouble, D> = this.mathEx.sinCD(a)

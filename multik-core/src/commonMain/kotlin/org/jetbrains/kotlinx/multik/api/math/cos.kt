@@ -17,11 +17,20 @@ import kotlin.jvm.JvmName
 @JvmName("cos")
 public fun <T : Number, D : Dimension> Math.cos(a: MultiArray<T, D>): NDArray<Double, D> = this.mathEx.cos(a)
 
+/**
+ * Returns a ndarray of Float from the given ndarray to each element of which a cos function has been applied.
+ */
 @JvmName("cosFloat")
 public fun <D : Dimension> Math.cos(a: MultiArray<Float, D>): NDArray<Float, D> = this.mathEx.cosF(a)
 
+/**
+ * Returns a ndarray of [ComplexFloat] from the given ndarray to each element of which a cos function has been applied.
+ */
 @JvmName("cosComplexFloat")
 public fun <D : Dimension> Math.cos(a: MultiArray<ComplexFloat, D>): NDArray<ComplexFloat, D> = this.mathEx.cosCF(a)
 
+/**
+ * Returns a ndarray of [ComplexDouble] from the given ndarray to each element of which a cos function has been applied.
+ */
 @JvmName("cosComplexDouble")
 public fun <D : Dimension> Math.cos(a: MultiArray<ComplexDouble, D>): NDArray<ComplexDouble, D> = this.mathEx.cosCD(a)

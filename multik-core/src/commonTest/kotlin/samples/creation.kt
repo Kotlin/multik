@@ -13,24 +13,132 @@ import kotlin.test.Test
 
 class NDArrayTest {
     @Test
-    fun empty() {
-        val ndarray = mk.empty<Int, D2>(2, 2)
+    fun zerosD1() {
+        val ndarray = mk.zeros<Int>(5)
+        println(ndarray) // [0, 0, 0, 0, 0]
+    }
+
+    @Test
+    fun zerosD2() {
+        val ndarray = mk.zeros<Float>(2, 2)
         println(ndarray)
         /*
-        [[0, 0],
-        [0, 0]]
+         [[0.0, 0.0],
+          [0.0, 0.0]]
          */
     }
 
     @Test
-    fun emptyWithDtype() {
-        val dims = intArrayOf(3, 2)
-        val ndarray = mk.empty<Int, D2>(dims, DataType.FloatDataType)
+    fun zerosD3() {
+        val ndarray = mk.zeros<Double>(2, 2, 2)
         println(ndarray)
         /*
-        [[0.0, 0.0],
-        [0.0, 0.0],
-        [0.0, 0.0]]
+         [[[0.0, 0.0],
+           [0.0, 0.0]],
+
+          [[0.0, 0.0],
+           [0.0, 0.0]]]
+         */
+    }
+
+    @Test
+    fun zerosD4() {
+        val ndarray = mk.zeros<Double>(2, 1, 2, 1)
+        println(ndarray)
+        /*
+         [[[[0.0],
+            [0.0]]],
+
+
+          [[[0.0],
+            [0.0]]]]
+         */
+}
+
+    @Test
+    fun zerosDN() {
+        val ndarray = mk.zeros<Double>(1, 1, 1, 2, 2)
+        println(ndarray)
+        /*
+         [[[[[0.0, 0.0],
+             [0.0, 0.0]]]]]
+         */
+    }
+
+    @Test
+    fun zerosDNWithDtype() {
+        val dims = intArrayOf(3, 2)
+        val ndarray = mk.zeros<Float, D2>(dims, DataType.FloatDataType)
+        println(ndarray)
+        /*
+         [[0.0, 0.0],
+          [0.0, 0.0],
+          [0.0, 0.0]]
+         */
+    }
+
+    @Test
+    fun onesD1() {
+        val ndarray = mk.ones<Int>(5)
+        println(ndarray) // [1, 1, 1, 1, 1]
+    }
+
+    @Test
+    fun onesD2() {
+        val ndarray = mk.ones<Float>(2, 2)
+        println(ndarray)
+        /*
+         [[1.0, 1.0],
+          [1.0, 1.0]]
+         */
+    }
+
+    @Test
+    fun onesD3() {
+        val ndarray = mk.ones<Double>(2, 2, 2)
+        println(ndarray)
+        /*
+         [[[1.0, 1.0],
+           [1.0, 1.0]],
+
+          [[0.0, 0.0],
+           [0.0, 0.0]]]
+         */
+    }
+
+    @Test
+    fun onesD4() {
+        val ndarray = mk.ones<Double>(2, 1, 2, 1)
+        println(ndarray)
+        /*
+         [[[[1.0],
+            [1.0]]],
+
+
+          [[[1.0],
+            [1.0]]]]
+         */
+    }
+
+    @Test
+    fun onesDN() {
+        val ndarray = mk.ones<Double>(1, 1, 1, 2, 2)
+        println(ndarray)
+        /*
+         [[[[[1.0, 1.0],
+             [1.0, 1.0]]]]]
+         */
+    }
+
+    @Test
+    fun onesDNWithDtype() {
+        val dims = intArrayOf(3, 2)
+        val ndarray = mk.ones<Float, D2>(dims, DataType.FloatDataType)
+        println(ndarray)
+        /*
+         [[1.0, 1.0],
+          [1.0, 1.0],
+          [1.0, 1.0]]
          */
     }
 
@@ -684,7 +792,17 @@ class NDArrayTest {
         println(ndarray)
         /*
         [[0, 1],
-        [4, 9]]
+         [4, 9]]
+         */
+    }
+
+    @Test
+    fun d2arrayIndices() {
+        val ndarray = mk.d2arrayIndices(2, 2) { i, j -> i + j }
+        println(ndarray)
+        /*
+        [[0, 1],
+         [1, 2]]
          */
     }
 
@@ -702,6 +820,19 @@ class NDArrayTest {
     }
 
     @Test
+    fun d3arrayIndices() {
+        val ndarray = mk.d3arrayIndices(2, 2, 2) { i, j, k -> i + j + k }
+        println(ndarray)
+        /*
+        [[[0, 1],
+          [1, 2]],
+
+         [[1, 2],
+          [2, 3]]]
+         */
+    }
+
+    @Test
     fun d4array() {
         val ndarray = mk.d4array(2, 1, 2, 1) { (it - 10f) / 10 }
         println(ndarray)
@@ -712,6 +843,22 @@ class NDArrayTest {
 
         [[[-0.8],
         [-0.7]]]]
+         */
+    }
+
+    @Test
+    fun d4arrayIndices() {
+        val ndarray = mk.d4arrayIndices(2, 1, 2, 1) {i, j, k, m ->
+            (i - j * 5f) / (k + 1) + m
+        }
+        println(ndarray)
+        /*
+        [[[[0.0],
+           [0.0]]],
+
+
+         [[[1.0],
+           [0.5]]]]
          */
     }
 

@@ -87,15 +87,22 @@ kotlin {
 
 tasks.dokkaHtml.configure {
     outputDirectory.set(rootProject.buildDir.resolve("dokka"))
+    suppressObviousFunctions.set(true)
+    suppressInheritedMembers.set(true)
 
     dokkaSourceSets {
         configureEach {
-            includeNonPublic.set(false)
-            skipEmptyPackages.set(false)
+            documentedVisibilities.set(
+                setOf(
+                    org.jetbrains.dokka.DokkaConfiguration.Visibility.PUBLIC,
+                    org.jetbrains.dokka.DokkaConfiguration.Visibility.PROTECTED
+                )
+            )
+            skipDeprecated.set(false)
             jdkVersion.set(8)
             noStdlibLink.set(false)
             noJdkLink.set(false)
-            samples.from(files("src/test/kotlin/samples/creation.kt"))
+            samples.from(files("src/commonTest/kotlin/samples/creation.kt"))
         }
     }
 }
