@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>NDArray</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+</head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+            <a href="../../../index.html">
+                    <span>multik-core</span>
+            </a>
+    </div>
+    <div>
+0.2.0    </div>
+    <div class="pull-right d-flex">
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":multik-core:dokkaHtml/commonMain">common</button>
+        </div>
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageIds="multik-core::org.jetbrains.kotlinx.multik.ndarray.data/NDArray///PointingToDeclaration//-1703485862">
+  <div class="breadcrumbs"><a href="../../../index.html">multik-core</a><span class="delimiter">/</span><a href="../index.html">org.jetbrains.kotlinx.multik.ndarray.data</a><span class="delimiter">/</span><a href="index.html">NDArray</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>NDArray</span></span></h1>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator"> : </span><a href="../-dimension/index.html">Dimension</a><span class="token operator">&gt;</span><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;data<span class="token operator">: </span><a href="../-immutable-memory-view/index.html">ImmutableMemoryView</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>offset<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>shape<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>strides<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a><span class="token operator"> = </span>computeStrides(shape)<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>dim<span class="token operator">: </span><a href="index.html">D</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>base<span class="token operator">: </span><a href="../-multi-array/index.html">MultiArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="../-dimension/index.html">Dimension</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span> : <a href="../-mutable-multi-array/index.html">MutableMultiArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">A class that implements multidimensional arrays. This implementation is based on primitive arrays. With the help of <a href="offset.html">offset</a>, <a href="shape.html">shape</a>, <a href="strides.html">strides</a> there is a multidimensionality representation over a sequential homogeneous array.</p><p class="paragraph">Native code uses <code class="lang-kotlin">GetPrimitiveArrayCritical</code> for calculation.</p></div>    </div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Extensions">Extensions</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Parameters</h2>
+      <div data-togglable="Parameters">
+        <div class="platform-hinted WithExtraAttributes with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Parameters">
+          <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>T</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">type of stored values.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>D</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">dimension.</p></div></div></div></div></div></div></div></div>        </div>
+      </div>
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-834912527%2FConstructors%2F-1703485862" anchor-label="NDArray" id="-834912527%2FConstructors%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-n-d-array.html"><span><span>NDArray</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-834912527%2FConstructors%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator"> : </span><a href="../-dimension/index.html">Dimension</a><span class="token operator">&gt; </span><a href="-n-d-array.html"><span class="token function">NDArray</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;data<span class="token operator">: </span><a href="../-immutable-memory-view/index.html">ImmutableMemoryView</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;offset<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;shape<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;strides<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a><span class="token operator"> = </span>computeStrides(shape)<span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim<span class="token operator">: </span><a href="index.html">D</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;base<span class="token operator">: </span><a href="../-multi-array/index.html">MultiArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="../-dimension/index.html">Dimension</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null</span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-2013091578%2FFunctions%2F-1703485862" anchor-label="asD1Array" id="-2013091578%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="as-d1-array.html"><span>as</span><wbr></wbr><span><span>D1Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2013091578%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="as-d1-array.html"><span class="token function">asD1Array</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html#1191511228%2FClasslikes%2F-1703485862">D1Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1662291641%2FFunctions%2F-1703485862" anchor-label="asD2Array" id="-1662291641%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="as-d2-array.html"><span>as</span><wbr></wbr><span><span>D2Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1662291641%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="as-d2-array.html"><span class="token function">asD2Array</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html#1542311165%2FClasslikes%2F-1703485862">D2Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1311491704%2FFunctions%2F-1703485862" anchor-label="asD3Array" id="-1311491704%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="as-d3-array.html"><span>as</span><wbr></wbr><span><span>D3Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1311491704%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="as-d3-array.html"><span class="token function">asD3Array</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html#1893111102%2FClasslikes%2F-1703485862">D3Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-960691767%2FFunctions%2F-1703485862" anchor-label="asD4Array" id="-960691767%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="as-d4-array.html"><span>as</span><wbr></wbr><span><span>D4Array</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-960691767%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="as-d4-array.html"><span class="token function">asD4Array</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html#-2051056257%2FClasslikes%2F-1703485862">D4Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-429827997%2FFunctions%2F-1703485862" anchor-label="asDNArray" id="-429827997%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="as-d-n-array.html"><span>as</span><wbr></wbr><span><span>DNArray</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-429827997%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="as-d-n-array.html"><span class="token function">asDNArray</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../-d-n/index.html">DN</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2129263922%2FFunctions%2F-1703485862" anchor-label="asType" id="2129263922%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="as-type.html"><span>as</span><wbr></wbr><span><span>Type</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2129263922%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="as-type.html">E</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a><span class="token operator">&gt; </span><a href="as-type.html"><span class="token function">asType</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="as-type.html">E</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="as-type.html">E</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a><span class="token operator">&gt; </span><a href="as-type.html"><span class="token function">asType</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dataType<span class="token operator">: </span><a href="../-data-type/index.html">DataType</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="as-type.html">E</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="210057006%2FFunctions%2F-1703485862" anchor-label="cat" id="210057006%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="cat.html"><span><span>cat</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="210057006%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">infix override </span><span class="token keyword">fun </span><a href="cat.html"><span class="token function">cat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="../-multi-array/index.html">MultiArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Concatenates this ndarray with <a href="cat.html">other</a>.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="cat.html"><span class="token function">cat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-multi-array/index.html">MultiArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">axis<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Concatenates this ndarray with a list of <a href="cat.html">other</a> ndarrays.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="cat.html"><span class="token function">cat</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="../-multi-array/index.html">MultiArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">axis<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Concatenates this ndarray with <a href="cat.html">other</a> along the specified <a href="cat.html">axis</a>.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="571831941%2FFunctions%2F-1703485862" anchor-label="copy" id="571831941%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="copy.html"><span><span>copy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="571831941%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="copy.html"><span class="token function">copy</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns new <a href="../-multi-array/index.html">MultiArray</a> which is a copy of the original ndarray.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1015281031%2FFunctions%2F-1703485862" anchor-label="deepCopy" id="-1015281031%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="deep-copy.html"><span>deep</span><wbr></wbr><span><span>Copy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1015281031%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="deep-copy.html"><span class="token function">deepCopy</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns new <a href="../-multi-array/index.html">MultiArray</a> which is a deep copy of the original ndarray.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1880829671%2FFunctions%2F-1703485862" anchor-label="equals" id="1880829671%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="equals.html"><span><span>equals</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1880829671%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="equals.html"><span class="token function">equals</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">other<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-997652356%2FFunctions%2F-1703485862" anchor-label="flatten" id="-997652356%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="flatten.html"><span><span>flatten</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-997652356%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="flatten.html"><span class="token function">flatten</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-multi-array/index.html">MultiArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../-d1/index.html">D1</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns new one-dimensional ndarray which is a copy of the original ndarray.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-458733025%2FFunctions%2F-1703485862" anchor-label="hashCode" id="-458733025%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="hash-code.html"><span>hash</span><wbr></wbr><span><span>Code</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-458733025%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="hash-code.html"><span class="token function">hashCode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1748479261%2FFunctions%2F-1703485862" anchor-label="isEmpty" id="1748479261%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="is-empty.html"><span>is</span><wbr></wbr><span><span>Empty</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1748479261%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="is-empty.html"><span class="token function">isEmpty</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns <code class="lang-kotlin">true</code> if this ndarray is empty.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="952679830%2FFunctions%2F-1703485862" anchor-label="isNotEmpty" id="952679830%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="is-not-empty.html"><span>is</span><wbr></wbr><span>Not</span><wbr></wbr><span><span>Empty</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="952679830%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="is-not-empty.html"><span class="token function">isNotEmpty</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns <code class="lang-kotlin">true</code> if this ndarray is not empty.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-966010652%2FFunctions%2F-1703485862" anchor-label="isScalar" id="-966010652%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="is-scalar.html"><span>is</span><wbr></wbr><span><span>Scalar</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-966010652%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="is-scalar.html"><span class="token function">isScalar</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns <code class="lang-kotlin">true</code> if the array contains only one element, otherwise <code class="lang-kotlin">false</code>.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2047828268%2FFunctions%2F-1703485862" anchor-label="iterator" id="2047828268%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="iterator.html"><span><span>iterator</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2047828268%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">operator override </span><span class="token keyword">fun </span><a href="iterator.html"><span class="token function">iterator</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-iterator/index.html">Iterator</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1770754745%2FFunctions%2F-1703485862" anchor-label="reshape" id="1770754745%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="reshape.html"><span><span>reshape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1770754745%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="reshape.html"><span class="token function">reshape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dim1<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html#1191511228%2FClasslikes%2F-1703485862">D1Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns an ndarray with a new (<a href="reshape.html">dim1</a>) shape without changing data.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="reshape.html"><span class="token function">reshape</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">dim1<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter ">dim2<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html#1542311165%2FClasslikes%2F-1703485862">D2Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns an ndarray with a new (<a href="reshape.html">dim1</a>, <a href="reshape.html">dim2</a>) shape without changing data.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="reshape.html"><span class="token function">reshape</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim1<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim2<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim3<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html#1893111102%2FClasslikes%2F-1703485862">D3Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns an ndarray with a new (<a href="reshape.html">dim1</a>, <a href="reshape.html">dim2</a>, <a href="reshape.html">dim3</a>) shape without changing data.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="reshape.html"><span class="token function">reshape</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim1<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim2<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim3<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim4<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../index.html#-2051056257%2FClasslikes%2F-1703485862">D4Array</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns an ndarray with a new (<a href="reshape.html">dim1</a>, <a href="reshape.html">dim2</a>, <a href="reshape.html">dim3</a>, <a href="reshape.html">dim4</a>) shape without changing data.</p></div><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="reshape.html"><span class="token function">reshape</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim1<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim2<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim3<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;dim4<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">vararg </span>dims<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../-d-n/index.html">DN</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns an ndarray with a new (<a href="reshape.html">dim1</a>, <a href="reshape.html">dim2</a>, <a href="reshape.html">dim3</a>, <a href="reshape.html">dim4</a>, <a href="reshape.html">dims</a>) shape without changing data.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="850623085%2FFunctions%2F-1703485862" anchor-label="squeeze" id="850623085%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="squeeze.html"><span><span>squeeze</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="850623085%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="squeeze.html"><span class="token function">squeeze</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>axes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../-d-n/index.html">DN</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns an ndarray with all axes removed equal to one.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-636899090%2FFunctions%2F-1703485862" anchor-label="toString" id="-636899090%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="to-string.html"><span>to</span><wbr></wbr><span><span>String</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-636899090%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="to-string.html"><span class="token function">toString</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-76251836%2FFunctions%2F-1703485862" anchor-label="transpose" id="-76251836%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="transpose.html"><span><span>transpose</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-76251836%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="transpose.html"><span class="token function">transpose</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>axes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="index.html">D</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Reverse or permute the <a href="transpose.html">axes</a> of an array.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1759508620%2FFunctions%2F-1703485862" anchor-label="unsqueeze" id="-1759508620%2FFunctions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="unsqueeze.html"><span><span>unsqueeze</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1759508620%2FFunctions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="unsqueeze.html"><span class="token function">unsqueeze</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>axes<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../-d-n/index.html">DN</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Returns a new ndarray with a dimension of size one inserted at the specified <a href="unsqueeze.html">axes</a>.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="1414520489%2FProperties%2F-1703485862" anchor-label="base" id="1414520489%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="base.html"><span><span>base</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1414520489%2FProperties%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><a data-name="1414520489%2FProperties%2F-1703485862" anchor-label="base" id="1414520489%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="base.html">base</a><span class="token operator">: </span><a href="../-multi-array/index.html">MultiArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token punctuation">, </span><span class="token keyword">out </span><a href="../-dimension/index.html">Dimension</a><span class="token operator">&gt;</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1414520489%2FProperties%2F-1703485862" anchor-label="base" id="1414520489%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><p class="paragraph">Base array if <a href="data.html">data</a> is taken from other array. Otherwise - null.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1459803208%2FProperties%2F-1703485862" anchor-label="consistent" id="1459803208%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="consistent.html"><span><span>consistent</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1459803208%2FProperties%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><a data-name="1459803208%2FProperties%2F-1703485862" anchor-label="consistent" id="1459803208%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="consistent.html">consistent</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1459803208%2FProperties%2F-1703485862" anchor-label="consistent" id="1459803208%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><p class="paragraph">indicates whether the array data is homogeneous.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-656708624%2FProperties%2F-1703485862" anchor-label="data" id="-656708624%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="data.html"><span><span>data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-656708624%2FProperties%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><a data-name="-656708624%2FProperties%2F-1703485862" anchor-label="data" id="-656708624%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="data.html">data</a><span class="token operator">: </span><a href="../-memory-view/index.html">MemoryView</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-656708624%2FProperties%2F-1703485862" anchor-label="data" id="-656708624%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><p class="paragraph"><a href="../-memory-view/index.html">MemoryView</a>.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="356162552%2FProperties%2F-1703485862" anchor-label="dim" id="356162552%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="dim.html"><span><span>dim</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="356162552%2FProperties%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><a data-name="356162552%2FProperties%2F-1703485862" anchor-label="dim" id="356162552%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="dim.html">dim</a><span class="token operator">: </span><a href="index.html">D</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="356162552%2FProperties%2F-1703485862" anchor-label="dim" id="356162552%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><p class="paragraph"><a href="../-dimension/index.html">Dimension</a>.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-840979399%2FProperties%2F-1703485862" anchor-label="indices" id="-840979399%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="indices.html"><span><span>indices</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-840979399%2FProperties%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><a data-name="-840979399%2FProperties%2F-1703485862" anchor-label="indices" id="-840979399%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="indices.html">indices</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.ranges/-int-range/index.html">IntRange</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-840979399%2FProperties%2F-1703485862" anchor-label="indices" id="-840979399%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><p class="paragraph">indices for a one-dimensional ndarray.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1972362988%2FProperties%2F-1703485862" anchor-label="multiIndices" id="1972362988%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="multi-indices.html"><span>multi</span><wbr></wbr><span><span>Indices</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1972362988%2FProperties%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><a data-name="1972362988%2FProperties%2F-1703485862" anchor-label="multiIndices" id="1972362988%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="multi-indices.html">multiIndices</a><span class="token operator">: </span><a href="../-multi-index-progression/index.html">MultiIndexProgression</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1972362988%2FProperties%2F-1703485862" anchor-label="multiIndices" id="1972362988%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><p class="paragraph">indices for a n-dimensional ndarray.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="808676327%2FProperties%2F-1703485862" anchor-label="offset" id="808676327%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="offset.html"><span><span>offset</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="808676327%2FProperties%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><a data-name="808676327%2FProperties%2F-1703485862" anchor-label="offset" id="808676327%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="offset.html">offset</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="808676327%2FProperties%2F-1703485862" anchor-label="offset" id="808676327%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><p class="paragraph">Offset from the start of an ndarray's data.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="764701247%2FProperties%2F-1703485862" anchor-label="shape" id="764701247%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="shape.html"><span><span>shape</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="764701247%2FProperties%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><a data-name="764701247%2FProperties%2F-1703485862" anchor-label="shape" id="764701247%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="shape.html">shape</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="764701247%2FProperties%2F-1703485862" anchor-label="shape" id="764701247%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><p class="paragraph"><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a> of an ndarray dimensions.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="710785913%2FProperties%2F-1703485862" anchor-label="size" id="710785913%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="size.html"><span><span>size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="710785913%2FProperties%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><a data-name="710785913%2FProperties%2F-1703485862" anchor-label="size" id="710785913%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="size.html">size</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="710785913%2FProperties%2F-1703485862" anchor-label="size" id="710785913%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><p class="paragraph">number of elements in an ndarray.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1753659770%2FProperties%2F-1703485862" anchor-label="strides" id="-1753659770%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="strides.html"><span><span>strides</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1753659770%2FProperties%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted" data-togglable="Properties">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><a data-name="-1753659770%2FProperties%2F-1703485862" anchor-label="strides" id="-1753659770%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="strides.html">strides</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1753659770%2FProperties%2F-1703485862" anchor-label="strides" id="-1753659770%2FProperties%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a><p class="paragraph"><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html">IntArray</a> indices to step in each dimension when iterating an ndarray.</p></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="tabbedcontent">Extensions</h2>
+      <div class="table" data-togglable="Extensions"><a data-name="765067258%2FExtensions%2F-1703485862" anchor-label="inplace" id="765067258%2FExtensions%2F-1703485862" data-filterable-set=":multik-core:dokkaHtml/commonMain"></a>
+        <div class="table-row" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html"><span><span>inplace</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="765067258%2FExtensions%2F-1703485862"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                  <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark common-like" data-filterable-current=":multik-core:dokkaHtml/commonMain" data-filterable-set=":multik-core:dokkaHtml/commonMain" data-active="" data-toggle=":multik-core:dokkaHtml/commonMain">common</button></div>
+<div class="content sourceset-depenent-content" data-active="" data-togglable=":multik-core:dokkaHtml/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">T</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-number/index.html">Number</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">D</a><span class="token operator"> : </span><a href="../-dimension/index.html">Dimension</a><span class="token operator">&gt; </span><a href="index.html">NDArray</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">D</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html"><span class="token function">inplace</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">init<span class="token operator">: </span><span class="token keyword"></span><a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/-inplace-operation/index.html">InplaceOperation</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">T</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="../../org.jetbrains.kotlinx.multik.ndarray.operations/inplace.html">D</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html">Unit</a></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div>                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+</body>
+</html>
