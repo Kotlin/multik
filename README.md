@@ -218,9 +218,9 @@ f * d // multiplication
 #### Array mathematics
 
 See documentation for other methods of
-[mathematics](https://kotlin.github.io/multik/multik-api/org.jetbrains.kotlinx.multik.api/-math/index.html),
-[linear algebra](https://kotlin.github.io/multik/multik-api/org.jetbrains.kotlinx.multik.api/-lin-alg/index.html),
-[statistics](https://kotlin.github.io/multik/multik-api/org.jetbrains.kotlinx.multik.api/-statistics/index.html).
+[mathematics](https://kotlin.github.io/multik/multik-core/org.jetbrains.kotlinx.multik.api.math/index.html),
+[linear algebra](https://kotlin.github.io/multik/multik-core/org.jetbrains.kotlinx.multik.api.linalg/index.html),
+[statistics](https://kotlin.github.io/multik/multik-core/org.jetbrains.kotlinx.multik.api.stat/index.html).
 
 ```kotlin
 a.sin() // element-wise sin, equivalent to mk.math.sin(a)
