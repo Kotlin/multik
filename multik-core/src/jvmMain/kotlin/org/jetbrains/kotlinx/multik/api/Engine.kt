@@ -2,6 +2,9 @@ package org.jetbrains.kotlinx.multik.api
 
 import java.util.*
 
+/**
+ * Engine Provider for JVM.
+ */
 public actual fun enginesProvider(): Map<EngineType, Engine> {
     val engineList = ServiceLoader.load(Engine::class.java).toList()
 

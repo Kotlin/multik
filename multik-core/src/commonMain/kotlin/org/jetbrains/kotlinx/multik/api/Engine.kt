@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package org.jetbrains.kotlinx.multik.api
@@ -8,19 +8,39 @@ import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.api.stat.Statistics
 
+/**
+ * Type engine implementations.
+ *
+ * @param name engine type name
+ */
 public sealed class EngineType(public val name: String)
 
+/**
+ * Engine type for default implementation.
+ */
 public object DefaultEngineType : EngineType("DEFAULT")
 
+/**
+ * Engine type for "pure kotlin" implementation.
+ */
 public object KEEngineType : EngineType("KOTLIN")
 
+/**
+ * Engine type for implementation with OpenBLAS.
+ */
 public object NativeEngineType : EngineType("NATIVE")
 
+/**
+ * Engine provider.
+ */
 public expect fun enginesProvider(): Map<EngineType, Engine>
 
 /**
  * This class gives access to different implementations of [LinAlg], [Math], [Statistics].
  * When initializing [Multik], it loads engines, by default `DEFAULT` implementation is used.
+ *
+ * @property name engine name
+ * @property type [EngineType]
  */
 public abstract class Engine {
 

@@ -72,16 +72,24 @@ public interface MultiArray<T, D : Dimension> {
 
     // Reshape
     /**
-     * Returns an ndarray with a new shape without changing data.
+     * Returns an ndarray with a new ([dim1]) shape without changing data.
      */
     public fun reshape(dim1: Int): MultiArray<T, D1>
-
+    /**
+     * Returns an ndarray with a new ([dim1], [dim2]) shape without changing data.
+     */
     public fun reshape(dim1: Int, dim2: Int): MultiArray<T, D2>
-
+    /**
+     * Returns an ndarray with a new ([dim1], [dim2], [dim3]) shape without changing data.
+     */
     public fun reshape(dim1: Int, dim2: Int, dim3: Int): MultiArray<T, D3>
-
+    /**
+     * Returns an ndarray with a new ([dim1], [dim2], [dim3], [dim4]) shape without changing data.
+     */
     public fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int): MultiArray<T, D4>
-
+    /**
+     * Returns an ndarray with a new ([dim1], [dim2], [dim3], [dim4], [dims]) shape without changing data.
+     */
     public fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int): MultiArray<T, DN>
 
     /**
@@ -106,8 +114,14 @@ public interface MultiArray<T, D : Dimension> {
      */
     public infix fun cat(other: MultiArray<T, D>): NDArray<T, D>
 
+    /**
+     * Concatenates this ndarray with [other] along the specified [axis].
+     */
     public fun cat(other: MultiArray<T, D>, axis: Int = 0): NDArray<T, D>
 
+    /**
+     * Concatenates this ndarray with a list of [other] ndarrays.
+     */
     public fun cat(other: List<MultiArray<T, D>>, axis: Int = 0): NDArray<T, D>
 }
 

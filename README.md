@@ -8,12 +8,13 @@
 Multidimensional array library for Kotlin.
 
 ## Modules
-* multik-core &mdash; contains ndarrays, methods called on them and [math], [stat] and [linalg] interfaces.
-* multik-default &mdash; implementation including `jvm` and `native` for performance.
-* multik-kotlin &mdash; implementation of [math], [stat] and [linalg] interfaces on JVM.
-* multik-openblas &mdash; implementation of [math], [stat] and [linalg] interfaces in native code using OpenBLAS.
+* `multik-core` &mdash; contains ndarrays, methods called on them and [math], [stat] and [linalg] interfaces.
+* `multik-default` &mdash; implementation including `multik-kotlin` and `multik-openblas` for performance.
+* `multik-kotlin` &mdash; implementation of [math], [stat] and [linalg] interfaces on JVM.
+* `multik-openblas` &mdash; implementation of [math], [stat] and [linalg] interfaces in native code using OpenBLAS.
 
 ## Using in your projects
+### Gradle
 In your Gradle build script:
 1. Add the Maven Central Repository.
 2. Add the `org.jetbrains.kotlinx:multik-core:$multik_version` api dependency.
@@ -27,8 +28,8 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:multik-core:0.1.1"
-    implementation "org.jetbrains.kotlinx:multik-default:0.1.1"
+    implementation "org.jetbrains.kotlinx:multik-core:0.2.0"
+    implementation "org.jetbrains.kotlinx:multik-default:0.2.0"
 }
 ```
 
@@ -39,10 +40,72 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:multik-core:0.1.1")
-    implementation("org.jetbrains.kotlinx:multik-default:0.1.1")
+    implementation("org.jetbrains.kotlinx:multik-core:0.2.0")
+    implementation("org.jetbrains.kotlinx:multik-default:0.2.0")
 }
 ```
+
+For a multiplatform project, set the dependency in a common block:
+
+```kotlin
+kotlin {
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:multik-core:0.2.0")
+            }
+        }
+    }
+}
+```
+
+or in a platform-specific block:
+
+```kotlin
+kotlin {
+    sourceSets {
+        val jvmName by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:multik-core-jvm:0.2.0")
+            }
+        }
+    }
+}
+```
+
+### Jupyter Notebook
+Install [Kotlin kernel](https://github.com/Kotlin/kotlin-jupyter) for
+[Jupyter](https://jupyter.org/)
+or just visit to [Datalore](https://datalore.jetbrains.com/).
+
+Import stable `multik` version into notebook:
+```
+%use multik
+```
+
+## Support platforms
+
+|       Platforms       |   `multik-core`    |  `multik-kotlin`   |                                                                              `multik-openblas`                                                                              |                                                                              `multik-default`                                                                               |
+|:---------------------:|:------------------:|:------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+|        **JS**         | :white_check_mark: | :white_check_mark: |                                                                                     :x:                                                                                     |                                                                             :white_check_mark:                                                                              |
+|     **linuxX64**      | :white_check_mark: | :white_check_mark: |                                                                             :white_check_mark:                                                                              |                                                                             :white_check_mark:                                                                              |
+|     **mingwX64**      | :white_check_mark: | :white_check_mark: |                                                                             :white_check_mark:                                                                              |                                                                             :white_check_mark:                                                                              |
+|     **macosX64**      | :white_check_mark: | :white_check_mark: |                                                                             :white_check_mark:                                                                              |                                                                             :white_check_mark:                                                                              |
+|    **macosArm64**     | :white_check_mark: | :white_check_mark: |                                                                             :white_check_mark:                                                                              |                                                                             :white_check_mark:                                                                              |
+|     **iosArm64**      | :white_check_mark: | :white_check_mark: |                                                                                     :x:                                                                                     |                                                                             :white_check_mark:                                                                              |
+|      **iosX64**       | :white_check_mark: | :white_check_mark: |                                                                                     :x:                                                                                     |                                                                             :white_check_mark:                                                                              |
+| **iosSimulatorArm64** | :white_check_mark: | :white_check_mark: |                                                                                     :x:                                                                                     |                                                                             :white_check_mark:                                                                              |
+|        **JVM**        | :white_check_mark: | :white_check_mark: | linuxX64 - :white_check_mark:<br/>mingwX64 - :white_check_mark:<br/>macosX64 - :white_check_mark:<br/>macosArm64 - :white_check_mark:<br/>androidArm64 - :white_check_mark: | linuxX64 - :white_check_mark:<br/>mingwX64 - :white_check_mark:<br/>macosX64 - :white_check_mark:<br/>macosArm64 - :white_check_mark:<br/>androidArm64 - :white_check_mark: |
+
+For Kotlin/JS, we use the new [IR](https://kotlinlang.org/docs/js-ir-compiler.html).
+We also use the [new memory model](https://blog.jetbrains.com/kotlin/2021/08/try-the-new-kotlin-native-memory-manager-development-preview/)
+in Kotlin/Native. Keep this in mind when using Multik in your multiplatform projects.
+
+**Note**:
+* on ubuntu 18.04 and older `multik-openblas` doesn't work due to older versions of _**glibc**_.
+* `multik-openblas` for desktop targets (_linuxX64_, _mingwX64_, _macosX64_, _macosArm64_) is experimental and unstable.
+We will improve stability and perfomance as _Kotlin/Native_ evolves.
+* JVM target `multik-openblas` for Android only supports **arm64-v8a** processors.
 
 ## Quickstart
 
@@ -153,6 +216,12 @@ f * d // multiplication
 ```
 
 #### Array mathematics
+
+See documentation for other methods of
+[mathematics](https://kotlin.github.io/multik/multik-core/org.jetbrains.kotlinx.multik.api.math/index.html),
+[linear algebra](https://kotlin.github.io/multik/multik-core/org.jetbrains.kotlinx.multik.api.linalg/index.html),
+[statistics](https://kotlin.github.io/multik/multik-core/org.jetbrains.kotlinx.multik.api.stat/index.html).
+
 ```kotlin
 a.sin() // element-wise sin, equivalent to mk.math.sin(a)
 a.cos() // element-wise cos, equivalent to mk.math.cos(a)
@@ -160,8 +229,6 @@ b.log() // element-wise natural logarithm, equivalent to mk.math.log(b)
 b.exp() // element-wise exp, equivalent to mk.math.exp(b)
 d dot e // dot product, equivalent to mk.linalg.dot(d, e)
 ```
-
-See [documentation](https://kotlin.github.io/multik) for other linear algebra methods.
 
 #### Aggregate functions
 ```kotlin
@@ -230,18 +297,15 @@ a.inplace {
 ```
 
 ## Building
-Multik uses BLAS and LAPACK for implementing algebraic operations. 
-Therefore, you would need a C ++ compiler and gfortran.
-Run `./gradlew assemble` to build all modules.
-* To build api module run `./gradlew multik-core:assemble`.
-* To build jvm module run `./gradlew multik-kotlin:assemble`.
-* To build native module run `./gradlew multik-openblas:assemble`. 
-To reuse `multik-openblas` in the future, you must first build `multik_jni` and place the native library in 
-`multik-openblas/build/libs`
-* To build default module run `./gradlew multik-openblas:assemble` then `./gradlew multik-default:assemble`.
+To build the entire project, you need to set up an environment for building `multik-openblas`:
+* JDK 1.8 or higher
+* _JAVA_HOME_ environment - to search for jni files
+* Compilers _gcc_, _g++_, _gfortran_ version 8 or higher.
+It is important that they are of the same version.
 
-## Testing
-`./gradlew test`
+Run `./gradlew assemble` to build all modules.
+If you don't need to build `multik-openblas`,
+just disable the `cmake_build` task and build the module you need.
 
 ## Contributing
 There is an opportunity to contribute to the project:

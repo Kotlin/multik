@@ -147,7 +147,7 @@ elseif(${TARGET_OS} STREQUAL "androidArm64")
     set(LIB_GCC "-static-libgcc -static-libstdc++ -Wl,--no-whole-archive -ldl -lm")
 else()
 #    set(LIB_QUADMATH "${GCC_LIB_PATH}/libquadmath.a")
-#    set(LIB_GCC "-static-libgcc")
+    set(LIB_GCC "-static-libgcc")
 endif()
 
 ########################
