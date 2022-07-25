@@ -1,0 +1,4 @@
+package = org.jetbrains.kotlinx.multik.cinterop
+
+staticLibraries = libopenblas.a
+libraryPaths = build/cmake-build/openblas-install/lib
