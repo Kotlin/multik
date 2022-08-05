@@ -36,7 +36,7 @@ public object NativeMath : Math {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number> argMaxDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4> {
+    override fun <T : Number> argMaxDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, DN> {
         TODO("Not yet implemented")
     }
 
@@ -63,7 +63,7 @@ public object NativeMath : Math {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4> {
+    override fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, DN> {
         TODO("Not yet implemented")
     }
 
@@ -90,7 +90,7 @@ public object NativeMath : Math {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number> maxDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> {
+    override fun <T : Number> maxDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN> {
         TODO("Not yet implemented")
     }
 
@@ -117,7 +117,7 @@ public object NativeMath : Math {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number> minDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> {
+    override fun <T : Number> minDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN> {
         TODO("Not yet implemented")
     }
 
@@ -144,7 +144,7 @@ public object NativeMath : Math {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> {
+    override fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN> {
         TODO("Not yet implemented")
     }
 
