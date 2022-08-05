@@ -30,7 +30,7 @@ public actual object DefaultMath : Math {
 
     actual override fun <T : Number> argMaxD4(a: MultiArray<T, D4>, axis: Int): NDArray<Int, D3> = argMax(a, axis)
 
-    actual override fun <T : Number> argMaxDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4> = argMax(a, axis)
+    actual override fun <T : Number> argMaxDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, DN> = argMax(a, axis)
 
     actual override fun <T : Number, D : Dimension> argMin(a: MultiArray<T, D>): Int = if (a.size <= 100) {
         KEMath.argMin(a)
@@ -47,7 +47,7 @@ public actual object DefaultMath : Math {
 
     actual override fun <T : Number> argMinD4(a: MultiArray<T, D4>, axis: Int): NDArray<Int, D3> = argMin(a, axis)
 
-    actual override fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4> = argMin(a, axis)
+    actual override fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, DN> = argMin(a, axis)
 
     actual override fun <T : Number, D : Dimension> max(a: MultiArray<T, D>): T = if (a.size <= 100) {
         KEMath.max(a)
@@ -64,7 +64,7 @@ public actual object DefaultMath : Math {
 
     actual override fun <T : Number> maxD4(a: MultiArray<T, D4>, axis: Int): NDArray<T, D3> = max(a, axis)
 
-    actual override fun <T : Number> maxDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> = max(a, axis)
+    actual override fun <T : Number> maxDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN> = max(a, axis)
 
     actual override fun <T : Number, D : Dimension> min(a: MultiArray<T, D>): T = if (a.size <= 100) {
         KEMath.min(a)
@@ -81,7 +81,7 @@ public actual object DefaultMath : Math {
 
     actual override fun <T : Number> minD4(a: MultiArray<T, D4>, axis: Int): NDArray<T, D3> = min(a, axis)
 
-    actual override fun <T : Number> minDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> = min(a, axis)
+    actual override fun <T : Number> minDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN> = min(a, axis)
 
     actual override fun <T : Number, D : Dimension> sum(a: MultiArray<T, D>): T = if (a.size <= 100) {
         KEMath.sum(a)
@@ -98,7 +98,7 @@ public actual object DefaultMath : Math {
 
     actual override fun <T : Number> sumD4(a: MultiArray<T, D4>, axis: Int): NDArray<T, D3> = sum(a, axis)
 
-    actual override fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4> = sum(a, axis)
+    actual override fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN> = sum(a, axis)
 
     actual override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>): D1Array<T> = NativeMath.cumSum(a)
 

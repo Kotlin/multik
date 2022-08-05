@@ -44,7 +44,7 @@ public interface Math {
     /**
      * Returns an ndarray of indices of maximum elements in an n-dimensional ndarray [a] over a given [axis].
      */
-    public fun <T : Number> argMaxDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4>
+    public fun <T : Number> argMaxDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, DN>
 
     /**
      * Returns flat index of minimum element in an ndarray.
@@ -74,7 +74,7 @@ public interface Math {
     /**
      * Returns an ndarray of indices of minimum elements in an n-dimensional ndarray [a] over a given [axis].
      */
-    public fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, D4>
+    public fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, DN>
 
     /**
      * Returns maximum element of the given ndarray.
@@ -104,7 +104,7 @@ public interface Math {
     /**
      * Returns maximum of an n-dimensional ndarray [a] along a given [axis].
      */
-    public fun <T : Number> maxDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4>
+    public fun <T : Number> maxDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN>
 
     /**
      * Returns minimum element of the given ndarray.
@@ -134,7 +134,7 @@ public interface Math {
     /**
      * Returns minimum of an n-dimensional ndarray [a] along a given [axis].
      */
-    public fun <T : Number> minDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4>
+    public fun <T : Number> minDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN>
 
     /**
      * Returns sum of all elements in the given ndarray.
@@ -164,7 +164,7 @@ public interface Math {
     /**
      * Returns an ndarray of sum all elements in a n-dimensional ndarray [a] over a given [axis].
      */
-    public fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, D4>
+    public fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN>
 
     /**
      * Returns cumulative sum of all elements in the given ndarray.
