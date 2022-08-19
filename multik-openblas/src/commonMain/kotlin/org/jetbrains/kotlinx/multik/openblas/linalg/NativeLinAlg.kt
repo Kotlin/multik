@@ -12,7 +12,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.D2
 import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
-public object NativeLinAlg : LinAlg {
+internal object NativeLinAlg : LinAlg {
 
     override val linAlgEx: LinAlgEx
         get() = NativeLinAlgEx

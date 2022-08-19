@@ -13,7 +13,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.D2
 import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
 import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 
-public object KELinAlg : LinAlg {
+internal object KELinAlg : LinAlg {
 
     override val linAlgEx: LinAlgEx
         get() = KELinAlgEx

@@ -4,25 +4,29 @@
 
 package org.jetbrains.kotlinx.multik.default.math
 
+import org.jetbrains.kotlinx.multik.api.KEEngineType
+import org.jetbrains.kotlinx.multik.api.NativeEngineType
 import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.api.math.MathEx
-import org.jetbrains.kotlinx.multik.kotlin.math.KEMath
+import org.jetbrains.kotlinx.multik.default.DefaultEngineFactory
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import org.jetbrains.kotlinx.multik.openblas.math.NativeMath
 
 public actual object DefaultMath : Math {
+
+    private val ktMath = DefaultEngineFactory.getEngine(KEEngineType).getMath()
+    private val natMath = DefaultEngineFactory.getEngine(NativeEngineType).getMath()
 
     actual override val mathEx: MathEx
         get() = DefaultMathEx
 
     actual override fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int = if (a.size <= 100) {
-        KEMath.argMax(a)
+        ktMath.argMax(a)
     } else {
-        NativeMath.argMax(a)
+        natMath.argMax(a)
     }
 
     actual override fun <T : Number, D : Dimension, O : Dimension> argMax(a: MultiArray<T, D>, axis: Int): NDArray<Int, O> =
-        KEMath.argMax(a, axis)
+        ktMath.argMax(a, axis)
 
     actual override fun <T : Number> argMaxD2(a: MultiArray<T, D2>, axis: Int): NDArray<Int, D1> = argMax(a, axis)
 
@@ -33,13 +37,13 @@ public actual object DefaultMath : Math {
     actual override fun <T : Number> argMaxDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, DN> = argMax(a, axis)
 
     actual override fun <T : Number, D : Dimension> argMin(a: MultiArray<T, D>): Int = if (a.size <= 100) {
-        KEMath.argMin(a)
+        ktMath.argMin(a)
     } else {
-        NativeMath.argMin(a)
+        natMath.argMin(a)
     }
 
     actual override fun <T : Number, D : Dimension, O : Dimension> argMin(a: MultiArray<T, D>, axis: Int): NDArray<Int, O> =
-        KEMath.argMin(a, axis)
+        ktMath.argMin(a, axis)
 
     actual override fun <T : Number> argMinD2(a: MultiArray<T, D2>, axis: Int): NDArray<Int, D1> = argMin(a, axis)
 
@@ -50,13 +54,13 @@ public actual object DefaultMath : Math {
     actual override fun <T : Number> argMinDN(a: MultiArray<T, DN>, axis: Int): NDArray<Int, DN> = argMin(a, axis)
 
     actual override fun <T : Number, D : Dimension> max(a: MultiArray<T, D>): T = if (a.size <= 100) {
-        KEMath.max(a)
+        ktMath.max(a)
     } else {
-        NativeMath.max(a)
+        natMath.max(a)
     }
 
     actual override fun <T : Number, D : Dimension, O : Dimension> max(a: MultiArray<T, D>, axis: Int): NDArray<T, O> =
-        KEMath.max(a, axis)
+        ktMath.max(a, axis)
 
     actual override fun <T : Number> maxD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = max(a, axis)
 
@@ -67,13 +71,13 @@ public actual object DefaultMath : Math {
     actual override fun <T : Number> maxDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN> = max(a, axis)
 
     actual override fun <T : Number, D : Dimension> min(a: MultiArray<T, D>): T = if (a.size <= 100) {
-        KEMath.min(a)
+        ktMath.min(a)
     } else {
-        NativeMath.min(a)
+        natMath.min(a)
     }
 
     actual override fun <T : Number, D : Dimension, O : Dimension> min(a: MultiArray<T, D>, axis: Int): NDArray<T, O> =
-        KEMath.min(a, axis)
+        ktMath.min(a, axis)
 
     actual override fun <T : Number> minD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = min(a, axis)
 
@@ -84,13 +88,13 @@ public actual object DefaultMath : Math {
     actual override fun <T : Number> minDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN> = min(a, axis)
 
     actual override fun <T : Number, D : Dimension> sum(a: MultiArray<T, D>): T = if (a.size <= 100) {
-        KEMath.sum(a)
+        ktMath.sum(a)
     } else {
-        NativeMath.sum(a)
+        natMath.sum(a)
     }
 
     actual override fun <T : Number, D : Dimension, O : Dimension> sum(a: MultiArray<T, D>, axis: Int): NDArray<T, O> =
-        KEMath.sum(a, axis)
+        ktMath.sum(a, axis)
 
     actual override fun <T : Number> sumD2(a: MultiArray<T, D2>, axis: Int): NDArray<T, D1> = sum(a, axis)
 
@@ -100,8 +104,8 @@ public actual object DefaultMath : Math {
 
     actual override fun <T : Number> sumDN(a: MultiArray<T, DN>, axis: Int): NDArray<T, DN> = sum(a, axis)
 
-    actual override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>): D1Array<T> = NativeMath.cumSum(a)
+    actual override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>): D1Array<T> = natMath.cumSum(a)
 
     actual override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>, axis: Int): NDArray<T, D> =
-        KEMath.cumSum(a, axis)
+        ktMath.cumSum(a, axis)
 }

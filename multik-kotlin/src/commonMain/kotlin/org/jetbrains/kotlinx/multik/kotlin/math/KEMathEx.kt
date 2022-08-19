@@ -12,7 +12,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.jvm.JvmName
 import kotlin.math.*
 
-object KEMathEx : MathEx {
+internal object KEMathEx : MathEx {
 
     override fun <T : Number, D : Dimension> exp(a: MultiArray<T, D>): NDArray<Double, D> =
         mathOperation(a) { exp(it) }

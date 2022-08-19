@@ -18,7 +18,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.isTransposed
 import org.jetbrains.kotlinx.multik.ndarray.operations.toType
 import kotlin.math.min
 
-public object NativeLinAlgEx : LinAlgEx {
+internal object NativeLinAlgEx : LinAlgEx {
     override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> =
         invCommon(mat.toType(CopyStrategy.MEANINGFUL))
 
