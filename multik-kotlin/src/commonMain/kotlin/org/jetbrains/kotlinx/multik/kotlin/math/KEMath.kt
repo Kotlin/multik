@@ -14,7 +14,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.first
 import org.jetbrains.kotlinx.multik.ndarray.operations.plusAssign
 
-public object KEMath : Math {
+internal object KEMath : Math {
 
     override val mathEx: MathEx
         get() = KEMathEx

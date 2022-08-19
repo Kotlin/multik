@@ -13,7 +13,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.first
 import org.jetbrains.kotlinx.multik.ndarray.operations.sorted
 import org.jetbrains.kotlinx.multik.ndarray.operations.times
 
-public object KEStatistics : Statistics {
+internal object KEStatistics : Statistics {
     override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? {
         val size = a.size
         return when {

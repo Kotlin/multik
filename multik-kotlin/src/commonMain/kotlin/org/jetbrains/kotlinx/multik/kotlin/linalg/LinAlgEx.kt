@@ -15,7 +15,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.CopyStrategy
 import org.jetbrains.kotlinx.multik.ndarray.operations.toType
 
-public object KELinAlgEx : LinAlgEx {
+internal object KELinAlgEx : LinAlgEx {
     override fun <T : Number> inv(mat: MultiArray<T, D2>): NDArray<Double, D2> =
         solveCommon(mat, mk.identity(mat.shape[0], mat.dtype), mat.dtype)
 

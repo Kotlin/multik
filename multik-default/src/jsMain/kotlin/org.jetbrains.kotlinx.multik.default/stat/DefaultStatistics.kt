@@ -4,21 +4,24 @@
 
 package org.jetbrains.kotlinx.multik.default.stat
 
+import org.jetbrains.kotlinx.multik.api.KEEngineType
 import org.jetbrains.kotlinx.multik.api.stat.Statistics
-import org.jetbrains.kotlinx.multik.kotlin.stat.KEStatistics
+import org.jetbrains.kotlinx.multik.default.DefaultEngineFactory
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 public actual object DefaultStatistics : Statistics {
 
-    actual override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? = KEStatistics.median(a)
+    private val ktStat = DefaultEngineFactory.getEngine(KEEngineType).getStatistics()
+
+    actual override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? = ktStat.median(a)
 
     actual override fun <T : Number, D : Dimension> average(a: MultiArray<T, D>, weights: MultiArray<T, D>?): Double =
-        KEStatistics.average(a, weights)
+        ktStat.average(a, weights)
 
-    actual override fun <T : Number, D : Dimension> mean(a: MultiArray<T, D>): Double = KEStatistics.mean(a)
+    actual override fun <T : Number, D : Dimension> mean(a: MultiArray<T, D>): Double = ktStat.mean(a)
 
     actual override fun <T : Number, D : Dimension, O : Dimension> mean(a: MultiArray<T, D>, axis: Int): NDArray<Double, O> =
-        KEStatistics.mean(a, axis)
+        ktStat.mean(a, axis)
 
     actual override fun <T : Number> meanD2(a: MultiArray<T, D2>, axis: Int): NDArray<Double, D1> = mean(a, axis)
 

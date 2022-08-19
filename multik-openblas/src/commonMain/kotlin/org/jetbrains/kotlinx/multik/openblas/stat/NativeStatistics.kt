@@ -10,7 +10,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.first
 import org.jetbrains.kotlinx.multik.ndarray.operations.times
 import org.jetbrains.kotlinx.multik.openblas.math.NativeMath
 
-public object NativeStatistics : Statistics {
+internal object NativeStatistics : Statistics {
 
     override fun <T : Number, D : Dimension> median(a: MultiArray<T, D>): Double? {
         val size = a.size

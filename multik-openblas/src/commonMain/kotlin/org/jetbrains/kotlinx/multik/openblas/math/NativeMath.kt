@@ -8,7 +8,7 @@ import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.api.math.MathEx
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
-public object NativeMath : Math {
+internal object NativeMath : Math {
 
     override val mathEx: MathEx
         get() = NativeMathEx
