@@ -6,6 +6,7 @@ package org.jetbrains.kotlinx.multik_kotlin.linAlg
 
 
 import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.linalg.Norm
 import org.jetbrains.kotlinx.multik.api.linalg.dot
 import org.jetbrains.kotlinx.multik.api.linalg.norm
 import org.jetbrains.kotlinx.multik.kotlin.linalg.*
@@ -34,16 +35,28 @@ class KELinAlgTest {
 
         var doubleDiff = abs(5.477225575051661 - mk.linalg.norm(d2arrayDouble1))
         assertTrue(doubleDiff < 1e-8)
+        assertEquals(6.0, mk.linalg.norm(d2arrayDouble1, Norm.N1))
+        assertEquals(4.0, mk.linalg.norm(d2arrayDouble1, Norm.Max))
+        assertEquals(7.0, mk.linalg.norm(d2arrayDouble1, Norm.Inf))
         doubleDiff = abs(5.477225575051661 - mk.linalg.norm(d2arrayDouble2))
         assertTrue(doubleDiff < 1e-8)
+        assertEquals(6.0, mk.linalg.norm(d2arrayDouble2, Norm.N1))
+        assertEquals(4.0, mk.linalg.norm(d2arrayDouble2, Norm.Max))
+        assertEquals(7.0, mk.linalg.norm(d2arrayDouble2, Norm.Inf))
 
         val d2arrayFloat1 = mk.ndarray(mk[mk[1f, 2f], mk[3f, 4f]])
         val d2arrayFloat2 = mk.ndarray(mk[mk[-1f, -2f], mk[-3f, -4f]])
 
         var floatDiff = abs(5.477226f - mk.linalg.norm(d2arrayFloat1))
         assertTrue(floatDiff < 1e-6f)
+        assertEquals(6f, mk.linalg.norm(d2arrayFloat1, Norm.N1))
+        assertEquals(4f, mk.linalg.norm(d2arrayFloat1, Norm.Max))
+        assertEquals(7f, mk.linalg.norm(d2arrayFloat1, Norm.Inf))
         floatDiff = abs(5.477226f - mk.linalg.norm(d2arrayFloat2))
         assertTrue(floatDiff < 1e-6f)
+        assertEquals(6f, mk.linalg.norm(d2arrayFloat2, Norm.N1))
+        assertEquals(4f, mk.linalg.norm(d2arrayFloat2, Norm.Max))
+        assertEquals(7f, mk.linalg.norm(d2arrayFloat2, Norm.Inf))
     }
 
     @Test

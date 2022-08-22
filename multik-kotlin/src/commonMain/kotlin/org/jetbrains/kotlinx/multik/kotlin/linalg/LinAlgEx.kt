@@ -54,15 +54,19 @@ internal object KELinAlgEx : LinAlgEx {
 
     override fun normF(mat: MultiArray<Float, D2>, norm: Norm): Float {
         return when (norm) {
-            Norm.Fro -> norm(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], 2, mat.consistent)
-            else -> TODO("Not yet implemented")
+            Norm.Fro -> normFro(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], 2)
+            Norm.N1 -> norm1(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1])
+            Norm.Max -> normMax(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1])
+            Norm.Inf -> normInf(mat.data.getFloatArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1])
         }
     }
 
     override fun norm(mat: MultiArray<Double, D2>, norm: Norm): Double {
         return when (norm) {
-            Norm.Fro -> norm(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], 2, mat.consistent)
-            else -> TODO("Not yet implemented")
+            Norm.Fro -> normFro(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1], 2)
+            Norm.N1 -> norm1(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1])
+            Norm.Max -> normMax(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1])
+            Norm.Inf -> normInf(mat.data.getDoubleArray(), mat.offset, mat.strides, mat.shape[0], mat.shape[1])
         }
     }
 
