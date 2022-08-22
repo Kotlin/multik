@@ -198,10 +198,10 @@ internal object NativeLinAlgEx : LinAlgEx {
         val a = mat.toType<T, O, D2>(dtype, CopyStrategy.MEANINGFUL)
 
         val info: Int = when (dtype) {
-            DataType.FloatDataType -> JniLinAlg.plu(m, n, a.data.getFloatArray(), mat.strides[0], ipiv)
-            DataType.DoubleDataType -> JniLinAlg.plu(m, n, a.data.getDoubleArray(), mat.strides[0], ipiv)
-            DataType.ComplexFloatDataType -> JniLinAlg.pluC(m, n, a.data.getFloatArray(), mat.strides[0], ipiv)
-            DataType.ComplexDoubleDataType -> JniLinAlg.pluC(m, n, a.data.getDoubleArray(), mat.strides[0], ipiv)
+            DataType.FloatDataType -> JniLinAlg.plu(m, n, a.data.getFloatArray(), a.strides[0], ipiv)
+            DataType.DoubleDataType -> JniLinAlg.plu(m, n, a.data.getDoubleArray(), a.strides[0], ipiv)
+            DataType.ComplexFloatDataType -> JniLinAlg.pluC(m, n, a.data.getFloatArray(), a.strides[0], ipiv)
+            DataType.ComplexDoubleDataType -> JniLinAlg.pluC(m, n, a.data.getDoubleArray(), a.strides[0], ipiv)
             else -> throw UnsupportedOperationException()
         }
 
@@ -267,22 +267,22 @@ internal object NativeLinAlgEx : LinAlgEx {
             DataType.FloatDataType ->
                 JniLinAlg.dotMM(
                     transA, aN.offset, aN.data.getFloatArray(), m, k, lda,
-                    transB, b.offset, bN.data.getFloatArray(), n, ldb, cView.getFloatArray()
+                    transB, bN.offset, bN.data.getFloatArray(), n, ldb, cView.getFloatArray()
                 )
             DataType.DoubleDataType ->
                 JniLinAlg.dotMM(
                     transA, aN.offset, aN.data.getDoubleArray(), m, k, lda,
-                    transB, b.offset, bN.data.getDoubleArray(), n, ldb, cView.getDoubleArray()
+                    transB, bN.offset, bN.data.getDoubleArray(), n, ldb, cView.getDoubleArray()
                 )
             DataType.ComplexFloatDataType ->
                 JniLinAlg.dotMMC(
                     transA, aN.offset, aN.data.getFloatArray(), m, k, lda,
-                    transB, b.offset, bN.data.getFloatArray(), n, ldb, cView.getFloatArray()
+                    transB, bN.offset, bN.data.getFloatArray(), n, ldb, cView.getFloatArray()
                 )
             DataType.ComplexDoubleDataType ->
                 JniLinAlg.dotMMC(
                     transA, aN.offset, aN.data.getDoubleArray(), m, k, lda,
-                    transB, b.offset, bN.data.getDoubleArray(), n, ldb, cView.getDoubleArray()
+                    transB, bN.offset, bN.data.getDoubleArray(), n, ldb, cView.getDoubleArray()
                 )
             else -> throw UnsupportedOperationException()
         }
