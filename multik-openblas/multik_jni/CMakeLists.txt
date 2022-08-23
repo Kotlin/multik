@@ -9,7 +9,7 @@ if (NOT DEFINED TARGET_OS)
 endif ()
 
 #### PARAMETERS FOR OPENBLAS ####
-set(OPENBLAS_VERSION 0.3.21)
+set(OPENBLAS_VERSION 0.3.20)
 
 if (${TARGET_OS} STREQUAL "mingwX64" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}-x64.zip")
