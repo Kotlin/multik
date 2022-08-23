@@ -33,6 +33,15 @@ internal actual object JniLinAlg {
     actual external fun pluC(m: Int, n: Int, a: FloatArray, lda: Int, ipiv: IntArray): Int
     actual external fun pluC(m: Int, n: Int, a: DoubleArray, lda: Int, ipiv: IntArray): Int
 
+    actual /*external*/ fun svd(m: Int, n: Int, a: FloatArray, lda: Int, s: FloatArray, u: FloatArray, ldu: Int, vt: FloatArray, ldvt: Int): Int =
+        TODO("requires quadmath")
+    actual /*external*/ fun svd(m: Int, n: Int, a: DoubleArray, lda: Int, s: DoubleArray, u: DoubleArray, ldu: Int, vt: DoubleArray, ldvt: Int): Int =
+        TODO("requires quadmath")
+    actual /*external*/ fun svdC(m: Int, n: Int, a: FloatArray, lda: Int, s: FloatArray, u: FloatArray, ldu: Int, vt: FloatArray, ldvt: Int): Int =
+        TODO("requires quadmath")
+    actual /*external*/ fun svdC(m: Int, n: Int, a: DoubleArray, lda: Int, s: DoubleArray, u: DoubleArray, ldu: Int, vt: DoubleArray, ldvt: Int): Int =
+        TODO("requires quadmath")
+
     actual /*external*/ fun eig(n: Int, a: FloatArray, w: FloatArray, computeV: Char, vr: FloatArray?): Int =
         TODO("Use the implementation from multik-kotlin or from multik-default")
     actual /*external*/ fun eig(n: Int, a: DoubleArray, w: DoubleArray, computeV: Char, vr: DoubleArray?): Int =

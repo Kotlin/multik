@@ -264,6 +264,102 @@ JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
+ * Method:    svd
+ * Signature: (II[FI[F[FI[FI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_svd__II_3FI_3F_3FI_3FI
+	(JNIEnv *env, jobject jobj, jint m, jint n, jfloatArray j_a, jint lda,
+	 jfloatArray j_s, jfloatArray j_u, jint ldu, jfloatArray j_vt, jint ldvt) {
+//  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+//  auto *S = (float *)env->GetPrimitiveArrayCritical(j_s, nullptr);
+//  auto *U = (float *)env->GetPrimitiveArrayCritical(j_u, nullptr);
+//  auto *VT = (float *)env->GetPrimitiveArrayCritical(j_vt, nullptr);
+//
+//  int info = svd_matrix_float(m, n, A, lda, S, U, ldu, VT, ldvt);
+//
+//  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+//  env->ReleasePrimitiveArrayCritical(j_s, S, 0);
+//  env->ReleasePrimitiveArrayCritical(j_u, U, 0);
+//  env->ReleasePrimitiveArrayCritical(j_vt, VT, 0);
+//
+//  return info;
+  return -1;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
+ * Method:    svd
+ * Signature: (II[DI[D[DI[DI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_svd__II_3DI_3D_3DI_3DI
+	(JNIEnv *env, jobject jobj, jint m, jint n, jdoubleArray j_a, jint lda,
+	 jdoubleArray j_s, jdoubleArray j_u, jint ldu, jdoubleArray j_vt, jint ldvt) {
+//  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+//  auto *S = (double *)env->GetPrimitiveArrayCritical(j_s, nullptr);
+//  auto *U = (double *)env->GetPrimitiveArrayCritical(j_u, nullptr);
+//  auto *VT = (double *)env->GetPrimitiveArrayCritical(j_vt, nullptr);
+//
+//  int info = svd_matrix_double(m, n, A, lda, S, U, ldu, VT, ldvt);
+//
+//  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+//  env->ReleasePrimitiveArrayCritical(j_s, S, 0);
+//  env->ReleasePrimitiveArrayCritical(j_u, U, 0);
+//  env->ReleasePrimitiveArrayCritical(j_vt, VT, 0);
+//
+//  return info;
+  return -1;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
+ * Method:    svdC
+ * Signature: (II[FI[F[FI[FI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_svdC__II_3FI_3F_3FI_3FI
+	(JNIEnv *env, jobject jobj, jint m, jint n, jfloatArray j_a, jint lda,
+	 jfloatArray j_s, jfloatArray j_u, jint ldu, jfloatArray j_vt, jint ldvt) {
+//  auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+//  auto *S = (float *)env->GetPrimitiveArrayCritical(j_s, nullptr);
+//  auto *U = (float *)env->GetPrimitiveArrayCritical(j_u, nullptr);
+//  auto *VT = (float *)env->GetPrimitiveArrayCritical(j_vt, nullptr);
+//
+//  int info = svd_matrix_complex_float(m, n, A, lda, S, U, ldu, VT, ldvt);
+//
+//  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+//  env->ReleasePrimitiveArrayCritical(j_s, S, 0);
+//  env->ReleasePrimitiveArrayCritical(j_u, U, 0);
+//  env->ReleasePrimitiveArrayCritical(j_vt, VT, 0);
+//
+//  return info;
+  return -1;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
+ * Method:    svdC
+ * Signature: (II[DI[D[DI[DI)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_svdC__II_3DI_3D_3DI_3DI
+	(JNIEnv *env, jobject jobj, jint m, jint n, jdoubleArray j_a, jint lda,
+	 jdoubleArray j_s, jdoubleArray j_u, jint ldu, jdoubleArray j_vt, jint ldvt) {
+//  auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
+//  auto *S = (double *)env->GetPrimitiveArrayCritical(j_s, nullptr);
+//  auto *U = (double *)env->GetPrimitiveArrayCritical(j_u, nullptr);
+//  auto *VT = (double *)env->GetPrimitiveArrayCritical(j_vt, nullptr);
+//
+//  int info = svd_matrix_complex_double(m, n, A, lda, S, U, ldu, VT, ldvt);
+//
+//  env->ReleasePrimitiveArrayCritical(j_a, A, 0);
+//  env->ReleasePrimitiveArrayCritical(j_s, S, 0);
+//  env->ReleasePrimitiveArrayCritical(j_u, U, 0);
+//  env->ReleasePrimitiveArrayCritical(j_vt, VT, 0);
+//
+//  return info;
+  return -1;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    eig
  * Signature: (I[F[FC[F)I
  */

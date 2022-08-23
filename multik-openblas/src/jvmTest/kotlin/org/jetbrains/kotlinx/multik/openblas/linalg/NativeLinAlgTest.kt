@@ -265,7 +265,10 @@ class NativeLinAlgTest {
         val (w, v) = NativeLinAlgEx.eig(a)
 
         assertEquals(mk.ndarray(mk[ComplexDouble.one, ComplexDouble.one]), w)
-        assertEquals(mk.ndarray(mk[mk[ComplexDouble.one, ComplexDouble.zero], mk[ComplexDouble.zero, ComplexDouble.one]]), v)
+        assertEquals(
+            mk.ndarray(mk[mk[ComplexDouble.one, ComplexDouble.zero], mk[ComplexDouble.zero, ComplexDouble.one]]),
+            v
+        )
     }
 
     @Test

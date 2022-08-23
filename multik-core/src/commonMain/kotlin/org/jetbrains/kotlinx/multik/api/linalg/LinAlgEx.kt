@@ -4,6 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.api.linalg
 
+import org.jetbrains.kotlinx.multik.api.ExperimentalMultikApi
 import org.jetbrains.kotlinx.multik.ndarray.complex.Complex
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
@@ -73,6 +74,24 @@ public interface LinAlgEx {
      * Returns PLU decomposition of the complex matrix
      */
     public fun <T : Complex> pluC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D2Array<T>, D2Array<T>>
+
+    /**
+     * Returns SVD decomposition of the float matrix
+     */
+    @ExperimentalMultikApi
+    public fun svdF(mat: MultiArray<Float, D2>): Triple<D2Array<Float>, D1Array<Float>, D2Array<Float>>
+
+    /**
+     * Returns SVD decomposition of the numeric matrix
+     */
+    @ExperimentalMultikApi
+    public fun <T : Number> svd(mat: MultiArray<T, D2>): Triple<D2Array<Double>, D1Array<Double>, D2Array<Double>>
+
+    /**
+     * Returns SVD decomposition of the complex matrix
+     */
+    @ExperimentalMultikApi
+    public fun <T : Complex> svdC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D1Array<T>, D2Array<T>>
 
     /**
      * Calculates the eigenvalues and eigenvectors of a numeric matrix

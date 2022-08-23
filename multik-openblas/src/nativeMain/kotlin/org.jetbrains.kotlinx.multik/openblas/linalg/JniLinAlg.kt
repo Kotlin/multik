@@ -119,6 +119,15 @@ internal actual object JniLinAlg {
         return info
     }
 
+    actual fun svd(m: Int, n: Int, a: FloatArray, lda: Int, s: FloatArray, u: FloatArray, ldu: Int, vt: FloatArray, ldvt: Int): Int =
+        TODO("requires quadmath")
+    actual fun svd(m: Int, n: Int, a: DoubleArray, lda: Int, s: DoubleArray, u: DoubleArray, ldu: Int, vt: DoubleArray, ldvt: Int): Int =
+        TODO("requires quadmath")
+    actual fun svdC(m: Int, n: Int, a: FloatArray, lda: Int, s: FloatArray, u: FloatArray, ldu: Int, vt: FloatArray, ldvt: Int): Int =
+        TODO("requires quadmath")
+    actual fun svdC(m: Int, n: Int, a: DoubleArray, lda: Int, s: DoubleArray, u: DoubleArray, ldu: Int, vt: DoubleArray, ldvt: Int): Int =
+        TODO("requires quadmath")
+
     actual fun eig(n: Int, a: FloatArray, w: FloatArray, computeV: Char, vr: FloatArray?): Int = TODO()
 //        eigen_float(n, a.toCValues(), w.toCValues(), computeV.toByte(), vr?.toCValues())
     actual fun eig(n: Int, a: DoubleArray, w: DoubleArray, computeV: Char, vr: DoubleArray?): Int = TODO()

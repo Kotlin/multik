@@ -37,6 +37,11 @@ internal expect object JniLinAlg {
     fun pluC(m: Int, n: Int, a: FloatArray, lda: Int, ipiv: IntArray): Int
     fun pluC(m: Int, n: Int, a: DoubleArray, lda: Int, ipiv: IntArray): Int
 
+    fun svd(m: Int, n: Int, a: FloatArray, lda: Int, s: FloatArray, u: FloatArray, ldu: Int, vt: FloatArray, ldvt: Int): Int
+    fun svd(m: Int, n: Int, a: DoubleArray, lda: Int, s: DoubleArray, u: DoubleArray, ldu: Int, vt: DoubleArray, ldvt: Int): Int
+    fun svdC(m: Int, n: Int, a: FloatArray, lda: Int, s: FloatArray, u: FloatArray, ldu: Int, vt: FloatArray, ldvt: Int): Int
+    fun svdC(m: Int, n: Int, a: DoubleArray, lda: Int, s: DoubleArray, u: DoubleArray, ldu: Int, vt: DoubleArray, ldvt: Int): Int
+
     fun eig(n: Int, a: FloatArray, w: FloatArray, computeV: Char, vr: FloatArray?): Int
     fun eig(n: Int, a: DoubleArray, w: DoubleArray, computeV: Char, vr: DoubleArray?): Int
 
