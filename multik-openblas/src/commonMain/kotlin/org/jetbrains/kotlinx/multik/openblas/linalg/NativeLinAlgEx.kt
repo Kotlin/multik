@@ -4,6 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.openblas.linalg
 
+import org.jetbrains.kotlinx.multik.api.ExperimentalMultikApi
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.linalg.Norm
@@ -140,6 +141,115 @@ internal object NativeLinAlgEx : LinAlgEx {
             else -> throw UnsupportedOperationException()
         }
 
+    private fun <T, O : Any> pluCommon(mat: MultiArray<T, D2>, dtype: DataType, one: O): Triple<D2Array<O>, D2Array<O>, D2Array<O>> {
+        val (m, n) = mat.shape
+        val mn = min(m, n)
+
+        val ipiv = IntArray(mn)
+        val a = mat.toType<T, O, D2>(dtype, CopyStrategy.MEANINGFUL)
+
+        val info: Int = when (dtype) {
+            DataType.FloatDataType -> JniLinAlg.plu(m, n, a.data.getFloatArray(), a.strides[0], ipiv)
+            DataType.DoubleDataType -> JniLinAlg.plu(m, n, a.data.getDoubleArray(), a.strides[0], ipiv)
+            DataType.ComplexFloatDataType -> JniLinAlg.pluC(m, n, a.data.getFloatArray(), a.strides[0], ipiv)
+            DataType.ComplexDoubleDataType -> JniLinAlg.pluC(m, n, a.data.getDoubleArray(), a.strides[0], ipiv)
+            else -> throw UnsupportedOperationException()
+        }
+
+        if (info < 0) throw IllegalArgumentException("${-info} argument had illegal value. ")
+
+        val P = mk.identity<O>(m, dtype)
+        val L = mk.zeros<O, D2>(intArrayOf(m, mn), dtype)
+        val U = mk.zeros<O, D2>(intArrayOf(mn, n), dtype)
+
+        for (i in (ipiv.size - 1) downTo 0) {
+            val ip = ipiv[i] - 1
+            if (ip != 0) {
+                for (k in 0 until P.shape[1]) {
+                    P[i, k] = P[ip, k].also { P[ip, k] = P[i, k] }
+                }
+            }
+        }
+
+        for (i in 0 until m) {
+            for (j in 0 until n) {
+                when {
+                    i == j -> {
+                        U[i, j] = a[i, j]
+                        L[i, j] = one
+                    }
+                    i < j && i < mn -> U[i, j] = a[i, j]
+                    i > j && j < mn -> L[i, j] = a[i, j]
+                }
+            }
+        }
+
+
+        return Triple(P, L, U)
+    }
+
+    @ExperimentalMultikApi
+    override fun svdF(mat: MultiArray<Float, D2>): Triple<D2Array<Float>, D1Array<Float>, D2Array<Float>> =
+        svdCommon(mat, DataType.FloatDataType)
+
+    @ExperimentalMultikApi
+    override fun <T : Number> svd(mat: MultiArray<T, D2>): Triple<D2Array<Double>, D1Array<Double>, D2Array<Double>> =
+        svdCommon(mat, DataType.DoubleDataType)
+
+    @ExperimentalMultikApi
+    override fun <T : Complex> svdC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D1Array<T>, D2Array<T>> =
+        when (mat.dtype) {
+            DataType.ComplexFloatDataType -> svdCommon(mat, mat.dtype)
+            DataType.ComplexDoubleDataType -> svdCommon(mat, mat.dtype)
+            else -> throw UnsupportedOperationException()
+        }
+
+    private fun <T, O: Any> svdCommon(mat: MultiArray<T, D2>, dtype: DataType): Triple<D2Array<O>, D1Array<O>, D2Array<O>> {
+        val (m, n) = mat.shape
+        val a = mat.toType<T, O, D2>(dtype, CopyStrategy.MEANINGFUL)
+        val s = mk.zeros<O, D1>(intArrayOf(min(m, n)), dtype)
+        val u = mk.zeros<O, D2>(intArrayOf(m, m), dtype)
+        val ldu = u.strides[0]
+        val vt = mk.zeros<O, D2>(intArrayOf(n, n), dtype)
+        val ldvt = vt.strides[0]
+
+        val info: Int = when (dtype) {
+            DataType.FloatDataType ->
+                JniLinAlg.svd(
+                    m, n, a.data.getFloatArray(), a.strides[0], s.data.getFloatArray(),
+                    u.data.getFloatArray(), ldu, vt.data.getFloatArray(), ldvt
+                )
+
+            DataType.DoubleDataType ->
+                JniLinAlg.svd(
+                    m, n, a.data.getDoubleArray(), a.strides[0], s.data.getDoubleArray(),
+                    u.data.getDoubleArray(), ldu, vt.data.getDoubleArray(), ldvt
+                )
+
+            DataType.ComplexFloatDataType ->
+                JniLinAlg.svdC(
+                    m, n, a.data.getFloatArray(), a.strides[0], s.data.getFloatArray(),
+                    u.data.getFloatArray(), ldu, vt.data.getFloatArray(), ldvt
+                )
+
+            DataType.ComplexDoubleDataType ->
+                JniLinAlg.svdC(
+                    m, n, a.data.getDoubleArray(), a.strides[0], s.data.getDoubleArray(),
+                    u.data.getDoubleArray(), ldu, vt.data.getDoubleArray(), ldvt
+                )
+
+            else -> throw UnsupportedOperationException()
+        }
+
+        when {
+            info == -4 -> throw IllegalStateException("mat had a NaN entry.")
+            info < 0 -> throw IllegalArgumentException("the ${-info}-th argument had and illegal value.")
+            info > 0 -> throw IllegalStateException("DBDSDC did not converge, updating process failed.")
+        }
+
+        return Triple(u, s, vt)
+    }
+
     override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> =
         eigCommon<ComplexDouble, ComplexDouble>(mat.toType(CopyStrategy.MEANINGFUL), true)
             as Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>>
@@ -188,53 +298,6 @@ internal object NativeLinAlgEx : LinAlgEx {
         }
 
         return Pair(w, vr)
-    }
-
-    private fun <T, O : Any> pluCommon(mat: MultiArray<T, D2>, dtype: DataType, one: O): Triple<D2Array<O>, D2Array<O>, D2Array<O>> {
-        val (m, n) = mat.shape
-        val mn = min(m, n)
-
-        val ipiv = IntArray(mn)
-        val a = mat.toType<T, O, D2>(dtype, CopyStrategy.MEANINGFUL)
-
-        val info: Int = when (dtype) {
-            DataType.FloatDataType -> JniLinAlg.plu(m, n, a.data.getFloatArray(), a.strides[0], ipiv)
-            DataType.DoubleDataType -> JniLinAlg.plu(m, n, a.data.getDoubleArray(), a.strides[0], ipiv)
-            DataType.ComplexFloatDataType -> JniLinAlg.pluC(m, n, a.data.getFloatArray(), a.strides[0], ipiv)
-            DataType.ComplexDoubleDataType -> JniLinAlg.pluC(m, n, a.data.getDoubleArray(), a.strides[0], ipiv)
-            else -> throw UnsupportedOperationException()
-        }
-
-        if (info < 0) throw IllegalArgumentException("${-info} argument had illegal value. ")
-
-        val P = mk.identity<O>(m, dtype)
-        val L = mk.zeros<O, D2>(intArrayOf(m, mn), dtype)
-        val U = mk.zeros<O, D2>(intArrayOf(mn, n), dtype)
-
-        for (i in (ipiv.size - 1) downTo 0) {
-            val ip = ipiv[i] - 1
-            if (ip != 0) {
-                for (k in 0 until P.shape[1]) {
-                    P[i, k] = P[ip, k].also { P[ip, k] = P[i, k] }
-                }
-            }
-        }
-
-        for (i in 0 until m) {
-            for (j in 0 until n) {
-                when {
-                    i == j -> {
-                        U[i, j] = a[i, j]
-                        L[i, j] = one
-                    }
-                    i < j && i < mn -> U[i, j] = a[i, j]
-                    i > j && j < mn -> L[i, j] = a[i, j]
-                }
-            }
-        }
-
-
-        return Triple(P, L, U)
     }
 
     override fun <T : Number> dotMM(a: MultiArray<T, D2>, b: MultiArray<T, D2>): NDArray<T, D2> =

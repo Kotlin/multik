@@ -4,6 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.kotlin.linalg
 
+import org.jetbrains.kotlinx.multik.api.ExperimentalMultikApi
 import org.jetbrains.kotlinx.multik.api.identity
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlgEx
 import org.jetbrains.kotlinx.multik.api.linalg.Norm
@@ -90,6 +91,21 @@ internal object KELinAlgEx : LinAlgEx {
 
     override fun <T : Complex> pluC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D2Array<T>, D2Array<T>> =
         pluCommon(mat, mat.dtype)
+
+    @ExperimentalMultikApi
+    override fun svdF(mat: MultiArray<Float, D2>): Triple<D2Array<Float>, D1Array<Float>, D2Array<Float>> {
+        TODO("Not yet implemented")
+    }
+
+    @ExperimentalMultikApi
+    override fun <T : Number> svd(mat: MultiArray<T, D2>): Triple<D2Array<Double>, D1Array<Double>, D2Array<Double>> {
+        TODO("Not yet implemented")
+    }
+
+    @ExperimentalMultikApi
+    override fun <T : Complex> svdC(mat: MultiArray<T, D2>): Triple<D2Array<T>, D1Array<T>, D2Array<T>> {
+        TODO("Not yet implemented")
+    }
 
     override fun <T : Number> eig(mat: MultiArray<T, D2>): Pair<D1Array<ComplexDouble>, D2Array<ComplexDouble>> {
         TODO("Not yet implemented")

@@ -38,6 +38,14 @@ int plu_matrix_complex_float(int m, int n, float *A, int lda, int *IPIV);
 
 int plu_matrix_complex_double(int m, int n, double *A, int lda, int *IPIV);
 
+//int svd_matrix_float(int m, int n, float *A, int lda, float *S, float *U, int ldu, float *VT, int ldvt);
+
+//int svd_matrix_double(int m, int n, double *A, int lda, double *S, double *U, int ldu, double *VT, int ldvt);
+
+//int svd_matrix_complex_float(int m, int n, float *A, int lda, float *S, float *U, int ldu, float *VT, int ldvt);
+
+//int svd_matrix_complex_double(int m, int n, double *A, int lda, double *S, double *U, int ldu, double *VT, int ldvt);
+
 int solve_linear_system_float(int n, int nrhs, float *A, int lda, float *b, int ldb);
 
 int solve_linear_system_double(int n, int nrhs, double *A, int lda, double *b, int ldb);
@@ -60,16 +68,16 @@ int inverse_matrix_complex_double(int n, double *A, int lda);
 //int eigen_double(int n, double *A, double *W, char computeV, double *VR);
 
 void matrix_dot_float(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,
-				bool trans_b, int offsetB, float *B, int ldb, float *C);
+					  bool trans_b, int offsetB, float *B, int ldb, float *C);
 
 void matrix_dot_double(bool trans_a, int offsetA, double *A, int lda, int m, int n, int k,
-				bool trans_b, int offsetB, double *B, int ldb, double *C);
+					   bool trans_b, int offsetB, double *B, int ldb, double *C);
 
 void matrix_dot_complex_float(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,
-						bool trans_b, int offsetB, float *B, int ldb, float *C);
+							  bool trans_b, int offsetB, float *B, int ldb, float *C);
 
 void matrix_dot_complex_double(bool trans_a, int offsetA, double *A, int lda, int m, int n, int k,
-						bool trans_b, int offsetB, double *B, int ldb, double *C);
+							   bool trans_b, int offsetB, double *B, int ldb, double *C);
 
 void matrix_dot_vector_float(bool trans_a, int offsetA, float *A, int lda, int m, int n, float *X, int incx, float *Y);
 

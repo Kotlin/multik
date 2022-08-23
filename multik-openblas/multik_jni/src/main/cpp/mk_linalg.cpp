@@ -136,6 +136,32 @@ int plu_matrix_complex_double(int m, int n, double *A, int lda, int *IPIV) {
   return info;
 }
 
+//int svd_matrix_float(int m, int n, float *A, int lda, float *S, float *U, int ldu, float *VT, int ldvt) {
+//  int info = LAPACKE_sgesdd(LAPACK_ROW_MAJOR, 'A', m, n, A, lda, S, U, ldu, VT, ldvt);
+//  return info;
+//}
+
+//int svd_matrix_double(int m, int n, double *A, int lda, double *S, double *U, int ldu, double *VT, int ldvt) {
+//  int info = LAPACKE_dgesdd(LAPACK_ROW_MAJOR, 'A', m, n, A, lda, S, U, ldu, VT, ldvt);
+//  return info;
+//}
+
+//int svd_matrix_complex_float(int m, int n, float *A, int lda, float *S, float *U, int ldu, float *VT, int ldvt) {
+//  lapack_complex_float *a = (lapack_complex_float *)A;
+//  lapack_complex_float *u = (lapack_complex_float *)U;
+//  lapack_complex_float *vt = (lapack_complex_float *)VT;
+//  int info = LAPACKE_cgesdd(LAPACK_ROW_MAJOR, 'A', m, n, a, lda, S, u, ldu, vt, ldvt);
+//  return info;
+//}
+
+//int svd_matrix_complex_double(int m, int n, double *A, int lda, double *S, double *U, int ldu, double *VT, int ldvt) {
+//  lapack_complex_double *a = (lapack_complex_double *)A;
+//  lapack_complex_double *u = (lapack_complex_double *)U;
+//  lapack_complex_double *vt = (lapack_complex_double *)VT;
+//  int info = LAPACKE_zgesdd(LAPACK_ROW_MAJOR, 'A', m, n, a, lda, S, u, ldu, vt, ldvt);
+//  return info;
+//}
+
 int solve_linear_system_float(int n, int nrhs, float *A, int lda, float *b, int ldb) {
   int ipiv[n];
   int num_threads = openblas_get_num_threads();
@@ -219,7 +245,7 @@ int inverse_matrix_complex_double(int n, double *A, int lda) {
 //}
 
 void matrix_dot_float(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,
-				bool trans_b, int offsetB, float *B, int ldb, float *C) {
+					  bool trans_b, int offsetB, float *B, int ldb, float *C) {
   float alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
   CBLAS_TRANSPOSE transB;
@@ -231,19 +257,19 @@ void matrix_dot_float(bool trans_a, int offsetA, float *A, int lda, int m, int n
 }
 
 void matrix_dot_double(bool trans_a, int offsetA, double *A, int lda, int m, int n, int k,
-				bool trans_b, int offsetB, double *B, int ldb, double *C) {
+					   bool trans_b, int offsetB, double *B, int ldb, double *C) {
   double alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
   CBLAS_TRANSPOSE transB;
 
   transA = (trans_a) ? CblasTrans : CblasNoTrans;
-  transB = (trans_b) ? CblasTrans :  CblasNoTrans;
+  transB = (trans_b) ? CblasTrans : CblasNoTrans;
 
   cblas_dgemm(CblasRowMajor, transA, transB, m, n, k, alpha, A + offsetA, lda, B + offsetB, ldb, beta, C, n);
 }
 
 void matrix_dot_complex_float(bool trans_a, int offsetA, float *A, int lda, int m, int n, int k,
-						bool trans_b, int offsetB, float *B, int ldb, float *C) {
+							  bool trans_b, int offsetB, float *B, int ldb, float *C) {
   float alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
   CBLAS_TRANSPOSE transB;
@@ -255,7 +281,7 @@ void matrix_dot_complex_float(bool trans_a, int offsetA, float *A, int lda, int 
 }
 
 void matrix_dot_complex_double(bool trans_a, int offsetA, double *A, int lda, int m, int n, int k,
-						bool trans_b, int offsetB, double *B, int ldb, double *C) {
+							   bool trans_b, int offsetB, double *B, int ldb, double *C) {
   double alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
   CBLAS_TRANSPOSE transB;
