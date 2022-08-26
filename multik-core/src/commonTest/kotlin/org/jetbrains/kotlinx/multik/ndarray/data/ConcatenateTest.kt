@@ -38,7 +38,7 @@ class ConcatenateTest {
         val arr2 = mk.zeros<Double>(2) + 2.0
         val arr3 = mk.zeros<Double>(3) + 3.0
         val arr4 = mk.zeros<Double>(10) + 4.0
-        val arr5 = arr4[Slice(2, 6, 1)]
+        val arr5 = arr4[Slice(2, 5, 1)]
 
         assertFalse(arr5.consistent)
         val result = arr1.cat(listOf(arr2, arr3, arr5), 0)
@@ -65,7 +65,7 @@ class ConcatenateTest {
 
         val result = arr1.cat(listOf(arr2, arr3, arr4), 0)
 
-        var realResult = result.asSequence().map { it.re }.toList().toDoubleArray()
+        val realResult = result.asSequence().map { it.re }.toList().toDoubleArray()
 
         assertContentEquals(
             doubleArrayOf(

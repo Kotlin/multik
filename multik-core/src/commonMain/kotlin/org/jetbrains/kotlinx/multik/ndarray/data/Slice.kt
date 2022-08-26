@@ -51,7 +51,7 @@ public class Slice(start: Int, stop: Int, step: Int) : Indexing, ClosedRange<Int
 
     init {
         if (step == 0 && start != 0 && stop != 0) throw IllegalArgumentException("Step must be non-zero.")
-        if (step == Int.MIN_VALUE) throw kotlin.IllegalArgumentException("Step must be greater than Int.MIN_VALUE to avoid overflow on negation.")
+        if (step == Int.MIN_VALUE) throw IllegalArgumentException("Step must be greater than Int.MIN_VALUE to avoid overflow on negation.")
     }
 
     public companion object;
@@ -117,6 +117,10 @@ public value class RInt(internal val data: Int) : Indexing {
 
     public operator fun rangeTo(that: RInt): Slice = Slice(data, that.data, 1)
     public operator fun rangeTo(that: Int): Slice = Slice(data, that, 1)
+
+    public infix fun until(that: RInt): Slice = Slice(data, that.data - 1, 1)
+
+    public infix fun until(that: Int): Slice = Slice(data, that - 1, 1)
 }
 
 /**

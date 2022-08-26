@@ -205,8 +205,8 @@ class NativeLinAlgTest {
     @Test
     fun `matrix slice dot vector test F`() {
         val (matrix, vector) = data.getFloatMV(5)
-        val expected = NativeLinAlg.dot(matrix[2..5, 0..3].deepCopy(), vector[0..5..2].deepCopy())
-        val actual = NativeLinAlg.dot(matrix[2..5, 0..3], vector[0..5..2])
+        val expected = NativeLinAlg.dot(matrix[2 until 5, 0 until 3].deepCopy(), vector[(0 until 5)..2].deepCopy())
+        val actual = NativeLinAlg.dot(matrix[2 until 5, 0 until 3], vector[(0 until 5)..2])
         assertFloatingNDArray(expected, actual)
     }
 

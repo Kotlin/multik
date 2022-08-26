@@ -159,7 +159,7 @@ private fun pluDecompositionInplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
 
     // apply recursively to [ a11 ]
     //                      [ a21 ]
-    pluDecompositionInplace(a[0..a.shape[0], 0..n1] as D2Array<Double>, rowPerm[0..min(a.shape[0], n1)] as D1Array<Int>)
+    pluDecompositionInplace(a[0 until a.shape[0], 0 until n1] as D2Array<Double>, rowPerm[0 until min(a.shape[0], n1)] as D1Array<Int>)
 
 
     // change [ a12 ]
@@ -169,12 +169,12 @@ private fun pluDecompositionInplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
     })
 
     // change a12
-    val aSlice = a[0..n1, 0..n1]
-    val x = a[0..n1, n1..(n1 + n2)] as D2Array<Double>
+    val aSlice = a[0 until n1, 0 until n1]
+    val x = a[0 until n1, n1 until (n1 + n2)] as D2Array<Double>
     solveLowerTriangleSystem(aSlice.shape[1], x.shape[1]) { i, k, j -> x[k, j] -= aSlice[k, i] * x[i, j] }
 
     // update a22
-    val update = dotMatrix(a[n1..a.shape[0], 0..n1], a[0..n1, n1..(n1 + n2)]) // TODO
+    val update = dotMatrix(a[n1 until a.shape[0], 0 until n1], a[0 until n1, n1 until (n1 + n2)]) // TODO
     for (i in n1 until a.shape[0]) {
         for (j in n1 until n1 + n2) {
             a[i, j] -= update[i - n1, j - n1]
@@ -183,8 +183,8 @@ private fun pluDecompositionInplace(a: D2Array<Double>, rowPerm: D1Array<Int>) {
 
     // factor a22
     pluDecompositionInplace(
-        a[n1..a.shape[0], n1..a.shape[1]] as D2Array<Double>,
-        rowPerm[n1..min(a.shape[0], a.shape[1])] as D1Array<Int>
+        a[n1 until a.shape[0], n1 until a.shape[1]] as D2Array<Double>,
+        rowPerm[n1 until min(a.shape[0], a.shape[1])] as D1Array<Int>
     )
 
     // apply rowPerm to a21
@@ -221,17 +221,17 @@ private fun pluDecompositionInplaceF(a: D2Array<Float>, rowPerm: D1Array<Int>) {
         return
     }
 
-    pluDecompositionInplaceF(a[0..a.shape[0], 0..n1] as D2Array<Float>, rowPerm[0..min(a.shape[0], n1)] as D1Array<Int>)
+    pluDecompositionInplaceF(a[0 until a.shape[0], 0 until n1] as D2Array<Float>, rowPerm[0 until min(a.shape[0], n1)] as D1Array<Int>)
 
     swapLines(rowPerm, from2 = n1, to2 = a.shape[1], swap = { i, j ->
         a[i, j] = a[i + rowPerm[i], j].also { a[i + rowPerm[i], j] = a[i, j] }
     }) // TODO swap rows on matrix
 
-    val aSlice = a[0..n1, 0..n1]
-    val x = a[0..n1, n1..(n1 + n2)] as D2Array<Float>
+    val aSlice = a[0 until n1, 0 until n1]
+    val x = a[0 until n1, n1 until (n1 + n2)] as D2Array<Float>
     solveLowerTriangleSystem(aSlice.shape[1], x.shape[1]) { i, k, j -> x[k, j] -= aSlice[k, i] * x[i, j] }
 
-    val update = dotMatrix(a[n1..a.shape[0], 0..n1], a[0..n1, n1..(n1 + n2)]) // TODO
+    val update = dotMatrix(a[n1 until a.shape[0], 0 until n1], a[0 until n1, n1 until (n1 + n2)]) // TODO
     for (i in n1 until a.shape[0]) {
         for (j in n1 until n1 + n2) {
             a[i, j] -= update[i - n1, j - n1]
@@ -239,8 +239,8 @@ private fun pluDecompositionInplaceF(a: D2Array<Float>, rowPerm: D1Array<Int>) {
     }
 
     pluDecompositionInplaceF(
-        a[n1..a.shape[0], n1..a.shape[1]] as D2Array<Float>,
-        rowPerm[n1..min(a.shape[0], a.shape[1])] as D1Array<Int>
+        a[n1 until a.shape[0], n1 until a.shape[1]] as D2Array<Float>,
+        rowPerm[n1 until min(a.shape[0], a.shape[1])] as D1Array<Int>
     )
 
     swapLines(rowPerm, n1, to2 = n1, swap = { i, j ->
@@ -279,19 +279,19 @@ private fun pluDecompositionInplaceComplexDouble(a: D2Array<ComplexDouble>, rowP
     }
 
     pluDecompositionInplaceComplexDouble(
-        a[0..a.shape[0], 0..n1] as D2Array<ComplexDouble>,
-        rowPerm[0..min(a.shape[0], n1)] as D1Array<Int>
+        a[0 until a.shape[0], 0 until n1] as D2Array<ComplexDouble>,
+        rowPerm[0 until min(a.shape[0], n1)] as D1Array<Int>
     )
 
     swapLines(rowPerm, from2 = n1, to2 = a.shape[1], swap = { i, j ->
         a[i, j] = a[i + rowPerm[i], j].also { a[i + rowPerm[i], j] = a[i, j] }
     })
 
-    val aSlice = a[0..n1, 0..n1]
-    val x = a[0..n1, n1..(n1 + n2)] as D2Array<ComplexDouble>
+    val aSlice = a[0 until n1, 0 until n1]
+    val x = a[0 until n1, n1 until (n1 + n2)] as D2Array<ComplexDouble>
     solveLowerTriangleSystem(aSlice.shape[1], x.shape[1]) { i, k, j -> x[k, j] -= aSlice[k, i] * x[i, j] }
 
-    val update = dotMatrixComplex(a[n1..a.shape[0], 0..n1], a[0..n1, n1..(n1 + n2)]) // TODO
+    val update = dotMatrixComplex(a[n1 until a.shape[0], 0 until n1], a[0 until n1, n1 until (n1 + n2)]) // TODO
     for (i in n1 until a.shape[0]) {
         for (j in n1 until n1 + n2) {
             a[i, j] -= update[i - n1, j - n1]
@@ -299,8 +299,8 @@ private fun pluDecompositionInplaceComplexDouble(a: D2Array<ComplexDouble>, rowP
     }
 
     pluDecompositionInplaceComplexDouble(
-        a[n1..a.shape[0], n1..a.shape[1]] as D2Array<ComplexDouble>,
-        rowPerm[n1..min(a.shape[0], a.shape[1])] as D1Array<Int>
+        a[n1 until a.shape[0], n1 until a.shape[1]] as D2Array<ComplexDouble>,
+        rowPerm[n1 until min(a.shape[0], a.shape[1])] as D1Array<Int>
     )
 
     swapLines(rowPerm, n1, to2 = n1, swap = { i, j ->
@@ -338,19 +338,19 @@ private fun pluDecompositionInplaceComplexFloat(a: D2Array<ComplexFloat>, rowPer
     }
 
     pluDecompositionInplaceComplexFloat(
-        a[0..a.shape[0], 0..n1] as D2Array<ComplexFloat>,
-        rowPerm[0..min(a.shape[0], n1)] as D1Array<Int>
+        a[0 until a.shape[0], 0 until n1] as D2Array<ComplexFloat>,
+        rowPerm[0 until min(a.shape[0], n1)] as D1Array<Int>
     )
 
     swapLines(rowPerm, from2 = n1, to2 = a.shape[1], swap = { i, j ->
         a[i, j] = a[i + rowPerm[i], j].also { a[i + rowPerm[i], j] = a[i, j] }
     })
 
-    val aSlice = a[0..n1, 0..n1]
-    val x = a[0..n1, n1..(n1 + n2)] as D2Array<ComplexFloat>
+    val aSlice = a[0 until n1, 0 until n1]
+    val x = a[0 until n1, n1 until (n1 + n2)] as D2Array<ComplexFloat>
     solveLowerTriangleSystem(aSlice.shape[1], x.shape[1]) { i, k, j -> x[k, j] -= aSlice[k, i] * x[i, j] }
 
-    val update = dotMatrixComplex(a[n1..a.shape[0], 0..n1], a[0..n1, n1..(n1 + n2)])
+    val update = dotMatrixComplex(a[n1 until a.shape[0], 0 until n1], a[0 until n1, n1 until (n1 + n2)])
     for (i in n1 until a.shape[0]) {
         for (j in n1 until n1 + n2) {
             a[i, j] -= update[i - n1, j - n1]
@@ -358,8 +358,8 @@ private fun pluDecompositionInplaceComplexFloat(a: D2Array<ComplexFloat>, rowPer
     }
 
     pluDecompositionInplaceComplexFloat(
-        a[n1..a.shape[0], n1..a.shape[1]] as D2Array<ComplexFloat>,
-        rowPerm[n1..min(a.shape[0], a.shape[1])] as D1Array<Int>
+        a[n1 until a.shape[0], n1 until a.shape[1]] as D2Array<ComplexFloat>,
+        rowPerm[n1 until min(a.shape[0], a.shape[1])] as D1Array<Int>
     )
 
     swapLines(rowPerm, n1, to2 = n1, swap = { i, j ->

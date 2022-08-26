@@ -49,7 +49,7 @@ internal object KEStatistics : Statistics {
         val indexMap: MutableMap<Int, Indexing> = mutableMapOf()
         for (i in a.shape.indices) {
             if (i == axis) continue
-            indexMap[i] = 0.r..a.shape[i]
+            indexMap[i] = 0.r until a.shape[i]
         }
         for (index in 0 until a.shape[axis]) {
             indexMap[axis] = index.r

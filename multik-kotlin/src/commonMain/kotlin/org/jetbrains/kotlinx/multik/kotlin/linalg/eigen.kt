@@ -89,9 +89,9 @@ private fun qrShiftedFloat(
             var sc = a[i, i - 1] / absL1(a[i, i - 1])
             sc = sc.conjugate() / sc.abs()
             a[i, i - 1] = a[i, i - 1].abs().toComplexFloat()
-            (a[i, i..n] as D1Array<ComplexFloat>) *= sc
-            (a[0..min(n, i + 2), i] as D1Array<ComplexFloat>) *= sc.conjugate()
-            (z[0..n, i] as D1Array<ComplexFloat>) *= sc.conjugate()
+            (a[i, i until n] as D1Array<ComplexFloat>) *= sc
+            (a[0 until min(n, i + 2), i] as D1Array<ComplexFloat>) *= sc.conjugate()
+            (z[0 until n, i] as D1Array<ComplexFloat>) *= sc.conjugate()
         }
     }
 
@@ -226,7 +226,7 @@ private fun qrShiftedFloat(
                     v[1] = a[k + 1, k - 1]
                 }
 
-                val (v1, t1) = computeHouseholderReflectorInplace(2, v[0], v[1..2] as D1Array<ComplexFloat>)
+                val (v1, t1) = computeHouseholderReflectorInplace(2, v[0], v[1 until  2] as D1Array<ComplexFloat>)
                 v[0] = v1
 
                 if (k > m) {
@@ -265,10 +265,10 @@ private fun qrShiftedFloat(
                     for (j in m..i) {
                         if (j != m + 1) {
                             if (n > j + 1) {
-                                (a[j, (j + 1)..n] as D1Array<ComplexFloat>) *= temp
+                                (a[j, (j + 1) until n] as D1Array<ComplexFloat>) *= temp
                             }
-                            a[0..j, j] as D1Array<ComplexFloat> *= temp.conjugate()
-                            z[0..n, j] as D1Array<ComplexFloat> *= temp.conjugate()
+                            a[0 until j, j] as D1Array<ComplexFloat> *= temp.conjugate()
+                            z[0 until n, j] as D1Array<ComplexFloat> *= temp.conjugate()
                         }
                     }
                 }
@@ -281,10 +281,10 @@ private fun qrShiftedFloat(
                 a[i, i - 1] = rtemp
                 temp /= rtemp
                 if (n > i + 1) {
-                    a[i, (i + 1)..n] as D1Array<ComplexFloat> *= temp.conjugate()
+                    a[i, (i + 1) until n] as D1Array<ComplexFloat> *= temp.conjugate()
                 }
-                a[0..i, i] as D1Array<ComplexFloat> *= temp
-                z[0..n, i] as D1Array<ComplexFloat> *= temp
+                a[0 until i, i] as D1Array<ComplexFloat> *= temp
+                z[0 until n, i] as D1Array<ComplexFloat> *= temp
             }
         }
         if (failedToConverge) {
@@ -311,9 +311,9 @@ private fun qrShiftedDouble(
             var sc = a[i, i - 1] / absL1(a[i, i - 1])
             sc = sc.conjugate() / sc.abs()
             a[i, i - 1] = a[i, i - 1].abs().toComplexDouble()
-            (a[i, i..n] as D1Array<ComplexDouble>) *= sc
-            (a[0..min(n, i + 2), i] as D1Array<ComplexDouble>) *= sc.conjugate()
-            (z[0..n, i] as D1Array<ComplexDouble>) *= sc.conjugate()
+            (a[i, i until n] as D1Array<ComplexDouble>) *= sc
+            (a[0 until min(n, i + 2), i] as D1Array<ComplexDouble>) *= sc.conjugate()
+            (z[0 until n, i] as D1Array<ComplexDouble>) *= sc.conjugate()
         }
     }
 
@@ -448,7 +448,7 @@ private fun qrShiftedDouble(
                     v[1] = a[k + 1, k - 1]
                 }
 
-                val (v1, t1) = computeHouseholderReflectorInplace(2, v[0], v[1..2] as D1Array<ComplexDouble>)
+                val (v1, t1) = computeHouseholderReflectorInplace(2, v[0], v[1 until 2] as D1Array<ComplexDouble>)
                 v[0] = v1
 
                 if (k > m) {
@@ -487,10 +487,10 @@ private fun qrShiftedDouble(
                     for (j in m..i) {
                         if (j != m + 1) {
                             if (n > j + 1) {
-                                (a[j, (j + 1)..n] as D1Array<ComplexDouble>) *= temp
+                                (a[j, (j + 1) until n] as D1Array<ComplexDouble>) *= temp
                             }
-                            a[0..j, j] as D1Array<ComplexDouble> *= temp.conjugate()
-                            z[0..n, j] as D1Array<ComplexDouble> *= temp.conjugate()
+                            a[0 until j, j] as D1Array<ComplexDouble> *= temp.conjugate()
+                            z[0 until n, j] as D1Array<ComplexDouble> *= temp.conjugate()
                         }
                     }
                 }
@@ -503,10 +503,10 @@ private fun qrShiftedDouble(
                 a[i, i - 1] = rtemp
                 temp /= rtemp
                 if (n > i + 1) {
-                    a[i, (i + 1)..n] as D1Array<ComplexDouble> *= temp.conjugate()
+                    a[i, (i + 1) until n] as D1Array<ComplexDouble> *= temp.conjugate()
                 }
-                a[0..i, i] as D1Array<ComplexDouble> *= temp
-                z[0..n, i] as D1Array<ComplexDouble> *= temp
+                a[0 until i, i] as D1Array<ComplexDouble> *= temp
+                z[0 until n, i] as D1Array<ComplexDouble> *= temp
             }
         }
         if (failedToConverge) {
@@ -546,7 +546,7 @@ private fun computeHouseholderReflectorInplace(
     var knt = 0
     while (abs(beta) < safemin) {
         knt++
-        x[0..(n - 1)] as D1Array<ComplexFloat> *= rsafemin.toComplexFloat()
+        x[0 until (n - 1)] as D1Array<ComplexFloat> *= rsafemin.toComplexFloat()
         beta *= rsafemin
         alphi *= rsafemin
         alphr *= safemin
@@ -567,7 +567,7 @@ private fun computeHouseholderReflectorInplace(
     val tau = ComplexFloat((beta - alphr) / beta, -alphi / beta)
     tmp = 1.0.toComplexFloat() / (tmp - beta)
 
-    x[0..(n - 1)] as D1Array<ComplexFloat> *= tmp
+    x[0 until (n - 1)] as D1Array<ComplexFloat> *= tmp
     for (j in 1..knt) {
         beta *= safemin
     }
@@ -602,7 +602,7 @@ private fun computeHouseholderReflectorInplace(
     var knt = 0
     while (abs(beta) < safemin) {
         knt++
-        x[0..(n - 1)] as D1Array<ComplexDouble> *= rsafemin.toComplexDouble()
+        x[0 until (n - 1)] as D1Array<ComplexDouble> *= rsafemin.toComplexDouble()
         beta *= rsafemin
         alphi *= rsafemin
         alphr *= safemin
@@ -623,7 +623,7 @@ private fun computeHouseholderReflectorInplace(
     val tau = ComplexDouble((beta - alphr) / beta, -alphi / beta)
     tmp = 1.0.toComplexDouble() / (tmp - beta)
 
-    x[0..(n - 1)] as D1Array<ComplexDouble> *= tmp
+    x[0 until (n - 1)] as D1Array<ComplexDouble> *= tmp
     for (j in 1..knt) {
         beta *= safemin
     }

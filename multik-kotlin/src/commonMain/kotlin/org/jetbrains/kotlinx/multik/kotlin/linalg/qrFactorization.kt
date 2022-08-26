@@ -24,15 +24,15 @@ fun qrDouble(mat: MultiArray<Double, D2>): Pair<D2Array<Double>, D2Array<Double>
     var q = mk.identity<Double>(mat.shape[0]) // TODO shape q = m x n
     val r = mat.deepCopy() as D2Array<Double> // TODO shape r = min(m, n) x n
     for (i in 0 until min(mat.shape[0], mat.shape[1])) {
-        val (tau, v) = householderTransformDouble(r[i..r.shape[0], i..r.shape[1]] as D2Array<Double>)
-        val appliedR = applyHouseholderDouble(r[i..r.shape[0], i..r.shape[1]] as D2Array<Double>, tau, v)
+        val (tau, v) = householderTransformDouble(r[i until r.shape[0], i until r.shape[1]] as D2Array<Double>)
+        val appliedR = applyHouseholderDouble(r[i until r.shape[0], i until r.shape[1]] as D2Array<Double>, tau, v)
         for (d0 in i until r.shape[0]) {
             for (d1 in i until r.shape[1]) {
                 r[d0, d1] = appliedR[d0 - i, d1 - i]
             }
         }
         q = q.transpose()
-        val appliedQ = applyHouseholderDouble(q[i..q.shape[0], 0..q.shape[1]] as D2Array<Double>, tau, v)
+        val appliedQ = applyHouseholderDouble(q[i until q.shape[0], 0 until q.shape[1]] as D2Array<Double>, tau, v)
         for (d0 in i until q.shape[0]) {
             for (d1 in 0 until q.shape[1]) {
                 q[d0, d1] = appliedQ[d0 - i, d1]
@@ -47,15 +47,15 @@ fun qrFloat(mat: MultiArray<Float, D2>): Pair<D2Array<Float>, D2Array<Float>> {
     var q = mk.identity<Float>(mat.shape[0])
     val r = mat.deepCopy() as D2Array<Float>
     for (i in 0 until min(mat.shape[0], mat.shape[1])) {
-        val (tau, v) = householderTransformFloat(r[i..r.shape[0], i..r.shape[1]] as D2Array<Float>)
-        val appliedR = applyHouseholderFloat(r[i..r.shape[0], i..r.shape[1]] as D2Array<Float>, tau, v)
+        val (tau, v) = householderTransformFloat(r[i until r.shape[0], i until r.shape[1]] as D2Array<Float>)
+        val appliedR = applyHouseholderFloat(r[i until r.shape[0], i until r.shape[1]] as D2Array<Float>, tau, v)
         for (d0 in i until r.shape[0]) {
             for (d1 in i until r.shape[1]) {
                 r[d0, d1] = appliedR[d0 - i, d1 - i]
             }
         }
         q = q.transpose()
-        val appliedQ = applyHouseholderFloat(q[i..q.shape[0], 0..q.shape[1]] as D2Array<Float>, tau, v)
+        val appliedQ = applyHouseholderFloat(q[i until q.shape[0], 0 until q.shape[1]] as D2Array<Float>, tau, v)
         for (d0 in i until q.shape[0]) {
             for (d1 in 0 until q.shape[1]) {
                 q[d0, d1] = appliedQ[d0 - i, d1]
@@ -71,8 +71,8 @@ fun qrComplexFloat(mat: MultiArray<ComplexFloat, D2>): Pair<D2Array<ComplexFloat
     val r = mat.deepCopy() as D2Array<ComplexFloat>
 
     for (i in 0 until min(mat.shape[0], mat.shape[1])) {
-        val (tau, v) = householderTransformComplexFloat(r[i..r.shape[0], i..r.shape[1]])
-        val appliedR = applyHouseholderComplexFloat(r[i..r.shape[0], i..r.shape[1]] as D2Array<ComplexFloat>, tau, v)
+        val (tau, v) = householderTransformComplexFloat(r[i until r.shape[0], i until r.shape[1]])
+        val appliedR = applyHouseholderComplexFloat(r[i until r.shape[0], i until r.shape[1]] as D2Array<ComplexFloat>, tau, v)
 
         for (d0 in i until r.shape[0]) {
             for (d1 in i until r.shape[1]) {
@@ -86,7 +86,7 @@ fun qrComplexFloat(mat: MultiArray<ComplexFloat, D2>): Pair<D2Array<ComplexFloat
             }
         }
 
-        val appliedQ = applyHouseholderComplexFloat(q[i..q.shape[0], 0..q.shape[1]] as D2Array<ComplexFloat>, tau, v)
+        val appliedQ = applyHouseholderComplexFloat(q[i until q.shape[0], 0 until q.shape[1]] as D2Array<ComplexFloat>, tau, v)
         for (d0 in i until q.shape[0]) {
             for (d1 in 0 until q.shape[1]) {
                 q[d0, d1] = appliedQ[d0 - i, d1]
@@ -114,8 +114,8 @@ fun qrComplexDouble(mat: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDou
     var q = mk.identity<ComplexDouble>(mat.shape[0])
     val r = mat.deepCopy() as D2Array<ComplexDouble>
     for (i in 0 until min(mat.shape[0], mat.shape[1])) {
-        val (tau, v) = householderTransformComplexDouble(r[i..r.shape[0], i..r.shape[1]] as D2Array<ComplexDouble>)
-        val appliedR = applyHouseholderComplexDouble(r[i..r.shape[0], i..r.shape[1]] as D2Array<ComplexDouble>, tau, v)
+        val (tau, v) = householderTransformComplexDouble(r[i until r.shape[0], i until r.shape[1]] as D2Array<ComplexDouble>)
+        val appliedR = applyHouseholderComplexDouble(r[i until r.shape[0], i until r.shape[1]] as D2Array<ComplexDouble>, tau, v)
         for (d0 in i until r.shape[0]) {
             for (d1 in i until r.shape[1]) {
                 r[d0, d1] = appliedR[d0 - i, d1 - i]
@@ -128,7 +128,7 @@ fun qrComplexDouble(mat: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDou
             }
         }
 
-        val appliedQ = applyHouseholderComplexDouble(q[i..q.shape[0], 0..q.shape[1]] as D2Array<ComplexDouble>, tau, v)
+        val appliedQ = applyHouseholderComplexDouble(q[i until q.shape[0], 0 until q.shape[1]] as D2Array<ComplexDouble>, tau, v)
         for (d0 in i until q.shape[0]) {
             for (d1 in 0 until q.shape[1]) {
                 q[d0, d1] = appliedQ[d0 - i, d1]
@@ -199,7 +199,7 @@ internal fun householderTransformFloat(x: D2Array<Float>): Pair<Float, D1Array<F
 
 internal fun householderTransformComplexFloat(x: MultiArray<ComplexFloat, D2>): Pair<ComplexFloat, D1Array<ComplexFloat>> {
     val alpha = x[0, 0]
-//    val xnorm: Double = sqrt(x[1..x.shape[0], 0].map { it * it }.sum())
+//    val xnorm: Double = sqrt(x[1 until x.shape[0], 0].map { it * it }.sum())
     var xnorm = 0f
     for (i in 1 until x.shape[0]) {
         xnorm += (x[i, 0] * x[i, 0].conjugate()).abs()
@@ -222,7 +222,7 @@ internal fun householderTransformComplexFloat(x: MultiArray<ComplexFloat, D2>): 
 
 internal fun householderTransformComplexDouble(x: MultiArray<ComplexDouble, D2>): Pair<ComplexDouble, D1Array<ComplexDouble>> {
     val alpha = x[0, 0]
-//    val xnorm: Double = sqrt(x[1..x.shape[0], 0].map { it * it }.sum())
+//    val xnorm: Double = sqrt(x[1 until x.shape[0], 0].map { it * it }.sum())
     var xnorm = 0.0
     for (i in 1 until x.shape[0]) {
         xnorm += (x[i, 0] * x[i, 0].conjugate()).abs()

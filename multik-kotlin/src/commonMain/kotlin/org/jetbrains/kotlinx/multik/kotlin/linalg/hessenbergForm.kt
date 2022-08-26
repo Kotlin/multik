@@ -37,9 +37,9 @@ internal fun upperHessenbergFloat(a: MultiArray<ComplexFloat, D2>): Pair<D2Array
     var ans = a as D2Array<ComplexFloat>
 
     for (i in 1 until n - 1) {
-        val (tau, v) = householderTransformComplexFloat(ans[i..n, (i - 1)..m])
+        val (tau, v) = householderTransformComplexFloat(ans[i until n, (i - 1) until m])
 
-        var submatrix = ans[i..n, (i - 1)..m]
+        var submatrix = ans[i until n, (i - 1) until m]
         submatrix = applyHouseholderComplexFloat(submatrix, tau, v)
         //copy
         for (i1 in i until n) {
@@ -50,7 +50,7 @@ internal fun upperHessenbergFloat(a: MultiArray<ComplexFloat, D2>): Pair<D2Array
 
         ans = ans.conjTranspose()
 
-        submatrix = ans[i..n, 0..m]
+        submatrix = ans[i until n, 0 until m]
         submatrix = applyHouseholderComplexFloat(submatrix, tau, v)
         //copy
         for (i1 in i until n) {
@@ -61,7 +61,7 @@ internal fun upperHessenbergFloat(a: MultiArray<ComplexFloat, D2>): Pair<D2Array
 
         ans = ans.conjTranspose()
 
-        submatrix = applyHouseholderComplexFloat(id[i..id.shape[0], 0..id.shape[1]], tau, v)
+        submatrix = applyHouseholderComplexFloat(id[i until id.shape[0], 0 until id.shape[1]], tau, v)
         for (i1 in i until id.shape[0]) {
             for (j1 in 0 until id.shape[1]) {
                 id[i1, j1] = submatrix[i1 - i, j1]
@@ -87,9 +87,9 @@ internal fun upperHessenbergDouble(a: MultiArray<ComplexDouble, D2>): Pair<D2Arr
     var ans = a as D2Array<ComplexDouble>
 
     for (i in 1 until n - 1) {
-        val (tau, v) = householderTransformComplexDouble(ans[i..n, (i - 1)..m])
+        val (tau, v) = householderTransformComplexDouble(ans[i until n, (i - 1) until m])
 
-        var submatrix = ans[i..n, (i - 1)..m]
+        var submatrix = ans[i until n, (i - 1) until m]
         submatrix = applyHouseholderComplexDouble(submatrix, tau, v)
         //copy
         for (i1 in i until n) {
@@ -100,7 +100,7 @@ internal fun upperHessenbergDouble(a: MultiArray<ComplexDouble, D2>): Pair<D2Arr
 
         ans = ans.conjTranspose()
 
-        submatrix = ans[i..n, 0..m]
+        submatrix = ans[i until n, 0 until m]
         submatrix = applyHouseholderComplexDouble(submatrix, tau, v)
         //copy
         for (i1 in i until n) {
@@ -111,7 +111,7 @@ internal fun upperHessenbergDouble(a: MultiArray<ComplexDouble, D2>): Pair<D2Arr
 
         ans = ans.conjTranspose()
 
-        submatrix = applyHouseholderComplexDouble(id[i..id.shape[0], 0..id.shape[1]], tau, v)
+        submatrix = applyHouseholderComplexDouble(id[i until id.shape[0], 0 until id.shape[1]], tau, v)
         for (i1 in i until id.shape[0]) {
             for (j1 in 0 until id.shape[1]) {
                 id[i1, j1] = submatrix[i1 - i, j1]

@@ -125,7 +125,7 @@ internal object NativeLinAlgEx : LinAlgEx {
         if (info < 0) throw IllegalArgumentException("${-info} argument had illegal value. ")
 
         // TODO internal copyOf(end: Int)
-        return Pair(q[Slice.bounds, 0..mn].deepCopy() as D2Array<O>, r)
+        return Pair(q[Slice.bounds, 0 until mn].deepCopy() as D2Array<O>, r)
     }
 
     override fun <T : Number> plu(mat: MultiArray<T, D2>): Triple<D2Array<Double>, D2Array<Double>, D2Array<Double>> =

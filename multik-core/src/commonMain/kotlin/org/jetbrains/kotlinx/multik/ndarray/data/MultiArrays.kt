@@ -276,7 +276,7 @@ public fun <T, D : Dimension, O : Dimension> MultiArray<T, D>.slice(inSlice: Clo
         slice.stop
     } else {
         check(shape[axis] > actualFrom) { "slicing start index out of bounds: $actualFrom >= ${shape[axis]}" }
-        shape[axis]
+        shape[axis] - 1
     }
 
     val sliceStrides = strides.copyOf().apply { this[axis] *= slice.step }
@@ -284,15 +284,12 @@ public fun <T, D : Dimension, O : Dimension> MultiArray<T, D>.slice(inSlice: Clo
         intArrayOf(0)
     } else {
         shape.copyOf().apply {
-            this[axis] = (actualTo - actualFrom + slice.step - 1) / slice.step
+            this[axis] = (actualTo - actualFrom + slice.step) / slice.step
         }
     }
     return NDArray(
-        data,
-        offset + actualFrom * strides[axis],
-        sliceShape,
-        sliceStrides,
-        dimensionOf(sliceShape.size),
+        data, offset + actualFrom * strides[axis],
+        sliceShape, sliceStrides, dimensionOf(sliceShape.size),
         base ?: this
     )
 }
@@ -323,16 +320,16 @@ public fun <T, D : Dimension, O : Dimension> MultiArray<T, D>.slice(indexing: Ma
                     0
                 }
 
-                val actualTo = if (index.start != -1) {
+                val actualTo = if (index.stop != -1) {
                     check(index.stop <= shape[ind.key]) { "slicing end index out of bounds: ${index.stop} > ${shape[ind.key]}" }
                     index.stop
                 } else {
                     check(shape[ind.key] > index.start) { "slicing start index out of bounds: $actualFrom >= ${shape[ind.key]}" }
-                    shape[ind.key]
+                    shape[ind.key] - 1
                 }
 
                 newOffset += actualFrom * newStrides[ind.key]
-                newShape[ind.key] = if (actualFrom > actualTo) 0 else (actualTo - actualFrom + index.step - 1) / index.step
+                newShape[ind.key] = if (actualFrom > actualTo) 0 else (actualTo - actualFrom + index.step) / index.step
                 newStrides[ind.key] *= index.step
             }
         }
