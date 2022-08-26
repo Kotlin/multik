@@ -47,7 +47,7 @@ public class NDArray<T, D : Dimension> constructor(
         get() {
             // todo?
 //            if (dim.d != 1) throw IllegalStateException("NDArray of dimension ${dim.d}, use multiIndex.")
-            return 0..size - 1
+            return 0 until size
         }
 
     override val multiIndices: MultiIndexProgression get() = IntArray(dim.d)..IntArray(dim.d) { shape[it] - 1 }
