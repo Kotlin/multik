@@ -14,10 +14,8 @@ internal object NativeMath : Math {
         get() = NativeMathEx
 
     override fun <T : Number, D : Dimension> argMax(a: MultiArray<T, D>): Int {
-        return if (a.consistent)
-            JniMath.argMax(a.data.data, a.offset, a.size, a.shape, null, a.dtype.nativeCode)
-        else
-            JniMath.argMax(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)
+        val strides: IntArray? = if (a.consistent) null else a.strides
+        return JniMath.argMax(a.data.data, a.offset, a.size, a.shape, strides, a.dtype.nativeCode)
     }
 
     override fun <T : Number, D : Dimension, O : Dimension> argMax(a: MultiArray<T, D>, axis: Int): NDArray<Int, O> {
@@ -41,10 +39,8 @@ internal object NativeMath : Math {
     }
 
     override fun <T : Number, D : Dimension> argMin(a: MultiArray<T, D>): Int {
-        return if (a.consistent)
-            JniMath.argMin(a.data.data, a.offset, a.size, a.shape, null, a.dtype.nativeCode)
-        else
-            JniMath.argMin(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)
+        val strides: IntArray? = if (a.consistent) null else a.strides
+        return JniMath.argMin(a.data.data, a.offset, a.size, a.shape, strides, a.dtype.nativeCode)
     }
 
     override fun <T : Number, D : Dimension, O : Dimension> argMin(a: MultiArray<T, D>, axis: Int): NDArray<Int, O> {
@@ -68,10 +64,16 @@ internal object NativeMath : Math {
     }
 
     override fun <T : Number, D : Dimension> max(a: MultiArray<T, D>): T {
-        return if (a.consistent)
-            JniMath.array_max(a.data.data, a.offset, a.size, a.shape, null, a.dtype.nativeCode)
-        else
-            JniMath.array_max(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)
+        val strides: IntArray? = if (a.consistent) null else a.strides
+        return when (a.dtype) {
+            DataType.ByteDataType -> JniMath.array_max(a.data.getByteArray(), a.offset, a.size, a.shape, strides)
+            DataType.ShortDataType -> JniMath.array_max(a.data.getShortArray(), a.offset, a.size, a.shape, strides)
+            DataType.IntDataType -> JniMath.array_max(a.data.getIntArray(), a.offset, a.size, a.shape, strides)
+            DataType.LongDataType -> JniMath.array_max(a.data.getLongArray(), a.offset, a.size, a.shape, strides)
+            DataType.FloatDataType -> JniMath.array_max(a.data.getFloatArray(), a.offset, a.size, a.shape, strides)
+            DataType.DoubleDataType -> JniMath.array_max(a.data.getDoubleArray(), a.offset, a.size, a.shape, strides)
+            else -> TODO("ComplexFloat and ComplexDouble not yet implemented")
+        } as T
     }
 
     override fun <T : Number, D : Dimension, O : Dimension> max(a: MultiArray<T, D>, axis: Int): NDArray<T, O> {
@@ -95,10 +97,16 @@ internal object NativeMath : Math {
     }
 
     override fun <T : Number, D : Dimension> min(a: MultiArray<T, D>): T {
-        return if (a.consistent)
-            JniMath.array_min(a.data.data, a.offset, a.size, a.shape, null, a.dtype.nativeCode)
-        else
-            JniMath.array_min(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)
+        val strides: IntArray? = if (a.consistent) null else a.strides
+        return when (a.dtype) {
+            DataType.ByteDataType -> JniMath.array_min(a.data.getByteArray(), a.offset, a.size, a.shape, strides)
+            DataType.ShortDataType -> JniMath.array_min(a.data.getShortArray(), a.offset, a.size, a.shape, strides)
+            DataType.IntDataType -> JniMath.array_min(a.data.getIntArray(), a.offset, a.size, a.shape, strides)
+            DataType.LongDataType -> JniMath.array_min(a.data.getLongArray(), a.offset, a.size, a.shape, strides)
+            DataType.FloatDataType -> JniMath.array_min(a.data.getFloatArray(), a.offset, a.size, a.shape, strides)
+            DataType.DoubleDataType -> JniMath.array_min(a.data.getDoubleArray(), a.offset, a.size, a.shape, strides)
+            else -> TODO("ComplexFloat and ComplexDouble not yet implemented")
+        } as T
     }
 
     override fun <T : Number, D : Dimension, O : Dimension> min(a: MultiArray<T, D>, axis: Int): NDArray<T, O> {
@@ -122,10 +130,16 @@ internal object NativeMath : Math {
     }
 
     override fun <T : Number, D : Dimension> sum(a: MultiArray<T, D>): T {
-        return if (a.consistent)
-            JniMath.sum(a.data.data, a.offset, a.size, a.shape, null, a.dtype.nativeCode)
-        else
-            JniMath.sum(a.data.data, a.offset, a.size, a.shape, a.strides, a.dtype.nativeCode)
+        val strides: IntArray? = if (a.consistent) null else a.strides
+        return when (a.dtype) {
+            DataType.ByteDataType -> JniMath.sum(a.data.getByteArray(), a.offset, a.size, a.shape, strides)
+            DataType.ShortDataType -> JniMath.sum(a.data.getShortArray(), a.offset, a.size, a.shape, strides)
+            DataType.IntDataType -> JniMath.sum(a.data.getIntArray(), a.offset, a.size, a.shape, strides)
+            DataType.LongDataType -> JniMath.sum(a.data.getLongArray(), a.offset, a.size, a.shape, strides)
+            DataType.FloatDataType -> JniMath.sum(a.data.getFloatArray(), a.offset, a.size, a.shape, strides)
+            DataType.DoubleDataType -> JniMath.sum(a.data.getDoubleArray(), a.offset, a.size, a.shape, strides)
+            else -> TODO("ComplexFloat and ComplexDouble not yet implemented")
+        } as T
     }
 
     override fun <T : Number, D : Dimension, O : Dimension> sum(a: MultiArray<T, D>, axis: Int): NDArray<T, O> {
@@ -150,10 +164,16 @@ internal object NativeMath : Math {
 
     override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>): D1Array<T> {
         val ret = D1Array<T>(initMemoryView(a.size, a.dtype), shape = intArrayOf(a.size), dim = D1)
-        if (a.consistent)
-            JniMath.cumSum(a.data.data, a.offset, a.size, a.shape, null, ret.data.data, dtype = a.dtype.nativeCode)
-        else
-            JniMath.cumSum(a.data.data, a.offset, a.size, a.shape, a.strides, ret.data.data, dtype = a.dtype.nativeCode)
+        val strides: IntArray? = if (a.consistent) null else a.strides
+        when (a.dtype) {
+            DataType.ByteDataType -> JniMath.cumSum(a.data.getByteArray(), a.offset, a.size, a.shape, strides, ret.data.getByteArray())
+            DataType.ShortDataType -> JniMath.cumSum(a.data.getShortArray(), a.offset, a.size, a.shape, strides, ret.data.getShortArray())
+            DataType.IntDataType -> JniMath.cumSum(a.data.getIntArray(), a.offset, a.size, a.shape, strides, ret.data.getIntArray())
+            DataType.LongDataType -> JniMath.cumSum(a.data.getLongArray(), a.offset, a.size, a.shape, strides, ret.data.getLongArray())
+            DataType.FloatDataType -> JniMath.cumSum(a.data.getFloatArray(), a.offset, a.size, a.shape, strides, ret.data.getFloatArray())
+            DataType.DoubleDataType -> JniMath.cumSum(a.data.getDoubleArray(), a.offset, a.size, a.shape, strides, ret.data.getDoubleArray())
+            else -> TODO("ComplexFloat and ComplexDouble not yet implemented")
+        }
         return ret
     }
 
