@@ -288,197 +288,10 @@ JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMa
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
  * Method:    array_max
- * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
+ * Signature: ([BII[I[I)B
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max
-	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size, jintArray jshape, jintArray jstrides, jint type) {
-  int dim;
-  jobject ret = nullptr;
-  int *strides = nullptr;
-  int *shape;
-
-  if (jstrides != nullptr) {
-	dim = env->GetArrayLength(jshape);
-	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
-	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
-  }
-  void *varr = env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
-
-  switch (type) {
-	case 1: {
-	  int8_t tmp = array_max_int8((int8_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Byte", "(B)V");
-	  break;
-	}
-	case 2: {
-	  int16_t tmp = array_max_int16((int16_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Short", "(S)V");
-	  break;
-	}
-	case 3: {
-	  int32_t tmp = array_max_int32((int32_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Integer", "(I)V");
-	  break;
-	}
-	case 4: {
-	  int64_t tmp = array_max_int64((int64_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Long", "(J)V");
-	  break;
-	}
-	case 5: {
-	  float tmp = array_max_float((float *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Float", "(F)V");
-	  break;
-	}
-	case 6: {
-	  double tmp = array_max_double((double *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Double", "(D)V");
-	  break;
-	}
-	default:break;
-  }
-
-  if (strides != nullptr) {
-	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
-	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
-  }
-  env->ReleasePrimitiveArrayCritical((jarray)jarr, varr, 0);
-
-  return ret;
-}
-
-/*
- * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
- * Method:    array_min
- * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
- */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min
-	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size, jintArray jshape, jintArray jstrides, jint type) {
-  int dim;
-  jobject ret = nullptr;
-  int *strides = nullptr;
-  int *shape;
-
-  if (jstrides != nullptr) {
-	dim = env->GetArrayLength(jshape);
-	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
-	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
-  }
-  void *varr = env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
-
-  switch (type) {
-	case 1: {
-	  int8_t tmp = array_min_int8((int8_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Byte", "(B)V");
-	  break;
-	}
-	case 2: {
-	  int16_t tmp = array_min_int16((int16_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Short", "(S)V");
-	  break;
-	}
-	case 3: {
-	  int32_t tmp = array_min_int32((int32_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Integer", "(I)V");
-	  break;
-	}
-	case 4: {
-	  int64_t tmp = array_min_int64((int64_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Long", "(J)V");
-	  break;
-	}
-	case 5: {
-	  float tmp = array_min_float((float *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Float", "(F)V");
-	  break;
-	}
-	case 6: {
-	  double tmp = array_min_double((double *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Double", "(D)V");
-	  break;
-	}
-	default:break;
-  }
-
-  if (strides != nullptr) {
-	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
-	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
-  }
-  env->ReleasePrimitiveArrayCritical((jarray)jarr, varr, 0);
-
-  return ret;
-}
-
-/*
- * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
- * Method:    sum
- * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
- */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum
-	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size, jintArray jshape, jintArray jstrides, jint type) {
-  int dim;
-  jobject ret = nullptr;
-  int *strides = nullptr;
-  int *shape;
-
-  if (jstrides != nullptr) {
-	dim = env->GetArrayLength(jshape);
-	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
-	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
-  }
-  void *varr = env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
-
-  switch (type) {
-	case 1: {
-	  int8_t tmp = array_sum_int8((int8_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Byte", "(B)V");
-	  break;
-	}
-	case 2: {
-	  int16_t tmp = array_sum_int16((int16_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Short", "(S)V");
-	  break;
-	}
-	case 3: {
-	  int32_t tmp = array_sum_int32((int32_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Integer", "(I)V");
-	  break;
-	}
-	case 4: {
-	  int64_t tmp = array_sum_int64((int64_t *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Long", "(J)V");
-	  break;
-	}
-	case 5: {
-	  float tmp = array_sum_float((float *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Float", "(F)V");
-	  break;
-	}
-	case 6: {
-	  double tmp = array_sum_double((double *)varr, offset, size, dim, shape, strides);
-	  ret = getNewJObject(env, tmp, "java/lang/Double", "(D)V");
-	  break;
-	}
-	default:break;
-  }
-
-  if (strides != nullptr) {
-	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
-	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
-  }
-  env->ReleasePrimitiveArrayCritical((jarray)jarr, varr, 0);
-
-  return ret;
-}
-
-/*
- * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
- * Method:    cumSum
- * Signature: (Ljava/lang/Object;II[I[ILjava/lang/Object;II)Z
- */
-JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum
-	(JNIEnv *env, jobject jobj, jobject jarr, jint offset, jint size,
-	 jintArray jshape, jintArray jstrides, jobject jout, jint axis, jint type) {
+JNIEXPORT jbyte JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3BII_3I_3I
+	(JNIEnv *env, jobject jobj, jbyteArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
   int dim = 0;
   int *strides = nullptr;
   int *shape;
@@ -488,8 +301,697 @@ JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMa
 	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
 	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
   }
-  void *arr = (env->GetPrimitiveArrayCritical((jarray)jarr, nullptr));
-  void *out = env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
+  auto varr = (int8_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int8_t ret = array_max_int8(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_max
+ * Signature: ([SII[I[I)S
+ */
+JNIEXPORT jshort JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3SII_3I_3I
+	(JNIEnv *env, jobject jobj, jshortArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int16_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int16_t ret = array_max_int16(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_max
+ * Signature: ([III[I[I)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3III_3I_3I
+	(JNIEnv *env, jobject jobj, jintArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int32_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int32_t ret = array_max_int32(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_max
+ * Signature: ([JII[I[I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3JII_3I_3I
+	(JNIEnv *env, jobject jobj, jlongArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int64_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int64_t ret = array_max_int64(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_max
+ * Signature: ([FII[I[I)F
+ */
+JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3FII_3I_3I
+	(JNIEnv *env, jobject jobj, jfloatArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (float *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  float ret = array_max_float(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_max
+ * Signature: ([DII[I[I)D
+ */
+JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3DII_3I_3I
+	(JNIEnv *env, jobject jobj, jdoubleArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (double *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  double ret = array_max_double(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([BII[I[I)B
+ */
+JNIEXPORT jbyte JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3BII_3I_3I
+	(JNIEnv *env, jobject jobj, jbyteArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int8_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int8_t ret = array_min_int8(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([SII[I[I)S
+ */
+JNIEXPORT jshort JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3SII_3I_3I
+	(JNIEnv *env, jobject jobj, jshortArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int16_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int16_t ret = array_min_int16(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([III[I[I)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3III_3I_3I
+	(JNIEnv *env, jobject jobj, jintArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int32_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int32_t ret = array_min_int32(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([JII[I[I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3JII_3I_3I
+	(JNIEnv *env, jobject jobj, jlongArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int64_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int64_t ret = array_min_int64(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([FII[I[I)F
+ */
+JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3FII_3I_3I
+	(JNIEnv *env, jobject jobj, jfloatArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (float *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  float ret = array_min_float(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([DII[I[I)D
+ */
+JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3DII_3I_3I
+	(JNIEnv *env, jobject jobj, jdoubleArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (double *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  double ret = array_min_double(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([BII[I[I)B
+ */
+JNIEXPORT jbyte JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3BII_3I_3I
+	(JNIEnv *env, jobject jobj, jbyteArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int8_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int8_t ret = array_sum_int8(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([SII[I[I)S
+ */
+JNIEXPORT jshort JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3SII_3I_3I
+	(JNIEnv *env, jobject jobj, jshortArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int16_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int16_t ret = array_sum_int16(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([III[I[I)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3III_3I_3I
+	(JNIEnv *env, jobject jobj, jintArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int32_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int32_t ret = array_sum_int32(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([JII[I[I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3JII_3I_3I
+	(JNIEnv *env, jobject jobj, jlongArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (int64_t *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  int64_t ret = array_sum_int64(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([FII[I[I)F
+ */
+JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3FII_3I_3I
+	(JNIEnv *env, jobject jobj, jfloatArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (float *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  float ret = array_sum_float(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([DII[I[I)D
+ */
+JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3DII_3I_3I
+	(JNIEnv *env, jobject jobj, jdoubleArray j_arr, jint offset, jint size, jintArray jshape, jintArray jstrides) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto varr = (double *)env->GetPrimitiveArrayCritical((jarray)j_arr, nullptr);
+
+  double ret = array_sum_double(varr, offset, size, dim, shape, strides);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)j_arr, varr, 0);
+
+  return ret;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([BII[I[I[BI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3BII_3I_3I_3BI
+	(JNIEnv *env, jobject jobj, jbyteArray jarr, jint offset, jint size,
+	 jintArray jshape, jintArray jstrides, jbyteArray jout, jint axis) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+  int type = 1; // byte type
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto arr = (int8_t *)env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
+  auto out = (int8_t *)env->GetPrimitiveArrayCritical((jarray)jout, nullptr);
+
+  array_cumsum(arr, out, offset, size, dim, shape, strides, type); // TODO(change signature?)
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)jarr, arr, 0);
+  env->ReleasePrimitiveArrayCritical((jarray)jout, out, 0);
+
+  return true;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([SII[I[I[SI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3SII_3I_3I_3SI
+	(JNIEnv *env, jobject jobj, jshortArray jarr, jint offset, jint size,
+	 jintArray jshape, jintArray jstrides, jshortArray jout, jint axis) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+  int type = 2; // short type
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto arr = (int16_t *)env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
+  auto out = (int16_t *)env->GetPrimitiveArrayCritical((jarray)jout, nullptr);
+
+  array_cumsum(arr, out, offset, size, dim, shape, strides, type);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)jarr, arr, 0);
+  env->ReleasePrimitiveArrayCritical((jarray)jout, out, 0);
+
+  return true;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([III[I[I[II)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3III_3I_3I_3II
+	(JNIEnv *env, jobject jobj, jintArray jarr, jint offset, jint size,
+	 jintArray jshape, jintArray jstrides, jintArray jout, jint axis) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+  int type = 3; // int type
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto arr = (int32_t *)env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
+  auto out = (int32_t *)env->GetPrimitiveArrayCritical((jarray)jout, nullptr);
+
+  array_cumsum(arr, out, offset, size, dim, shape, strides, type);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)jarr, arr, 0);
+  env->ReleasePrimitiveArrayCritical((jarray)jout, out, 0);
+
+  return true;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([JII[I[I[JI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3JII_3I_3I_3JI
+	(JNIEnv *env, jobject jobj, jlongArray jarr, jint offset, jint size,
+	 jintArray jshape, jintArray jstrides, jlongArray jout, jint axis) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+  int type = 4; // long type
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto arr = (int64_t *)env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
+  auto out = (int64_t *)env->GetPrimitiveArrayCritical((jarray)jout, nullptr);
+
+  array_cumsum(arr, out, offset, size, dim, shape, strides, type);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)jarr, arr, 0);
+  env->ReleasePrimitiveArrayCritical((jarray)jout, out, 0);
+
+  return true;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([FII[I[I[FI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3FII_3I_3I_3FI
+	(JNIEnv *env, jobject jobj, jfloatArray jarr, jint offset, jint size,
+	 jintArray jshape, jintArray jstrides, jfloatArray jout, jint axis) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+  int type = 5; // float type
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto arr = (float *)env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
+  auto out = (float *)env->GetPrimitiveArrayCritical((jarray)jout, nullptr);
+
+  array_cumsum(arr, out, offset, size, dim, shape, strides, type);
+
+  if (strides != nullptr) {
+	env->ReleasePrimitiveArrayCritical(jstrides, strides, 0);
+	env->ReleasePrimitiveArrayCritical(jshape, shape, 0);
+  }
+  env->ReleasePrimitiveArrayCritical((jarray)jarr, arr, 0);
+  env->ReleasePrimitiveArrayCritical((jarray)jout, out, 0);
+
+  return true;
+}
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([DII[I[I[DI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3DII_3I_3I_3DI
+	(JNIEnv *env, jobject jobj, jdoubleArray jarr, jint offset, jint size,
+	 jintArray jshape, jintArray jstrides, jdoubleArray jout, jint axis) {
+  int dim = 0;
+  int *strides = nullptr;
+  int *shape;
+  int type = 6; // double type
+
+  if (jstrides != nullptr) {
+	dim = env->GetArrayLength(jshape);
+	strides = (int *)(env->GetPrimitiveArrayCritical(jstrides, nullptr));
+	shape = (int *)(env->GetPrimitiveArrayCritical(jshape, nullptr));
+  }
+  auto arr = (double *)env->GetPrimitiveArrayCritical((jarray)jarr, nullptr);
+  auto out = (double *)env->GetPrimitiveArrayCritical((jarray)jout, nullptr);
 
   array_cumsum(arr, out, offset, size, dim, shape, strides, type);
 

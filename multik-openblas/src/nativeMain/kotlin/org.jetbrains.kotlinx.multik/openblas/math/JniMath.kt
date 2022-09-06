@@ -1,7 +1,9 @@
 package org.jetbrains.kotlinx.multik.openblas.math
 
 import kotlinx.cinterop.StableRef
+import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.toCValues
+import kotlinx.cinterop.usePinned
 import org.jetbrains.kotlinx.multik.cinterop.*
 
 internal actual object JniMath {
@@ -129,43 +131,83 @@ internal actual object JniMath {
         return true
     }
 
-    actual fun <T : Number> array_max(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): T {
-        return when (dtype) {
-            1 -> array_max_int8((arr as ByteArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            2 -> array_max_int16((arr as ShortArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            3 -> array_max_int32((arr as IntArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            4 -> array_max_int64((arr as LongArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            5 -> array_max_float((arr as FloatArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            6 -> array_max_double((arr as DoubleArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            else -> throw Exception()
-        } as T
+    actual fun array_max(arr: ByteArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Byte =
+        array_max_int8(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun array_max(arr: ShortArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Short =
+        array_max_int16(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun array_max(arr: IntArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Int =
+        array_max_int32(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun array_max(arr: LongArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Long =
+        array_max_int64(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun array_max(arr: FloatArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Float =
+        array_max_float(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun array_max(arr: DoubleArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Double =
+        array_max_double(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+
+    actual fun array_min(arr: ByteArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Byte =
+        array_min_int8(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun array_min(arr: ShortArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Short =
+        array_min_int16(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun array_min(arr: IntArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Int =
+        array_min_int32(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun array_min(arr: LongArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Long =
+        array_min_int64(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun array_min(arr: FloatArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Float =
+        array_min_float(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun array_min(arr: DoubleArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Double =
+        array_min_double(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+
+    actual fun sum(arr: ByteArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Byte =
+        array_sum_int8(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun sum(arr: ShortArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Short =
+        array_sum_int16(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun sum(arr: IntArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Int =
+        array_sum_int32(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun sum(arr: LongArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Long =
+        array_sum_int64(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun sum(arr: FloatArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Float =
+        array_sum_float(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+    actual fun sum(arr: DoubleArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Double =
+        array_sum_double(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
+
+    actual fun cumSum(arr: ByteArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: ByteArray, axis: Int): Boolean {
+        out.usePinned {
+            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 1)
+        }
+        return true
     }
-    actual fun <T : Number> array_min(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): T {
-        return when (dtype) {
-            1 -> array_min_int8((arr as ByteArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            2 -> array_min_int16((arr as ShortArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            3 -> array_min_int32((arr as IntArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            4 -> array_min_int64((arr as LongArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            5 -> array_min_float((arr as FloatArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            6 -> array_min_double((arr as DoubleArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            else -> throw Exception()
-        } as T
-    }
-    actual fun <T : Number> sum(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): T {
-        return when (dtype) {
-            1 -> array_sum_int8((arr as ByteArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            2 -> array_sum_int16((arr as ShortArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            3 -> array_sum_int32((arr as IntArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            4 -> array_sum_int64((arr as LongArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            5 -> array_sum_float((arr as FloatArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            6 -> array_sum_double((arr as DoubleArray).toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
-            else -> throw Exception()
-        } as T
+    actual fun cumSum(arr: ShortArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: ShortArray, axis: Int): Boolean {
+        out.usePinned {
+            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 2)
+        }
+        return true
     }
 
-    actual fun cumSum(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: Any, axis: Int, dtype: Int): Boolean {
-        array_cumsum(StableRef.create(arr).asCPointer(), StableRef.create(out).asCPointer(), offset, size,
-            shape.size, shape.toCValues(), strides?.toCValues(), dtype)
+    actual fun cumSum(arr: IntArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: IntArray, axis: Int): Boolean {
+        out.usePinned {
+            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 3)
+        }
+        return true
+    }
+
+    actual fun cumSum(arr: LongArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: LongArray, axis: Int): Boolean {
+        out.usePinned {
+            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 4)
+        }
+        return true
+    }
+
+    actual fun cumSum(arr: FloatArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: FloatArray, axis: Int): Boolean {
+        out.usePinned {
+            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 5)
+        }
+        return true
+    }
+
+    actual fun cumSum(arr: DoubleArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: DoubleArray, axis: Int): Boolean {
+        out.usePinned {
+            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 6)
+        }
         return true
     }
 }

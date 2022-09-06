@@ -154,34 +154,194 @@ JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMa
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
  * Method:    array_max
- * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
+ * Signature: ([BII[I[I)B
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max
-	(JNIEnv *, jobject, jobject, jint, jint, jintArray, jintArray, jint);
+JNIEXPORT jbyte JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3BII_3I_3I
+	(JNIEnv *, jobject, jbyteArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_max
+ * Signature: ([SII[I[I)S
+ */
+JNIEXPORT jshort JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3SII_3I_3I
+	(JNIEnv *, jobject, jshortArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_max
+ * Signature: ([III[I[I)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3III_3I_3I
+	(JNIEnv *, jobject, jintArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_max
+ * Signature: ([JII[I[I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3JII_3I_3I
+	(JNIEnv *, jobject, jlongArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_max
+ * Signature: ([FII[I[I)F
+ */
+JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3FII_3I_3I
+	(JNIEnv *, jobject, jfloatArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_max
+ * Signature: ([DII[I[I)D
+ */
+JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1max___3DII_3I_3I
+	(JNIEnv *, jobject, jdoubleArray, jint, jint, jintArray, jintArray);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
  * Method:    array_min
- * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
+ * Signature: ([BII[I[I)B
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min
-	(JNIEnv *, jobject, jobject, jint, jint, jintArray, jintArray, jint);
+JNIEXPORT jbyte JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3BII_3I_3I
+	(JNIEnv *, jobject, jbyteArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([SII[I[I)S
+ */
+JNIEXPORT jshort JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3SII_3I_3I
+	(JNIEnv *, jobject, jshortArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([III[I[I)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3III_3I_3I
+	(JNIEnv *, jobject, jintArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([JII[I[I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3JII_3I_3I
+	(JNIEnv *, jobject, jlongArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([FII[I[I)F
+ */
+JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3FII_3I_3I
+	(JNIEnv *, jobject, jfloatArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    array_min
+ * Signature: ([DII[I[I)D
+ */
+JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_array_1min___3DII_3I_3I
+	(JNIEnv *, jobject, jdoubleArray, jint, jint, jintArray, jintArray);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
  * Method:    sum
- * Signature: (Ljava/lang/Object;II[I[II)Ljava/lang/Number;
+ * Signature: ([BII[I[I)B
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum
-	(JNIEnv *, jobject, jobject, jint, jint, jintArray, jintArray, jint);
+JNIEXPORT jbyte JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3BII_3I_3I
+	(JNIEnv *, jobject, jbyteArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([SII[I[I)S
+ */
+JNIEXPORT jshort JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3SII_3I_3I
+	(JNIEnv *, jobject, jshortArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([III[I[I)I
+ */
+JNIEXPORT jint JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3III_3I_3I
+	(JNIEnv *, jobject, jintArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([JII[I[I)J
+ */
+JNIEXPORT jlong JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3JII_3I_3I
+	(JNIEnv *, jobject, jlongArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([FII[I[I)F
+ */
+JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3FII_3I_3I
+	(JNIEnv *, jobject, jfloatArray, jint, jint, jintArray, jintArray);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    sum
+ * Signature: ([DII[I[I)D
+ */
+JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_sum___3DII_3I_3I
+	(JNIEnv *, jobject, jdoubleArray, jint, jint, jintArray, jintArray);
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
  * Method:    cumSum
- * Signature: (Ljava/lang/Object;II[I[ILjava/lang/Object;II)Z
+ * Signature: ([BII[I[I[BI)Z
  */
-JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum
-	(JNIEnv *, jobject, jobject, jint, jint, jintArray, jintArray, jobject, jint, jint);
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3BII_3I_3I_3BI
+	(JNIEnv *, jobject, jbyteArray, jint, jint, jintArray, jintArray, jbyteArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([SII[I[I[SI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3SII_3I_3I_3SI
+	(JNIEnv *, jobject, jshortArray, jint, jint, jintArray, jintArray, jshortArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([III[I[I[II)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3III_3I_3I_3II
+	(JNIEnv *, jobject, jintArray, jint, jint, jintArray, jintArray, jintArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([JII[I[I[JI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3JII_3I_3I_3JI
+	(JNIEnv *, jobject, jlongArray, jint, jint, jintArray, jintArray, jlongArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([FII[I[I[FI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3FII_3I_3I_3FI
+	(JNIEnv *, jobject, jfloatArray, jint, jint, jintArray, jintArray, jfloatArray, jint);
+
+/*
+ * Class:     org_jetbrains_kotlinx_multik_openblas_math_JniMath
+ * Method:    cumSum
+ * Signature: ([DII[I[I[DI)Z
+ */
+JNIEXPORT jboolean JNICALL Java_org_jetbrains_kotlinx_multik_openblas_math_JniMath_cumSum___3DII_3I_3I_3DI
+	(JNIEnv *, jobject, jdoubleArray, jint, jint, jintArray, jintArray, jdoubleArray, jint);
 
 #ifdef __cplusplus
 }
