@@ -89,10 +89,10 @@ internal expect object JniLinAlg {
      * @param x vector
      * @param y vector
      */
-    fun dotMV(transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, x: FloatArray, incX: Int, y: FloatArray)
-    fun dotMV(transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, x: DoubleArray, incX: Int, y: DoubleArray)
-    fun dotMVC(transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, x: FloatArray, incX: Int, y: FloatArray)
-    fun dotMVC(transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, x: DoubleArray, incX: Int, y: DoubleArray)
+    fun dotMV(transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, offsetX: Int, x: FloatArray, incX: Int, y: FloatArray)
+    fun dotMV(transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, offsetX: Int, x: DoubleArray, incX: Int, y: DoubleArray)
+    fun dotMVC(transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, offsetX: Int, x: FloatArray, incX: Int, y: FloatArray)
+    fun dotMVC(transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, offsetX: Int, x: DoubleArray, incX: Int, y: DoubleArray)
 
     /**
      * @param n size of vectors
@@ -101,8 +101,8 @@ internal expect object JniLinAlg {
      * @param y second vector
      * @param incY stride of the vector [y]
      */
-    fun dotVV(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): Float
-    fun dotVV(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): Double
-    fun dotVVC(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): ComplexFloat
-    fun dotVVC(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): ComplexDouble
+    fun dotVV(n: Int, offsetX: Int, x: FloatArray, incX: Int, offsetY: Int, y: FloatArray, incY: Int): Float
+    fun dotVV(n: Int, offsetX: Int, x: DoubleArray, incX: Int, offsetY: Int, y: DoubleArray, incY: Int): Double
+    fun dotVVC(n: Int, offsetX: Int, x: FloatArray, incX: Int, offsetY: Int, y: FloatArray, incY: Int): ComplexFloat
+    fun dotVVC(n: Int, offsetX: Int, x: DoubleArray, incX: Int, offsetY: Int, y: DoubleArray, incY: Int): ComplexDouble
 }
