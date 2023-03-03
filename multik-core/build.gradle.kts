@@ -32,6 +32,17 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     iosX64()
+    wasm {
+        browser {
+            testTask {
+                /*
+                    https://youtrack.jetbrains.com/issue/KT-56633
+                    https://youtrack.jetbrains.com/issue/KT-56159
+                 */
+                this.enabled = false // fixed in 1.9.0/1.9.20
+            }
+        }
+    }
     js(IR) {
         val timeoutMs = "1000000"
         browser{
@@ -47,12 +58,6 @@ kotlin {
                     timeout = timeoutMs
                 }
             }
-        }
-    }
-
-    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        binaries.all {
-            freeCompilerArgs = freeCompilerArgs + "-Xallocator=std"
         }
     }
 
