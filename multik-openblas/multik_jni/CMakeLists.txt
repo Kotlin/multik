@@ -14,8 +14,8 @@ set(OPENBLAS_VERSION 0.3.21)
 if (${TARGET_OS} STREQUAL "mingwX64" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}-x64.zip")
 else ()
-#    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/refs/heads/develop.zip") # TODO(switch to stable version)
-    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/v${OPENBLAS_VERSION}.zip")
+    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/refs/heads/develop.zip") # TODO(switch to stable version)
+#    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/v${OPENBLAS_VERSION}.zip")
 endif ()
 
 set(CC ${CMAKE_C_COMPILER})
@@ -25,6 +25,8 @@ set(F_COMPILER GFORTRAN)
 set(CROSS_SUFFIX )
 set(USE_OPENMP 0)
 set(NUM_THREADS 64)
+set(DYNAMIC_LIST )
+set(ARMV8_KERNELS )
 
 if (${TARGET_OS} MATCHES "androidArm64")
     set(suffix androidArm64)
@@ -43,7 +45,9 @@ elseif (${TARGET_OS} MATCHES "macosArm64" OR ${PLATFORM} MATCHES "Darwin-arm64")
     set(FC "gfortran")
     set(FEXTRALIB "-lgfortran")
     set(NO_AVX512 1)
-    set(DYNAMIC_ARCH 1)
+#    set(DYNAMIC_ARCH )
+    set(DYNAMIC_LIST "ARMV8 CORTEXA55 CORTEXA72 CORTEXA78")
+    set(ARMV8_KERNELS 1)
 elseif (${TARGET_OS} MATCHES "macosX64" OR ${PLATFORM} MATCHES "Darwin-x86_64")
     set(suffix macosX64)
     set(FC "gfortran")
@@ -96,6 +100,8 @@ else ()
                                 USE_OPENMP=${USE_OPENMP}
                                 NO_AVX512=${NO_AVX512}
                                 DYNAMIC_ARCH=${DYNAMIC_ARCH}
+                                DYNAMIC_LIST=${DYNAMIC_LIST}
+                                ARMV8_KERNELS=${ARMV8_KERNELS}
                                 NUM_THREADS=${NUM_THREADS}
             INSTALL_COMMAND     ${MAKE_EXE} -C <SOURCE_DIR> install PREFIX=<INSTALL_DIR> CC=${CC}
             )
