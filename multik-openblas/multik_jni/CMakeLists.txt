@@ -25,6 +25,7 @@ set(F_COMPILER GFORTRAN)
 set(CROSS_SUFFIX )
 set(USE_OPENMP 0)
 set(NUM_THREADS 64)
+set(DYNAMIC_LIST )
 
 if (${TARGET_OS} MATCHES "androidArm64")
     set(suffix androidArm64)
@@ -43,7 +44,8 @@ elseif (${TARGET_OS} MATCHES "macosArm64" OR ${PLATFORM} MATCHES "Darwin-arm64")
     set(FC "gfortran")
     set(FEXTRALIB "-lgfortran")
     set(NO_AVX512 1)
-    set(DYNAMIC_ARCH 1)
+#    set(DYNAMIC_ARCH 1)
+    set(DYNAMIC_LIST "ARMV8 CORTEXA55 CORTEXA72 CORTEXA78") # TODO(XCODE workaround)
 elseif (${TARGET_OS} MATCHES "macosX64" OR ${PLATFORM} MATCHES "Darwin-x86_64")
     set(suffix macosX64)
     set(FC "gfortran")
@@ -96,6 +98,7 @@ else ()
                                 USE_OPENMP=${USE_OPENMP}
                                 NO_AVX512=${NO_AVX512}
                                 DYNAMIC_ARCH=${DYNAMIC_ARCH}
+                                DYNAMIC_LIST=${DYNAMIC_LIST}
                                 NUM_THREADS=${NUM_THREADS}
             INSTALL_COMMAND     ${MAKE_EXE} -C <SOURCE_DIR> install PREFIX=<INSTALL_DIR> CC=${CC}
             )
@@ -165,7 +168,7 @@ set(LIB_NAME multik_jni-${suffix})
 add_library(${LIB_NAME} SHARED ${SRC_FILES_FOR_SHARED})
 target_compile_options(${LIB_NAME} PRIVATE -std=c++14
                                                     -fPIC
-                                                    -O2 # TODO until macos and xcode are updated. https://github.com/Homebrew/discussions/discussions/3659
+                                                    -O3
                                                     -fno-exceptions
                                                     -ffast-math)
 target_include_directories(${LIB_NAME} PUBLIC ${JNI_INCLUDE_DIRS})
