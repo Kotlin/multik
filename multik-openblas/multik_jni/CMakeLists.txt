@@ -139,6 +139,8 @@ else()
         set(LIB_GFORTRAN "${GCC_LIB_PATH}/libgfortran.a")
     endif ()
 endif ()
+
+### TARGETS
 if (${TARGET_OS} STREQUAL "mingwX64")
 #    set(LIB_QUADMATH "/msys64/mingw64/lib/libquadmath.a")
     set(LIB_GCC "-static-libgcc -static-libstdc++ -static -lpthread")
@@ -163,7 +165,7 @@ set(LIB_NAME multik_jni-${suffix})
 add_library(${LIB_NAME} SHARED ${SRC_FILES_FOR_SHARED})
 target_compile_options(${LIB_NAME} PRIVATE -std=c++14
                                                     -fPIC
-                                                    -O3
+                                                    -O2 # TODO until macos and xcode are updated. https://github.com/Homebrew/discussions/discussions/3659
                                                     -fno-exceptions
                                                     -ffast-math)
 target_include_directories(${LIB_NAME} PUBLIC ${JNI_INCLUDE_DIRS})
