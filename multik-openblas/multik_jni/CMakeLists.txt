@@ -9,13 +9,13 @@ if (NOT DEFINED TARGET_OS)
 endif ()
 
 #### PARAMETERS FOR OPENBLAS ####
-set(OPENBLAS_VERSION 0.3.21)
+set(OPENBLAS_VERSION 0.3.23)
 
 if (${TARGET_OS} STREQUAL "mingwX64" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
     set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}-x64.zip")
 else ()
-    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/refs/heads/develop.zip") # TODO(switch to stable version)
-#    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/v${OPENBLAS_VERSION}.zip")
+#    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/refs/heads/develop.zip") # TODO(switch to stable version)
+    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/v${OPENBLAS_VERSION}.zip")
 endif ()
 
 set(CC ${CMAKE_C_COMPILER})
