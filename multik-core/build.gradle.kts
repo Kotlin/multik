@@ -73,6 +73,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("reflect"))
                 implementation("org.apache.commons:commons-csv:$common_csv_version")
+                implementation("org.jetbrains.bio:npy:0.3.5")
             }
         }
         val nativeMain by creating {

@@ -22,9 +22,9 @@ import java.util.zip.GZIPInputStream
  * @param delimiter separator between elements
  * @param charset character encoding, by default is UTF_8
  */
-public inline fun <reified T : Any, reified D : Dim2> Multik.read(
+public inline fun <reified T : Any, reified D : Dim2> Multik.readCSV(
     fileName: String, delimiter: Char = ',', charset: Charset = Charsets.UTF_8
-): NDArray<T, D> = read(fileName, DataType.ofKClass(T::class), dimensionClassOf<D>(), delimiter, charset)
+): NDArray<T, D> = readCSV(fileName, DataType.ofKClass(T::class), dimensionClassOf<D>(), delimiter, charset)
 
 /**
  * Returns an NDArray of type [T] and [D] dimension read from csv file.
@@ -35,13 +35,13 @@ public inline fun <reified T : Any, reified D : Dim2> Multik.read(
  * @param delimiter separator between elements
  * @param charset character encoding, by default is UTF_8
  */
-public fun <T, D : Dim2> Multik.read(
+public fun <T, D : Dim2> Multik.readCSV(
     fileName: String, dtype: DataType, dim: Dim2,
     delimiter: Char = ',', charset: Charset = Charsets.UTF_8
 ): NDArray<T, D> {
     val file = File(fileName)
     if (!file.exists()) throw NoSuchFileException(file)
-    return read(file, dtype, dim, delimiter, charset)
+    return readCSV(file, dtype, dim, delimiter, charset)
 }
 
 /**
@@ -69,9 +69,9 @@ public fun Multik.readRaw(
  * @param delimiter separator between elements
  * @param charset character encoding, by default is UTF_8
  */
-public inline fun <reified T : Any, reified D : Dim2> Multik.read(
+public inline fun <reified T : Any, reified D : Dim2> Multik.readCSV(
     file: File, delimiter: Char = ',', charset: Charset = Charsets.UTF_8
-): NDArray<T, D> = read(file, DataType.ofKClass(T::class), dimensionClassOf<D>(), delimiter, charset)
+): NDArray<T, D> = readCSV(file, DataType.ofKClass(T::class), dimensionClassOf<D>(), delimiter, charset)
 
 /**
  * Returns an NDArray of type [T] and [D] dimension read from csv file.
@@ -82,7 +82,7 @@ public inline fun <reified T : Any, reified D : Dim2> Multik.read(
  * @param delimiter separator between elements
  * @param charset character encoding, by default is UTF_8
  */
-public fun <T, D : Dim2> Multik.read(
+public fun <T, D : Dim2> Multik.readCSV(
     file: File, dtype: DataType, dim: Dim2,
     delimiter: Char = ',', charset: Charset = Charsets.UTF_8
 ): NDArray<T, D> =
@@ -209,7 +209,7 @@ private fun isCompressed(file: File) = listOf("gz", "zip").contains(file.extensi
  * @param file file where the data will be written, if the file does not exist, it will be created
  * @param delimiter separator between elements
  */
-public fun <T, D : Dim2> Multik.write(file: File, ndarray: NDArray<T, D>, delimiter: Char = ','): Unit =
+public fun <T, D : Dim2> Multik.writeCSV(file: File, ndarray: NDArray<T, D>, delimiter: Char = ','): Unit =
     writeCSV(FileWriter(file), ndarray, CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(delimiter).build())
 
 /**
@@ -219,7 +219,7 @@ public fun <T, D : Dim2> Multik.write(file: File, ndarray: NDArray<T, D>, delimi
  * @param path file path where the data will be written
  * @param delimiter separator between elements
  */
-public fun <T, D : Dim2> Multik.write(path: String, ndarray: NDArray<T, D>, delimiter: Char = ','): Unit =
+public fun <T, D : Dim2> Multik.writeCSV(path: String, ndarray: NDArray<T, D>, delimiter: Char = ','): Unit =
     writeCSV(FileWriter(path), ndarray, CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(delimiter).build())
 
 /**
