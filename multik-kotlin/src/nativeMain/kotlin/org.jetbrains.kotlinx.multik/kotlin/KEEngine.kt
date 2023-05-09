@@ -11,6 +11,6 @@ private val InitHook = EngineInitializer
 
 private object EngineInitializer {
     init {
-        engines[KEEngineType] = KEEngine()
+        engines.value[KEEngineType] = KEEngine()
     }
 }

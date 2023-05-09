@@ -14,6 +14,6 @@ private val InitHook = EngineInitializer
 
 private object EngineInitializer {
     init {
-        engines[DefaultEngineType] = DefaultEngine()
+        engines.value[DefaultEngineType] = DefaultEngine()
     }
 }
