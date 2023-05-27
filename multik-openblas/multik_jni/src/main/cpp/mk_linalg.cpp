@@ -8,21 +8,21 @@
 #include "algorithm"
 #include <cstring>
 
-float vector_dot_float(int n, float *X, int incx, float *Y, int incy) {
-  return cblas_sdot(n, X, incx, Y, incy);
+float vector_dot_float(int n, int offsetX, float *X, int incx, int offsetY, float *Y, int incy) {
+  return cblas_sdot(n, X + offsetX, incx, Y + offsetY, incy);
 }
 
-double vector_dot_double(int n, double *X, int incx, double *Y, int incy) {
-  return cblas_ddot(n, X, incx, Y, incy);
+double vector_dot_double(int n, int offsetX, double *X, int incx, int offsetY, double *Y, int incy) {
+  return cblas_ddot(n, X + offsetX, incx, Y + offsetY, incy);
 }
 
-mk_complex_float vector_dot_complex_float(int n, float *X, int incx, float *Y, int incy) {
-  openblas_complex_float ret = cblas_cdotu(n, X, incx, Y, incy);
+mk_complex_float vector_dot_complex_float(int n, int offsetX, float *X, int incx, int offsetY, float *Y, int incy) {
+  openblas_complex_float ret = cblas_cdotu(n, X + offsetX, incx, Y + offsetY, incy);
   return mk_complex_float{openblas_complex_float_real(ret), openblas_complex_float_imag(ret)};
 }
 
-mk_complex_double vector_dot_complex_double(int n, double *X, int incx, double *Y, int incy) {
-  openblas_complex_double ret = cblas_zdotu(n, X, incx, Y, incy);
+mk_complex_double vector_dot_complex_double(int n, int offsetX, double *X, int incx, int offsetY, double *Y, int incy) {
+  openblas_complex_double ret = cblas_zdotu(n, X + offsetX, incx, Y + offsetY, incy);
   return mk_complex_double{openblas_complex_double_real(ret), openblas_complex_double_imag(ret)};
 }
 
@@ -292,38 +292,38 @@ void matrix_dot_complex_double(bool trans_a, int offsetA, double *A, int lda, in
   cblas_zgemm(CblasRowMajor, transA, transB, m, n, k, &alpha, A + offsetA, lda, B + offsetB, ldb, &beta, C, n);
 }
 
-void matrix_dot_vector_float(bool trans_a, int offsetA, float *A, int lda, int m, int n, float *X, int incx, float *Y) {
+void matrix_dot_vector_float(bool trans_a, int offsetA, float *A, int lda, int m, int n, int offsetX, float *X, int incx, float *Y) {
   float alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
 
   transA = (trans_a) ? CblasTrans : CblasNoTrans;
 
-  cblas_sgemv(CblasRowMajor, transA, m, n, alpha, A + offsetA, lda, X, incx, beta, Y, 1);
+  cblas_sgemv(CblasRowMajor, transA, m, n, alpha, A + offsetA, lda, X + offsetX, incx, beta, Y, 1);
 }
 
-void matrix_dot_vector_double(bool trans_a, int offsetA, double *A, int lda, int m, int n, double *X, int incx, double *Y) {
+void matrix_dot_vector_double(bool trans_a, int offsetA, double *A, int lda, int m, int n, int offsetX, double *X, int incx, double *Y) {
   double alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
 
   (trans_a) ? transA = CblasTrans : transA = CblasNoTrans;
 
-  cblas_dgemv(CblasRowMajor, transA, m, n, alpha, A + offsetA, lda, X, incx, beta, Y, 1);
+  cblas_dgemv(CblasRowMajor, transA, m, n, alpha, A + offsetA, lda, X + offsetX, incx, beta, Y, 1);
 }
 
-void matrix_dot_complex_vector_float(bool trans_a, int offsetA, float *A, int lda, int m, int n, float *X, int incx, float *Y) {
+void matrix_dot_complex_vector_float(bool trans_a, int offsetA, float *A, int lda, int m, int n, int offsetX, float *X, int incx, float *Y) {
   float alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
 
   transA = (trans_a) ? CblasTrans : CblasNoTrans;
 
-  cblas_cgemv(CblasRowMajor, transA, m, n, &alpha, A + offsetA, lda, X, incx, &beta, Y, 1);
+  cblas_cgemv(CblasRowMajor, transA, m, n, &alpha, A + offsetA, lda, X + offsetX, incx, &beta, Y, 1);
 }
 
-void matrix_dot_complex_vector_double(bool trans_a, int offsetA, double *A, int lda, int m, int n, double *X, int incx, double *Y) {
+void matrix_dot_complex_vector_double(bool trans_a, int offsetA, double *A, int lda, int m, int n, int offsetX, double *X, int incx, double *Y) {
   double alpha = 1.0, beta = 0.0;
   CBLAS_TRANSPOSE transA;
 
   transA = (trans_a) ? CblasTrans : CblasNoTrans;
 
-  cblas_zgemv(CblasRowMajor, transA, m, n, &alpha, A + offsetA, lda, X, incx, &beta, Y, 1);
+  cblas_zgemv(CblasRowMajor, transA, m, n, &alpha, A + offsetA, lda, X + offsetX, incx, &beta, Y, 1);
 }

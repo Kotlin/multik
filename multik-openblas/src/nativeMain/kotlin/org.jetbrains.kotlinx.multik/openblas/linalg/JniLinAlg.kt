@@ -224,27 +224,27 @@ internal actual object JniLinAlg {
      * @param y vector
      */
     actual fun dotMV(
-        transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, x: FloatArray, incX: Int, y: FloatArray
+        transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, offsetX: Int, x: FloatArray, incX: Int, y: FloatArray
     ) = y.usePinned {
-        matrix_dot_vector_float(transA, offsetA, a.toCValues(), m, n, lda, x.toCValues(), incX, it.addressOf(0))
+        matrix_dot_vector_float(transA, offsetA, a.toCValues(), m, n, lda, offsetX, x.toCValues(), incX, it.addressOf(0))
     }
 
     actual fun dotMV(
-        transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, x: DoubleArray, incX: Int, y: DoubleArray
+        transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, offsetX: Int, x: DoubleArray, incX: Int, y: DoubleArray
     ) = y.usePinned {
-        matrix_dot_vector_double(transA, offsetA, a.toCValues(), m, n, lda, x.toCValues(), incX, it.addressOf(0))
+        matrix_dot_vector_double(transA, offsetA, a.toCValues(), m, n, lda, offsetX, x.toCValues(), incX, it.addressOf(0))
     }
 
     actual fun dotMVC(
-        transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, x: FloatArray, incX: Int, y: FloatArray
+        transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, offsetX: Int, x: FloatArray, incX: Int, y: FloatArray
     ) = y.usePinned {
-        matrix_dot_complex_vector_float(transA, offsetA, a.toCValues(), m, n, lda, x.toCValues(), incX, it.addressOf(0))
+        matrix_dot_complex_vector_float(transA, offsetA, a.toCValues(), m, n, lda, offsetX, x.toCValues(), incX, it.addressOf(0))
     }
 
     actual fun dotMVC(
-        transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, x: DoubleArray, incX: Int, y: DoubleArray
+        transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, offsetX: Int, x: DoubleArray, incX: Int, y: DoubleArray
     ) = y.usePinned {
-        matrix_dot_complex_vector_double(transA, offsetA, a.toCValues(), m, n, lda, x.toCValues(), incX, it.addressOf(0))
+        matrix_dot_complex_vector_double(transA, offsetA, a.toCValues(), m, n, lda, offsetX, x.toCValues(), incX, it.addressOf(0))
     }
 
     /**
@@ -254,15 +254,15 @@ internal actual object JniLinAlg {
      * @param y second vector
      * @param incY stride of the vector [y]
      */
-    actual fun dotVV(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): Float =
-        vector_dot_float(n, x.toCValues(), incX, y.toCValues(), incY)
+    actual fun dotVV(n: Int, offsetX: Int, x: FloatArray, incX: Int, offsetY: Int, y: FloatArray, incY: Int): Float =
+        vector_dot_float(n, offsetX, x.toCValues(), incX, offsetY, y.toCValues(), incY)
 
-    actual fun dotVV(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): Double =
-        vector_dot_double(n, x.toCValues(), incX, y.toCValues(), incY)
+    actual fun dotVV(n: Int, offsetX: Int, x: DoubleArray, incX: Int, offsetY: Int, y: DoubleArray, incY: Int): Double =
+        vector_dot_double(n, offsetX, x.toCValues(), incX, offsetY, y.toCValues(), incY)
 
-    actual fun dotVVC(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): ComplexFloat =
-        vector_dot_complex_float(n, x.toCValues(), incX, y.toCValues(), incY).useContents { ComplexFloat(real, imag) }
+    actual fun dotVVC(n: Int, offsetX: Int, x: FloatArray, incX: Int, offsetY: Int, y: FloatArray, incY: Int): ComplexFloat =
+        vector_dot_complex_float(n, offsetX, x.toCValues(), incX, offsetY, y.toCValues(), incY).useContents { ComplexFloat(real, imag) }
 
-    actual fun dotVVC(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): ComplexDouble =
-        vector_dot_complex_double(n, x.toCValues(), incX, y.toCValues(), incY).useContents { ComplexDouble(real, imag) }
+    actual fun dotVVC(n: Int, offsetX: Int, x: DoubleArray, incX: Int, offsetY: Int, y: DoubleArray, incY: Int): ComplexDouble =
+        vector_dot_complex_double(n, offsetX, x.toCValues(), incX, offsetY, y.toCValues(), incY).useContents { ComplexDouble(real, imag) }
 }

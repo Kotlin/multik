@@ -78,6 +78,19 @@ class NativeLinAlgTest {
     }
 
     @Test
+    fun `simple vector dot test`() {
+        val a = mk.ndarray(mk[1.0, 1.0])
+        val b = mk.ndarray(mk[mk[1.0, 2.0], mk[3.0, 4.0]])
+
+        println(b.strides.joinToString())
+//        println(b[0] dot a)
+        println(b[1] dot a)
+
+//        println("${m[0]} x $v = ${m[0] dot v}")
+//        println("${m[1]} x $v = ${m[1] dot v}")
+    }
+
+    @Test
     fun `matrix-matrix dot test D`() {
         val expected = mk.ndarray(
             mk[mk[1.0853811780469889, 0.6321441231331913, 0.46677507285707914, 0.4892609866360924],

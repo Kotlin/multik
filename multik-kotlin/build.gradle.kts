@@ -15,14 +15,14 @@ kotlin {
     }
     mingwX64()
     linuxX64()
-    macosX64() {
+    macosX64 {
         binaries {
             framework {
                 baseName = "multik-kotlin"
             }
         }
     }
-    macosArm64() {
+    macosArm64 {
         binaries {
             framework {
                 baseName = "multik-kotlin"
@@ -36,7 +36,7 @@ kotlin {
             }
         }
     }
-    iosSimulatorArm64() {
+    iosSimulatorArm64 {
         binaries {
             framework {
                 baseName = "multik-kotlin"
@@ -47,6 +47,18 @@ kotlin {
         binaries {
             framework {
                 baseName = "multik-kotlin"
+            }
+        }
+    }
+
+    wasm {
+        browser {
+            testTask {
+                /*
+                    https://youtrack.jetbrains.com/issue/KT-56633
+                    https://youtrack.jetbrains.com/issue/KT-56159
+                 */
+                this.enabled = false // fixed in 1.9.0/1.9.20
             }
         }
     }
@@ -70,11 +82,6 @@ kotlin {
     }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        binaries.all {
-            freeCompilerArgs = freeCompilerArgs + "-Xallocator=std"
-            freeCompilerArgs = freeCompilerArgs + "-Xgc=cms"
-        }
-
         binaries.getTest("debug").apply {
             debuggable = false
             optimized = true
@@ -97,6 +104,9 @@ kotlin {
             dependencies {
                 implementation(kotlin("reflect"))
             }
+        }
+        val wasmMain by getting {
+            dependsOn(commonMain)
         }
         val jsMain by getting {
             dependsOn(commonMain)

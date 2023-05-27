@@ -32,6 +32,17 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     iosX64()
+    wasm {
+        browser {
+            testTask {
+                /*
+                    https://youtrack.jetbrains.com/issue/KT-56633
+                    https://youtrack.jetbrains.com/issue/KT-56159
+                 */
+                this.enabled = false // fixed in 1.9.0/1.9.20
+            }
+        }
+    }
     js(IR) {
         val timeoutMs = "1000000"
         browser{
@@ -50,12 +61,6 @@ kotlin {
         }
     }
 
-    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        binaries.all {
-            freeCompilerArgs = freeCompilerArgs + "-Xallocator=std"
-        }
-    }
-
     sourceSets {
         val commonMain by getting {
         }
@@ -68,6 +73,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("reflect"))
                 implementation("org.apache.commons:commons-csv:$common_csv_version")
+                implementation("org.jetbrains.bio:npy:0.3.5")
             }
         }
         val nativeMain by creating {

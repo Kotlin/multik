@@ -91,10 +91,10 @@ internal actual object JniLinAlg {
      * @param x vector
      * @param y vector
      */
-    actual external fun dotMV(transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, x: FloatArray, incX: Int, y: FloatArray)
-    actual external fun dotMV(transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, x: DoubleArray, incX: Int, y: DoubleArray)
-    actual external fun dotMVC(transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, x: FloatArray, incX: Int, y: FloatArray)
-    actual external fun dotMVC(transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, x: DoubleArray, incX: Int, y: DoubleArray)
+    actual external fun dotMV(transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, offsetX: Int, x: FloatArray, incX: Int, y: FloatArray)
+    actual external fun dotMV(transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, offsetX: Int, x: DoubleArray, incX: Int, y: DoubleArray)
+    actual external fun dotMVC(transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, offsetX: Int, x: FloatArray, incX: Int, y: FloatArray)
+    actual external fun dotMVC(transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, offsetX: Int, x: DoubleArray, incX: Int, y: DoubleArray)
 
     /**
      * @param n size of vectors
@@ -103,8 +103,8 @@ internal actual object JniLinAlg {
      * @param y second vector
      * @param incY stride of the vector [y]
      */
-    actual external fun dotVV(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): Float
-    actual external fun dotVV(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): Double
-    actual external fun dotVVC(n: Int, x: FloatArray, incX: Int, y: FloatArray, incY: Int): ComplexFloat
-    actual external fun dotVVC(n: Int, x: DoubleArray, incX: Int, y: DoubleArray, incY: Int): ComplexDouble
+    actual external fun dotVV(n: Int, offsetX: Int, x: FloatArray, incX: Int, offsetY: Int, y: FloatArray, incY: Int): Float
+    actual external fun dotVV(n: Int, offsetX: Int, x: DoubleArray, incX: Int, offsetY: Int, y: DoubleArray, incY: Int): Double
+    actual external fun dotVVC(n: Int, offsetX: Int, x: FloatArray, incX: Int, offsetY: Int, y: FloatArray, incY: Int): ComplexFloat
+    actual external fun dotVVC(n: Int, offsetX: Int, x: DoubleArray, incX: Int, offsetY: Int, y: DoubleArray, incY: Int): ComplexDouble
 }

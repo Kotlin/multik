@@ -17,6 +17,9 @@ kotlin {
             useJUnit()
         }
     }
+    wasm {
+        browser()
+    }
     js(IR) {
         val timeoutMs = "1000000"
         browser {
@@ -71,11 +74,6 @@ kotlin {
     }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        binaries.all {
-            freeCompilerArgs = freeCompilerArgs + "-Xallocator=std"
-            freeCompilerArgs = freeCompilerArgs + "-Xgc=cms"
-        }
-
         binaries.getTest("debug").apply {
             debuggable = false
             optimized = true
@@ -99,6 +97,9 @@ kotlin {
                 implementation(project(":multik-openblas"))
                 implementation(kotlin("reflect"))
             }
+        }
+        val wasmMain by getting {
+            dependsOn(commonMain)
         }
         val jsMain by getting {
             dependsOn(commonMain)

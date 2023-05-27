@@ -565,16 +565,16 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    dotMV
- * Signature: (ZI[FIII[FI[F)V
+ * Signature: (ZI[FIIII[FI[F)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotMV__ZI_3FIII_3FI_3F
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotMV__ZI_3FIIII_3FI_3F
 	(JNIEnv *env, jobject jobj, jboolean trans_a, jint offset_a, jfloatArray j_a, jint m, jint n, jint lda,
-	 jfloatArray j_x, jint incx, jfloatArray j_y) {
+	 jint offset_x, jfloatArray j_x, jint incx, jfloatArray j_y) {
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *X = (float *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (float *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  matrix_dot_vector_float(trans_a, offset_a, A, lda, m, n, X, incx, Y);
+  matrix_dot_vector_float(trans_a, offset_a, A, lda, m, n, offset_x, X, incx, Y);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
@@ -584,16 +584,16 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    dotMV
- * Signature: (ZI[DIII[DI[D)V
+ * Signature: (ZI[DIIII[DI[D)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotMV__ZI_3DIII_3DI_3D
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotMV__ZI_3DIIII_3DI_3D
 	(JNIEnv *env, jobject jobj, jboolean trans_a, jint offset_a, jdoubleArray j_a, jint m, jint n, jint lda,
-	 jdoubleArray j_x, jint incx, jdoubleArray j_y) {
+	 jint offset_x, jdoubleArray j_x, jint incx, jdoubleArray j_y) {
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *X = (double *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (double *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  matrix_dot_vector_double(trans_a, offset_a, A, lda, m, n, X, incx, Y);
+  matrix_dot_vector_double(trans_a, offset_a, A, lda, m, n, offset_x, X, incx, Y);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
@@ -603,16 +603,16 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    dotMVC
- * Signature: (ZI[FIII[FI[F)V
+ * Signature: (ZI[FIIII[FI[F)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotMVC__ZI_3FIII_3FI_3F
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotMVC__ZI_3FIIII_3FI_3F
 	(JNIEnv *env, jobject jobj, jboolean trans_a, jint offset_a, jfloatArray j_a, jint m, jint n, jint lda,
-	 jfloatArray j_x, jint incx, jfloatArray j_y) {
+	 jint offset_x, jfloatArray j_x, jint incx, jfloatArray j_y) {
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *X = (float *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (float *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  matrix_dot_complex_vector_float(trans_a, offset_a, A, lda, m, n, X, incx, Y);
+  matrix_dot_complex_vector_float(trans_a, offset_a, A, lda, m, n, offset_x, X, incx, Y);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
@@ -622,16 +622,16 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    dotMVC
- * Signature: (ZI[DIII[DI[D)V
+ * Signature: (ZI[DIIII[DI[D)V
  */
-JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotMVC__ZI_3DIII_3DI_3D
+JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotMVC__ZI_3DIIII_3DI_3D
 	(JNIEnv *env, jobject jobj, jboolean trans_a, jint offset_a, jdoubleArray j_a, jint m, jint n, jint lda,
-	 jdoubleArray j_x, jint incx, jdoubleArray j_y) {
+	 jint offset_x, jdoubleArray j_x, jint incx, jdoubleArray j_y) {
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_a, nullptr);
   auto *X = (double *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (double *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  matrix_dot_complex_vector_double(trans_a, offset_a, A, lda, m, n, X, incx, Y);
+  matrix_dot_complex_vector_double(trans_a, offset_a, A, lda, m, n, offset_x, X, incx, Y);
 
   env->ReleasePrimitiveArrayCritical(j_a, A, 0);
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
@@ -641,14 +641,15 @@ JNIEXPORT void JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinA
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    dotVV
- * Signature: (I[FI[FI)F
+ * Signature: (II[FII[FI)F
  */
-JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotVV__I_3FI_3FI
-	(JNIEnv *env, jobject jobj, jint n, jfloatArray j_x, jint incx, jfloatArray j_y, jint incy) {
+JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotVV__II_3FII_3FI
+	(JNIEnv *env, jobject jobj, jint n, jint offset_x, jfloatArray j_x, jint incx,
+	 jint offset_y, jfloatArray j_y, jint incy) {
   auto *X = (float *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (float *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  float ret = vector_dot_float(n, X, incx, Y, incy);
+  float ret = vector_dot_float(n, offset_x, X, incx, offset_y, Y, incy);
 
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
   env->ReleasePrimitiveArrayCritical(j_y, Y, 0);
@@ -659,14 +660,15 @@ JNIEXPORT jfloat JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLi
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    dotVV
- * Signature: (I[DI[DI)D
+ * Signature: (II[DII[DI)D
  */
-JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotVV__I_3DI_3DI
-	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_x, jint incx, jdoubleArray j_y, jint incy) {
+JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotVV__II_3DII_3DI
+	(JNIEnv *env, jobject jobj, jint n, jint offset_x, jdoubleArray j_x, jint incx,
+	 jint offset_y, jdoubleArray j_y, jint incy) {
   auto *X = (double *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *Y = (double *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  double ret = vector_dot_double(n, X, incx, Y, incy);
+  double ret = vector_dot_double(n, offset_x, X, incx, offset_y, Y, incy);
 
   env->ReleasePrimitiveArrayCritical(j_x, X, 0);
   env->ReleasePrimitiveArrayCritical(j_y, Y, 0);
@@ -677,14 +679,15 @@ JNIEXPORT jdouble JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniL
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    dotVVC
- * Signature: (I[FI[FI)Lorg/jetbrains/kotlinx/multik/ndarray/complex/ComplexFloat;
+ * Signature: (II[FII[FI)Lorg/jetbrains/kotlinx/multik/ndarray/complex/ComplexFloat;
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotVVC__I_3FI_3FI
-	(JNIEnv *env, jobject jobj, jint n, jfloatArray j_x, jint incx, jfloatArray j_y, jint incy) {
+JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotVVC__II_3FII_3FI
+	(JNIEnv *env, jobject jobj, jint n, jint offset_x, jfloatArray j_x, jint incx,
+	 jint offset_y, jfloatArray j_y, jint incy) {
   auto *A = (float *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *B = (float *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  mk_complex_float cf = vector_dot_complex_float(n, A, incx, B, incy);
+  mk_complex_float cf = vector_dot_complex_float(n, offset_x, A, incx, offset_y, B, incy);
   jobject ret = newComplexFloat(env, cf.real, cf.imag);
 
   env->ReleasePrimitiveArrayCritical(j_x, A, 0);
@@ -696,14 +699,15 @@ JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniL
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
  * Method:    dotVVC
- * Signature: (I[DI[DI)Lorg/jetbrains/kotlinx/multik/ndarray/complex/ComplexDouble;
+ * Signature: (II[DII[DI)Lorg/jetbrains/kotlinx/multik/ndarray/complex/ComplexDouble;
  */
-JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotVVC__I_3DI_3DI
-	(JNIEnv *env, jobject jobj, jint n, jdoubleArray j_x, jint incx, jdoubleArray j_y, jint incy) {
+JNIEXPORT jobject JNICALL Java_org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg_dotVVC__II_3DII_3DI
+	(JNIEnv *env, jobject jobj, jint n, jint offset_x, jdoubleArray j_x, jint incx,
+	 jint offset_y, jdoubleArray j_y, jint incy) {
   auto *A = (double *)env->GetPrimitiveArrayCritical(j_x, nullptr);
   auto *B = (double *)env->GetPrimitiveArrayCritical(j_y, nullptr);
 
-  mk_complex_double cd = vector_dot_complex_double(n, A, incx, B, incy);
+  mk_complex_double cd = vector_dot_complex_double(n, offset_x, A, incx, offset_y, B, incy);
   jobject ret = newComplexDouble(env, cd.real, cd.imag);
 
   env->ReleasePrimitiveArrayCritical(j_x, A, 0);

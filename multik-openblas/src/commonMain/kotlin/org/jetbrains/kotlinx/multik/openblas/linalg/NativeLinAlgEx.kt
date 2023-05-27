@@ -377,22 +377,22 @@ internal object NativeLinAlgEx : LinAlgEx {
             DataType.FloatDataType ->
                 JniLinAlg.dotMV(
                     transA, aN.offset, aN.data.getFloatArray(), m, n, lda,
-                    b.data.getFloatArray(), b.strides[0], cView.getFloatArray()
+                    b.offset, b.data.getFloatArray(), b.strides[0], cView.getFloatArray()
                 )
             DataType.DoubleDataType ->
                 JniLinAlg.dotMV(
                     transA, aN.offset, aN.data.getDoubleArray(), m, n, lda,
-                    b.data.getDoubleArray(), b.strides[0], cView.getDoubleArray()
+                    b.offset, b.data.getDoubleArray(), b.strides[0], cView.getDoubleArray()
                 )
             DataType.ComplexFloatDataType ->
                 JniLinAlg.dotMVC(
                     transA, aN.offset, aN.data.getFloatArray(), m, n, lda,
-                    b.data.getFloatArray(), b.strides[0], cView.getFloatArray()
+                    b.offset, b.data.getFloatArray(), b.strides[0], cView.getFloatArray()
                 )
             DataType.ComplexDoubleDataType ->
                 JniLinAlg.dotMVC(
                     transA, aN.offset, aN.data.getDoubleArray(), m, n, lda,
-                    b.data.getDoubleArray(), b.strides[0], cView.getDoubleArray()
+                    b.offset, b.data.getDoubleArray(), b.strides[0], cView.getDoubleArray()
                 )
             else -> throw UnsupportedOperationException()
         }
@@ -405,9 +405,9 @@ internal object NativeLinAlgEx : LinAlgEx {
 
         return when (a.dtype) {
             DataType.FloatDataType ->
-                JniLinAlg.dotVV(a.size, a.data.getFloatArray(), a.strides[0], b.data.getFloatArray(), b.strides[0])
+                JniLinAlg.dotVV(a.size, a.offset, a.data.getFloatArray(), a.strides[0], b.offset, b.data.getFloatArray(), b.strides[0])
             DataType.DoubleDataType ->
-                JniLinAlg.dotVV(a.size, a.data.getDoubleArray(), a.strides[0], b.data.getDoubleArray(), b.strides[0])
+                JniLinAlg.dotVV(a.size, a.offset, a.data.getDoubleArray(), a.strides[0], b.offset, b.data.getDoubleArray(), b.strides[0])
             else -> throw UnsupportedOperationException()
         } as T
     }
@@ -417,9 +417,9 @@ internal object NativeLinAlgEx : LinAlgEx {
 
         return when (a.dtype) {
             DataType.ComplexFloatDataType ->
-                JniLinAlg.dotVVC(a.size, a.data.getFloatArray(), a.strides[0], b.data.getFloatArray(), b.strides[0])
+                JniLinAlg.dotVVC(a.size, a.offset, a.data.getFloatArray(), a.strides[0], b.offset, b.data.getFloatArray(), b.strides[0])
             DataType.ComplexDoubleDataType ->
-                JniLinAlg.dotVVC(a.size, a.data.getDoubleArray(), a.strides[0], b.data.getDoubleArray(), b.strides[0])
+                JniLinAlg.dotVVC(a.size, a.offset, a.data.getDoubleArray(), a.strides[0], b.offset, b.data.getDoubleArray(), b.strides[0])
             else -> throw UnsupportedOperationException()
         } as T
     }

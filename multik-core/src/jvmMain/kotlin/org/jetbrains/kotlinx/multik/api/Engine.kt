@@ -1,6 +1,7 @@
 package org.jetbrains.kotlinx.multik.api
 
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Engine Provider for JVM.
@@ -17,5 +18,5 @@ public actual fun enginesProvider(): Map<EngineType, Engine> {
         )
     }
 
-    return engineList.associateBy { it.type }
+    return ConcurrentHashMap(engineList.associateBy { it.type })
 }
