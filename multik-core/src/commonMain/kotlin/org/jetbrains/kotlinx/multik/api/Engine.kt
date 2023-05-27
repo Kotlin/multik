@@ -7,6 +7,7 @@ package org.jetbrains.kotlinx.multik.api
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.api.stat.Statistics
+import kotlin.native.concurrent.ThreadLocal
 
 /**
  * Type engine implementations.
@@ -63,6 +64,7 @@ public abstract class Engine {
      */
     public abstract fun getStatistics(): Statistics
 
+    @ThreadLocal
     internal companion object : Engine() {
 
         private val enginesProvider: Map<EngineType, Engine> = enginesProvider()
