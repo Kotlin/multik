@@ -1,11 +1,9 @@
 package org.jetbrains.kotlinx.multik.openblas.math
 
-import kotlinx.cinterop.StableRef
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.toCValues
-import kotlinx.cinterop.usePinned
+import kotlinx.cinterop.*
 import org.jetbrains.kotlinx.multik.cinterop.*
 
+@OptIn(ExperimentalForeignApi::class)
 internal actual object JniMath {
     actual fun argMin(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int =
         argmin(StableRef.create(arr).asCPointer(), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype)
