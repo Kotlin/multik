@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package org.jetbrains.kotlinx.multik.ndarray.data
@@ -7,6 +7,31 @@ package org.jetbrains.kotlinx.multik.ndarray.data
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 
+/**
+ * Checks if the given index is within the bounds of the given axis and the size of the shape.
+ *
+ * @param value the boolean value representing whether the index is within bounds
+ * @param index the integer value representing the index to check
+ * @param axis the integer value representing the axis dimension to check against
+ * @param size the integer value representing the size of the shape on the given axis dimension
+ *
+ * @throws IndexOutOfBoundsException when the index is out of bounds for the given axis and size
+ */
+@PublishedApi
+internal inline fun checkBounds(value: Boolean, index: Int, axis: Int, size: Int) {
+    if (!value) {
+        throw IndexOutOfBoundsException("Index $index is out of bounds shape dimension $axis with size $size")
+    }
+}
+
+/**
+ * Checks if the given dimension matches the provided shape size, or if the dimension is greater than 4
+ * and shape size is greater than 4.
+ *
+ * @param dim the input dimension object to check.
+ * @param shapeSize the size of the shape to compare with.
+ * @throws IllegalArgumentException if the dimension doesn't match the size of the shape.
+ */
 @PublishedApi
 @Suppress("NOTHING_TO_INLINE")
 internal inline fun requireDimension(dim: Dimension, shapeSize: Int) {
