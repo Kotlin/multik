@@ -6,18 +6,22 @@ package org.jetbrains.kotlinx.multik.ndarray.data
 
 import kotlin.jvm.JvmName
 
-
+@Suppress( "nothing_to_inline")
 internal inline fun <T> MultiArray<T, D1>.unsafeIndex(index: Int): Int = offset + strides.first() * index
 
+@Suppress( "nothing_to_inline")
 internal inline fun <T> MultiArray<T, D2>.unsafeIndex(ind1: Int, ind2: Int): Int =
     offset + strides[0] * ind1 + strides[1] * ind2
 
+@Suppress( "nothing_to_inline")
 internal inline fun <T> MultiArray<T, D3>.unsafeIndex(ind1: Int, ind2: Int, ind3: Int): Int =
     offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3
 
+@Suppress( "nothing_to_inline")
 internal inline fun <T> MultiArray<T, D4>.unsafeIndex(ind1: Int, ind2: Int, ind3: Int, ind4: Int): Int =
     offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3 + strides[3] * ind4
 
+@Suppress( "nothing_to_inline")
 internal inline fun <T> MultiArray<T, DN>.unsafeIndex(indices: IntArray): Int =
     strides.foldIndexed(offset) { i, acc, stride -> acc + indices[i] * stride }
 

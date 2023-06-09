@@ -162,9 +162,11 @@ public fun <D : Dimension> abs(a: MultiArray<ComplexDouble, D>): NDArray<Double,
 /**
  * Returns the absolute value of the given value [a].
  */
+@Suppress( "nothing_to_inline")
 private inline fun absByte(a: Byte): Byte = if (a < 0) (-a).toByte() else a
 
 /**
  * Returns the absolute value of the given value [a].
  */
+@Suppress( "nothing_to_inline")
 private inline fun absShort(a: Short): Short = if (a < 0) (-a).toShort() else a

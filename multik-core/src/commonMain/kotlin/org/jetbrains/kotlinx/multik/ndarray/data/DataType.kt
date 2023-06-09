@@ -64,6 +64,7 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
         /**
          * Returns [DataType] by class of [element].
          */
+        @Suppress( "nothing_to_inline")
         public inline fun <T> of(element: T): DataType {
             element ?: throw IllegalStateException("Element is null cannot find type")
             return when (element!!::class) {
@@ -95,5 +96,9 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
             ComplexDouble::class -> ComplexDoubleDataType
             else -> throw IllegalStateException("One of the primitive types was expected, got ${type.simpleName}")
         }
+    }
+
+    override fun toString(): String {
+        return "DataType(nativeCode=$nativeCode, itemSize=$itemSize, clazz=$clazz)"
     }
 }

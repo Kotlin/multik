@@ -16,6 +16,7 @@ package org.jetbrains.kotlinx.multik.ndarray.data
  * @throws IndexOutOfBoundsException when the index is out of bounds for the given axis and size
  */
 @PublishedApi
+@Suppress( "nothing_to_inline")
 internal inline fun checkBounds(value: Boolean, index: Int, axis: Int, size: Int) {
     if (!value) {
         throw IndexOutOfBoundsException("Index $index is out of bounds shape dimension $axis with size $size")
@@ -31,6 +32,7 @@ internal inline fun checkBounds(value: Boolean, index: Int, axis: Int, size: Int
  * @throws IllegalArgumentException if the dimension doesn't match the size of the shape.
  */
 @PublishedApi
+@Suppress( "nothing_to_inline")
 internal inline fun requireDimension(dim: Dimension, shapeSize: Int) {
     require(dim.d == shapeSize || (dim.d > 4 && shapeSize > 4))
     { "Dimension doesn't match the size of the shape: dimension (${dim.d}) != $shapeSize shape size." }
@@ -43,6 +45,7 @@ internal inline fun requireDimension(dim: Dimension, shapeSize: Int) {
  * @throws IllegalArgumentException if the given shape is empty.
  */
 @PublishedApi
+@Suppress( "nothing_to_inline")
 internal inline fun requireShapeEmpty(shape: IntArray) {
     require(shape.isNotEmpty()) { "Shape cannot be empty." }
 }
@@ -54,6 +57,7 @@ internal inline fun requireShapeEmpty(shape: IntArray) {
  * @param shapeSize the size of the given shape
  * @throws IllegalArgumentException if the number of elements doesn't match the shape
  */
+@Suppress( "nothing_to_inline")
 internal inline fun requireElementsWithShape(elementSize: Int, shapeSize: Int) {
     require(elementSize == shapeSize) { "The number of elements doesn't match the shape: $elementSize!=$shapeSize" }
 }
@@ -66,6 +70,7 @@ internal inline fun requireElementsWithShape(elementSize: Int, shapeSize: Int) {
  *
  * @throws IllegalArgumentException if the two sizes don't match
  */
+@Suppress( "nothing_to_inline")
 internal inline fun requireArraySizes(rightSize: Int, otherSize: Int) {
     require(rightSize == otherSize) { "Array sizes don't match: (right operand size) $rightSize != $otherSize (left operand size)" }
 }
@@ -77,6 +82,7 @@ internal inline fun requireArraySizes(rightSize: Int, otherSize: Int) {
  * @param right the second integer array to compare
  * @throws IllegalArgumentException if the shapes of the arrays do not match
  */
+@Suppress( "nothing_to_inline")
 internal inline fun requireEqualShape(left: IntArray, right: IntArray) {
     require(left.contentEquals(right)) { "Array shapes don't match: ${left.contentToString()} != ${right.contentToString()}" }
 }
@@ -87,6 +93,7 @@ internal inline fun requireEqualShape(left: IntArray, right: IntArray) {
  * @param dim an integer representing the dimension of the shape.
  * @throws IllegalArgumentException if the shape dimension is not positive.
  */
+@Suppress( "nothing_to_inline")
 internal inline fun requirePositiveShape(dim: Int) {
     require(dim > 0) { "Shape must be positive but was $dim." }
 }

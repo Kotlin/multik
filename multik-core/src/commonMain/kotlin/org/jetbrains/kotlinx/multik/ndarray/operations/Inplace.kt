@@ -328,7 +328,7 @@ public class Abs<T : Number> : Exp<T>() {
     }
 }
 
-@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST", "nothing_to_inline")
 private inline operator fun <T> Number.plus(other: T): T {
     return when {
         this is Double && other is Double -> this + other
@@ -341,7 +341,7 @@ private inline operator fun <T> Number.plus(other: T): T {
     } as T
 }
 
-@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST", "nothing_to_inline")
 private inline operator fun <T> Complex.plus(other: T): T {
     return when {
         this is ComplexFloat && other is ComplexFloat -> this + other
@@ -350,7 +350,7 @@ private inline operator fun <T> Complex.plus(other: T): T {
     } as T
 }
 
-@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST", "nothing_to_inline")
 private inline operator fun <T> Number.minus(other: T): T {
     return when {
         this is Double && other is Double -> this - other
@@ -363,7 +363,7 @@ private inline operator fun <T> Number.minus(other: T): T {
     } as T
 }
 
-@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST", "nothing_to_inline")
 private inline operator fun <T> Complex.minus(other: T): T {
     return when {
         this is ComplexFloat && other is ComplexFloat -> this - other
@@ -372,7 +372,7 @@ private inline operator fun <T> Complex.minus(other: T): T {
     } as T
 }
 
-@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST", "nothing_to_inline")
 private inline operator fun <T> Number.times(other: T): T {
     return when {
         this is Double && other is Double -> this * other
@@ -385,7 +385,7 @@ private inline operator fun <T> Number.times(other: T): T {
     } as T
 }
 
-@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST", "nothing_to_inline")
 private inline operator fun <T> Complex.times(other: T): T {
     return when {
         this is ComplexFloat && other is ComplexFloat -> this * other
@@ -394,7 +394,7 @@ private inline operator fun <T> Complex.times(other: T): T {
     } as T
 }
 
-@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST", "nothing_to_inline")
 private inline operator fun <T> Number.div(other: T): T {
     return when {
         this is Double && other is Double -> this / other
@@ -407,7 +407,7 @@ private inline operator fun <T> Number.div(other: T): T {
     } as T
 }
 
-@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST", "nothing_to_inline")
 private inline operator fun <T> Complex.div(other: T): T {
     return when {
         this is ComplexFloat && other is ComplexFloat -> this / other
