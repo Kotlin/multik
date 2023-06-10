@@ -8,7 +8,15 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.mapCapacity
 import kotlin.math.min
 import kotlin.random.Random
 
-public fun complexFloatArrayOf(vararg elements: ComplexFloat): ComplexFloatArray =
+/**
+ * Creates a new [ComplexFloatArray] from the provided vararg [elements].
+ *
+ * @param elements the elements to be included in the new [ComplexFloatArray].
+ * @return a new [ComplexFloatArray] containing all the provided [elements],
+ * or an empty [ComplexFloatArray] if no [elements] were provided.
+ */
+// TODO(https://youtrack.jetbrains.com/issue/KT-33565/Allow-vararg-parameter-of-inline-class-type)
+public fun <T: ComplexFloat> complexFloatArrayOf(vararg elements: T): ComplexFloatArray =
     if (elements.isEmpty()) ComplexFloatArray(0) else ComplexFloatArray(elements.size) { elements[it] }
 
 public fun complexDoubleArrayOf(vararg elements: ComplexDouble): ComplexDoubleArray =

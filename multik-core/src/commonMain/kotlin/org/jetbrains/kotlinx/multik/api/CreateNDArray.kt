@@ -1460,17 +1460,28 @@ public fun Multik.ndarrayOf(vararg items: Float): D1Array<Float> = ndarrayOfComm
  * Returns a new 1-dimension array from [items].
  */
 public fun Multik.ndarrayOf(vararg items: Double): D1Array<Double> = ndarrayOfCommon(items.toTypedArray(), DataType.DoubleDataType)
+
 /**
- * Returns a new 1-dimension array from [items].
+ * Returns a one-dimensional array of generic complex type T consisting of values specified in input items.
+ *
+ * @param items Variable number of arguments of generic complex type T.
+ * @return One-dimensional array of generic complex type T.
  */
-public fun Multik.ndarrayOf(vararg items: ComplexFloat): D1Array<ComplexFloat> = ndarrayOfCommon(items, DataType.ComplexFloatDataType)
-/**
- * Returns a new 1-dimension array from [items].
- */
-public fun Multik.ndarrayOf(vararg items: ComplexDouble): D1Array<ComplexDouble> = ndarrayOfCommon(items, DataType.ComplexDoubleDataType)
+public inline fun <reified T: Complex> Multik.ndarrayOf(vararg items: T): D1Array<T> = ndarrayOfCommon(items, DataType.ofKClass(T::class))
+
+// TODO(https://youtrack.jetbrains.com/issue/KT-33565/Allow-vararg-parameter-of-inline-class-type)
+///**
+// * Returns a new 1-dimension array from [items].
+// */
+//public fun Multik.ndarrayOf(vararg items: ComplexFloat): D1Array<ComplexFloat> = ndarrayOfCommon(items, DataType.ComplexFloatDataType)
+///**
+// * Returns a new 1-dimension array from [items].
+// */
+//public fun Multik.ndarrayOf(vararg items: ComplexDouble): D1Array<ComplexDouble> = ndarrayOfCommon(items, DataType.ComplexDoubleDataType)
 
 
-private fun <T> ndarrayOfCommon(items: Array<out T>, dtype: DataType): D1Array<T> {
+@PublishedApi
+internal fun <T> ndarrayOfCommon(items: Array<out T>, dtype: DataType): D1Array<T> {
     val shape = intArrayOf(items.size)
     val data = initMemoryView(items.size, dtype) { items[it] }
     return D1Array(data, shape = shape, dim = D1)
