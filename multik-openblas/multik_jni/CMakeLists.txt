@@ -118,7 +118,6 @@ set(SRC_FILES_FOR_SHARED
         src/main/cpp/jni_JniMath.cpp
         src/main/cpp/JniStat.cpp
         src/main/cpp/ComplexDouble.cpp
-        src/main/cpp/ComplexFloat.cpp
         src/main/cpp/mk_math.cpp
         src/main/cpp/mk_linalg.cpp
         src/main/cpp/mk_stat.cpp

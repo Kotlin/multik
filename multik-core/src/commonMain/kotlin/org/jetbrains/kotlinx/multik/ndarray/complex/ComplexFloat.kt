@@ -6,7 +6,7 @@ package org.jetbrains.kotlinx.multik.ndarray.complex
 
 import kotlin.jvm.JvmInline
 import kotlin.math.atan2
-import kotlin.math.sqrt
+import kotlin.math.hypot
 
 /**
  * Represents a complex number with single precision.
@@ -111,7 +111,7 @@ public value class ComplexFloat private constructor(private val number: Long) : 
      *
      * @return the absolute value of the complex number.
      */
-    public fun abs(): Float = sqrt(re * re + im * im)
+    public fun abs(): Float = hypot(re, im)
 
     /**
      * Returns the angle of the complex number.

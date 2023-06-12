@@ -56,16 +56,11 @@ public sealed interface ComplexDouble : Complex {
         /**
          * Determines whether the given double value can be accurately represented as a float value or not.
          *
-         * @param d the double value to be checked.
-         * @return true if the double value can be accurately represented as a float value, false otherwise.
+         * @param d is the double value to be checked.
+         * @return this method returns a Boolean value,
+         * true if the double value can be accurately represented as a float value, false otherwise.
          */
-        private fun fitsInFloat(d: Double): Boolean {
-            val bits = d.toRawBits()
-            val exponentMask = 0x7FF0000000000000L
-            val floatExponentMask = 0x7F800000L
-
-            return (bits and exponentMask ushr 32) == (bits and exponentMask ushr 32 and floatExponentMask)
-        }
+        private fun fitsInFloat(d: Double): Boolean = d.toFloat().toDouble() == d
 
         /**
          * Creates a [ComplexDouble] with the given real and imaginary values in floating-point format.

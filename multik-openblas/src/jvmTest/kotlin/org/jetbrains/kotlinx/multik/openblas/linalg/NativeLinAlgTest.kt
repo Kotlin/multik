@@ -4,17 +4,17 @@
 
 package org.jetbrains.kotlinx.multik.openblas.linalg
 
-import org.jetbrains.kotlinx.multik.api.arange
-import org.jetbrains.kotlinx.multik.api.identity
+import org.jetbrains.kotlinx.multik.api.*
 import org.jetbrains.kotlinx.multik.api.linalg.*
-import org.jetbrains.kotlinx.multik.api.mk
-import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+import org.jetbrains.kotlinx.multik.ndarray.complex.i
+import org.jetbrains.kotlinx.multik.ndarray.complex.plus
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.rangeTo
 import org.jetbrains.kotlinx.multik.ndarray.operations.minus
 import org.jetbrains.kotlinx.multik.openblas.*
+import kotlin.random.Random
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
 import kotlin.test.Test
@@ -82,12 +82,8 @@ class NativeLinAlgTest {
         val a = mk.ndarray(mk[1.0, 1.0])
         val b = mk.ndarray(mk[mk[1.0, 2.0], mk[3.0, 4.0]])
 
-        println(b.strides.joinToString())
-//        println(b[0] dot a)
-        println(b[1] dot a)
-
-//        println("${m[0]} x $v = ${m[0] dot v}")
-//        println("${m[1]} x $v = ${m[1] dot v}")
+        assertEquals(3.0, b[0] dot a)
+        assertEquals(7.0, b[1] dot a)
     }
 
     @Test
@@ -237,6 +233,36 @@ class NativeLinAlgTest {
 
         val actual = NativeLinAlg.dot(vector1, vector2)
         assertFloatingNumber(1.9696041133566367, actual)
+    }
+
+    @Test
+    fun `vector-vector dot test with float complex numbers`() {
+        val random = Random(42)
+        val vector1 = mk.d1array(9) { ComplexFloat(random.nextFloat(), random.nextFloat()) }
+        val vector2 = mk.d1array(9) { ComplexFloat(random.nextFloat(), random.nextFloat()) }
+
+        val actual = NativeLinAlg.dot(vector1, vector2)
+        assertFloatingComplexNumber(0.23971967f + 4.6530027f.i, actual)
+    }
+
+    @Test
+    fun `vector-vector dot test with double32 complex numbers`() {
+        val random = Random(42)
+        val vector1 = mk.d1array(9) { ComplexDouble(1.0, 0.0) }
+        val vector2 = mk.d1array(9) { ComplexDouble(random.nextFloat(), random.nextFloat()) }
+
+        val actual = NativeLinAlg.dot(vector1, vector2)
+        assertFloatingComplexNumber(4.174294710159302 + 5.029674530029297.i, actual)
+    }
+
+    @Test
+    fun `vector-vector dot test with double64 complex numbers`() {
+        val random = Random(42)
+        val vector1 = mk.d1array(9) { ComplexDouble(random.nextDouble(), random.nextDouble()) }
+        val vector2 = mk.d1array(9) { ComplexDouble(random.nextDouble(), random.nextDouble()) }
+
+        val actual = NativeLinAlg.dot(vector1, vector2)
+        assertFloatingComplexNumber(0.17520206558121712 + 4.552420480555579.i, actual)
     }
 
     @Test
