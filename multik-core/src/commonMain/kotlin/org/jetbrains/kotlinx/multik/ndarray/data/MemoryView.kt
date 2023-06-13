@@ -838,7 +838,6 @@ public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) :
 
 //    override fun hashCode(): Int = data.hashCode()
 //        (0 until size).fold(1) { acc, r ->
-//            // TODO("https://youtrack.jetbrains.com/issue/KT-24874/Support-custom-equals-and-hashCode-for-value-classes")
 //
 //            31 * acc + (31 * data[r].re.toBits() + data[r].im.toBits())
 ////            31 * acc + data[r].hashCode()

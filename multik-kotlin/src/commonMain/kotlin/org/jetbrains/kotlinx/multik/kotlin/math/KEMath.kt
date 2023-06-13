@@ -263,7 +263,6 @@ internal object KEMath : Math {
     }
 }
 
-//todo util module
 internal fun IntArray.remove(pos: Int): IntArray = when (pos) {
     0 -> sliceArray(1..lastIndex)
     lastIndex -> sliceArray(0 until lastIndex)
