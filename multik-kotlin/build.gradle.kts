@@ -11,7 +11,6 @@ kotlin {
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
-        withJava()
     }
     mingwX64()
     linuxX64()
@@ -115,8 +114,8 @@ kotlin {
             dependsOn(commonMain)
         }
         names.forEach { n ->
-            if (n.contains("X64Main") || n.contains("Arm64Main")){
-                this@sourceSets.getByName(n).apply{
+            if (n.contains("X64Main") || n.contains("Arm64Main")) {
+                this@sourceSets.getByName(n).apply {
                     dependsOn(nativeMain)
                 }
             }
