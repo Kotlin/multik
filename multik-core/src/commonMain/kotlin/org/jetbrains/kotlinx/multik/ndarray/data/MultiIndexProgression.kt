@@ -125,3 +125,7 @@ public infix fun MultiIndexProgression.step(step: Int): MultiIndexProgression {
 public infix fun IntArray.downTo(to: IntArray): MultiIndexProgression {
     return MultiIndexProgression(this, to, -1)
 }
+
+public inline fun MultiIndexProgression.forEach(operation: (IntArray) -> Unit): Unit {
+    for (element in this) operation(element)
+}
