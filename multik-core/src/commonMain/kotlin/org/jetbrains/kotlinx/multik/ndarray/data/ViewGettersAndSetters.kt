@@ -22,7 +22,7 @@ internal inline fun <T> MultiArray<T, D4>.unsafeIndex(ind1: Int, ind2: Int, ind3
     offset + strides[0] * ind1 + strides[1] * ind2 + strides[2] * ind3 + strides[3] * ind4
 
 @Suppress( "nothing_to_inline")
-internal inline fun <T> MultiArray<T, DN>.unsafeIndex(indices: IntArray): Int =
+internal inline fun <T> MultiArray<T, *>.unsafeIndex(indices: IntArray): Int =
     strides.foldIndexed(offset) { i, acc, stride -> acc + indices[i] * stride }
 
 //___________________________________________________ReadableView_______________________________________________________

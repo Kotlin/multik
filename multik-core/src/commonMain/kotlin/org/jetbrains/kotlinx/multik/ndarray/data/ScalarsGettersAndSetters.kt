@@ -44,11 +44,11 @@ public operator fun <T> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, i
 }
 
 @JvmName("genGet5")
-public operator fun <T> MultiArray<T, DN>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): T =
+public operator fun <T> MultiArray<T, *>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): T =
     this[intArrayOf(ind1, ind2, ind3, ind4) + indices]
 
 @JvmName("genGet5")
-public operator fun <T> MultiArray<T, DN>.get(indices: IntArray): T {
+public operator fun <T> MultiArray<T, *>.get(indices: IntArray): T {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -88,14 +88,14 @@ public operator fun <T> MutableMultiArray<T, D4>.set(ind1: Int, ind2: Int, ind3:
 }
 
 @JvmName("genSet5")
-public operator fun <T> MutableMultiArray<T, DN>.set(
+public operator fun <T> MutableMultiArray<T, *>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int, value: T
 ) {
     set(intArrayOf(ind1, ind2, ind3, ind4) + indices, value)
 }
 
 @JvmName("genSet5")
-public operator fun <T> MutableMultiArray<T, DN>.set(indices: IntArray, value: T) {
+public operator fun <T> MutableMultiArray<T, *>.set(indices: IntArray, value: T) {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -135,11 +135,11 @@ public operator fun MultiArray<Byte, D4>.get(ind1: Int, ind2: Int, ind3: Int, in
 }
 
 @JvmName("byteGet5")
-public operator fun MultiArray<Byte, DN>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): Byte =
+public operator fun MultiArray<Byte, *>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): Byte =
     this[intArrayOf(ind1, ind2, ind3, ind4) + indices]
 
 @JvmName("byteGet5")
-public operator fun MultiArray<Byte, DN>.get(indices: IntArray): Byte {
+public operator fun MultiArray<Byte, *>.get(indices: IntArray): Byte {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -179,14 +179,14 @@ public operator fun MutableMultiArray<Byte, D4>.set(ind1: Int, ind2: Int, ind3: 
 }
 
 @JvmName("byteSet5")
-public operator fun MutableMultiArray<Byte, DN>.set(
+public operator fun MutableMultiArray<Byte, *>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int, value: Byte
 ) {
     set(intArrayOf(ind1, ind2, ind3, ind4) + indices, value)
 }
 
 @JvmName("byteSet5")
-public operator fun MutableMultiArray<Byte, DN>.set(indices: IntArray, value: Byte) {
+public operator fun MutableMultiArray<Byte, *>.set(indices: IntArray, value: Byte) {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -227,11 +227,11 @@ public operator fun MultiArray<Short, D4>.get(ind1: Int, ind2: Int, ind3: Int, i
 }
 
 @JvmName("shortGet5")
-public operator fun MultiArray<Short, DN>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): Short =
+public operator fun MultiArray<Short, *>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): Short =
     this[intArrayOf(ind1, ind2, ind3, ind4) + indices]
 
 @JvmName("shortGet5")
-public operator fun MultiArray<Short, DN>.get(indices: IntArray): Short {
+public operator fun MultiArray<Short, *>.get(indices: IntArray): Short {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -271,14 +271,14 @@ public operator fun MutableMultiArray<Short, D4>.set(ind1: Int, ind2: Int, ind3:
 }
 
 @JvmName("shortSet5")
-public operator fun MutableMultiArray<Short, DN>.set(
+public operator fun MutableMultiArray<Short, *>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int, value: Short
 ) {
     set(intArrayOf(ind1, ind2, ind3, ind4) + indices, value)
 }
 
 @JvmName("shortSet5")
-public operator fun MutableMultiArray<Short, DN>.set(indices: IntArray, value: Short) {
+public operator fun MutableMultiArray<Short, *>.set(indices: IntArray, value: Short) {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -319,11 +319,11 @@ public operator fun MultiArray<Int, D4>.get(ind1: Int, ind2: Int, ind3: Int, ind
 }
 
 @JvmName("intGet5")
-public operator fun MultiArray<Int, DN>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): Int =
+public operator fun MultiArray<Int, *>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): Int =
     this[intArrayOf(ind1, ind2, ind3, ind4) + indices]
 
 @JvmName("intGet5")
-public operator fun MultiArray<Int, DN>.get(indices: IntArray): Int {
+public operator fun MultiArray<Int, *>.get(indices: IntArray): Int {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -363,14 +363,14 @@ public operator fun MutableMultiArray<Int, D4>.set(ind1: Int, ind2: Int, ind3: I
 }
 
 @JvmName("intSet5")
-public operator fun MutableMultiArray<Int, DN>.set(
+public operator fun MutableMultiArray<Int, *>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int, value: Int
 ) {
     set(intArrayOf(ind1, ind2, ind3, ind4) + indices, value)
 }
 
 @JvmName("intSet5")
-public operator fun MutableMultiArray<Int, DN>.set(indices: IntArray, value: Int) {
+public operator fun MutableMultiArray<Int, *>.set(indices: IntArray, value: Int) {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -411,11 +411,11 @@ public operator fun MultiArray<Long, D4>.get(ind1: Int, ind2: Int, ind3: Int, in
 }
 
 @JvmName("longGet5")
-public operator fun MultiArray<Long, DN>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): Long =
+public operator fun MultiArray<Long, *>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): Long =
     this[intArrayOf(ind1, ind2, ind3, ind4) + indices]
 
 @JvmName("longGet5")
-public operator fun MultiArray<Long, DN>.get(indices: IntArray): Long {
+public operator fun MultiArray<Long, *>.get(indices: IntArray): Long {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -455,14 +455,14 @@ public operator fun MutableMultiArray<Long, D4>.set(ind1: Int, ind2: Int, ind3: 
 }
 
 @JvmName("longSet5")
-public operator fun MutableMultiArray<Long, DN>.set(
+public operator fun MutableMultiArray<Long, *>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int, value: Long
 ) {
     set(intArrayOf(ind1, ind2, ind3, ind4) + indices, value)
 }
 
 @JvmName("longSet5")
-public operator fun MutableMultiArray<Long, DN>.set(indices: IntArray, value: Long) {
+public operator fun MutableMultiArray<Long, *>.set(indices: IntArray, value: Long) {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -503,11 +503,11 @@ public operator fun MultiArray<Float, D4>.get(ind1: Int, ind2: Int, ind3: Int, i
 }
 
 @JvmName("floatGet5")
-public operator fun MultiArray<Float, DN>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): Float =
+public operator fun MultiArray<Float, *>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): Float =
     this[intArrayOf(ind1, ind2, ind3, ind4) + indices]
 
 @JvmName("floatGet5")
-public operator fun MultiArray<Float, DN>.get(indices: IntArray): Float {
+public operator fun MultiArray<Float, *>.get(indices: IntArray): Float {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -547,14 +547,14 @@ public operator fun MutableMultiArray<Float, D4>.set(ind1: Int, ind2: Int, ind3:
 }
 
 @JvmName("floatSet5")
-public operator fun MutableMultiArray<Float, DN>.set(
+public operator fun MutableMultiArray<Float, *>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int, value: Float
 ) {
     set(intArrayOf(ind1, ind2, ind3, ind4) + indices, value)
 }
 
 @JvmName("floatSet5")
-public operator fun MutableMultiArray<Float, DN>.set(indices: IntArray, value: Float) {
+public operator fun MutableMultiArray<Float, *>.set(indices: IntArray, value: Float) {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -595,13 +595,13 @@ public operator fun MultiArray<Double, D4>.get(ind1: Int, ind2: Int, ind3: Int, 
 }
 
 @JvmName("doubleGet5")
-public operator fun MultiArray<Double, DN>.get(
+public operator fun MultiArray<Double, *>.get(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int
 ): Double =
     this[intArrayOf(ind1, ind2, ind3, ind4) + indices]
 
 @JvmName("doubleGet5")
-public operator fun MultiArray<Double, DN>.get(indices: IntArray): Double {
+public operator fun MultiArray<Double, *>.get(indices: IntArray): Double {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -641,14 +641,14 @@ public operator fun MutableMultiArray<Double, D4>.set(ind1: Int, ind2: Int, ind3
 }
 
 @JvmName("doubleSet5")
-public operator fun MutableMultiArray<Double, DN>.set(
+public operator fun MutableMultiArray<Double, *>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int, value: Double
 ) {
     set(intArrayOf(ind1, ind2, ind3, ind4) + indices, value)
 }
 
 @JvmName("doubleSet5")
-public operator fun MutableMultiArray<Double, DN>.set(indices: IntArray, value: Double) {
+public operator fun MutableMultiArray<Double, *>.set(indices: IntArray, value: Double) {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -689,13 +689,13 @@ public operator fun MultiArray<ComplexFloat, D4>.get(ind1: Int, ind2: Int, ind3:
 }
 
 @JvmName("complexFloatGet5")
-public operator fun MultiArray<ComplexFloat, DN>.get(
+public operator fun MultiArray<ComplexFloat, *>.get(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int
 ): ComplexFloat =
     this[intArrayOf(ind1, ind2, ind3, ind4) + indices]
 
 @JvmName("complexFloatGet5")
-public operator fun MultiArray<ComplexFloat, DN>.get(indices: IntArray): ComplexFloat {
+public operator fun MultiArray<ComplexFloat, *>.get(indices: IntArray): ComplexFloat {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -737,14 +737,14 @@ public operator fun MutableMultiArray<ComplexFloat, D4>.set(
 }
 
 @JvmName("complexFloatSet5")
-public operator fun MutableMultiArray<ComplexFloat, DN>.set(
+public operator fun MutableMultiArray<ComplexFloat, *>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int, value: ComplexFloat
 ) {
     set(intArrayOf(ind1, ind2, ind3, ind4) + indices, value)
 }
 
 @JvmName("complexFloatSet5")
-public operator fun MutableMultiArray<ComplexFloat, DN>.set(indices: IntArray, value: ComplexFloat) {
+public operator fun MutableMultiArray<ComplexFloat, *>.set(indices: IntArray, value: ComplexFloat) {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -784,13 +784,13 @@ public operator fun MultiArray<ComplexDouble, D4>.get(ind1: Int, ind2: Int, ind3
 }
 
 @JvmName("complexDoubleGet5")
-public operator fun MultiArray<ComplexDouble, DN>.get(
+public operator fun MultiArray<ComplexDouble, *>.get(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int
 ): ComplexDouble =
     this[intArrayOf(ind1, ind2, ind3, ind4) + indices]
 
 @JvmName("complexDoubleGet5")
-public operator fun MultiArray<ComplexDouble, DN>.get(indices: IntArray): ComplexDouble {
+public operator fun MultiArray<ComplexDouble, *>.get(indices: IntArray): ComplexDouble {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
@@ -832,14 +832,14 @@ public operator fun MutableMultiArray<ComplexDouble, D4>.set(
 }
 
 @JvmName("complexDoubleSet5")
-public operator fun MutableMultiArray<ComplexDouble, DN>.set(
+public operator fun MutableMultiArray<ComplexDouble, *>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int, value: ComplexDouble
 ) {
     set(intArrayOf(ind1, ind2, ind3, ind4) + indices, value)
 }
 
 @JvmName("complexDoubleSet5")
-public operator fun MutableMultiArray<ComplexDouble, DN>.set(indices: IntArray, value: ComplexDouble) {
+public operator fun MutableMultiArray<ComplexDouble, *>.set(indices: IntArray, value: ComplexDouble) {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
     for (i in indices.indices)
         checkBounds(indices[i] in 0 until this.shape[i], indices[i], i, this.shape[i])
