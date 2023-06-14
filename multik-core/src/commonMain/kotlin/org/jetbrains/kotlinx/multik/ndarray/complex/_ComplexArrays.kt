@@ -1235,7 +1235,7 @@ public fun ComplexDoubleArray.asList(): List<ComplexDouble> = object : AbstractL
  * The elements are compared for equality with the [equals][Any.equals] function.
  */
 public infix fun ComplexFloatArray?.contentEquals(other: ComplexFloatArray?): Boolean =
-    this?.getFlatArray()?.equals(other?.getFlatArray()) == true
+    this?.getFlatArray() contentEquals other?.getFlatArray()
 
 /**
  * Returns `true` if the two specified arrays are *structurally* equal to one another,
@@ -1244,7 +1244,7 @@ public infix fun ComplexFloatArray?.contentEquals(other: ComplexFloatArray?): Bo
  * The elements are compared for equality with the [equals][Any.equals] function.
  */
 public infix fun ComplexDoubleArray?.contentEquals(other: ComplexDoubleArray?): Boolean =
-    this?.getFlatArray()?.equals(other?.getFlatArray()) == true
+    this?.getFlatArray() contentEquals other?.getFlatArray()
 
 /**
  * Returns a hash code based on the contents of this array as if it is [List].
