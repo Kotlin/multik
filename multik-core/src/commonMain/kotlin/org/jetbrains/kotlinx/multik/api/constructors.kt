@@ -16,7 +16,7 @@ import kotlin.math.ceil
 /**
  * Returns a new zero array with the specified shape.
  */
-@Deprecated("Use zeros instead.", ReplaceWith("mk.zeros(dims)"))
+@Deprecated("Use zeros instead.", ReplaceWith("mk.zeros(dims)"), level = DeprecationLevel.ERROR)
 public inline fun <reified T : Any, reified D : Dimension> Multik.empty(vararg dims: Int): NDArray<T, D> {
     val dim = dimensionClassOf<D>(dims.size)
     requireDimension(dim, dims.size)
@@ -31,7 +31,7 @@ public inline fun <reified T : Any, reified D : Dimension> Multik.empty(vararg d
  *
  * Note: Generic type of elements [T] must match [dtype].
  */
-@Deprecated("Use zeros instead.", ReplaceWith("mk.zeros(dims)"))
+@Deprecated("Use zeros instead.", ReplaceWith("mk.zeros(dims)"), level = DeprecationLevel.ERROR)
 public fun <T, D : Dimension> Multik.empty(dims: IntArray, dtype: DataType): NDArray<T, D> {
     val dim = dimensionOf<D>(dims.size)
     requireDimension(dim, dims.size)
@@ -1584,7 +1584,9 @@ public inline fun <reified T : Number> Multik.linspace(start: Double, stop: Doub
 
     ret += start
     ret[ret.size - 1] = stop
-    return ret.asType()
+
+    val data = initMemoryView(ret.data.size, DataType.ofKClass(T::class)) { ret.data[it].toPrimitiveType<T>() }
+    return D1Array(data, ret.offset, ret.shape, ret.strides, ret.dim)
 }
 
 /**
