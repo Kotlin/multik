@@ -68,7 +68,7 @@ public class NDArray<T, D : Dimension> constructor(
         return this.asType(dataType)
     }
 
-    //TODO ???
+    //TODO Unchecked Cast!!!???
     public fun <E : Number> asType(dataType: DataType): NDArray<E, D> {
         val newData = initMemoryView(this.data.size, dataType) { this.data[it] as E }
         return NDArray(newData, this.offset, this.shape, this.strides, this.dim)
