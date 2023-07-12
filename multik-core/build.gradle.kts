@@ -5,8 +5,10 @@
 plugins {
     kotlin("multiplatform")
     val dokka_version: String by System.getProperties()
+    val korro_version: String by System.getProperties()
 
     id("org.jetbrains.dokka") version dokka_version
+    id("io.github.devcrocod.korro") version korro_version
 }
 
 repositories {
@@ -89,7 +91,15 @@ kotlin {
     }
 }
 
+korro {
+    docs = fileTree(rootProject.rootDir) {
+        include("docs/topics/*.md")
+    }
 
+    samples = fileTree(project.projectDir) {
+        include("src/commonTest/kotlin/samples/docs/*.kt")
+    }
+}
 
 tasks.dokkaHtml.configure {
     outputDirectory.set(rootProject.buildDir.resolve("dokka"))
