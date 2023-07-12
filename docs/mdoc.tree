@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="mdoc"
+                  name="Multik"
+                  start-page="home.topic" is-library="true" status="eap">
+
+    <toc-element toc-title="Home" topic="home.topic"/>
+    <toc-element toc-title="Overview" topic="overview.md"/>
+    <toc-element toc-title="Getting-Started">
+        <toc-element toc-title="Quickstart" topic="quickstart.md"/>
+        <toc-element toc-title="Installation" topic="installation.md"/>
+        <toc-element toc-title="Supported platforms" topic="supported-platforms.md"/>
+    </toc-element>
+    <toc-element toc-title="User Guide" topic="user-guide.topic">
+        <toc-element toc-title="About Multik"/>
+        <toc-element toc-title="Basics of Multik" topic="basic.md">
+            <toc-element toc-title="Creating Multidimensional Arrays" topic="creating-multidimensional-arrays.md"/>
+            <toc-element toc-title="Indexing and Slicing" topic="indexing-and-slicing.md"/>
+            <toc-element toc-title="Shape manipulation" topic="shape-manipulation.md"/>
+            <toc-element toc-title="Iterating over Arrays" topic="iterating.md"/>
+            <toc-element toc-title="Type Casting" topic="type-casting.md"/>
+            <toc-element toc-title="Copies and Views" topic="copies-and-views.md"/>
+            <toc-element toc-title="Complex Numbers" topic="complex-numbers.md"/>
+        </toc-element>
+        <toc-element toc-title="Multik on Different Platforms" topic="multik-on-different-platforms.md">
+            <toc-element toc-title="Multik on JVM" topic="multik-on-JVM.md"/>
+            <toc-element toc-title="Multik on JavaScript" topic="multik-on-JavaScript.md"/>
+            <toc-element toc-title="Multik on WASM" topic="multik-on-WASM.md"/>
+            <toc-element toc-title="Multik on Mobile (Android, iOS)" topic="multik-on-mobile.md"/>
+            <toc-element toc-title="Multik on Desktop (MacOS, Win, Linux)" topic="multik-on-desktop.md"/>
+        </toc-element>
+        <toc-element toc-title="Input and Output" topic="input-and-output.md"/>
+        <toc-element toc-title="Performance and Optimization" topic="performance-and-optimization.md"/>
+    </toc-element>
+    <toc-element toc-title="Documentation" topic="documentation.md">
+        <toc-element toc-title="Array objects" topic="array-objects.md">
+            <toc-element toc-title="NDArray" topic="NDArray.md"/>
+            <toc-element toc-title="Scalars" topic="scalars.md"/>
+            <toc-element toc-title="Type" topic="type.md"/>
+            <toc-element toc-title="Dimension" topic="dimension.md"/>
+            <toc-element toc-title="Indexing routines" topic="indexing-routines.md"/>
+            <toc-element toc-title="Iterating" topic="iterating.md"/>
+            <toc-element toc-title="IO operations" topic="IO-operations.md"/>
+        </toc-element>
+        <toc-element toc-title="Constants" topic="constants.md"/>
+        <toc-element toc-title="Array creation" topic="array-creation.md"/>
+        <toc-element toc-title="Random Number Generation" topic="random-number-generation.md"/>
+        <toc-element toc-title="Array Operations" topic="array-operations.md">
+            <toc-element toc-title="Arithmetic Operations" topic="arithmetic-operations.md"/>
+            <toc-element toc-title="Logical Operations" topic="logical-operations.md"/>
+            <toc-element toc-title="Comparison Operations" topic="comparison-operations.md"/>
+            <toc-element toc-title="Universal Operations" topic="universal-operations.md"/>
+        </toc-element>
+        <toc-element toc-title="Mathematical" topic="mathematical.md"/>
+        <toc-element toc-title="Linear Algebra" topic="linear-algebra.md">
+            <toc-element toc-title="Matrix Operations" topic="matrix-operations.md"/>
+            <toc-element toc-title="Eigenvalues and Eigenvectors" topic="eigenvalues-and-eigenvectors.md"/>
+            <toc-element toc-title="Solving Systems of Equations" topic="solving-systems-of-equations.md"/>
+            <toc-element toc-title="Matrix Norms" topic="matrix-norms.md"/>
+        </toc-element>
+        <toc-element toc-title="Statistics" topic="statistics.md">
+            <toc-element toc-title="Descriptive Statistics" topic="descriptive-statistics.md"/>
+            <toc-element toc-title="Correlation Analysis" topic="correlation-analysis.md"/>
+            <toc-element toc-title="Hypothesis Testing" topic="hypothesis-testing.md"/>
+            <toc-element toc-title="Probability Distributions" topic="probability-distributions.md"/>
+        </toc-element>
+        <toc-element href="https://github.com/Kotlin/dataframe/tree/master/examples" toc-title="API-Reference"/>
+    </toc-element>
+    <toc-element toc-title="Examples" topic="examples.md"/>
+    <toc-element toc-title="FAQ" topic="FAQ.md"/>
+    <toc-element toc-title="Additional Resources and Links" topic="additional-resources-and-links.md">
+        <toc-element toc-title="Project Repository" topic="project-repository.md"/>
+        <toc-element toc-title="Community and Contribution Guidelines" topic="community-and-contribution-guidelines.md"/>
+        <toc-element toc-title="Release Notes and Updates" topic="release-notes-and-updates.md"/>
+    </toc-element>
+</instance-profile>
