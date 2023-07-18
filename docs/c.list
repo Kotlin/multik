@@ -2,7 +2,8 @@
 <!DOCTYPE categories
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/categories.dtd">
 <categories>
-    <category id="get-start" name="Getting Started" order="1"/>
-    <category id="user-guide" name="User Guide" order="2"/>
-    <category id="api-docs" name="API Documentation" order="3"/>
+    <category id="ext" name="External resources" order="1"/>
+    <category id="get-start" name="Getting Started" order="2"/>
+    <category id="user-guide" name="User Guide" order="3"/>
+    <category id="api-docs" name="API Documentation" order="4"/>
 </categories>

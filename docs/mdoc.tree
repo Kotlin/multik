@@ -24,6 +24,7 @@
             <toc-element topic="copies-and-views.md"/>
             <toc-element topic="complex-numbers.md"/>
         </toc-element>
+        <toc-element topic="engines-of-multik.md"/>
         <toc-element topic="multik-on-different-platforms.md">
             <toc-element toc-title="Multik on JVM" topic="multik-on-JVM.md"/>
             <toc-element toc-title="Multik on JavaScript" topic="multik-on-JavaScript.md"/>
