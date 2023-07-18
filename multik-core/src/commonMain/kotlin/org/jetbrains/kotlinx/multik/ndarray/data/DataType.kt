@@ -102,6 +102,6 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
     }
 
     override fun toString(): String {
-        return "DataType(nativeCode=$nativeCode, itemSize=$itemSize, clazz=$clazz)"
+        return "DataType(nativeCode=$nativeCode, itemSize=$itemSize, class=$clazz)"
     }
 }

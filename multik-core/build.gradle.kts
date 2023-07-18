@@ -94,6 +94,7 @@ kotlin {
 korro {
     docs = fileTree(rootProject.rootDir) {
         include("docs/topics/*.md")
+        include("docs/topics/gettingStarted/*md")
     }
 
     samples = fileTree(project.projectDir) {
