@@ -2,9 +2,26 @@
 
 <!---IMPORT samples.docs.Overview-->
 
+<web-summary>
+Discover Multik, a powerful multiplatform library for multidimensional array operations in Kotlin.
+Explore its key principles, unique features such as static typing and dimensional consistency,
+learn about its robust architecture, and delve into its performance considerations.
+Understand how Multik enhances mathematical computations in Kotlin with its specialized capabilities.
+</web-summary>
+
+<card-summary>
+Dive into the core of Multik.
+Understand its features, architecture, performance benefits, and seamless integration with Kotlin's standard library.
+</card-summary>
+
+<link-summary>
+Explore the essence of Multik: its capabilities, principles, architectural aspects,
+and performance for multidimensional array computations.
+</link-summary>
+
 Multik, a multiplatform library, is a powerful tool for handling multidimensional arrays in a versatile and efficient
 manner. It equips developers with high-speed mathematical and arithmetic operations, comprehensive linear algebra
-functionalities, robust statistical procedures, along with an arsenal of transformation and sorting utilities.
+functionalities, and robust statistical procedures, along with an arsenal of transformation and sorting utilities.
 
 Multik has been developed adhering to the following principles:
 
@@ -14,12 +31,11 @@ Multik has been developed adhering to the following principles:
 * Flexibility and effortless startup for ease of use
 
 In the Multik library, the pivotal element is the multidimensional array. It encapsulates homogeneous data in a
-versatile multi-dimensional framework, enabling streamlined computations and transformations. In Kotlin, developers can
+versatile multidimensional framework, enabling streamlined computations and transformations. In Kotlin, developers can
 create their own multidimensional arrays and perform a spectrum of data manipulations using iterative procedures. Here's
 a simple illustration of managing a matrix using Kotlin's standard library and Multik:
 
-<tabs>
-<tab title="stdlib Kotlin">
+<compare first-title="stdlib Kotlin" second-title="Multik" type="top-bottom">
 
 <!---FUN create_kotlin_matrix-->
 
@@ -37,9 +53,6 @@ println(c) //[[7, 16, 27], [40, 55, 72]]
 
 <!---END-->
 
-</tab>
-<tab title="Multik">
-
 <!---FUN create_multik_matrix-->
 
 ```kotlin
@@ -55,15 +68,15 @@ println(c)
 
 <!---END-->
 
-</tab>
-</tabs>
+</compare>
 
 While Kotlin does provide a robust API for handling such tasks, employing Multik minimizes code complexity and enhances
-readability of the implementation. Moreover, Multik's performance is considerably superior compared to Kotlin's standard
+the readability of the implementation.
+Moreover, Multik's performance is considerably superior compared to Kotlin's standard
 library.
 
 One unique aspect of Multik's multidimensional arrays is their support for static typing and dimensions. This feature
-enables detection of data type and dimensional inconsistencies at the compile-time itself, ensuring the production of
+enables detection of a data type and dimensional inconsistencies at the compile-time itself, ensuring the production of
 more robust and dependable code.
 
 ```kotlin
@@ -90,13 +103,14 @@ development. With the native multiplatform support in Multik, you can effortless
 across various platforms.
 
 > * More details about the multiplatform technology can be found in
-> the [official Kotlin documentation](https://kotlinlang.org/docs/multiplatform.html). 
+    > the [official Kotlin documentation](https://kotlinlang.org/docs/multiplatform.html).
 > * You can check out the platforms supported by Multik in [this link](supported-platforms.md).
 
 ## Performance {id="overview-performance"}
 
-Performance is a pivotal factor in Multik, but what gives it this edge? At the core of an ndarray lies a primitive
-array. When you create a three-dimensional array or a matrix, under the hood, there is a single primitive array of the
+Performance is a pivotal factor in Multik, but what gives it this edge?
+At the core of a ndarray lies a primitive array.
+When you create a three-dimensional array or a matrix, under the hood, there is a single primitive array of the
 corresponding type. This means that your data resides as a contiguous memory block, resulting in faster iteration-based
 operations compared to an array of objects scattered across different memory locations.
 
