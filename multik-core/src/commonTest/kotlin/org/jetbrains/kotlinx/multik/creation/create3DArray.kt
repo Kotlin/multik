@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package org.jetbrains.kotlinx.multik.creation
@@ -874,7 +874,7 @@ class Create3DArrayTests {
      * and checks if the array's ComplexFloatArray representation matches the input ComplexFloatArray.
      */
     @Test
-    fun createThreeDimensionalArrayFromPrimitiveComplexFloatArrayArray() {
+    fun createThreeDimensionalArrayFromPrimitiveComplexFloatArray() {
         val array = complexFloatArrayOf(
             1f + 0f.i, 3f + 0f.i, 8f + 0f.i, 4f + 0f.i, 9f + 0f.i, 2f + 0f.i,
             7f + 0f.i, 3f + 0f.i, 4f + 0f.i, 3f + 0f.i, 8f + 0f.i, 1f + 0f.i
@@ -991,7 +991,7 @@ class Create3DArrayTests {
      * and checks if the array's ComplexDoubleArray representation matches the input ComplexDoubleArray.
      */
     @Test
-    fun createThreeDimensionalArrayFromPrimitiveComplexDoubleArrayArray() {
+    fun createThreeDimensionalArrayFromPrimitiveComplexDoubleArray() {
         val array = complexDoubleArrayOf(
             1.0 + .0.i, 3.0 + .0.i, 8.0 + .0.i, 4.0 + .0.i, 9.0 + .0.i, 2.0 + .0.i,
             7.0 + .0.i, 3.0 + .0.i, 4.0 + .0.i, 3.0 + .0.i, 8.0 + .0.i, 1.0 + .0.i

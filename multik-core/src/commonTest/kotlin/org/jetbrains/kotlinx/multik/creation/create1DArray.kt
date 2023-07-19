@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package org.jetbrains.kotlinx.multik.creation
@@ -1268,7 +1268,7 @@ class Create1DArrayTests {
      * and checks if the array's ComplexFloatArray representation matches the input ComplexFloatArray.
      */
     @Test
-    fun createOneDimensionalArrayFromPrimitiveComplexFloatArrayArray() {
+    fun createOneDimensionalArrayFromPrimitiveComplexFloatArray() {
         val array = complexFloatList.toComplexFloatArray()
         val a: D1Array<ComplexFloat> = mk.ndarray(array)
 
@@ -1398,7 +1398,7 @@ class Create1DArrayTests {
      * and checks if the array's ComplexDoubleArray representation matches the input ComplexDoubleArray.
      */
     @Test
-    fun createOneDimensionalArrayFromPrimitiveComplexDoubleArrayArray() {
+    fun createOneDimensionalArrayFromPrimitiveComplexDoubleArray() {
         val array = complexDoubleList.toComplexDoubleArray()
         val a: D1Array<ComplexDouble> = mk.ndarray(array)
 
