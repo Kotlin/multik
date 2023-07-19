@@ -945,10 +945,11 @@ class Create3DArrayTests {
     fun createComplexDoubleArrayFilledWithOnes() {
         val dim1 = 5
         val dim2 = 7
-        val a = mk.ones<ComplexDouble>(dim1, dim2)
+        val dim3 = 3
+        val a = mk.ones<ComplexDouble>(dim1, dim2, dim3)
 
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
+        assertEquals(dim1 * dim2 * dim3, a.size)
+        assertEquals(dim1 * dim2 * dim3, a.data.size)
         assertTrue { a.all { it == ComplexDouble.one } }
     }
 
@@ -1036,4 +1037,3 @@ class Create3DArrayTests {
         a.data.getComplexDoubleArray() shouldBe expected
     }
 }
-
