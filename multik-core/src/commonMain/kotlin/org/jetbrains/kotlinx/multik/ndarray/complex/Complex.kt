@@ -1,431 +1,61 @@
 /*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package org.jetbrains.kotlinx.multik.ndarray.complex
 
-import org.jetbrains.kotlinx.multik.ndarray.complex.Complex.Companion.i
-import kotlin.math.abs
-import kotlin.math.atan2
-import kotlin.math.sqrt
-
 /**
- * Superclass for complex numbers.
+ * A sealed interface representing a superclass for complex numbers.
  */
-public interface Complex {
+public sealed interface Complex {
     public companion object {
 
         /**
-         * Returns the [ComplexFloat] with the [re]al part.
+         * Returns a [ComplexFloat] with the given real part.
+         *
+         * @param re the real part of the complex number
+         * @return a [ComplexFloat] number with the given real part and 0f imaginary part
          */
         public fun r(re: Float): ComplexFloat = ComplexFloat(re, 0f)
 
         /**
-         * Returns the [ComplexDouble] with the [re]al part.
+         * Returns a [ComplexDouble] with the given real part.
+         *
+         * @param re the real part of the complex number
+         * @return a [ComplexDouble] number with the given real part and 0.0 imaginary part
          */
         public fun r(re: Double): ComplexDouble = ComplexDouble(re, 0.0)
 
         /**
-         * Returns the [ComplexFloat] with the [i]maginary part.
+         * Returns the [ComplexFloat] number representation of the given imaginary part.
+         *
+         * @param im the imaginary part of the complex number
+         * @return a [ComplexFloat] number with the 0f real part and given imaginary part
          */
         public fun i(im: Float): ComplexFloat = ComplexFloat(0f, im)
 
         /**
-         * Returns the [ComplexDouble] with the [i]maginary part.
+         * Returns the [ComplexDouble] number representation of the given imaginary part.
+         *
+         * @param im the imaginary part of the complex number.
+         * @return a [ComplexDouble] number with the 0.0 real part and given imaginary part
          */
         public fun i(im: Double): ComplexDouble = ComplexDouble(0.0, im)
-    }
-}
-
-/**
- * Represents a single-precision 64-bit complex number.
- */
-public class ComplexFloat(public val re: Float, public val im: Float) : Complex {
-
-    /**
-     * Creates a [ComplexFloat] where the real part is one.
-     */
-    public constructor(re: Number, im: Number): this(re.toFloat(), im.toFloat())
-
-    /**
-     * Creates a zero [ComplexFloat].
-     */
-    public constructor(re: Number): this(re.toFloat(), 0f)
-
-    public companion object {
-        public val one: ComplexFloat
-            get() = ComplexFloat(1f, 0f)
-
-        public val zero: ComplexFloat
-            get() = ComplexFloat(0f, 0f)
-
-        public val NaN: ComplexFloat
-            get() = ComplexFloat(Float.NaN, Float.NaN)
-    }
-
-    /** Returns complex conjugate value. */
-    public fun conjugate(): ComplexFloat = ComplexFloat(re, -im)
-
-    /** Returns absolute value of complex number. */
-    public fun abs(): Float = sqrt(re * re + im * im)
-
-    /** Returns angle of complex number. */
-    public fun angle(): Float = atan2(im, re)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Byte): ComplexFloat = ComplexFloat(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Short): ComplexFloat = ComplexFloat(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Int): ComplexFloat = ComplexFloat(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Long): ComplexFloat = ComplexFloat(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Float): ComplexFloat = ComplexFloat(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Double): ComplexDouble = ComplexDouble(re + other, im.toDouble())
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: ComplexFloat): ComplexFloat = ComplexFloat(re + other.re, im + other.im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: ComplexDouble): ComplexDouble = ComplexDouble(re + other.re, im + other.im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Byte): ComplexFloat = ComplexFloat(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Short): ComplexFloat = ComplexFloat(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Int): ComplexFloat = ComplexFloat(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Long): ComplexFloat = ComplexFloat(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Float): ComplexFloat = ComplexFloat(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Double): ComplexDouble = ComplexDouble(re - other, im.toDouble())
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: ComplexFloat): ComplexFloat = ComplexFloat(re - other.re, im - other.im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: ComplexDouble): ComplexDouble = ComplexDouble(re - other.re, im - other.im)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Byte): ComplexFloat = ComplexFloat(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Short): ComplexFloat = ComplexFloat(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Int): ComplexFloat = ComplexFloat(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Long): ComplexFloat = ComplexFloat(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Float): ComplexFloat = ComplexFloat(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Double): ComplexDouble = ComplexDouble(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: ComplexFloat): ComplexFloat =
-        ComplexFloat(re * other.re - im * other.im, re * other.im + other.re * im)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: ComplexDouble): ComplexDouble =
-        ComplexDouble(re * other.re - im * other.im, re * other.im + other.re * im)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Byte): ComplexFloat = ComplexFloat(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Short): ComplexFloat = ComplexFloat(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Int): ComplexFloat = ComplexFloat(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Long): ComplexFloat = ComplexFloat(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Float): ComplexFloat = ComplexFloat(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Double): ComplexDouble = ComplexDouble(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: ComplexFloat): ComplexFloat = when {
-        abs(other.re) > abs(other.im) -> {
-            val dr = other.im / other.re
-            val dd = other.re + dr * other.im
-
-            if (dd.isNaN() || dd == 0f) throw ArithmeticException("Division by zero or infinity")
-
-            ComplexFloat((re + im * dr) / dd, (im - re * dr) / dd)
-        }
-
-        other.im == 0f -> throw ArithmeticException("Division by zero")
-
-        else -> {
-            val dr = other.re / other.im
-            val dd = other.im + dr * other.re
-
-            if (dd.isNaN() || dd == 0f) throw ArithmeticException("Division by zero or infinity")
-
-            ComplexFloat((re * dr + im) / dd, (im * dr - re) / dd)
-        }
-    }
-
-    /** Divides this value by the other value. */
-    @Suppress("DuplicatedCode")
-    public operator fun div(other: ComplexDouble): ComplexDouble = when {
-        abs(other.re) > abs(other.im) -> {
-            val dr = other.im / other.re
-            val dd = other.re + dr * other.im
-
-            if (dd.isNaN() || dd == 0.0) throw ArithmeticException("Division by zero or infinity")
-
-            ComplexDouble((re + im * dr) / dd, (im - re * dr) / dd)
-        }
-
-        other.im == 0.0 -> throw ArithmeticException("Division by zero")
-
-        else -> {
-            val dr = other.re / other.im
-            val dd = other.im + dr * other.re
-
-            if (dd.isNaN() || dd == 0.0) throw ArithmeticException("Division by zero or infinity")
-
-            ComplexDouble((re * dr + im) / dd, (im * dr - re) / dd)
-        }
-    }
-
-    /** Returns this value. */
-    public operator fun unaryPlus(): ComplexFloat = this
-
-    /** Returns the negative of this value. */
-    public operator fun unaryMinus(): ComplexFloat = ComplexFloat(-re, -im)
-
-    public operator fun component1(): Float = re
-
-    public operator fun component2(): Float = im
-
-    override fun equals(other: Any?): Boolean = when {
-        this === other -> true
-        other is ComplexFloat -> re == other.re && im == other.im
-        else -> false
-    }
-
-    override fun hashCode(): Int = 31 * re.toBits() + im.toBits()
-
-    override fun toString(): String = "$re+($im)i"
-}
-
-/**
- * Represents a double-precision 128-bit complex number.
- */
-public class ComplexDouble(public val re: Double, public val im: Double) : Complex {
-
-    public constructor(re: Number, im: Number): this(re.toDouble(), im.toDouble())
-
-    public constructor(re: Number): this(re.toDouble(), 0.0)
-
-    public companion object {
-        /**
-         * Creates a [ComplexFloat] where the real part is one.
-         */
-        public val one: ComplexDouble
-            get() = ComplexDouble(1.0, 0.0)
 
         /**
-         * Creates a zero [ComplexDouble].
+         * Converts a complex float to a long value.
+         *
+         * This method takes in a real and imaginary float value and returns a long equivalent. The real
+         * value is converted to raw bits and left shifted by 32 bits. The imaginary value is also
+         * converted to raw bits and ANDed with the hexadecimal value 0xFFFFFFFFL to get the last 32 bits
+         * of the long. The two 32-bit values are then ORed to get the final long value.
+         *
+         * @param re the real value of the complex number as a float
+         * @param im the imaginary value of the complex number as a float
+         *
+         * @return the long equivalent of the complex number given by the real and imaginary values
          */
-        public val zero: ComplexDouble
-            get() = ComplexDouble(0.0, 0.0)
-
-        /**
-         * Creates a [ComplexDouble] where the real part and the imaginary part are NaN.
-         */
-        public val NaN: ComplexDouble
-            get() = ComplexDouble(Double.NaN, Double.NaN)
+        internal fun convertComplexFloatToLong(re: Float, im: Float): Long =
+            (re.toRawBits().toLong() shl 32) or (im.toRawBits().toLong() and 0xFFFFFFFFL)
     }
-
-    /** Returns complex conjugate value. */
-    public fun conjugate(): ComplexDouble = ComplexDouble(re, -im)
-
-    /** Returns absolute value of complex number. */
-    public fun abs(): Double = sqrt(re * re + im * im)
-
-    /** Returns angle of complex number. */
-    public fun angle(): Double = atan2(im, re)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Byte): ComplexDouble = ComplexDouble(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Short): ComplexDouble = ComplexDouble(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Int): ComplexDouble = ComplexDouble(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Long): ComplexDouble = ComplexDouble(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Float): ComplexDouble = ComplexDouble(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: Double): ComplexDouble = ComplexDouble(re + other, im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: ComplexFloat): ComplexDouble = ComplexDouble(re + other.re, im + other.im)
-
-    /** Adds the other value to this value. */
-    public operator fun plus(other: ComplexDouble): ComplexDouble = ComplexDouble(re + other.re, im + other.im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Byte): ComplexDouble = ComplexDouble(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Short): ComplexDouble = ComplexDouble(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Int): ComplexDouble = ComplexDouble(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Long): ComplexDouble = ComplexDouble(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Float): ComplexDouble = ComplexDouble(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: Double): ComplexDouble = ComplexDouble(re - other, im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: ComplexFloat): ComplexDouble = ComplexDouble(re - other.re, im - other.im)
-
-    /** Subtracts the other value from this value. */
-    public operator fun minus(other: ComplexDouble): ComplexDouble = ComplexDouble(re - other.re, im - other.im)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Byte): ComplexDouble = ComplexDouble(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Short): ComplexDouble = ComplexDouble(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Int): ComplexDouble = ComplexDouble(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Long): ComplexDouble = ComplexDouble(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Float): ComplexDouble = ComplexDouble(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: Double): ComplexDouble = ComplexDouble(re * other, im * other)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: ComplexFloat): ComplexDouble =
-        ComplexDouble(re * other.re - im * other.im, re * other.im + other.re * im)
-
-    /** Multiplies this value by the other value. */
-    public operator fun times(other: ComplexDouble): ComplexDouble =
-        ComplexDouble(re * other.re - im * other.im, re * other.im + other.re * im)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Byte): ComplexDouble = ComplexDouble(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Short): ComplexDouble = ComplexDouble(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Int): ComplexDouble = ComplexDouble(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Long): ComplexDouble = ComplexDouble(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Float): ComplexDouble = ComplexDouble(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: Double): ComplexDouble = ComplexDouble(re / other, im / other)
-
-    /** Divides this value by the other value. */
-    public operator fun div(other: ComplexFloat): ComplexDouble = when {
-        abs(other.re) > abs(other.im) -> {
-            val dr = other.im / other.re
-            val dd = other.re + dr * other.im
-
-            if (dd.isNaN() || dd == 0f) throw ArithmeticException("Division by zero or infinity")
-
-            ComplexDouble((re + im * dr) / dd, (im - re * dr) / dd)
-        }
-
-        other.im == 0f -> throw ArithmeticException("Division by zero")
-
-        else -> {
-            val dr = other.re / other.im
-            val dd = other.im + dr * other.re
-
-            if (dd.isNaN() || dd == 0f) throw ArithmeticException("Division by zero or infinity")
-
-            ComplexDouble((re * dr + im) / dd, (im * dr - re) / dd)
-        }
-    }
-
-    /** Divides this value by the other value. */
-    @Suppress("DuplicatedCode")
-    public operator fun div(other: ComplexDouble): ComplexDouble = when {
-        abs(other.re) > abs(other.im) -> {
-            val dr = other.im / other.re
-            val dd = other.re + dr * other.im
-
-            if (dd.isNaN() || dd == 0.0) throw ArithmeticException("Division by zero or infinity")
-
-            ComplexDouble((re + im * dr) / dd, (im - re * dr) / dd)
-        }
-
-        other.im == 0.0 -> throw ArithmeticException("Division by zero")
-
-        else -> {
-            val dr = other.re / other.im
-            val dd = other.im + dr * other.re
-
-            if (dd.isNaN() || dd == 0.0) throw ArithmeticException("Division by zero or infinity")
-
-            ComplexDouble((re * dr + im) / dd, (im * dr - re) / dd)
-        }
-    }
-
-    /** Returns this value. */
-    public operator fun unaryPlus(): ComplexDouble = this
-
-    /** Returns the negative of this value. */
-    public operator fun unaryMinus(): ComplexDouble = ComplexDouble(-re, -im)
-
-    public operator fun component1(): Double = re
-
-    public operator fun component2(): Double = im
-
-    override fun equals(other: Any?): Boolean = when {
-        this === other -> true
-        other is ComplexDouble -> re == other.re && im == other.im
-        else -> false
-    }
-
-    override fun hashCode(): Int = 31 * re.toBits().hashCode() + im.toBits().hashCode()
-
-    override fun toString(): String = "$re+($im)i"
 }

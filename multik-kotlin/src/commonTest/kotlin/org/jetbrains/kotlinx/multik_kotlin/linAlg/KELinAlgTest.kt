@@ -29,6 +29,39 @@ import kotlin.test.*
 class KELinAlgTest {
 
     @Test
+    fun vector_vectorDotTestWithFloatComplexNumbers() {
+        val random = Random(42)
+        val vector1 = mk.d1array(9) { ComplexFloat(random.nextFloat(), random.nextFloat()) }
+        val vector2 = mk.d1array(9) { ComplexFloat(random.nextFloat(), random.nextFloat()) }
+
+        val actual = KELinAlg.dot(vector1, vector2)
+        println(actual)
+//        assertFloatingComplexNumber(0.23971967f + 4.6530027f.i, actual)
+    }
+
+    @Test
+    fun vector_vectorDotTestWithDouble32ComplexNumbers() {
+        val random = Random(42)
+        val vector1 = mk.d1array(9) { ComplexDouble(1.0, 0.0) }
+        val vector2 = mk.d1array(9) { ComplexDouble(random.nextFloat(), random.nextFloat()) }
+
+        val actual = KELinAlg.dot(vector1, vector2)
+        println(actual)
+//        assertFloatingComplexNumber(4.174294710159302 + 5.029674530029297.i, actual)
+    }
+
+    @Test
+    fun vector_vectorDotTestWithDouble64ComplexNumbers() {
+        val random = Random(42)
+        val vector1 = mk.d1array(9) { ComplexDouble(random.nextDouble(), random.nextDouble()) }
+        val vector2 = mk.d1array(9) { ComplexDouble(random.nextDouble(), random.nextDouble()) }
+
+        val actual = KELinAlg.dot(vector1, vector2)
+        println(actual)
+//        assertFloatingComplexNumber(0.17520206558121712 + 4.552420480555579.i, actual)
+    }
+
+    @Test
     fun test_of_norm_function_with_p_equals_1() {
         val d2arrayDouble1 = mk.ndarray(mk[mk[1.0, 2.0], mk[3.0, 4.0]])
         val d2arrayDouble2 = mk.ndarray(mk[mk[-1.0, -2.0], mk[-3.0, -4.0]])

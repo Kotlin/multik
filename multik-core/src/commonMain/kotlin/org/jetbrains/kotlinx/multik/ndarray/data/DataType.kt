@@ -5,6 +5,8 @@
 package org.jetbrains.kotlinx.multik.ndarray.data
 
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble32
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble64
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType.*
 import kotlin.reflect.KClass
@@ -64,6 +66,7 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
         /**
          * Returns [DataType] by class of [element].
          */
+        @Suppress( "nothing_to_inline")
         public inline fun <T> of(element: T): DataType {
             element ?: throw IllegalStateException("Element is null cannot find type")
             return when (element!!::class) {
@@ -74,7 +77,8 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
                 Float::class -> FloatDataType
                 Double::class -> DoubleDataType
                 ComplexFloat::class -> ComplexFloatDataType
-                ComplexDouble::class -> ComplexDoubleDataType
+                ComplexDouble64::class -> ComplexDoubleDataType
+                ComplexDouble32::class -> ComplexDoubleDataType
                 else -> throw IllegalStateException("One of the primitive types was expected, " +
                         "got ${element!!::class.simpleName}")
             }
@@ -95,5 +99,9 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
             ComplexDouble::class -> ComplexDoubleDataType
             else -> throw IllegalStateException("One of the primitive types was expected, got ${type.simpleName}")
         }
+    }
+
+    override fun toString(): String {
+        return "DataType(nativeCode=$nativeCode, itemSize=$itemSize, class=$clazz)"
     }
 }

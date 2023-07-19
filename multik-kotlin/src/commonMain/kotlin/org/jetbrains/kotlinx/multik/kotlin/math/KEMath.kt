@@ -242,7 +242,7 @@ internal object KEMath : Math {
             accum = t
             ret[ind++] = accum
         }
-        return ret.asType(a.dtype)
+        return ret.asType(a.dtype) // TODO(unchecked cast)
     }
 
     override fun <T : Number, D : Dimension> cumSum(a: MultiArray<T, D>, axis: Int): NDArray<T, D> {
@@ -263,7 +263,6 @@ internal object KEMath : Math {
     }
 }
 
-//todo util module
 internal fun IntArray.remove(pos: Int): IntArray = when (pos) {
     0 -> sliceArray(1..lastIndex)
     lastIndex -> sliceArray(0 until lastIndex)

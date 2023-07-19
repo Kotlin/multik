@@ -19,8 +19,10 @@ fun <D : Dimension> assertFloatingNDArray(
     epsilon: Float = 1e-6f, message: String? = null
 ) {
     val diff = abs(expected - actual)
-    assertTrue("${if (message == null) "" else "$message.\n"} " +
-            "Expected \n<$expected>\n Actual \n<$actual>.") { diff.all { it < epsilon } }
+    assertTrue(
+        "${if (message == null) "" else "$message.\n"} " +
+                "Expected \n<$expected>\n Actual \n<$actual>."
+    ) { diff.all { it < epsilon } }
 }
 
 fun <D : Dimension> assertComplexFloatingNDArray(
@@ -28,8 +30,10 @@ fun <D : Dimension> assertComplexFloatingNDArray(
     epsilon: Float = 1e-6f, message: String? = null
 ) {
     val diff = abs(expected - actual)
-    assertTrue("${if (message == null) "" else "$message.\n"} " +
-        "Expected \n<$expected>\n Actual \n<$actual>.") { diff.all { it < epsilon } }
+    assertTrue(
+        "${if (message == null) "" else "$message.\n"} " +
+                "Expected \n<$expected>\n Actual \n<$actual>."
+    ) { diff.all { it < epsilon } }
 }
 
 fun <D : Dimension> assertFloatingNDArray(
@@ -37,8 +41,10 @@ fun <D : Dimension> assertFloatingNDArray(
     epsilon: Double = 1e-8, message: String? = null
 ) {
     val diff = abs(expected - actual)
-    assertTrue("${if (message == null) "" else "$message.\n"} " +
-        "Expected \n<$expected>\n Actual \n<$actual>.") { diff.all { it < epsilon } }
+    assertTrue(
+        "${if (message == null) "" else "$message.\n"} " +
+                "Expected \n<$expected>\n Actual \n<$actual>."
+    ) { diff.all { it < epsilon } }
 }
 
 fun <D : Dimension> assertComplexFloatingNDArray(
@@ -46,8 +52,10 @@ fun <D : Dimension> assertComplexFloatingNDArray(
     epsilon: Double = 1e-8, message: String? = null
 ) {
     val diff = abs(expected - actual)
-    assertTrue("${if (message == null) "" else "$message.\n"} " +
-        "Expected \n<$expected>\n Actual \n<$actual>.") { diff.all { it < epsilon } }
+    assertTrue(
+        "${if (message == null) "" else "$message.\n"} " +
+                "Expected \n<$expected>\n Actual \n<$actual>."
+    ) { diff.all { it < epsilon } }
 }
 
 fun assertFloatingNumber(expected: Float, actual: Float, epsilon: Float = 1e-6f, message: String? = null) {
@@ -57,5 +65,21 @@ fun assertFloatingNumber(expected: Float, actual: Float, epsilon: Float = 1e-6f,
 
 fun assertFloatingNumber(expected: Double, actual: Double, epsilon: Double = 1e-8, message: String? = null) {
     val diff = abs(expected - actual)
+    assertTrue("${if (message == null) "" else "$message. "} Expected <$expected>, actual <$actual>.") { diff < epsilon }
+}
+
+fun assertFloatingComplexNumber(
+    expected: ComplexFloat, actual: ComplexFloat,
+    epsilon: Float = 1e-6f, message: String? = null
+) {
+    val diff = (expected - actual).abs()
+    assertTrue("${if (message == null) "" else "$message. "} Expected <$expected>, actual <$actual>.") { diff < epsilon }
+}
+
+fun assertFloatingComplexNumber(
+    expected: ComplexDouble, actual: ComplexDouble,
+    epsilon: Double = 1e-8, message: String? = null
+) {
+    val diff = (expected - actual).abs()
     assertTrue("${if (message == null) "" else "$message. "} Expected <$expected>, actual <$actual>.") { diff < epsilon }
 }

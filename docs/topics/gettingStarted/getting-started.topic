@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       title="Getting Started" id="getting-started" help-id="Getting Started;getting-started">
+
+    <web-summary>
+        Embark on your journey with Multik.
+        Get to grips with the essential features through a comprehensive Quickstart guide, understand how
+        to set up Multik through detailed Installation instructions, and explore the various Supported Platforms.
+        Kickstart your path to multidimensional array computations in Kotlin.
+    </web-summary>
+
+    <card-summary>
+        Kickstart your journey with Multik — quickstart guide, installation instructions, and supported platforms.
+    </card-summary>
+
+    <link-summary>
+        Begin your exploration with Multik's quickstart, installation, and supported platforms.
+    </link-summary>
+
+    <list>
+        <li>
+            <a href="quickstart.md"/>
+        </li>
+        <li>
+            <a href="installation.md"/>
+        </li>
+        <li>
+            <a href="supported-platforms.md"/>
+        </li>
+    </list>
+
+    <img src="Kodee_Assets_Digital_Kodee-naughty.svg" alt="Kodee" width="450"/>
+
+</topic>

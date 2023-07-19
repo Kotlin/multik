@@ -829,10 +829,19 @@ public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) :
         else -> this.data == other.data
     }
 
-    override fun hashCode(): Int =
-        (0 until size).fold(1) { acc, r ->
-            31 * acc + data[r].hashCode()
-        }
+    override fun hashCode(): Int {
+        var result = data.hashCode()
+        result = 31 * result + dtype.hashCode()
+        result = 31 * result + size
+        return result
+    }
+
+//    override fun hashCode(): Int = data.hashCode()
+//        (0 until size).fold(1) { acc, r ->
+//
+//            31 * acc + (31 * data[r].re.toBits() + data[r].im.toBits())
+////            31 * acc + data[r].hashCode()
+//        }
 
     public operator fun plusAssign(other: MemoryViewComplexFloatArray) {
         for (i in this.indices) {
@@ -924,10 +933,12 @@ public class MemoryViewComplexDoubleArray(override val data: ComplexDoubleArray)
         else -> this.data == other.data
     }
 
-    override fun hashCode(): Int =
-        (0 until size).fold(1) { acc, r ->
-            31 * acc + data[r].hashCode()
-        }
+    override fun hashCode(): Int {
+        var result = data.hashCode()
+        result = 31 * result + dtype.hashCode()
+        result = 31 * result + size
+        return result
+    }
 
     public operator fun plusAssign(other: MemoryViewComplexDoubleArray) {
         for (i in this.indices) {
@@ -1018,6 +1029,7 @@ public fun <T> initMemoryView(size: Int, dataType: DataType, init: (Int) -> T): 
                 init as (Int) -> ComplexFloat
             )
         )
+
         DataType.ComplexDoubleDataType -> MemoryViewComplexDoubleArray(
             ComplexDoubleArray(
                 size,

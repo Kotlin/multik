@@ -1,45 +1,109 @@
 /*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
+ * Copyright 2020-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 
+/**
+ * Checks if the given index is within the bounds of the given axis and the size of the shape.
+ *
+ * @param value the boolean value representing whether the index is within bounds
+ * @param index the integer value representing the index to check
+ * @param axis the integer value representing the axis dimension to check against
+ * @param size the integer value representing the size of the shape on the given axis dimension
+ *
+ * @throws IndexOutOfBoundsException when the index is out of bounds for the given axis and size
+ */
 @PublishedApi
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
+internal inline fun checkBounds(value: Boolean, index: Int, axis: Int, size: Int) {
+    if (!value) {
+        throw IndexOutOfBoundsException("Index $index is out of bounds shape dimension $axis with size $size")
+    }
+}
+
+/**
+ * Checks if the given dimension matches the provided shape size, or if the dimension is greater than 4
+ * and shape size is greater than 4.
+ *
+ * @param dim the input dimension object to check.
+ * @param shapeSize the size of the shape to compare with.
+ * @throws IllegalArgumentException if the dimension doesn't match the size of the shape.
+ */
+@PublishedApi
+@Suppress( "nothing_to_inline")
 internal inline fun requireDimension(dim: Dimension, shapeSize: Int) {
     require(dim.d == shapeSize || (dim.d > 4 && shapeSize > 4))
     { "Dimension doesn't match the size of the shape: dimension (${dim.d}) != $shapeSize shape size." }
 }
 
+/**
+ * Check if the given shape is empty.
+ *
+ * @param shape An array of integers representing the shape to be checked.
+ * @throws IllegalArgumentException if the given shape is empty.
+ */
 @PublishedApi
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 internal inline fun requireShapeEmpty(shape: IntArray) {
     require(shape.isNotEmpty()) { "Shape cannot be empty." }
 }
 
-@Suppress("NOTHING_TO_INLINE")
-public inline fun requireElementsWithShape(elementSize: Int, shapeSize: Int) {
+/**
+ * Checks if the number of elements matches the specified shape.
+ *
+ * @param elementSize the number of elements in the element list
+ * @param shapeSize the size of the given shape
+ * @throws IllegalArgumentException if the number of elements doesn't match the shape
+ */
+@Suppress( "nothing_to_inline")
+internal inline fun requireElementsWithShape(elementSize: Int, shapeSize: Int) {
     require(elementSize == shapeSize) { "The number of elements doesn't match the shape: $elementSize!=$shapeSize" }
 }
 
-@Suppress("NOTHING_TO_INLINE")
+/**
+ * Asserts that two array sizes are equal.
+ *
+ * @param rightSize the size of the right operand array
+ * @param otherSize the size of the left operand array
+ *
+ * @throws IllegalArgumentException if the two sizes don't match
+ */
+@Suppress( "nothing_to_inline")
 internal inline fun requireArraySizes(rightSize: Int, otherSize: Int) {
     require(rightSize == otherSize) { "Array sizes don't match: (right operand size) $rightSize != $otherSize (left operand size)" }
 }
 
-@Suppress("NOTHING_TO_INLINE")
+/**
+ * Checks if two given integer arrays have equal shape.
+ *
+ * @param left the first integer array to compare
+ * @param right the second integer array to compare
+ * @throws IllegalArgumentException if the shapes of the arrays do not match
+ */
+@Suppress( "nothing_to_inline")
 internal inline fun requireEqualShape(left: IntArray, right: IntArray) {
     require(left.contentEquals(right)) { "Array shapes don't match: ${left.contentToString()} != ${right.contentToString()}" }
 }
 
-@Suppress("NOTHING_TO_INLINE")
+/**
+ * Checks if the given dimension is positive or not. Throws an IllegalArgumentException if the shape is not positive.
+ *
+ * @param dim an integer representing the dimension of the shape.
+ * @throws IllegalArgumentException if the shape dimension is not positive.
+ */
+@Suppress( "nothing_to_inline")
 internal inline fun requirePositiveShape(dim: Int) {
     require(dim > 0) { "Shape must be positive but was $dim." }
 }
 
+/**
+ * Computes the strides for a multidimensional array given the shape.
+ *
+ * @param shape an array representing the shape of the multidimensional array
+ * @return an integer array containing the strides of the multidimensional array
+ */
 internal fun computeStrides(shape: IntArray): IntArray = shape.copyOf().apply {
     this[this.lastIndex] = 1
     for (i in this.lastIndex - 1 downTo 0) {
@@ -47,21 +111,7 @@ internal fun computeStrides(shape: IntArray): IntArray = shape.copyOf().apply {
     }
 }
 
-//TODO(create module utils)
-@Suppress("NOTHING_TO_INLINE")
-/*internal*/public inline fun zeroNumber(dtype: DataType): Any = when (dtype) {
-    DataType.ByteDataType -> 1.toByte()
-    DataType.ShortDataType -> 1.toShort()
-    DataType.IntDataType -> 1
-    DataType.LongDataType -> 1L
-    DataType.FloatDataType -> 1f
-    DataType.DoubleDataType -> 1.0
-    DataType.ComplexFloatDataType -> ComplexFloat.zero
-    DataType.ComplexDoubleDataType -> ComplexDouble.zero
-}
-
 @PublishedApi
-@Suppress("IMPLICIT_CAST_TO_ANY")
 internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::class) {
     Byte::class -> this.toByte()
     Short::class -> this.toShort()
@@ -72,9 +122,8 @@ internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::
     else -> throw Exception("Type not defined.")
 } as T
 
-//TODO(create module utils)
-@Suppress("IMPLICIT_CAST_TO_ANY", "NOTHING_TO_INLINE", "UNCHECKED_CAST")
-/*internal*/ public fun <T : Number> Number.toPrimitiveType(dtype: DataType): T = when (dtype.nativeCode) {
+@Suppress("UNCHECKED_CAST")
+public fun <T : Number> Number.toPrimitiveType(dtype: DataType): T = when (dtype.nativeCode) {
     1 -> this.toByte()
     2 -> this.toShort()
     3 -> this.toInt()
@@ -84,7 +133,6 @@ internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::
     else -> throw Exception("Type not defined.")
 } as T
 
-//TODO(create module utils)
 public operator fun <T : Number> Number.compareTo(other: T): Int {
     return when {
         this is Float && other is Float -> this.compareTo(other)
@@ -97,10 +145,22 @@ public operator fun <T : Number> Number.compareTo(other: T): Int {
     }
 }
 
+/**
+ * Returns the actual axis index by converting a negative index to positive index relative to the array dimensions
+ *
+ * @param axis the index of the axis to retrieve
+ * @return the actual axis index
+ */
 internal fun MultiArray<*, *>.actualAxis(axis: Int): Int {
     return if (axis < 0) dim.d + axis else axis
 }
 
+/**
+ * Removes the element at the specified position in this IntArray.
+ *
+ * @param pos the position of the element to be removed
+ * @return the new IntArray with the element removed
+ */
 @PublishedApi
 internal fun IntArray.remove(pos: Int): IntArray = when (pos) {
     0 -> sliceArray(1..lastIndex)
@@ -108,6 +168,12 @@ internal fun IntArray.remove(pos: Int): IntArray = when (pos) {
     else -> sliceArray(0 until pos) + sliceArray(pos + 1..lastIndex)
 }
 
+/**
+ * Removes elements from the array with indices specified in the given list.
+ *
+ * @param indices the list of element indices to be removed from the array.
+ * @return the new array with requested elements removed, or the original array if the list is empty.
+ */
 internal fun IntArray.removeAll(indices: List<Int>): IntArray = when {
     indices.isEmpty() -> this
     indices.size == 1 -> remove(indices.first())

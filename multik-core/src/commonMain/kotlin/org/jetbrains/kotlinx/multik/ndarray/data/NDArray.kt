@@ -4,6 +4,8 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble32
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.operations.concatenate
 
 public typealias D1Array<T> = NDArray<T, D1>
@@ -66,7 +68,7 @@ public class NDArray<T, D : Dimension> constructor(
         return this.asType(dataType)
     }
 
-    //TODO ???
+    //TODO Unchecked Cast!!!???
     public fun <E : Number> asType(dataType: DataType): NDArray<E, D> {
         val newData = initMemoryView(this.data.size, dataType) { this.data[it] as E }
         return NDArray(newData, this.offset, this.shape, this.strides, this.dim)
@@ -298,9 +300,30 @@ public class NDArray<T, D : Dimension> constructor(
 
         val thIt = this.iterator()
         val othIt = other.iterator()
+        // TODO
+        // workaround for value classes: ComplexFloat and ComplexDouble32
+        // "https://youtrack.jetbrains.com/issue/KT-24874/Support-custom-equals-and-hashCode-for-value-classes"
         while (thIt.hasNext() && othIt.hasNext()) {
-            if (thIt.next() != othIt.next())
-                return false
+            val left = thIt.next()
+            val right = othIt.next()
+            when {
+                left is ComplexFloat && right is ComplexFloat -> {
+                    if (!(left.eq(right)))
+                        return false
+                }
+
+                left is ComplexDouble32 && right is ComplexDouble32 -> {
+                    if (!(left.eq(right)))
+                        return false
+                }
+
+                else -> {
+                    if (left != right)
+                        return false
+                }
+            }
+//            if (thIt.next() != othIt.next())
+//                return false
         }
 
         return true
