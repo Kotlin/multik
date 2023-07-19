@@ -197,7 +197,7 @@ class Create2DArrayTests {
     }
 
     /**
-     * Tests the function 'mk.identity<Byte>(n)' that creates an identity matrix of size n x n.
+     * Tests the function 'mk.identity<Short>(n)' that creates an identity matrix of size n x n.
      * The test asserts that:
      * - The size of the resulting matrix matches n*n.
      * - The diagonal elements of the matrix are 1 and the non-diagonal elements are 0.
@@ -261,7 +261,7 @@ class Create2DArrayTests {
 
 
     /**
-     * Creates a one-dimensional array with a given size using an initialization function
+     * Creates a two-dimensional array with a given size using an initialization function
      * and checks if the array's ShortArray representation matches the expected output.
      */
     @Test
