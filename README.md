@@ -259,8 +259,8 @@ c.sorted() // sort elements
 a[2] // select the element at the 2 index
 b[1, 2] // select the element at row 1 column 2
 b[1] // select row 1 
-b[0..2, 1] // select elements at rows 0 and 1 in column 1
-b[0..1..1] // select all elements at row 0
+b[0..<2, 1] // select elements at rows 0 and 1 in column 1
+b[0, 0..2..1] // select all elements at row 0
 
 for (el in b) {
     print("$el, ") // 1.5, 2.1, 3.0, 4.0, 5.0, 6.0, 
