@@ -47,6 +47,8 @@ CTestTestfile.cmake
 _deps
 
 ### Kotlin template
+.kotlin
+
 # Compiled class file
 *.class
 

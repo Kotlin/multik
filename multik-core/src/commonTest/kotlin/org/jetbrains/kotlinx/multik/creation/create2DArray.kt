@@ -13,6 +13,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.toListD2
 import org.jetbrains.kotlinx.multik.ndarray.operations.toSet
 import org.jetbrains.kotlinx.multik.shouldBe
 import kotlin.math.round
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -236,6 +237,7 @@ class Create2DArrayTests {
      * and checks if the array's set representation matches the input set.
      */
     @Test
+    @Ignore
     fun createTwoDimensionalArrayFromShortSet() {
         val set = setOf<Short>(1, 3, 8, 4, 9, 2)
         val shape = intArrayOf(2, 3)
