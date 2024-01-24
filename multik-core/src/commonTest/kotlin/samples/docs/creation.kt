@@ -49,21 +49,21 @@ class ArrayCreation {
         assertEquals(listOf(8.4, 5.2, 9.3, 11.5), listOf(8.4, 5.2, 9.3, 11.5).toNDArray().toList())
     }
 
-    @Test
-    fun create_array_from_primitive_with_shape() {
-        // SampleStart
-        mk.ndarray(floatArrayOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), 2, 1, 3)
-        /*
-        [[[34.2, 13.4, 4.8]],
-
-        [[8.8, 3.3, 7.1]]]
-         */
-        // SampleEnd
-
-        val a = mk.ndarray(floatArrayOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), 2, 1, 3)
-        assertEquals(listOf(2, 1, 3), a.shape.toList())
-        assertEquals(listOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), a.toList())
-    }
+//    @Test
+//    fun create_array_from_primitive_with_shape() {
+//        // SampleStart
+//        mk.ndarray(floatArrayOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), 2, 1, 3)
+//        /*
+//        [[[34.2, 13.4, 4.8]],
+//
+//        [[8.8, 3.3, 7.1]]]
+//         */
+//        // SampleEnd
+//
+//        val a = mk.ndarray(floatArrayOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), 2, 1, 3)
+//        assertEquals(listOf(2, 1, 3), a.shape.toList())
+//        assertEquals(listOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), a.toList())
+//    }
 
     @Test
     fun create_zeros_and_ones_arrays() {

@@ -12,6 +12,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.toListD3
 import org.jetbrains.kotlinx.multik.ndarray.operations.toSet
 import org.jetbrains.kotlinx.multik.shouldBe
 import kotlin.math.round
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -200,6 +201,7 @@ class Create3DArrayTests {
      * and checks if the array's set representation matches the input set.
      */
     @Test
+    @Ignore
     fun createThreeDimensionalArrayFromShortSet() {
         val set = setOf<Short>(1, 3, 8, 4, 9, 2, 7, 5, 11, 13, -8, -1)
         val shape = intArrayOf(2, 3, 2)

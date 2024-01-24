@@ -1,6 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
 import java.time.Duration
 
 buildscript {
@@ -28,11 +25,14 @@ allprojects {
 
     group = "org.jetbrains.kotlinx"
     version = multik_version
-
 }
 
 configure(subprojects.filter { it.name !in unpublished }) {
     apply("$rootDir/gradle/publish.gradle")
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
+    args.add("--ignore-engines")
 }
 
 val sonatypeUser: String = System.getenv("SONATYPE_USER") ?: ""

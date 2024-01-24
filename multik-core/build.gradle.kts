@@ -1,6 +1,7 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
+@file:OptIn(ExperimentalWasmDsl::class)
+
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 
 plugins {
     kotlin("multiplatform")
@@ -16,6 +17,8 @@ repositories {
 }
 
 val common_csv_version: String by project
+val nodeJsVersion: String by project
+val nodeDownloadUrl: String by project
 
 kotlin {
     explicitApi()
@@ -34,33 +37,14 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     iosX64()
-    wasm {
-        browser {
-            testTask {
-                /*
-                    https://youtrack.jetbrains.com/issue/KT-56633
-                    https://youtrack.jetbrains.com/issue/KT-56159
-                 */
-                this.enabled = false // fixed in 1.9.0/1.9.20
-            }
-        }
+    wasmJs {
+        browser()
+        nodejs()
+        d8()
     }
     js(IR) {
-        val timeoutMs = "1000000"
-        browser{
-            testTask {
-                useMocha {
-                    timeout = timeoutMs
-                }
-            }
-        }
-        nodejs{
-            testTask {
-                useMocha {
-                    timeout = timeoutMs
-                }
-            }
-        }
+        browser()
+        nodejs()
     }
 
     sourceSets {
@@ -78,17 +62,12 @@ kotlin {
                 implementation("org.jetbrains.bio:npy:0.3.5")
             }
         }
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-        names.forEach { n ->
-            if (n.contains("X64Main") || n.contains("Arm64Main")){
-                this@sourceSets.getByName(n).apply{
-                    dependsOn(nativeMain)
-                }
-            }
-        }
     }
+}
+
+rootProject.the<NodeJsRootExtension>().apply {
+    nodeVersion = nodeJsVersion
+    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
 }
 
 korro {

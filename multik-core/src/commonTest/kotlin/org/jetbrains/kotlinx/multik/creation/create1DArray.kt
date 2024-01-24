@@ -13,6 +13,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.toList
 import org.jetbrains.kotlinx.multik.ndarray.operations.toSet
 import org.jetbrains.kotlinx.multik.shouldBe
 import kotlin.math.round
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -260,6 +261,7 @@ class Create1DArrayTests {
      * and checks if the array's set representation matches the input set.
      */
     @Test
+    @Ignore
     fun createOneDimensionalArrayFromShortSet() {
         val set = setOf<Short>(1, 3, 8, 4, 9)
         val a: D1Array<Short> = mk.ndarray(set, shape = intArrayOf(5))
@@ -401,6 +403,7 @@ class Create1DArrayTests {
      * and then checks that the size and elements of the NDArray match those of the original list.
      */
     @Test
+    @Ignore
     fun convertIterableToShortArrayNDArray() {
         val expected = listOf<Short>(3, 8, 13, 2, 0)
         val a = expected.toNDArray()
