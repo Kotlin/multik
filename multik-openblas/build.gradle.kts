@@ -106,7 +106,6 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                api(project(":multik-core"))
                 implementation(kotlin("test"))
             }
         }
