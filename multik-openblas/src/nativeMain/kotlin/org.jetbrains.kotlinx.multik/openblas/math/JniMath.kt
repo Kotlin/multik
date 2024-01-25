@@ -133,43 +133,55 @@ internal actual object JniMath {
         array_sum_double(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
 
     actual fun cumSum(arr: ByteArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: ByteArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 1)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 1)
         }
+        arrPin.unpin()
         return true
     }
     actual fun cumSum(arr: ShortArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: ShortArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 2)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 2)
         }
+        arrPin.unpin()
         return true
     }
 
     actual fun cumSum(arr: IntArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: IntArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 3)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 3)
         }
+        arrPin.unpin()
         return true
     }
 
     actual fun cumSum(arr: LongArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: LongArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 4)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 4)
         }
+        arrPin.unpin()
         return true
     }
 
     actual fun cumSum(arr: FloatArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: FloatArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 5)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 5)
         }
+        arrPin.unpin()
         return true
     }
 
     actual fun cumSum(arr: DoubleArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: DoubleArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 6)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 6)
         }
+        arrPin.unpin()
         return true
     }
 }
