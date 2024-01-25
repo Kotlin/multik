@@ -33,7 +33,7 @@ internal actual object JniMath {
     is LongArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
     is ByteArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
     is ShortArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
-    else -> throw Exception("Only primitive arrays are supported for Kotlin/Native `argMin`")
+    else -> throw Exception("Only primitive arrays are supported for Kotlin/Native `argMax`")
 }
     }
     actual fun expC(arr: FloatArray, size: Int): Boolean {
