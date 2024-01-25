@@ -5,10 +5,15 @@ import org.jetbrains.kotlinx.multik.cinterop.*
 
 @OptIn(ExperimentalForeignApi::class)
 internal actual object JniMath {
-    actual fun argMin(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int =
-        argmin(StableRef.create(arr).asCPointer(), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype)
-    actual fun argMax(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int =
-        argmax(StableRef.create(arr).asCPointer(), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype)
+    actual fun argMin(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int = when(arr) {
+        is DoubleArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        is FloatArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        is IntArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        is LongArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        is ByteArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        is ShortArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        else -> throw Exception("Only primitive arrays are supported for Kotlin/Native `argMin`")
+    }
 
     actual fun exp(arr: FloatArray, size: Int): Boolean {
         for (i in 0 until size) {
@@ -21,6 +26,15 @@ internal actual object JniMath {
             arr[i] = kotlin.math.exp(arr[i])
         }
         return true
+    actual fun argMax(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int = when(arr) {
+    is DoubleArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    is FloatArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    is IntArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    is LongArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    is ByteArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    is ShortArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    else -> throw Exception("Only primitive arrays are supported for Kotlin/Native `argMin`")
+}
     }
     actual fun expC(arr: FloatArray, size: Int): Boolean {
         for (i in 0 until size step 2) {
