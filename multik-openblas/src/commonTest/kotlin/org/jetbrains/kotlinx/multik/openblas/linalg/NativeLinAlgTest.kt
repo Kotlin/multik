@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.openblas.linalg
 
 import org.jetbrains.kotlinx.multik.api.*
@@ -214,6 +210,14 @@ class NativeLinAlgTest {
     @Test
     fun `matrix slice dot vector test F`() {
         val (matrix, vector) = data.getFloatMV(5)
+        val expected = NativeLinAlg.dot(matrix[2 until 5, 0 until 3].deepCopy(), vector[(0 until 5)..2].deepCopy())
+        val actual = NativeLinAlg.dot(matrix[2 until 5, 0 until 3], vector[(0 until 5)..2])
+        assertFloatingNDArray(expected, actual)
+    }
+
+    @Test
+    fun `matrix slice dot vector test D`() {
+        val (matrix, vector) = data.getDoubleMV(5)
         val expected = NativeLinAlg.dot(matrix[2 until 5, 0 until 3].deepCopy(), vector[(0 until 5)..2].deepCopy())
         val actual = NativeLinAlg.dot(matrix[2 until 5, 0 until 3], vector[(0 until 5)..2])
         assertFloatingNDArray(expected, actual)

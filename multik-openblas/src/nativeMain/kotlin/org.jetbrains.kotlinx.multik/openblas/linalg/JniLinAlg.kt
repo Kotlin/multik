@@ -226,14 +226,28 @@ internal actual object JniLinAlg {
      */
     actual fun dotMV(
         transA: Boolean, offsetA: Int, a: FloatArray, m: Int, n: Int, lda: Int, offsetX: Int, x: FloatArray, incX: Int, y: FloatArray
-    ) = y.usePinned {
-        matrix_dot_vector_float(transA, offsetA, a.toCValues(), m, n, lda, offsetX, x.toCValues(), incX, it.addressOf(0))
+    ) {
+        val aPin = a.pin()
+        val xPin = x.pin()
+        y.usePinned {
+            matrix_dot_vector_float(transA, offsetA, aPin.addressOf(0), lda, m, n,
+                offsetX, xPin.addressOf(0), incX, it.addressOf(0))
+        }
+        aPin.unpin()
+        xPin.unpin()
     }
 
     actual fun dotMV(
         transA: Boolean, offsetA: Int, a: DoubleArray, m: Int, n: Int, lda: Int, offsetX: Int, x: DoubleArray, incX: Int, y: DoubleArray
-    ) = y.usePinned {
-        matrix_dot_vector_double(transA, offsetA, a.toCValues(), m, n, lda, offsetX, x.toCValues(), incX, it.addressOf(0))
+    ) {
+        val aPin = a.pin()
+        val xPin = x.pin()
+        y.usePinned {
+            matrix_dot_vector_double(transA, offsetA, aPin.addressOf(0), lda, m, n,
+                offsetX, xPin.addressOf(0), incX, it.addressOf(0))
+        }
+        aPin.unpin()
+        xPin.unpin()
     }
 
     actual fun dotMVC(
