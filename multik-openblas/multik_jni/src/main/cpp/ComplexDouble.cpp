@@ -1,14 +1,16 @@
 #include "jni.h"
 
-static jmethodID newComplexDoubleID = nullptr;
-
 jobject newComplexDouble(JNIEnv *env, double re, double im) {
-  jobject ret;
-  jclass cls = env->FindClass("org/jetbrains/kotlinx/multik/ndarray/complex/ComplexDouble");
-  jfieldID companionField = env->GetStaticFieldID(cls, "Companion", "Lorg/jetbrains/kotlinx/multik/ndarray/complex/ComplexDouble$Companion;");
-  jobject companionObject = env->GetStaticObjectField(cls, companionField);
-  jclass companionClass = env->GetObjectClass(companionObject);
-  newComplexDoubleID = env->GetMethodID(companionClass, "invoke", "(DD)Lorg/jetbrains/kotlinx/multik/ndarray/complex/ComplexDouble;");
-  ret = env->CallObjectMethod(companionObject, newComplexDoubleID, re, im);
+  jclass cls = env->FindClass("org/jetbrains/kotlinx/multik/ndarray/complex/ComplexDouble_jvmKt");
+  if (cls == nullptr) {
+    // TODO(exception handling)
+  }
+
+  jmethodID methodID = env->GetStaticMethodID(cls, "ComplexDouble", "(DD)Lorg/jetbrains/kotlinx/multik/ndarray/complex/ComplexDouble;");
+  if (methodID == nullptr) {
+    // TODO(exception handling)
+  }
+
+  jobject ret = env->CallStaticObjectMethod(cls, methodID, re, im);
   return ret;
 }
