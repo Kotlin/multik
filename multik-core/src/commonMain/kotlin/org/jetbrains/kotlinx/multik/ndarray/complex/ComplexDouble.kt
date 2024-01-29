@@ -4,9 +4,30 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.complex
 
-import kotlin.jvm.JvmInline
 import kotlin.math.atan2
 import kotlin.math.sqrt
+
+/**
+ * Creates a [ComplexDouble] with the given real and imaginary values in floating-point format.
+ *
+ * @param re the real value of the complex number in double format.
+ * @param im the imaginary value of the complex number in double format.
+ */
+public expect fun ComplexDouble(re: Double, im: Double): ComplexDouble
+
+/**
+ * Creates a [ComplexDouble] with the given real and imaginary values in number format.
+ *
+ * @param re the real value of the complex number in number format.
+ * @param im the imaginary value of the complex number in number format.
+ */
+public expect fun ComplexDouble(re: Number, im: Number): ComplexDouble
+
+/**
+ * Creates a [ComplexDouble] with a zero imaginary value.
+ * @param re the real value of the complex number in number format.
+ */
+public fun ComplexDouble(re: Number): ComplexDouble = ComplexDouble(re.toDouble(), 0.0)
 
 /**
  * Represents a complex number with double precision.
@@ -40,7 +61,7 @@ import kotlin.math.sqrt
  * @property im the imaginary part of the complex number.
  * @throws ArithmeticException if division by zero or infinity occurs during division.
  */
-public sealed interface ComplexDouble : Complex {
+public interface ComplexDouble : Complex {
 
     /**
      * The real part of the complex number.
@@ -54,63 +75,22 @@ public sealed interface ComplexDouble : Complex {
 
     public companion object {
         /**
-         * Determines whether the given double value can be accurately represented as a float value or not.
-         *
-         * @param d is the double value to be checked.
-         * @return this method returns a Boolean value,
-         * true if the double value can be accurately represented as a float value, false otherwise.
-         */
-        private fun fitsInFloat(d: Double): Boolean = d.toFloat().toDouble() == d
-
-        /**
-         * Creates a [ComplexDouble] with the given real and imaginary values in floating-point format.
-         *
-         * @param re the real value of the complex number in double format.
-         * @param im the imaginary value of the complex number in double format.
-         */
-        public operator fun invoke(re: Double, im: Double): ComplexDouble {
-            return if (fitsInFloat(re) && fitsInFloat(im))
-                ComplexDouble32(re, im)
-            else
-                ComplexDouble64(re, im)
-        }
-
-        /**
-         * Creates a [ComplexDouble] with the given real and imaginary values in number format.
-         *
-         * @param re the real value of the complex number in number format.
-         * @param im the imaginary value of the complex number in number format.
-         */
-        public operator fun invoke(re: Number, im: Number): ComplexDouble = invoke(re.toDouble(), im.toDouble())
-
-        /**
-         * Creates a [ComplexDouble] with a zero imaginary value.
-         * @param re the real value of the complex number in number format.
-         */
-        public operator fun invoke(re: Number): ComplexDouble {
-            return if (fitsInFloat(re.toDouble()))
-                ComplexDouble32(re.toDouble(), 0.0)
-            else
-                ComplexDouble64(re.toDouble(), 0.0)
-        }
-
-        /**
          * Represents a [ComplexDouble] number with 1.0 real part and 0f imaginary part.
          */
         public val one: ComplexDouble
-            get() = ComplexDouble32(1.0, 0.0)
+            get() = ComplexDouble(1.0, 0.0)
 
         /**
          * Represents a [ComplexDouble] number with real and imaginary parts set to 0.0.
          */
         public val zero: ComplexDouble
-            get() = ComplexDouble32(0.0, 0.0)
+            get() = ComplexDouble(0.0, 0.0)
 
         /**
          * Represents a not-a-number (NaN) value in complex floating point arithmetic.
          */
         public val NaN: ComplexDouble
-            get() = ComplexDouble64(Double.NaN, Double.NaN)
+            get() = ComplexDouble(Double.NaN, Double.NaN)
     }
 
     /**
@@ -452,64 +432,9 @@ public sealed interface ComplexDouble : Complex {
      * @return the imaginary part of the complex number as a Double value.
      */
     public operator fun component2(): Double = im
-}
 
-/**
- * ComplexDouble64 represents a double-precision 128-bit complex number,
- * which implements the interface `ComplexDouble`.
- *
- * @property re the real part of the complex number.
- * @property im the imaginary part of the complex number.
- * @constructor creates an instance of ComplexDouble64.
- */
-public class ComplexDouble64 internal constructor(
-    public override val re: Double, public override val im: Double
-) : ComplexDouble {
+    // TODO("https://youtrack.jetbrains.com/issue/KT-24874/Support-custom-equals-and-hashCode-for-value-classes")
+    public fun eq(other: Any): Boolean
 
-    override fun equals(other: Any?): Boolean = when {
-        this === other -> true
-        other is ComplexDouble -> re == other.re && im == other.im
-        else -> false
-    }
-
-    override fun hashCode(): Int = 31 * re.toBits().hashCode() + im.toBits().hashCode()
-
-    override fun toString(): String = "$re+($im)i"
-}
-
-/**
- * Represents a complex number of single-precision real and imaginary parts.
- *
- *  @param number The number representing the complex number as a Long value
- * @property re the real part of the complex number.
- * @property im the imaginary part of the complex number.
- */
-@JvmInline
-public value class ComplexDouble32 internal constructor(private val number: Long) : ComplexDouble {
-    override val re: Double
-        get() = Float.fromBits((number shr 32).toInt()).toDouble()
-
-    override val im: Double
-        get() = Float.fromBits(number.toInt()).toDouble()
-
-    internal constructor(re: Double, im: Double) : this(Complex.convertComplexFloatToLong(re.toFloat(), im.toFloat()))
-
-    // TODO
-    // "https://youtrack.jetbrains.com/issue/KT-24874/Support-custom-equals-and-hashCode-for-value-classes"
-    internal fun eq(other: ComplexDouble32): Boolean = when {
-        number == other.number -> true
-        else -> re == other.re && im == other.im
-    }
-
-    internal fun hash(): Int = 31 * number.hashCode()
-
-//    override fun equals(other: Any?): Boolean = when {
-//        this === other -> true
-//        other is ComplexDouble -> re == other.re && im == other.im
-//        else -> false
-//    }
-//
-//    override fun hashCode(): Int = 31 * re.toBits().hashCode() + im.toBits().hashCode()
-
-    override fun toString(): String = "$re+($im)i"
+    public fun hash(): Int
 }

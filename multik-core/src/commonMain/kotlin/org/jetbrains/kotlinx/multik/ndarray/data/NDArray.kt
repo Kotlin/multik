@@ -4,7 +4,7 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble32
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.operations.concatenate
 
@@ -300,8 +300,7 @@ public class NDArray<T, D : Dimension> constructor(
 
         val thIt = this.iterator()
         val othIt = other.iterator()
-        // TODO
-        // workaround for value classes: ComplexFloat and ComplexDouble32
+        // TODO(workaround for value classes: ComplexFloat and ComplexDouble)
         // "https://youtrack.jetbrains.com/issue/KT-24874/Support-custom-equals-and-hashCode-for-value-classes"
         while (thIt.hasNext() && othIt.hasNext()) {
             val left = thIt.next()
@@ -312,7 +311,7 @@ public class NDArray<T, D : Dimension> constructor(
                         return false
                 }
 
-                left is ComplexDouble32 && right is ComplexDouble32 -> {
+                left is ComplexDouble && right is ComplexDouble -> {
                     if (!(left.eq(right)))
                         return false
                 }
