@@ -15,17 +15,17 @@ public class JvmNativeEngine: NativeEngine() {
     private val loader: Loader by lazy { libLoader("multik_jni") }
 
     override fun getMath(): Math {
-        if(!loader.loading) loader.load()
+        if(!loader.isLoaded) loader.load()
         return NativeMath
     }
 
     override fun getLinAlg(): LinAlg {
-        if(!loader.loading) loader.load()
+        if(!loader.isLoaded) loader.load()
         return NativeLinAlg
     }
 
     override fun getStatistics(): Statistics {
-        if(!loader.loading) loader.load()
+        if(!loader.isLoaded) loader.load()
         return NativeStatistics
     }
 }

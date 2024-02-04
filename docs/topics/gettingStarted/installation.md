@@ -29,10 +29,10 @@ To utilize Multik in your project, the following steps need to be performed:
   >
   {style="warning"}
 * Add the necessary dependency to your project. The available dependencies are:
-    * org.jetbrains.kotlinx:multik-core:%latest_version%
-    * org.jetbrains.kotlinx:multik-default:%latest_version%
-    * org.jetbrains.kotlinx:multik-kotlin:%latest_version%
-    * org.jetbrains.kotlinx:multik-openblas:%latest_version%
+    * org.jetbrains.kotlinx:multik-core:%mk_latest_version%
+    * org.jetbrains.kotlinx:multik-default:%mk_latest_version%
+    * org.jetbrains.kotlinx:multik-kotlin:%mk_latest_version%
+    * org.jetbrains.kotlinx:multik-openblas:%mk_latest_version%
 
 <tabs group="languages" id="main-class-set-engine-main">
 <tab title="Gradle (Kotlin)" group-key="kotlin">
@@ -43,7 +43,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:multik-default:%latest_version%")
+    implementation("org.jetbrains.kotlinx:multik-default:%mk_latest_version%")
 }
 ```
 
@@ -56,7 +56,7 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:multik-default:%latest_version%"
+    implementation "org.jetbrains.kotlinx:multik-default:%mk_latest_version%"
 }
 ```
 
@@ -70,7 +70,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:multik-core:%latest_version%")
+                implementation("org.jetbrains.kotlinx:multik-core:%mk_latest_version%")
             }
         }
     }
@@ -85,7 +85,7 @@ kotlin {
     sourceSets {
         val jvmName by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:multik-core-jvm:%latest_version%")
+                implementation("org.jetbrains.kotlinx:multik-core-jvm:%mk_latest_version%")
             }
         }
     }
