@@ -2,11 +2,11 @@
 <!DOCTYPE instance-profile
         SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
 
-<instance-profile id="mdoc"
+<instance-profile id="mk"
                   name="Multik"
-                  start-page="home.topic" is-library="true" status="eap">
+                  start-page="welcome.topic" is-library="true" status="eap">
 
-    <toc-element toc-title="Home" topic="home.topic"/>
+    <toc-element toc-title="Welcome" topic="welcome.topic"/>
     <toc-element topic="overview.md"/>
     <toc-element toc-title="Getting-Started" topic="getting-started.topic">
         <toc-element topic="quickstart.md"/>
@@ -81,8 +81,6 @@
                 <toc-element topic="contains.md"/>
                 <toc-element topic="count.md"/>
                 <toc-element topic="distinct.md"/>
-                <toc-element topic="distinct.md"/>
-                <toc-element topic="drop.md"/>
                 <toc-element topic="drop.md"/>
                 <toc-element topic="filter.md"/>
                 <toc-element topic="find.md"/>

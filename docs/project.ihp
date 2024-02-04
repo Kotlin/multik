@@ -3,9 +3,9 @@
 
 <ihp version="2.0">
     <topics dir="topics"/>
-    <images dir="images"/>
+    <images dir="images" web-path="multik"/>
     <categories src="c.list"/>
-    <instance src="mdoc.tree" web-path="/mdoc/" version="0.3.0"/>
+    <instance src="mk.tree" id="mk" version="%mk_latest_version%"/>
     <settings>
         <default-property element-name="chapter" property-name="show-structure-depth" value="2"/>
         <default-property element-name="toc-element" property-name="show-structure-depth" value="2"/>
