@@ -26,9 +26,9 @@ def String getTargetOSAndArch() {
 
 def targetOS = System.getenv("TARGET_OS") ?: getTargetOSAndArch()
 
-def cmake_c_compiler = System.getenv("CMAKE_C_COMPILER") ?: "gcc-13"
-def cmake_cxx_compiler = System.getenv("CMAKE_CXX_COMPILER") ?: "g++-13"
-def lib_gcc_path = System.getenv("GCC_LIB_Path") ?: "/opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/13"
+def cmake_c_compiler = System.getenv("CMAKE_C_COMPILER") ?: "gcc"
+def cmake_cxx_compiler = System.getenv("CMAKE_CXX_COMPILER") ?: "g++"
+def lib_gcc_path = System.getenv("GCC_LIB_Path") ?: ""
 
 static boolean isWindows() {
     return System.getProperty('os.name').toLowerCase().contains('windows')
