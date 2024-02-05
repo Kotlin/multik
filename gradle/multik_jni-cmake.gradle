@@ -29,6 +29,10 @@ def cmake_c_compiler = System.getenv("CMAKE_C_COMPILER") ?: "gcc"
 def cmake_cxx_compiler = System.getenv("CMAKE_CXX_COMPILER") ?: "g++"
 def lib_gcc_path = System.getenv("GCC_LIB_Path") ?: ""
 
+static boolean isWindows() {
+    return System.getProperty('os.name').toLowerCase().contains('windows')
+}
+
 tasks.register('createBuildDir') {
     doLast {
         mkdir(layout.buildDirectory.get().asFile)
@@ -38,6 +42,7 @@ tasks.register('createBuildDir') {
 
 tasks.register('config_cmake') {
     dependsOn createBuildDir
+    String gen = isWindows() ? "-G CodeBlocks - MinGW Makefiles" : ""
     doLast {
         exec {
             commandLine "cmake",
@@ -46,6 +51,7 @@ tasks.register('config_cmake') {
                     "-DCMAKE_CXX_COMPILER=$cmake_cxx_compiler",
                     "-DGCC_LIB_PATH=$lib_gcc_path",
                     "-DTARGET_OS=$targetOS",
+                    gen,
                     "-S", cmake_path,
                     "-B", path_to_build
         }
