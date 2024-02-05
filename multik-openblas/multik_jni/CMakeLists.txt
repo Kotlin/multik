@@ -75,7 +75,7 @@ if (${TARGET_OS} STREQUAL "mingwX64")
             CONFIGURE_COMMAND   ""
             BUILD_COMMAND       ""
             INSTALL_COMMAND     ""
-            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+#            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
             )
     #### INCLUDE OPENBLAS ####
     ExternalProject_Get_property(openblas SOURCE_DIR)
@@ -103,7 +103,7 @@ else ()
                                 DYNAMIC_LIST=${DYNAMIC_LIST}
                                 NUM_THREADS=${NUM_THREADS}
             INSTALL_COMMAND     ${MAKE_EXE} -C <SOURCE_DIR> install PREFIX=<INSTALL_DIR> CC=${CC}
-            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+#            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
             )
     #### INCLUDE OPENBLAS ####
     ExternalProject_Get_property(openblas INSTALL_DIR)
