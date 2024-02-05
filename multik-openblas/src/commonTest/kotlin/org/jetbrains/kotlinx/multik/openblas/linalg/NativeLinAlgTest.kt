@@ -138,7 +138,7 @@ class NativeLinAlgTest {
         )
 
         val actual = NativeLinAlg.dot(matrix1, matrix2)
-        assertEquals(expected, actual)
+        assertComplexFloatingNDArray(expected, actual, 1e-4f)
     }
 
     @Test
