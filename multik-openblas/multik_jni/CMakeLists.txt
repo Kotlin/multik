@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 project(multik_jni)
 
 set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(PLATFORM ${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR})
 
 if (NOT DEFINED TARGET_OS)
@@ -9,13 +11,12 @@ if (NOT DEFINED TARGET_OS)
 endif ()
 
 #### PARAMETERS FOR OPENBLAS ####
-set(OPENBLAS_VERSION 0.3.23)
+set(OPENBLAS_VERSION 0.3.26)
 
 if (${TARGET_OS} STREQUAL "mingwX64" OR ${CMAKE_SYSTEM_NAME} STREQUAL "Windows")
-    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}-x64.zip")
+    set(URL_OPENBLAS "https://github.com/OpenMathLib/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}-x64.zip")
 else ()
-#    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/refs/heads/develop.zip") # TODO(switch to stable version)
-    set(URL_OPENBLAS "https://github.com/xianyi/OpenBLAS/archive/v${OPENBLAS_VERSION}.zip")
+    set(URL_OPENBLAS "https://github.com/OpenMathLib/OpenBLAS/archive/v${OPENBLAS_VERSION}.zip")
 endif ()
 
 set(CC ${CMAKE_C_COMPILER})
@@ -27,26 +28,25 @@ set(USE_OPENMP 0)
 set(NUM_THREADS 64)
 set(DYNAMIC_LIST )
 
-if (${TARGET_OS} MATCHES "androidArm64")
+if(${TARGET_OS} STREQUAL "androidArm64")
     set(suffix androidArm64)
     set(CC aarch64-linux-android-gcc)
     set(FC aarch64-linux-android-gfortran)
     set(CROSS_SUFFIX aarch64-linux-android-)
     set(NO_AVX512 1)
-elseif (${TARGET_OS} MATCHES "linuxX64")
+elseif(${TARGET_OS} STREQUAL "linuxX64")
     set(suffix linuxX64)
     set(FC "gfortran -m64")
     set(FEXTRALIB -lgfortran)
     set(NO_AVX512 0)
     set(DYNAMIC_ARCH 1)
-elseif (${TARGET_OS} MATCHES "macosArm64" OR ${PLATFORM} MATCHES "Darwin-arm64")
+elseif (${TARGET_OS} STREQUAL "macosArm64" OR ${PLATFORM} MATCHES "Darwin-arm64")
     set(suffix macosArm64)
     set(FC "gfortran")
     set(FEXTRALIB "-lgfortran")
     set(NO_AVX512 1)
-#    set(DYNAMIC_ARCH 1)
-    set(DYNAMIC_LIST "ARMV8 CORTEXA55 CORTEXA72 CORTEXA78") # TODO(XCODE workaround)
-elseif (${TARGET_OS} MATCHES "macosX64" OR ${PLATFORM} MATCHES "Darwin-x86_64")
+    set(DYNAMIC_ARCH 1)
+elseif(${TARGET_OS} STREQUAL "macosX64" OR ${PLATFORM} MATCHES "Darwin-x86_64")
     set(suffix macosX64)
     set(FC "gfortran")
     set(FEXTRALIB "-lgfortran")
@@ -59,7 +59,7 @@ elseif (${TARGET_OS} MATCHES "mingwX64")
     set(NO_AVX512 1)
     set(DYNAMIC_ARCH 1)
 else()
-    message(SEND_ERROR "Platform ${PLATFORM} is not supported")
+    message(WARNING "Platform ${PLATFORM} is not supported")
     return()
 endif ()
 ########################
@@ -74,6 +74,7 @@ if (${TARGET_OS} STREQUAL "mingwX64")
             CONFIGURE_COMMAND   ""
             BUILD_COMMAND       ""
             INSTALL_COMMAND     ""
+            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
             )
     #### INCLUDE OPENBLAS ####
     ExternalProject_Get_property(openblas SOURCE_DIR)
@@ -101,6 +102,7 @@ else ()
                                 DYNAMIC_LIST=${DYNAMIC_LIST}
                                 NUM_THREADS=${NUM_THREADS}
             INSTALL_COMMAND     ${MAKE_EXE} -C <SOURCE_DIR> install PREFIX=<INSTALL_DIR> CC=${CC}
+            DOWNLOAD_EXTRACT_TIMESTAMP TRUE
             )
     #### INCLUDE OPENBLAS ####
     ExternalProject_Get_property(openblas INSTALL_DIR)
@@ -129,8 +131,8 @@ set(SRC_FILES_FOR_STATIC
 ########################
 
 ### FIND GFORTRAN AND QUADMATH LIBRARIES ###
-if (${GCC_LIB_PATH})
-    message("Path to gcc libs does not defined")
+if (NOT DEFINED GCC_LIB_PATH)
+    message(WARNING "Path to gcc libs is not defined")
 endif ()
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     set(LIB_GFORTRAN -static-libgfortran)
@@ -165,16 +167,20 @@ endif ()
 set(LIB_NAME multik_jni-${suffix})
 
 add_library(${LIB_NAME} SHARED ${SRC_FILES_FOR_SHARED})
-target_compile_options(${LIB_NAME} PRIVATE -std=c++14
-                                                    -fPIC
-                                                    -O3
-                                                    -fno-exceptions
-                                                    -ffast-math)
+target_compile_features(${LIB_NAME} PRIVATE cxx_std_14)
+target_compile_options(${LIB_NAME} PRIVATE
+                                        -fPIC
+                                        -O3
+                                        -fno-exceptions
+                                        -ffast-math
+                                        -flto
+                                        -funroll-loops
+)
 target_include_directories(${LIB_NAME} PUBLIC ${JNI_INCLUDE_DIRS})
 target_link_libraries(${LIB_NAME} optimized
         ${STATIC_OPENBLAS}
         ${LIB_GFORTRAN}
 #        ${LIB_QUADMATH}
         ${LIB_GCC}
-        )
+)
 add_dependencies(${LIB_NAME} openblas)

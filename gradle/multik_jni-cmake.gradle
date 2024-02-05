@@ -1,17 +1,16 @@
-
 def cmake_path = "${rootDir}/multik-openblas/multik_jni"
-def path_to_build = file("${buildDir}/cmake-build")
+def path_to_build = layout.buildDirectory.dir("cmake-build").get().asFile.absolutePath
 
-def String getTargetOSAndArch() {
+String getTargetOSAndArch() {
     String hostOs = System.getProperty('os.name').toLowerCase()
     String hostArch = System.getProperty('os.arch').toLowerCase()
     if (hostOs == "mac os x" && hostArch == "x86_64")
         return 'macosX64'
-    else if(hostOs == "mac os x" && hostArch == "aarch64")
+    else if (hostOs == "mac os x" && hostArch == "aarch64")
         return 'macosArm64'
-    else if(hostOs == "linux")
+    else if (hostOs == "linux")
         return 'linuxX64'
-    else if(hostOs.startsWith("windows"))
+    else if (hostOs.startsWith("windows"))
         return 'mingwX64'
     else
         throw GradleException("""
@@ -30,47 +29,40 @@ def cmake_c_compiler = System.getenv("CMAKE_C_COMPILER") ?: "gcc"
 def cmake_cxx_compiler = System.getenv("CMAKE_CXX_COMPILER") ?: "g++"
 def lib_gcc_path = System.getenv("GCC_LIB_Path") ?: ""
 
-static boolean isWindows() {
-    return System.getProperty('os.name').toLowerCase().contains('windows')
+tasks.register('createBuildDir') {
+    doLast {
+        mkdir(layout.buildDirectory.get().asFile)
+        mkdir(layout.buildDirectory.dir("cmake-build").get().asFile)
+    }
 }
 
-task createBuildDir() {
-    mkdir(project.buildDir)
-    mkdir(file("${project.buildDir}/cmake-build"))
-}
-
-task config_cmake(dependsOn: createBuildDir) {
-    def type_build = "-DCMAKE_BUILD_TYPE=Release"
-    def gen = isWindows() ? "CodeBlocks - MinGW Makefiles" : "CodeBlocks - Unix Makefiles"
-    def c_compiler = "-DCMAKE_C_COMPILER=$cmake_c_compiler"
-    def cxx_compiler = "-DCMAKE_CXX_COMPILER=$cmake_cxx_compiler"
-    def path_to_gcc_lib = "-DGCC_LIB_PATH=$lib_gcc_path"
+tasks.register('config_cmake') {
+    dependsOn createBuildDir
     doLast {
         exec {
-            commandLine("cmake",
-                    type_build,
-                    c_compiler,
-                    cxx_compiler,
-                    path_to_gcc_lib,
+            commandLine "cmake",
+                    "-DCMAKE_BUILD_TYPE=Release",
+                    "-DCMAKE_C_COMPILER=$cmake_c_compiler",
+                    "-DCMAKE_CXX_COMPILER=$cmake_cxx_compiler",
+                    "-DGCC_LIB_PATH=$lib_gcc_path",
                     "-DTARGET_OS=$targetOS",
-                    "-G", gen,
                     "-S", cmake_path,
-                    "-B", path_to_build,
-            )
+                    "-B", path_to_build
         }
     }
 }
 
-
-task build_cmake(dependsOn: config_cmake) {
+tasks.register('build_cmake') {
+    dependsOn config_cmake
+    String jProc = Runtime.getRuntime().availableProcessors().toString()
     doLast {
         exec {
-            commandLine("cmake", "--build", path_to_build, "--target", "multik_jni-$targetOS", "--", "-j", "12")
+            commandLine("cmake", "--build", path_to_build, "--target", "multik_jni-$targetOS", "--", "-j", "$jProc")
         }
         copy {
-            from("${project.buildDir}/cmake-build")
+            from(path_to_build)
             include("*.dylib", "*.so", "*.dll")
-            into("${project.buildDir}/libs")
+            into(layout.buildDirectory.dir("libs").get().asFile)
         }
     }
 }
