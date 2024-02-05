@@ -44,13 +44,29 @@ kotlin {
     iosSimulatorArm64()
     iosX64()
     wasmJs {
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                enabled = false
+            }
+        }
+        nodejs {
+            testTask {
+                enabled = false
+            }
+        }
         d8()
     }
     js(IR) {
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                useMocha()
+            }
+        }
+        nodejs {
+            testTask {
+                useMocha()
+            }
+        }
     }
 
     sourceSets {

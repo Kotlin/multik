@@ -24,13 +24,29 @@ kotlin {
         }
     }
     wasmJs {
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                enabled = false
+            }
+        }
+        nodejs {
+            testTask {
+                enabled = false
+            }
+        }
         d8()
     }
     js(IR) {
-        browser()
-        nodejs()
+        browser {
+            testTask {
+                useMocha()
+            }
+        }
+        nodejs {
+            testTask {
+                useMocha()
+            }
+        }
     }
 
     val hostOs = System.getProperty("os.name")
