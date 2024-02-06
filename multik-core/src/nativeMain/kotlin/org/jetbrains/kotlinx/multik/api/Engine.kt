@@ -3,7 +3,7 @@
  */
 
 package org.jetbrains.kotlinx.multik.api
-import kotlin.native.concurrent.AtomicReference
+import kotlin.concurrent.AtomicReference
 
 /**
  * Engine Provider for Kotlin/Native targets.

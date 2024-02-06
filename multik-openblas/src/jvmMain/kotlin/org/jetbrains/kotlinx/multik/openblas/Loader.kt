@@ -1,5 +1,6 @@
 package org.jetbrains.kotlinx.multik.openblas
 
+import java.io.FileNotFoundException
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardCopyOption
@@ -7,11 +8,12 @@ import java.nio.file.StandardCopyOption
 internal actual fun libLoader(name: String): Loader = JvmLoader(name)
 
 internal class JvmLoader(private val name: String) : Loader {
+    override val isLoaded: Boolean
+        get() = _isLoaded
 
-    override val loading: Boolean
-        get() = _loading
+    private var _isLoaded: Boolean = false
 
-    private var _loading: Boolean = false
+    private val lock = Any()
 
     private val os: String
         get() {
@@ -62,34 +64,61 @@ internal class JvmLoader(private val name: String) : Loader {
     }
 
     override fun load(): Boolean {
-        val resource = System.mapLibraryName(nativeNameLib)
-        val inputStream = Loader::class.java.classLoader.getResourceAsStream("$prefixPath$resource")
-        var libraryPath: Path? = null
-        return try {
-            if (inputStream != null) {
-                libraryPath = libraryDir.resolve(resource)
-                Files.copy(inputStream, libraryPath!!, StandardCopyOption.REPLACE_EXISTING)
-                System.load(libraryPath.toString())
-            } else {
-                System.loadLibrary(nativeNameLib)
+        synchronized(lock) {
+            if (_isLoaded) return false
+
+            val resource = System.mapLibraryName(nativeNameLib)
+            val inputStream = Loader::class.java.classLoader.getResourceAsStream("$prefixPath$resource")
+            var libraryPath: Path? = null
+
+            return try {
+                if (inputStream != null) {
+                    libraryPath = libraryDir.resolve(resource)
+                    Files.copy(inputStream, libraryPath!!, StandardCopyOption.REPLACE_EXISTING)
+                    System.load(libraryPath.toString())
+                } else {
+                    System.loadLibrary(nativeNameLib)
+                }
+                _isLoaded = true
+                true
+            } catch (e: FileNotFoundException) {
+                println("Library file not found: ${e.message}")
+                false
+            } catch (e: SecurityException) {
+                println("No access to the library file: ${e.message}")
+                false
+            } catch (e: Throwable) {
+                println("Unknown error: ${e.message}")
+                libraryPath?.toFile()?.delete()
+                false
             }
-            _loading = true
-            true
-        } catch (e: Throwable) {
-            libraryPath?.toFile()?.delete()
-            throw e // TODO (message)!!!
         }
     }
 
     override fun manualLoad(javaPath: String?): Boolean {
-        if (javaPath.isNullOrEmpty()) {
-            System.loadLibrary(nativeNameLib)
-        } else {
-            val libFullName = System.mapLibraryName(nativeNameLib)
-            val fullPath = if (os == "win") "$javaPath\\$libFullName" else "$javaPath/$libFullName"
-            System.load(fullPath)
+        synchronized(lock) {
+            if (_isLoaded) return false
+
+            return try {
+                if (javaPath.isNullOrEmpty()) {
+                    System.loadLibrary(nativeNameLib)
+                } else {
+                    val libFullName = System.mapLibraryName(nativeNameLib)
+                    val fullPath = if (os == "win") "$javaPath\\$libFullName" else "$javaPath/$libFullName"
+                    System.load(fullPath)
+                }
+                _isLoaded = true
+                true
+            } catch (e: FileNotFoundException) {
+                println("Library file not found: ${e.message}")
+                false
+            } catch (e: SecurityException) {
+                println("No access to the library file: ${e.message}")
+                false
+            } catch (e: Throwable) {
+                println("Unknown error: ${e.message}")
+                false
+            }
         }
-        _loading = true
-        return true
     }
 }

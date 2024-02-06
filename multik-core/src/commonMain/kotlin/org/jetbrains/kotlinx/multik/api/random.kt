@@ -195,7 +195,7 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
 }
 
 @PublishedApi
-@Suppress("UNCHECKED_CAST")
+@Suppress("unchecked_cast", "nothing_to_inline")
 internal inline fun <T : Number> fRand(dtype: DataType): () -> T {
     return when (dtype) {
         DataType.IntDataType -> { { Random.nextInt() } }
@@ -207,7 +207,7 @@ internal inline fun <T : Number> fRand(dtype: DataType): () -> T {
 }
 
 @PublishedApi
-@Suppress("UNCHECKED_CAST")
+@Suppress( "unchecked_cast", "nothing_to_inline")
 internal inline fun <T : Number> randData(
     from: T, until: T, size: Int, dtype: DataType, gen: Random? = null
 ): MemoryView<T> {

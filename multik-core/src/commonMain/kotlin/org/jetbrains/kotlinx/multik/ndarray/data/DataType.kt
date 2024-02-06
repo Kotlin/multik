@@ -9,6 +9,9 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType.*
 import kotlin.reflect.KClass
 
+@PublishedApi
+internal expect inline fun <T : Any> dataTypeOf(type: KClass<out T>): DataType
+
 /**
  * Describes the type of elements stored in a [NDArray].
  *
@@ -66,34 +69,17 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
          */
         public inline fun <T> of(element: T): DataType {
             element ?: throw IllegalStateException("Element is null cannot find type")
-            return when (element!!::class) {
-                Byte::class -> ByteDataType
-                Short::class -> ShortDataType
-                Int::class -> IntDataType
-                Long::class -> LongDataType
-                Float::class -> FloatDataType
-                Double::class -> DoubleDataType
-                ComplexFloat::class -> ComplexFloatDataType
-                ComplexDouble::class -> ComplexDoubleDataType
-                else -> throw IllegalStateException("One of the primitive types was expected, " +
-                        "got ${element!!::class.simpleName}")
-            }
+            return dataTypeOf(element!!::class)
         }
 
 
         /**
          * Returns [DataType] by [KClass] of [type]. [T] is `reified` type.
          */
-        public inline fun <reified T : Any> ofKClass(type: KClass<out T>): DataType = when (type) {
-            Byte::class -> ByteDataType
-            Short::class -> ShortDataType
-            Int::class -> IntDataType
-            Long::class -> LongDataType
-            Float::class -> FloatDataType
-            Double::class -> DoubleDataType
-            ComplexFloat::class -> ComplexFloatDataType
-            ComplexDouble::class -> ComplexDoubleDataType
-            else -> throw IllegalStateException("One of the primitive types was expected, got ${type.simpleName}")
-        }
+        public inline fun <T : Any> ofKClass(type: KClass<out T>): DataType = dataTypeOf(type)
+    }
+
+    override fun toString(): String {
+        return "DataType(nativeCode=$nativeCode, itemSize=$itemSize, class=$clazz)"
     }
 }

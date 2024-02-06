@@ -1,6 +1,7 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
+@file:OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 
 plugins {
     kotlin("multiplatform")
@@ -9,6 +10,11 @@ plugins {
 
 kotlin {
     explicitApi()
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     jvm {
         compilations.all {
             kotlinOptions.jvmTarget = "1.8"
@@ -17,23 +23,28 @@ kotlin {
             useJUnit()
         }
     }
-    wasm {
-        browser()
-    }
-    js(IR) {
-        val timeoutMs = "1000000"
+    wasmJs {
         browser {
             testTask {
-                useMocha {
-                    timeout = timeoutMs
-                }
+                enabled = false
             }
         }
         nodejs {
             testTask {
-                useMocha {
-                    timeout = timeoutMs
-                }
+                enabled = false
+            }
+        }
+        d8()
+    }
+    js(IR) {
+        browser {
+            testTask {
+                useMocha()
+            }
+        }
+        nodejs {
+            testTask {
+                useMocha()
             }
         }
     }
@@ -44,9 +55,11 @@ kotlin {
         hostOs == "Mac OS X" && hostArch == "x86_64" -> macosX64 {
             binaries { framework { baseName = "multik-default" } }
         }
+
         hostOs == "Mac OS X" && hostArch == "aarch64" -> macosArm64 {
             binaries { framework { baseName = "multik-default" } }
         }
+
         hostOs == "Linux" -> linuxX64()
         hostOs.startsWith("Windows") -> mingwX64()
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
@@ -98,7 +111,7 @@ kotlin {
                 implementation(kotlin("reflect"))
             }
         }
-        val wasmMain by getting {
+        val wasmJsMain by getting {
             dependsOn(commonMain)
         }
         val jsMain by getting {
@@ -135,4 +148,3 @@ kotlin {
         }
     }
 }
-

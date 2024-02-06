@@ -1,3 +1,7 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
 plugins {
     kotlin("multiplatform")
 }
@@ -11,7 +15,6 @@ kotlin {
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
-        withJava()
     }
     mingwX64()
     linuxX64()
@@ -51,16 +54,18 @@ kotlin {
         }
     }
 
-    wasm {
+    wasmJs {
         browser {
             testTask {
-                /*
-                    https://youtrack.jetbrains.com/issue/KT-56633
-                    https://youtrack.jetbrains.com/issue/KT-56159
-                 */
-                this.enabled = false // fixed in 1.9.0/1.9.20
+                enabled = false
             }
         }
+        nodejs {
+            testTask {
+                enabled = false
+            }
+        }
+        d8()
     }
 
     js(IR) {
@@ -105,22 +110,5 @@ kotlin {
                 implementation(kotlin("reflect"))
             }
         }
-        val wasmMain by getting {
-            dependsOn(commonMain)
-        }
-        val jsMain by getting {
-            dependsOn(commonMain)
-        }
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-        names.forEach { n ->
-            if (n.contains("X64Main") || n.contains("Arm64Main")){
-                this@sourceSets.getByName(n).apply{
-                    dependsOn(nativeMain)
-                }
-            }
-        }
     }
 }
-

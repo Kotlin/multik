@@ -8,7 +8,15 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.mapCapacity
 import kotlin.math.min
 import kotlin.random.Random
 
-public fun complexFloatArrayOf(vararg elements: ComplexFloat): ComplexFloatArray =
+/**
+ * Creates a new [ComplexFloatArray] from the provided vararg [elements].
+ *
+ * @param elements the elements to be included in the new [ComplexFloatArray].
+ * @return a new [ComplexFloatArray] containing all the provided [elements],
+ * or an empty [ComplexFloatArray] if no [elements] were provided.
+ */
+// TODO(https://youtrack.jetbrains.com/issue/KT-33565/Allow-vararg-parameter-of-inline-class-type)
+public fun <T: ComplexFloat> complexFloatArrayOf(vararg elements: T): ComplexFloatArray =
     if (elements.isEmpty()) ComplexFloatArray(0) else ComplexFloatArray(elements.size) { elements[it] }
 
 public fun complexDoubleArrayOf(vararg elements: ComplexDouble): ComplexDoubleArray =
@@ -19,7 +27,7 @@ public fun complexDoubleArrayOf(vararg elements: ComplexDouble): ComplexDoubleAr
  *
  * If the size of this array is less than 1, throws an [IndexOutOfBoundsException].
  */
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 public inline operator fun ComplexFloatArray.component1(): ComplexFloat = get(0)
 
 /**
@@ -27,7 +35,7 @@ public inline operator fun ComplexFloatArray.component1(): ComplexFloat = get(0)
  *
  * If the size of this array is less than 1, throws an [IndexOutOfBoundsException].
  */
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 public inline operator fun ComplexDoubleArray.component1(): ComplexDouble = get(0)
 
 /**
@@ -35,7 +43,7 @@ public inline operator fun ComplexDoubleArray.component1(): ComplexDouble = get(
  *
  * If the size of this array is less than 2, throws an [IndexOutOfBoundsException].
  */
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 public inline operator fun ComplexFloatArray.component2(): ComplexFloat = get(1)
 
 /**
@@ -43,7 +51,7 @@ public inline operator fun ComplexFloatArray.component2(): ComplexFloat = get(1)
  *
  * If the size of this array is less than 2, throws an [IndexOutOfBoundsException].
  */
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 public inline operator fun ComplexDoubleArray.component2(): ComplexDouble = get(1)
 
 /**
@@ -51,7 +59,7 @@ public inline operator fun ComplexDoubleArray.component2(): ComplexDouble = get(
  *
  * If the size of this array is less than 3, throws an [IndexOutOfBoundsException].
  */
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 public inline operator fun ComplexFloatArray.component3(): ComplexFloat = get(2)
 
 /**
@@ -59,7 +67,7 @@ public inline operator fun ComplexFloatArray.component3(): ComplexFloat = get(2)
  *
  * If the size of this array is less than 3, throws an [IndexOutOfBoundsException].
  */
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 public inline operator fun ComplexDoubleArray.component3(): ComplexDouble = get(2)
 
 /**
@@ -67,7 +75,7 @@ public inline operator fun ComplexDoubleArray.component3(): ComplexDouble = get(
  *
  * If the size of this array is less than 4, throws an [IndexOutOfBoundsException].
  */
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 public inline operator fun ComplexFloatArray.component4(): ComplexFloat = get(3)
 
 /**
@@ -75,7 +83,7 @@ public inline operator fun ComplexFloatArray.component4(): ComplexFloat = get(3)
  *
  * If the size of this array is less than 4, throws an [IndexOutOfBoundsException].
  */
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 public inline operator fun ComplexDoubleArray.component4(): ComplexDouble = get(3)
 
 /**
@@ -83,7 +91,7 @@ public inline operator fun ComplexDoubleArray.component4(): ComplexDouble = get(
  *
  * If the size of this array is less than 5, throws an [IndexOutOfBoundsException].
  */
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 public inline operator fun ComplexFloatArray.component5(): ComplexFloat = get(4)
 
 /**
@@ -91,7 +99,7 @@ public inline operator fun ComplexFloatArray.component5(): ComplexFloat = get(4)
  *
  * If the size of this array is less than 5, throws an [IndexOutOfBoundsException].
  */
-@Suppress("NOTHING_TO_INLINE")
+@Suppress( "nothing_to_inline")
 public inline operator fun ComplexDoubleArray.component5(): ComplexDouble = get(4)
 
 /**
@@ -1227,7 +1235,7 @@ public fun ComplexDoubleArray.asList(): List<ComplexDouble> = object : AbstractL
  * The elements are compared for equality with the [equals][Any.equals] function.
  */
 public infix fun ComplexFloatArray?.contentEquals(other: ComplexFloatArray?): Boolean =
-    this?.getFlatArray()?.equals(other?.getFlatArray()) == true
+    this?.getFlatArray() contentEquals other?.getFlatArray()
 
 /**
  * Returns `true` if the two specified arrays are *structurally* equal to one another,
@@ -1236,7 +1244,7 @@ public infix fun ComplexFloatArray?.contentEquals(other: ComplexFloatArray?): Bo
  * The elements are compared for equality with the [equals][Any.equals] function.
  */
 public infix fun ComplexDoubleArray?.contentEquals(other: ComplexDoubleArray?): Boolean =
-    this?.getFlatArray()?.equals(other?.getFlatArray()) == true
+    this?.getFlatArray() contentEquals other?.getFlatArray()
 
 /**
  * Returns a hash code based on the contents of this array as if it is [List].

@@ -1,12 +1,16 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
+@file:OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
 
 plugins {
     kotlin("multiplatform")
     val dokka_version: String by System.getProperties()
+    val korro_version: String by System.getProperties()
 
     id("org.jetbrains.dokka") version dokka_version
+    id("io.github.devcrocod.korro") version korro_version
 }
 
 repositories {
@@ -14,9 +18,16 @@ repositories {
 }
 
 val common_csv_version: String by project
+val nodeJsVersion: String by project
+val nodeDownloadUrl: String by project
 
 kotlin {
     explicitApi()
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     jvm {
         compilations.all {
             kotlinOptions.jvmTarget = "1.8"
@@ -32,31 +43,28 @@ kotlin {
     iosArm64()
     iosSimulatorArm64()
     iosX64()
-    wasm {
+    wasmJs {
         browser {
             testTask {
-                /*
-                    https://youtrack.jetbrains.com/issue/KT-56633
-                    https://youtrack.jetbrains.com/issue/KT-56159
-                 */
-                this.enabled = false // fixed in 1.9.0/1.9.20
+                enabled = false
             }
         }
+        nodejs {
+            testTask {
+                enabled = false
+            }
+        }
+        d8()
     }
     js(IR) {
-        val timeoutMs = "1000000"
-        browser{
+        browser {
             testTask {
-                useMocha {
-                    timeout = timeoutMs
-                }
+                useMocha()
             }
         }
-        nodejs{
+        nodejs {
             testTask {
-                useMocha {
-                    timeout = timeoutMs
-                }
+                useMocha()
             }
         }
     }
@@ -76,20 +84,24 @@ kotlin {
                 implementation("org.jetbrains.bio:npy:0.3.5")
             }
         }
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-        names.forEach { n ->
-            if (n.contains("X64Main") || n.contains("Arm64Main")){
-                this@sourceSets.getByName(n).apply{
-                    dependsOn(nativeMain)
-                }
-            }
-        }
     }
 }
 
+rootProject.the<NodeJsRootExtension>().apply {
+    nodeVersion = nodeJsVersion
+    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
+}
 
+korro {
+    docs = fileTree(rootProject.rootDir) {
+        include("docs/topics/*.md")
+        include("docs/topics/gettingStarted/*md")
+    }
+
+    samples = fileTree(project.projectDir) {
+        include("src/commonTest/kotlin/samples/docs/*.kt")
+    }
+}
 
 tasks.dokkaHtml.configure {
     outputDirectory.set(rootProject.buildDir.resolve("dokka"))

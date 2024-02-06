@@ -1,134 +1,96 @@
 package org.jetbrains.kotlinx.multik.openblas.math
 
-import kotlinx.cinterop.StableRef
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.toCValues
-import kotlinx.cinterop.usePinned
+import kotlinx.cinterop.*
 import org.jetbrains.kotlinx.multik.cinterop.*
 
+@OptIn(ExperimentalForeignApi::class)
 internal actual object JniMath {
-    actual fun argMin(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int =
-        argmin(StableRef.create(arr).asCPointer(), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype)
-    actual fun argMax(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int =
-        argmax(StableRef.create(arr).asCPointer(), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype)
-
-    actual fun exp(arr: FloatArray, size: Int): Boolean {
-        for (i in 0 until size) {
-            arr[i] = kotlin.math.exp(arr[i])
-        }
-        return true
-    }
-    actual fun exp(arr: DoubleArray, size: Int): Boolean {
-        for (i in 0 until size) {
-            arr[i] = kotlin.math.exp(arr[i])
-        }
-        return true
-    }
-    actual fun expC(arr: FloatArray, size: Int): Boolean {
-        for (i in 0 until size step 2) {
-            val expReal = kotlin.math.exp(arr[i])
-            arr[i] = expReal * kotlin.math.cos(arr[i + 1])
-            arr[i + 1] = expReal * kotlin.math.sin(arr[i + 1])
-        }
-        return true
-    }
-    actual fun expC(arr: DoubleArray, size: Int): Boolean {
-        for (i in 0 until size step 2) {
-            val expReal = kotlin.math.exp(arr[i])
-            arr[i] = expReal * kotlin.math.cos(arr[i + 1])
-            arr[i + 1] = expReal * kotlin.math.sin(arr[i + 1])
-        }
-        return true
+    actual fun argMin(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int = when(arr) {
+        is DoubleArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        is FloatArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        is IntArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        is LongArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        is ByteArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        is ShortArray -> arr.usePinned { argmin(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+        else -> throw Exception("Only primitive arrays are supported for Kotlin/Native `argMin`")
     }
 
+    actual fun argMax(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int = when(arr) {
+    is DoubleArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    is FloatArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    is IntArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    is LongArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    is ByteArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    is ShortArray -> arr.usePinned { argmax(it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), dtype) }
+    else -> throw Exception("Only primitive arrays are supported for Kotlin/Native `argMax`")
+}
 
-    actual fun log(arr: FloatArray, size: Int): Boolean {
-        for (i in 0 until size) {
-            arr[i] = kotlin.math.ln(arr[i])
-        }
-        return true
+    actual fun exp(arr: FloatArray, size: Int): Boolean = arr.usePinned {
+        array_exp_float(it.addressOf(0), size)
+        true // TODO(return Boolean)
     }
-    actual fun log(arr: DoubleArray, size: Int): Boolean {
-        for (i in 0 until size) {
-            arr[i] = kotlin.math.ln(arr[i])
-        }
-        return true
+    actual fun exp(arr: DoubleArray, size: Int): Boolean = arr.usePinned {
+        array_exp_double(it.addressOf(0), size)
+        true
     }
-    actual fun logC(arr: FloatArray, size: Int): Boolean {
-        for (i in 0 until size step 2) {
-            val abs = kotlin.math.sqrt(arr[i] * arr[i] + arr[i + 1] + arr[i + 1])
-            val angle = kotlin.math.atan2(arr[i + 1], arr[i])
-            arr[i] = abs
-            arr[i + 1] = angle
-        }
-        return true
+    actual fun expC(arr: FloatArray, size: Int): Boolean = arr.usePinned {
+        array_exp_complex_float(it.addressOf(0), size)
+        true
     }
-    actual fun logC(arr: DoubleArray, size: Int): Boolean {
-        for (i in 0 until size step 2) {
-            val abs = kotlin.math.sqrt(arr[i] * arr[i] + arr[i + 1] + arr[i + 1])
-            val angle = kotlin.math.atan2(arr[i + 1], arr[i])
-            arr[i] = abs
-            arr[i + 1] = angle
-        }
-        return true
+    actual fun expC(arr: DoubleArray, size: Int): Boolean = arr.usePinned {
+        array_exp_complex_double(it.addressOf(0), size)
+        true
     }
 
-    actual fun sin(arr: FloatArray, size: Int): Boolean {
-        for (i in 0 until size) {
-            arr[i] = kotlin.math.sin(arr[i])
-        }
-        return true
+    actual fun log(arr: FloatArray, size: Int): Boolean = arr.usePinned {
+        array_log_float(it.addressOf(0), size)
+        true
     }
-    actual fun sin(arr: DoubleArray, size: Int): Boolean {
-        for (i in 0 until size) {
-            arr[i] = kotlin.math.sin(arr[i])
-        }
-        return true
+    actual fun log(arr: DoubleArray, size: Int): Boolean = arr.usePinned {
+        array_log_double(it.addressOf(0), size)
+        true
     }
-    actual fun sinC(arr: FloatArray, size: Int): Boolean {
-        for (i in 0 until size step 2) {
-            val cosRe = kotlin.math.cos(arr[i])
-            arr[i] = kotlin.math.sin(arr[i]) * kotlin.math.cosh(arr[i + 1])
-            arr[i + 1] = cosRe * kotlin.math.sinh(arr[i + 1])
-        }
-        return true
+    actual fun logC(arr: FloatArray, size: Int): Boolean = arr.usePinned {
+        array_log_complex_float(it.addressOf(0), size)
+        true
     }
-    actual fun sinC(arr: DoubleArray, size: Int): Boolean {
-        for (i in 0 until size step 2) {
-            val cosRe = kotlin.math.cos(arr[i])
-            arr[i] = kotlin.math.sin(arr[i]) * kotlin.math.cosh(arr[i + 1])
-            arr[i + 1] = cosRe * kotlin.math.sinh(arr[i + 1])
-        }
-        return true
+    actual fun logC(arr: DoubleArray, size: Int): Boolean = arr.usePinned {
+        array_log_complex_double(it.addressOf(0), size)
+        true
     }
 
-    actual fun cos(arr: FloatArray, size: Int): Boolean {
-        for (i in 0 until size) {
-            arr[i] = kotlin.math.cos(arr[i])
-        }
-        return true
+    actual fun sin(arr: FloatArray, size: Int): Boolean = arr.usePinned {
+        array_sin_float(it.addressOf(0), size)
+        true
     }
-    actual fun cos(arr: DoubleArray, size: Int): Boolean {
-        for (i in 0 until size) {
-            arr[i] = kotlin.math.cos(arr[i])
-        }
-        return true
+    actual fun sin(arr: DoubleArray, size: Int): Boolean = arr.usePinned {
+        array_sin_double(it.addressOf(0), size)
+        true
     }
-    actual fun cosC(arr: FloatArray, size: Int): Boolean {
-        for (i in 0 until size step 2) {
-            val sinRe = kotlin.math.sin(arr[i])
-            arr[i] = kotlin.math.cos(arr[i]) * kotlin.math.cosh(arr[i + 1])
-            arr[i + 1] = sinRe * kotlin.math.sinh(arr[i + 1])
-        }
-        return true
+    actual fun sinC(arr: FloatArray, size: Int): Boolean = arr.usePinned {
+        array_sin_complex_float(it.addressOf(0), size)
+        true
     }
-    actual fun cosC(arr: DoubleArray, size: Int): Boolean {
-        for (i in 0 until size step 2) {
-            val sinRe = kotlin.math.sin(arr[i])
-            arr[i] = kotlin.math.cos(arr[i]) * kotlin.math.cosh(arr[i + 1])
-            arr[i + 1] = sinRe * kotlin.math.sinh(arr[i + 1])
-        }
-        return true
+    actual fun sinC(arr: DoubleArray, size: Int): Boolean = arr.usePinned {
+        array_sin_complex_double(it.addressOf(0), size)
+        true
+    }
+
+    actual fun cos(arr: FloatArray, size: Int): Boolean = arr.usePinned {
+        array_cos_float(it.addressOf(0), size)
+        true
+    }
+    actual fun cos(arr: DoubleArray, size: Int): Boolean = arr.usePinned {
+        array_cos_double(it.addressOf(0), size)
+        true
+    }
+    actual fun cosC(arr: FloatArray, size: Int): Boolean = arr.usePinned {
+        array_cos_complex_float(it.addressOf(0), size)
+        true
+    }
+    actual fun cosC(arr: DoubleArray, size: Int): Boolean = arr.usePinned {
+        array_cos_complex_double(it.addressOf(0), size)
+        true
     }
 
     actual fun array_max(arr: ByteArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?): Byte =
@@ -171,43 +133,55 @@ internal actual object JniMath {
         array_sum_double(arr.toCValues(), offset, size, shape.size, shape.toCValues(), strides?.toCValues())
 
     actual fun cumSum(arr: ByteArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: ByteArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 1)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 1)
         }
+        arrPin.unpin()
         return true
     }
     actual fun cumSum(arr: ShortArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: ShortArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 2)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 2)
         }
+        arrPin.unpin()
         return true
     }
 
     actual fun cumSum(arr: IntArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: IntArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 3)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 3)
         }
+        arrPin.unpin()
         return true
     }
 
     actual fun cumSum(arr: LongArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: LongArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 4)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 4)
         }
+        arrPin.unpin()
         return true
     }
 
     actual fun cumSum(arr: FloatArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: FloatArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 5)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 5)
         }
+        arrPin.unpin()
         return true
     }
 
     actual fun cumSum(arr: DoubleArray, offset: Int, size: Int, shape: IntArray, strides: IntArray?, out: DoubleArray, axis: Int): Boolean {
+        val arrPin = arr.pin()
         out.usePinned {
-            array_cumsum(arr.toCValues(), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 6)
+            array_cumsum(arrPin.addressOf(0), it.addressOf(0), offset, size, shape.size, shape.toCValues(), strides?.toCValues(), 6)
         }
+        arrPin.unpin()
         return true
     }
 }

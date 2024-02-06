@@ -57,7 +57,7 @@ public fun Multik.readNPZ(path: Path): List<NDArray<out Number, out DimN>> {
                 DataType.LongDataType.clazz -> MemoryViewLongArray(npyArray.asLongArray())
                 DataType.ShortDataType.clazz -> MemoryViewShortArray(npyArray.asShortArray())
                 DataType.ByteDataType.clazz -> MemoryViewByteArray(npyArray.asByteArray())
-                else -> TODO()
+                else -> throw IllegalArgumentException("Unsupported data type: ${entry.type.kotlin}. Only Double, Float, Int, Long, Short and Byte are supported.")
             }
             NDArray(data, shape = npyArray.shape, dim = dimensionOf(npyArray.shape.size))
         }
@@ -78,7 +78,7 @@ public fun <T : Number, D : Dimension> Multik.writeNPY(path: Path, ndArray: NDAr
         DataType.LongDataType -> NpyFile.write(path, ndArray.data.getLongArray(), ndArray.shape)
         DataType.ShortDataType -> NpyFile.write(path, ndArray.data.getShortArray(), ndArray.shape)
         DataType.ByteDataType -> NpyFile.write(path, ndArray.data.getByteArray(), ndArray.shape)
-        else -> TODO()
+        else -> throw IllegalArgumentException("Unsupported data type: ${ndArray.dtype}. Only Double, Float, Int, Long, Short and Byte are supported.")
     }
 }
 
@@ -95,7 +95,7 @@ public fun Multik.writeNPZ(path: Path, ndArrays: List<NDArray<out Number, out Di
                 DataType.LongDataType -> it.write("arr_$ind", array.data.getLongArray(), array.shape)
                 DataType.ShortDataType -> it.write("arr_$ind", array.data.getShortArray(), array.shape)
                 DataType.ByteDataType -> it.write("arr_$ind", array.data.getByteArray(), array.shape)
-                else -> TODO()
+                else -> throw IllegalArgumentException("Unsupported data type: ${array.dtype}. Only Double, Float, Int, Long, Short and Byte are supported.")
             }
         }
     }

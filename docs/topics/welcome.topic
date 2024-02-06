@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/xhtml-entities.dtd">
+<topic xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
+       title="Multik Documentation" id="welcome" help-id="multik-documentation;Multik-documentation;home">
+    <!--TODO(добавить лого)-->
+    <section-starting-page>
+        <title>Multik</title>
+        <description>
+            Multik is a Kotlin multiplatform library for powerful and flexible manipulation of multidimensional arrays.
+            It is designed for use in a broad range of applications, combining performance with seamless cross-platform
+            integration.
+        </description>
+
+        <spotlight>
+            <a href="overview.md" type="academy" summary="Get a high-level view of Multik's capabilities.
+            Understand how this Kotlin multiplatform library simplifies complex computing tasks with its robust support
+            for multidimensional arrays.">Overview</a>
+
+            <a href="quickstart.md" type="start" summary="Jump right into Multik with our Quickstart guide!
+            Swiftly discover key features, practice with real-world examples,
+            and kick off your journey into multidimensional array computation without delay!">Quickstart</a>
+        </spotlight>
+
+        <primary>
+            <a href="getting-started.topic" type="check-list" summary="Kick off your Multik adventure with ease.
+            Here, you'll find the essential guides for a smooth start: a quick introduction,
+            detailed installation instructions, and an overview of supported platforms">Getting Started</a>
+
+            <a href="user-guide.topic" type="learn" summary="Delve deeper into Multik's core functionalities with our
+            comprehensive User Guide. Unearth a wealth of knowledge on key concepts, efficient practices,
+            and powerful features, elucidating your path in multidimensional array computation.">User Guide</a>
+
+            <a href="documentation.md" type="documents" summary="Discover the technical depth of Multik with
+            our extensive API documentation. Here you'll find detailed descriptions of functions, classes,
+            and methods to enable precision control over array computations and mathematical routines.">Documentation</a>
+
+            <a href="examples.md" type="experiment" summary="Learn from practical,
+            real-world examples demonstrating the usage of Multik.
+            This hands-on approach will help you integrate Multik seamlessly into your projects.">Examples</a>
+        </primary>
+
+        <secondary>
+            <a href="installation.md" type="install" summary="Jump right into action with our simple setup guide.
+            Learn how to integrate Multik into your Kotlin projects effortlessly,
+            irrespective of the platform you are working on.">Installation</a>
+
+            <a href="multik-on-different-platforms.md" type="cross-platform" summary="Discover the wide range of platforms Multik supports,
+            from JVM, JavaScript to Mobile and Desktop.
+            Multik's versatility makes it adaptable for diverse projects.">Supported Platforms</a>
+
+            <a href="community-and-contribution-guidelines.md" type="branch" summary="Join the Multik community! Learn how you can contribute to the
+            development of Multik, report issues, and interact with other users.">Contributing</a>
+
+            <a href="FAQ.md" type="community" summary="Have questions? We've got answers. Navigate through our Frequently
+            Asked Questions section to resolve common doubts and understand more about Multik.">FAQ</a>
+        </secondary>
+
+        <misc>
+            <cards>
+                <a href="https://kotlin.github.io/multik/" summary="Understand the functionalities of Multik at a granular level.
+                This guide offers a detailed view of every function and method available within the Multik library.">API-Reference</a>
+                <a href="release-notes-and-updates.md" summary="Stay current with the latest improvements and changes to Multik.
+                Get a historical view of all the updates and new features added to the library.">Releases</a>
+            </cards>
+            <links>
+                <group>
+                    <title>Project</title>
+                    <a href="https://github.com/Kotlin/multik" summary="Multik on GitHub">GitHub</a>
+                    <a href="https://" summary="Multik Releases on GitHub">Releases on Github</a>
+                    <a href="https://" summary="Multik on Maven Central">Maven Central</a>
+                    <a href="https://" summary="Our community rules and guidelines">Code of Conduct</a>
+                    <a href="https://" summary="Understand Multik's distribution terms">Apache-2.0 License</a>
+                </group>
+                <group>
+                    <title>Additional Resources</title>
+                    <a href="https://kotlinlang.org/docs/data-science-overview.html"
+                       summary="Learn Kotlin's role in data science.">Kotlin For Data Science</a>
+
+                    <a href="https://plugins.jetbrains.com/plugin/16340-kotlin-notebook"
+                       summary="Interactive Kotlin computing plugin">Kotlin Notebook</a>
+                </group>
+            </links>
+        </misc>
+    </section-starting-page>
+
+</topic>

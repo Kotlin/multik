@@ -808,6 +808,7 @@ public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.map(trans
 /**
  * Returns the element-wise minimum of array elements for [this] and [other].
  */
+@Suppress("unchecked_cast")
 public fun <T: Number, D : Dimension> MultiArray<T, D>.minimum(other: MultiArray<T, D>): NDArray<T, D> {
     requireEqualShape(this.shape, other.shape)
     val ret = (this as NDArray).deepCopy()

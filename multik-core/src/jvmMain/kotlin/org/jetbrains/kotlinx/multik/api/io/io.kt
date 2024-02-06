@@ -56,7 +56,7 @@ public fun Multik.write(path: Path, ndarray: NDArray<*, *>): Unit =
         }
 
         FileFormats.CSV.extension -> {
-            require(ndarray.dim.d < 2) { TODO() }
+            require(ndarray.dim.d < 2) { "Expected array of dimension less than 2, but got array of dimension ${ndarray.dim.d}." }
             this.writeCSV(path.toFile(), ndarray as NDArray<*, out Dim2>)
         }
 

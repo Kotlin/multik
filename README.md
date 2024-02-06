@@ -28,8 +28,8 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:multik-core:0.2.2"
-    implementation "org.jetbrains.kotlinx:multik-default:0.2.2"
+    implementation "org.jetbrains.kotlinx:multik-core:0.2.3"
+    implementation "org.jetbrains.kotlinx:multik-default:0.2.3"
 }
 ```
 
@@ -40,8 +40,8 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:multik-core:0.2.2")
-    implementation("org.jetbrains.kotlinx:multik-default:0.2.2")
+    implementation("org.jetbrains.kotlinx:multik-core:0.2.3")
+    implementation("org.jetbrains.kotlinx:multik-default:0.2.3")
 }
 ```
 
@@ -52,7 +52,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:multik-core:0.2.2")
+                implementation("org.jetbrains.kotlinx:multik-core:0.2.3")
             }
         }
     }
@@ -66,7 +66,7 @@ kotlin {
     sourceSets {
         val jvmName by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:multik-core-jvm:0.2.2")
+                implementation("org.jetbrains.kotlinx:multik-core-jvm:0.2.3")
             }
         }
     }
@@ -259,8 +259,8 @@ c.sorted() // sort elements
 a[2] // select the element at the 2 index
 b[1, 2] // select the element at row 1 column 2
 b[1] // select row 1 
-b[0..2, 1] // select elements at rows 0 and 1 in column 1
-b[0..1..1] // select all elements at row 0
+b[0..1, 1] // select elements at rows 0 to 1 in column 1
+b[0, 0..2..1] // select elements at row 0 in columns 0 to 2 with step 1
 
 for (el in b) {
     print("$el, ") // 1.5, 2.1, 3.0, 4.0, 5.0, 6.0, 

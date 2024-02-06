@@ -1,7 +1,6 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.konan.target.Family.LINUX
 
@@ -12,35 +11,38 @@ plugins {
 apply(from = "$rootDir/gradle/multik_jni-cmake.gradle")
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     jvm {
         compilations.all {
             kotlinOptions.jvmTarget = "1.8"
         }
-        withJava()
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
         val jvmTest by tasks.getting(Test::class) {
-            systemProperty("java.library.path", "$buildDir/cmake-build")
+            systemProperty("java.library.path", "$projectDir/build/cmake-build")
         }
         val jvmJar by tasks.getting(Jar::class) {
-            from("$buildDir/libs") {
+            from("$projectDir/build/libs") {
                 include("libmultik_jni-androidArm64.so")
                 into("lib/arm64-v8a")
             }
-            from("$buildDir/libs") {
+            from("$projectDir/build/libs") {
                 include("libmultik_jni-linuxX64.so")
                 into("lib/linuxX64")
             }
-            from("$buildDir/libs") {
+            from("$projectDir/build/libs") {
                 include("libmultik_jni-macosArm64.dylib")
                 into("lib/macosArm64")
             }
-            from("$buildDir/libs") {
+            from("$projectDir/build/libs") {
                 include("libmultik_jni-macosX64.dylib")
                 into("lib/macosX64")
             }
-            from("$buildDir/libs") {
+            from("$projectDir/build/libs") {
                 include("libmultik_jni-mingwX64.dll")
                 into("lib/mingwX64")
             }
@@ -84,7 +86,7 @@ kotlin {
 
                     extraOpts("-Xsource-compiler-option", "-std=c++14")
                     extraOpts("-Xsource-compiler-option", "-I$headersDir")
-                    extraOpts("-Xsource-compiler-option", "-I${buildDir}/cmake-build/openblas-install/include")
+                    extraOpts("-Xsource-compiler-option", "-I${projectDir}/build/cmake-build/openblas-install/include")
                     extraOpts("-Xcompile-source", "$cppDir/mk_math.cpp")
                     extraOpts("-Xcompile-source", "$cppDir/mk_linalg.cpp")
                     extraOpts("-Xcompile-source", "$cppDir/mk_stat.cpp")
@@ -104,21 +106,10 @@ kotlin {
         }
         val commonTest by getting {
             dependencies {
-                api(project(":multik-core"))
                 implementation(kotlin("test"))
             }
         }
         val jvmMain by getting
-        val nativeMain by creating {
-            dependsOn(commonMain)
-        }
-        names.forEach { n ->
-            if (n.contains("X64Main") || n.contains("Arm64Main")) {
-                this@sourceSets.getByName(n).apply {
-                    dependsOn(nativeMain)
-                }
-            }
-        }
     }
 }
 
