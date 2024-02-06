@@ -5,6 +5,7 @@
 #include "jni_JniLinAlg.h"
 #include "mk_linalg.h"
 #include <ComplexDouble.h>
+#include <cstdint>
 
 /*
  * Class:     org_jetbrains_kotlinx_multik_openblas_linalg_JniLinAlg
