@@ -1,7 +1,7 @@
-@file:OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
+@file:OptIn(ExperimentalWasmDsl::class)
 
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("multiplatform")
@@ -16,9 +16,7 @@ kotlin {
     }
 
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
+        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
@@ -34,7 +32,7 @@ kotlin {
                 enabled = false
             }
         }
-        d8()
+        binaries.library()
     }
     js(IR) {
         browser {
@@ -47,6 +45,7 @@ kotlin {
                 useMocha()
             }
         }
+        binaries.library()
     }
 
     val hostOs = System.getProperty("os.name")

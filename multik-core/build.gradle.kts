@@ -1,25 +1,17 @@
-@file:OptIn(ExperimentalWasmDsl::class, ExperimentalKotlinGradlePluginApi::class)
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
 
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension
+import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("multiplatform")
-    val dokka_version: String by System.getProperties()
-    val korro_version: String by System.getProperties()
-
-    id("org.jetbrains.dokka") version dokka_version
-    id("io.github.devcrocod.korro") version korro_version
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.korro)
 }
 
 repositories {
     mavenCentral()
 }
-
-val common_csv_version: String by project
-val nodeJsVersion: String by project
-val nodeDownloadUrl: String by project
 
 kotlin {
     explicitApi()
@@ -29,9 +21,7 @@ kotlin {
     }
 
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
+        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
@@ -54,7 +44,7 @@ kotlin {
                 enabled = false
             }
         }
-        d8()
+        binaries.library()
     }
     js(IR) {
         browser {
@@ -67,6 +57,7 @@ kotlin {
                 useMocha()
             }
         }
+        binaries.library()
     }
 
     sourceSets {
@@ -79,17 +70,12 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                implementation(kotlin("reflect"))
-                implementation("org.apache.commons:commons-csv:$common_csv_version")
-                implementation("org.jetbrains.bio:npy:0.3.5")
+                api(kotlin("reflect"))
+                api(libs.commons.csv)
+                api(libs.bio.npy)
             }
         }
     }
-}
-
-rootProject.the<NodeJsRootExtension>().apply {
-    nodeVersion = nodeJsVersion
-    nodeDownloadBaseUrl = "https://nodejs.org/download/v8-canary"
 }
 
 korro {
@@ -103,24 +89,23 @@ korro {
     }
 }
 
-tasks.dokkaHtml.configure {
-    outputDirectory.set(rootProject.buildDir.resolve("dokka"))
-    suppressObviousFunctions.set(true)
-    suppressInheritedMembers.set(true)
+dokka {
+    moduleName.set("Multik")
 
-    dokkaSourceSets {
-        configureEach {
-            documentedVisibilities.set(
-                setOf(
-                    org.jetbrains.dokka.DokkaConfiguration.Visibility.PUBLIC,
-                    org.jetbrains.dokka.DokkaConfiguration.Visibility.PROTECTED
-                )
-            )
-            skipDeprecated.set(false)
-            jdkVersion.set(8)
-            noStdlibLink.set(false)
-            noJdkLink.set(false)
+    dokkaSourceSets.configureEach {
+        sourceLink {
+            localDirectory.set(file("src/main/kotlin"))
+            remoteUrl("https://github.com/Oremif/deepseek-kotlin")
+            remoteLineSuffix.set("#L")
+            documentedVisibilities(VisibilityModifier.Public, VisibilityModifier.Protected)
+            skipDeprecated = false
+            jdkVersion = 8
             samples.from(files("src/commonTest/kotlin/samples/creation.kt"))
         }
+    }
+    dokkaPublications.html {
+        outputDirectory = project.rootProject.layout.buildDirectory.dir("dokka")
+        suppressObviousFunctions = true
+        suppressInheritedMembers = true
     }
 }

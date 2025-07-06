@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
-
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.konan.target.Family.LINUX
 
@@ -16,9 +14,7 @@ kotlin {
     }
 
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
+        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
@@ -112,5 +108,6 @@ kotlin {
         val jvmMain by getting
     }
 }
+
 
 tasks.withType(CInteropProcess::class.java).configureEach { dependsOn("build_cmake") }

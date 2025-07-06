@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalWasmDsl::class)
 
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("multiplatform")
@@ -9,9 +10,7 @@ plugins {
 
 kotlin {
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
+        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
@@ -65,7 +64,7 @@ kotlin {
                 enabled = false
             }
         }
-        d8()
+        binaries.library()
     }
 
     js(IR) {
@@ -84,6 +83,7 @@ kotlin {
                 }
             }
         }
+        binaries.library()
     }
 
     targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {

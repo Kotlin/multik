@@ -1,0 +1,16 @@
+[versions]
+kotlin = "2.2.0"
+dokka = "2.0.0"
+korro = "0.1.6"
+commons-csv = "1.14.0"
+bio-npy = "0.3.5"
+
+[libraries]
+commons-csv = { group = "org.apache.commons", name = "commons-csv", version.ref = "commons-csv"}
+bio-npy = { group = "org.jetbrains.bio", name = "npy", version.ref = "bio-npy"}
+
+
+[plugins]
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka"}
+korro = { id = "io.github.devcrocod.korro", version.ref = "korro"}
