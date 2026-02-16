@@ -5,32 +5,31 @@
     <variables>
         <header-logo>kotlin_logo.svg</header-logo>
         <product-web-url>https://kotlin.github.io/multik/welcome.html</product-web-url>
-        <enable-browser-edits>true</enable-browser-edits>
-        <browser-edits-url>https://github.com/Kotlin/multik/edit/develop/docs/</browser-edits-url>
-        <auto-convert-headings-to-chapters>true</auto-convert-headings-to-chapters>
+        <enable-contribution>true</enable-contribution>
+        <contribute-url>https://github.com/Kotlin/multik/edit/develop/docs/</contribute-url>
 
         <web-root>https://kotlin.github.io/multik/</web-root>
-        <feedback-widget>false</feedback-widget>
         <webmaster>webmaster@jetbrains.com</webmaster>
-        <search-scopes-provider>https://www.jetbrains.com/search/json/</search-scopes-provider>
         <generate-sitemap-url-prefix>https://kotlin.github.io/multik/</generate-sitemap-url-prefix>
 
+        <resizable-sidebar>true</resizable-sidebar>
         <custom-favicons>https://kotlinlang.org/assets/images/favicon.svg?v2</custom-favicons>
         <generate-canonicals>true</generate-canonicals>
     </variables>
+    <llms-txt/>
     <build-profile instance="mk">
         <variables>
             <noindex-content>false</noindex-content>
         </variables>
     </build-profile>
     <footer>
-        <social type="blog" href="https://blog.jetbrains.com/kotlin/category/data-science/"/>
+        <social type="github" href="https://github.com/Kotlin/multik"/>
+        <social type="slack" href="https://kotlinlang.slack.com/archives/C4W52CFEZ"/>
+        <social type="blog" href="https://blog.jetbrains.com/kotlin/category/ecosystem/"/>
         <social type="twitter" href="https://twitter.com/KotlinForData"/>
         <social type="youtube" href="https://www.youtube.com/@Kotlin"/>
-        <link href="https://kotlinlang.slack.com/archives/C4W52CFEZ">Slack Community</link>
-        <link href="https://github.com/Kotlin/multik">GitHub</link>
         <link href="https://github.com/jetbrains#code-of-conduct">Code of Conduct</link>
-        <copyright>2000–2024 JetBrains s.r.o.</copyright>
+        <copyright>2000–2026 JetBrains s.r.o.</copyright>
     </footer>
 
 </buildprofiles>
