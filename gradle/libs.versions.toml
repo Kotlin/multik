@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.2.0"
-dokka = "2.0.0"
+dokka = "2.1.0"
 korro = "0.1.6"
 commons-csv = "1.14.0"
 bio-npy = "0.3.5"

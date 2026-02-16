@@ -82,10 +82,12 @@ korro {
     docs = fileTree(rootProject.rootDir) {
         include("docs/topics/*.md")
         include("docs/topics/gettingStarted/*md")
+        include("docs/topics/userGuide/*md")
     }
 
     samples = fileTree(project.projectDir) {
         include("src/commonTest/kotlin/samples/docs/*.kt")
+        include("src/commonTest/kotlin/samples/docs/userGuide/*.kt")
     }
 }
 
@@ -95,7 +97,7 @@ dokka {
     dokkaSourceSets.configureEach {
         sourceLink {
             localDirectory.set(file("src/main/kotlin"))
-            remoteUrl("https://github.com/Oremif/deepseek-kotlin")
+            remoteUrl("https://github.com/Kotlin/multik")
             remoteLineSuffix.set("#L")
             documentedVisibilities(VisibilityModifier.Public, VisibilityModifier.Protected)
             skipDeprecated = false
