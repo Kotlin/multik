@@ -5,5 +5,33 @@
        xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/topic.v2.xsd"
        title="Fundamentals of Multik" id="user-guide" help-id="Fundamentals-of-Multik;User Guide;User-guide">
 
-    <p>Start typing here...</p>
+    <web-summary>
+        Explore the core concepts of Multik, from ndarrays and indexing to engines, platform support,
+        and performance guidance. Use this guide to build a solid foundation for numerical computing in Kotlin.
+    </web-summary>
+
+    <card-summary>
+        Learn Multik fundamentals: ndarrays, indexing, engines, platforms, and performance tips.
+    </card-summary>
+
+    <link-summary>
+        Build a strong foundation with Multik: core concepts, array operations, and platform guidance.
+    </link-summary>
+
+    <list>
+        <li><a href="about-multik.md"/></li>
+        <li><a href="basic.md"/></li>
+        <li><a href="creating-multidimensional-arrays.md"/></li>
+        <li><a href="indexing-and-slicing.md"/></li>
+        <li><a href="shape-manipulation.md"/></li>
+        <li><a href="iterating-over-arrays.md"/></li>
+        <li><a href="type-casting.md"/></li>
+        <li><a href="copies-and-views.md"/></li>
+        <li><a href="complex-numbers.md"/></li>
+        <li><a href="input-and-output.md"/></li>
+        <li><a href="engines-of-multik.md"/></li>
+        <li><a href="multik-on-different-platforms.md"/></li>
+        <li><a href="performance-and-optimization.md"/></li>
+    </list>
+
 </topic>
