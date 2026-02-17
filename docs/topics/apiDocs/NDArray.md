@@ -1,3 +1,0 @@
-# ndarray
-
-Start typing here...
