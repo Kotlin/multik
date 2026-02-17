@@ -37,7 +37,7 @@
     </toc-element>
     <toc-element topic="documentation.md">
         <toc-element topic="array-objects.md">
-            <toc-element topic="NDArray Class.md"/>
+            <toc-element topic="ndarray-class.md"/>
             <toc-element topic="scalars.md"/>
             <toc-element topic="type.md"/>
             <toc-element topic="dimension.md"/>
