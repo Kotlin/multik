@@ -1,5 +1,7 @@
 # d2array
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.d2array() — create a 2D NDArray with a flat-index init lambda.
 </web-summary>
@@ -34,6 +36,8 @@ inline fun <reified T : Any> Multik.d2array(
 
 ## Example
 
+<!---FUN d2array_example-->
+
 ```kotlin
 val m = mk.d2array<Int>(2, 3) { it }
 // [[0, 1, 2],
@@ -41,6 +45,8 @@ val m = mk.d2array<Int>(2, 3) { it }
 
 val identity = mk.d2array<Double>(3, 3) { if (it / 3 == it % 3) 1.0 else 0.0 }
 ```
+
+<!---END-->
 
 > The init lambda receives a **flat** index. For per-element `(i, j)` indices, use [d2arrayIndices](d2arrayIndices.md).
 > {style="tip"}

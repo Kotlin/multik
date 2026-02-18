@@ -1,5 +1,7 @@
 # rand
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.rand() — create NDArrays filled with random values,
 with optional range, seed, and custom Random generator.
@@ -92,11 +94,15 @@ inline fun <reified T : Number, reified D : Dimension> Multik.rand(
 
 ## Example
 
+<!---FUN rand_example-->
+
 ```kotlin
 val a = mk.rand<Double>(3, 3)                     // 3×3, values in [0.0, 1.0)
-val b = mk.rand<Int, D1>(1, 100, 10)              // 10 ints in [1, 100)
+val b = mk.rand<Int, D1>(from = 1, until = 100, 10)  // 10 ints in [1, 100)
 val c = mk.rand<Double, D2>(42, 0.0, 1.0, 3, 3)  // seeded 3×3
 ```
+
+<!---END-->
 
 > Complex types are **not** supported by `rand`. Use `d1array` or `d2array` with a custom init lambda for complex random
 > arrays.

@@ -1,5 +1,7 @@
 # d1array
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.d1array() — create a 1D NDArray with an init lambda.
 </web-summary>
@@ -32,6 +34,8 @@ inline fun <reified T : Any> Multik.d1array(
 
 ## Example
 
+<!---FUN d1array_example-->
+
 ```kotlin
 val a = mk.d1array<Int>(5) { it * 2 }
 // [0, 2, 4, 6, 8]
@@ -39,6 +43,8 @@ val a = mk.d1array<Int>(5) { it * 2 }
 val b = mk.d1array<Double>(3) { it + 0.5 }
 // [0.5, 1.5, 2.5]
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

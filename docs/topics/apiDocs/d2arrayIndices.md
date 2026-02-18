@@ -1,5 +1,7 @@
 # d2arrayIndices
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.d2arrayIndices() — create a 2D NDArray with an (i, j) index-based init lambda.
 </web-summary>
@@ -34,6 +36,8 @@ inline fun <reified T : Any> Multik.d2arrayIndices(
 
 ## Example
 
+<!---FUN d2arrayIndices_example-->
+
 ```kotlin
 val m = mk.d2arrayIndices<Int>(3, 3) { i, j -> i + j }
 // [[0, 1, 2],
@@ -44,6 +48,8 @@ val identity = mk.d2arrayIndices<Double>(4, 4) { i, j ->
     if (i == j) 1.0 else 0.0
 }
 ```
+
+<!---END-->
 
 > For simple cases where you do not need per-axis indices, [d2array](d2array.md) with a flat index is slightly faster.
 > {style="tip"}

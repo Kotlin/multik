@@ -1,5 +1,7 @@
 # d4arrayIndices
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.d4arrayIndices() — create a 4D NDArray with an (i, j, k, m) index-based init lambda.
 </web-summary>
@@ -38,12 +40,16 @@ inline fun <reified T : Any> Multik.d4arrayIndices(
 
 ## Example
 
+<!---FUN d4arrayIndices_example-->
+
 ```kotlin
 val a = mk.d4arrayIndices<Int>(2, 2, 2, 2) { i, j, k, m ->
     i * 8 + j * 4 + k * 2 + m
 }
 // a[1, 1, 1, 1] == 15
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

@@ -1,5 +1,7 @@
 # d4array
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.d4array() — create a 4D NDArray with a flat-index init lambda.
 </web-summary>
@@ -38,10 +40,14 @@ inline fun <reified T : Any> Multik.d4array(
 
 ## Example
 
+<!---FUN d4array_example-->
+
 ```kotlin
 val a = mk.d4array<Double>(2, 3, 4, 5) { it.toDouble() }
 // shape (2, 3, 4, 5), 120 elements
 ```
+
+<!---END-->
 
 > For per-element `(i, j, k, m)` indices, use [d4arrayIndices](d4arrayIndices.md).
 > {style="tip"}

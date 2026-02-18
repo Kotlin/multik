@@ -1,5 +1,7 @@
 # identity
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.identity() — create a square identity matrix with ones on the diagonal.
 </web-summary>
@@ -31,6 +33,8 @@ fun <T> Multik.identity(n: Int, dtype: DataType): D2Array<T>
 
 ## Example
 
+<!---FUN identity_example-->
+
 ```kotlin
 val I = mk.identity<Double>(3)
 // [[1.0, 0.0, 0.0],
@@ -41,6 +45,8 @@ val intI = mk.identity<Int>(2, DataType.IntDataType)
 // [[1, 0],
 //  [0, 1]]
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

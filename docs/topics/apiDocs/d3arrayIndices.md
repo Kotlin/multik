@@ -1,5 +1,7 @@
 # d3arrayIndices
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.d3arrayIndices() — create a 3D NDArray with an (i, j, k) index-based init lambda.
 </web-summary>
@@ -36,10 +38,14 @@ inline fun <reified T : Any> Multik.d3arrayIndices(
 
 ## Example
 
+<!---FUN d3arrayIndices_example-->
+
 ```kotlin
 val t = mk.d3arrayIndices<Int>(2, 3, 4) { i, j, k -> i * 100 + j * 10 + k }
 // t[1, 2, 3] == 123
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

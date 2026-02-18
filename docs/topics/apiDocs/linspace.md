@@ -1,5 +1,7 @@
 # linspace
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.linspace() — create a 1D array of evenly spaced values over a closed interval.
 </web-summary>
@@ -36,6 +38,8 @@ inline fun <reified T : Number> Multik.linspace(
 
 ## Example
 
+<!---FUN linspace_example-->
+
 ```kotlin
 val a = mk.linspace<Double>(0, 1, 5)
 // [0.0, 0.25, 0.5, 0.75, 1.0]
@@ -43,6 +47,8 @@ val a = mk.linspace<Double>(0, 1, 5)
 val b = mk.linspace<Float>(0.0, 10.0, 3)
 // [0.0, 5.0, 10.0]
 ```
+
+<!---END-->
 
 ## linspace vs arange
 

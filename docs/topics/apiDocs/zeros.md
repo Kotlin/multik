@@ -1,5 +1,7 @@
 # zeros
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.zeros() — create NDArrays filled with zeros.
 </web-summary>
@@ -42,11 +44,15 @@ fun <T, D : Dimension> Multik.zeros(dims: IntArray, dtype: DataType): NDArray<T,
 
 ## Example
 
+<!---FUN zeros_example-->
+
 ```kotlin
 val v = mk.zeros<Double>(5)           // [0.0, 0.0, 0.0, 0.0, 0.0]
 val m = mk.zeros<Int>(2, 3)           // [[0, 0, 0], [0, 0, 0]]
 val t = mk.zeros<Float>(2, 3, 4)     // shape (2, 3, 4), all 0.0f
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

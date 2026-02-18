@@ -1,5 +1,7 @@
 # ones
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.ones() — create NDArrays filled with ones.
 </web-summary>
@@ -42,11 +44,15 @@ fun <T, D : Dimension> Multik.ones(dims: IntArray, dtype: DataType): NDArray<T, 
 
 ## Example
 
+<!---FUN ones_example-->
+
 ```kotlin
 val v = mk.ones<Double>(5)           // [1.0, 1.0, 1.0, 1.0, 1.0]
 val m = mk.ones<Int>(2, 3)           // [[1, 1, 1], [1, 1, 1]]
 val t = mk.ones<Float>(2, 3, 4)     // shape (2, 3, 4), all 1.0f
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

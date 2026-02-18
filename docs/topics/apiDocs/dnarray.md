@@ -1,5 +1,7 @@
 # dnarray
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.dnarray() — create an N-dimensional NDArray with a flat-index init lambda.
 </web-summary>
@@ -49,6 +51,8 @@ inline fun <reified T : Any, reified D : Dimension> Multik.dnarray(
 
 ## Example
 
+<!---FUN dnarray_example-->
+
 ```kotlin
 // 5D array
 val a = mk.dnarray<Int>(2, 3, 4, 5, 6) { it }
@@ -58,6 +62,8 @@ val a = mk.dnarray<Int>(2, 3, 4, 5, 6) { it }
 val b = mk.dnarray<Double, D3>(intArrayOf(2, 3, 4)) { it.toDouble() }
 // shape (2, 3, 4)
 ```
+
+<!---END-->
 
 > The shape-based overload lets you create arrays of any dimension (including D1–D4) from a dynamically computed shape.
 > {style="tip"}

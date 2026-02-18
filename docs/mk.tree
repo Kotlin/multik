@@ -53,8 +53,8 @@
             <toc-element topic="d2arrayIndices.md"/>
             <toc-element topic="d3array.md"/>
             <toc-element topic="d3arrayIndices.md"/>
-            <toc-element topic="d4arrayIndices.md"/>
             <toc-element topic="d4array.md"/>
+            <toc-element topic="d4arrayIndices.md"/>
             <toc-element topic="dnarray.md"/>
             <toc-element topic="identity.md"/>
             <toc-element topic="linspace.md"/>

@@ -1,5 +1,7 @@
 # d3array
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.d3array() — create a 3D NDArray with a flat-index init lambda.
 </web-summary>
@@ -36,10 +38,14 @@ inline fun <reified T : Any> Multik.d3array(
 
 ## Example
 
+<!---FUN d3array_example-->
+
 ```kotlin
 val t = mk.d3array<Int>(2, 3, 4) { it }
 // shape (2, 3, 4), elements 0..23
 ```
+
+<!---END-->
 
 > For per-element `(i, j, k)` indices, use [d3arrayIndices](d3arrayIndices.md).
 > {style="tip"}

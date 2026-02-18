@@ -1,5 +1,7 @@
 # meshgrid
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.meshgrid() — create 2D coordinate matrices from two 1D coordinate vectors.
 </web-summary>
@@ -35,6 +37,8 @@ fun <T : Number> Multik.meshgrid(
 
 ## Example
 
+<!---FUN meshgrid_example-->
+
 ```kotlin
 val x = mk.ndarray(mk[1, 2, 3])
 val y = mk.ndarray(mk[4, 5])
@@ -50,7 +54,11 @@ val (X, Y) = mk.meshgrid(x, y)
 //  [5, 5, 5]]
 ```
 
+<!---END-->
+
 This is useful for evaluating functions on a grid:
+
+<!---FUN meshgrid_grid_function_example-->
 
 ```kotlin
 val x = mk.linspace<Double>(0.0, 1.0, 10)
@@ -58,6 +66,8 @@ val y = mk.linspace<Double>(0.0, 1.0, 10)
 val (X, Y) = mk.meshgrid(x, y)
 // Compute f(x, y) = x^2 + y^2 element-wise on the grid
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

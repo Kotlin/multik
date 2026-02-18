@@ -1,5 +1,7 @@
 # ndarrayOf
 
+<!---IMPORT samples.docs.apiDocs.ArrayCreation-->
+
 <web-summary>
 API reference for mk.ndarrayOf() — create a 1D NDArray from varargs.
 </web-summary>
@@ -34,10 +36,14 @@ inline fun <reified T : Complex> Multik.ndarrayOf(vararg items: T): D1Array<T>
 
 ## Example
 
+<!---FUN ndarrayOf_example-->
+
 ```kotlin
 val a = mk.ndarrayOf(1, 2, 3)          // D1Array<Int>: [1, 2, 3]
 val b = mk.ndarrayOf(1.0, 2.0, 3.0)   // D1Array<Double>: [1.0, 2.0, 3.0]
 ```
+
+<!---END-->
 
 > For arrays with more than one dimension, use [ndarray](ndarray.md) or [d2array](d2array.md) and friends.
 > {style="note"}
