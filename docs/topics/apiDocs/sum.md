@@ -1,5 +1,7 @@
 # sum
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for sum() — returns the sum of all elements in an NDArray.
 </web-summary>

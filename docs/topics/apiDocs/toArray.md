@@ -1,5 +1,7 @@
 # toArray
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for toArray() — converts a 2D, 3D, or 4D NDArray into nested Kotlin arrays.
 </web-summary>
@@ -38,6 +40,8 @@ fun MultiArray<Double, D4>.toArray(): Array<Array<Array<DoubleArray>>>
 
 ## Example
 
+<!---FUN toArray_example-->
+
 ```kotlin
 val m = mk.ndarray(mk[mk[1, 2, 3], mk[4, 5, 6]])
 
@@ -45,6 +49,8 @@ val arr: Array<IntArray> = m.toArray()
 // arr[0] = IntArray [1, 2, 3]
 // arr[1] = IntArray [4, 5, 6]
 ```
+
+<!---END-->
 
 > `toArray()` is available for D2, D3, and D4 arrays only. For 1D arrays, use
 > [`toPrimitiveArray`](toPrimitiveArray.md) functions instead.

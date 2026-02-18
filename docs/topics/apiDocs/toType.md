@@ -1,5 +1,7 @@
 # toType
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for toType() — converts NDArray element type to a different numeric type
 (e.g. Int to Double).
@@ -38,6 +40,8 @@ fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(
 
 ## Example
 
+<!---FUN toType_example-->
+
 ```kotlin
 val ints = mk.ndarray(mk[1, 2, 3])
 
@@ -47,6 +51,8 @@ val doubles = ints.toType<Int, Double, D1>()
 val floats = ints.toType<Int, Float, D1>()
 // D1Array<Float> [1.0, 2.0, 3.0]
 ```
+
+<!---END-->
 
 ## Pitfalls
 

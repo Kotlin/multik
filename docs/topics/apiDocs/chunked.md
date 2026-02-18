@@ -1,5 +1,7 @@
 # chunked
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for chunked() — splits an NDArray into fixed-size chunks, returned as a 2D array.
 </web-summary>
@@ -29,6 +31,8 @@ is not evenly divisible by `size`, the last row is padded with zeros.
 
 ## Example
 
+<!---FUN chunked_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5])
 
@@ -37,6 +41,8 @@ val c = a.chunked(2)
 //  [3, 4],
 //  [5, 0]]   — last chunk padded with 0
 ```
+
+<!---END-->
 
 ## Pitfalls
 

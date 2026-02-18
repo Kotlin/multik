@@ -1,5 +1,7 @@
 # distinct
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for distinct() — returns a 1D NDArray containing only the unique elements.
 </web-summary>
@@ -32,12 +34,16 @@ inline fun <T, D : Dimension, K> MultiArray<T, D>.distinctBy(
 
 ## Example
 
+<!---FUN distinct_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 2, 3, 1, 4])
 
 a.distinct()                  // [1, 2, 3, 4]
 a.distinctBy { it % 2 }      // [1, 2]  (first odd, first even)
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

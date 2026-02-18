@@ -1,5 +1,7 @@
 # windowed
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for windowed() — returns a 2D NDArray of sliding window segments over elements.
 </web-summary>

@@ -1,5 +1,7 @@
 # maximum
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for maximum() — returns an NDArray where each element is the larger of the
 corresponding elements from two arrays.
@@ -31,12 +33,16 @@ fun <T : Number, D : Dimension> MultiArray<T, D>.maximum(
 
 ## Example
 
+<!---FUN maximum_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[3, 1, 4])
 val b = mk.ndarray(mk[1, 5, 2])
 
 a.maximum(b)  // [3, 5, 4]
 ```
+
+<!---END-->
 
 ## Pitfalls
 

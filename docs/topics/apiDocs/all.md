@@ -1,5 +1,7 @@
 # all
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for all() — returns true if all elements of an NDArray match a given predicate.
 </web-summary>
@@ -30,6 +32,8 @@ inline fun <T, D : Dimension> MultiArray<T, D>.all(
 
 ## Example
 
+<!---FUN all_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[2, 4, 6, 8])
 
@@ -39,6 +43,8 @@ a.all { it > 5 }         // false
 val empty = mk.ndarray(mk[0]).drop(1)
 empty.all { it > 0 }     // true (vacuously true)
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

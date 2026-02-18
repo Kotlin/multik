@@ -1,5 +1,7 @@
 # average
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for average() — returns the arithmetic mean of all elements in an NDArray as a Double.
 </web-summary>
@@ -22,6 +24,8 @@ fun <T : Number, D : Dimension> MultiArray<T, D>.average(): Double
 
 ## Example
 
+<!---FUN average_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5])
 a.average()  // 3.0
@@ -29,6 +33,8 @@ a.average()  // 3.0
 val b = mk.ndarray(mk[1.5, 2.5])
 b.average()  // 2.0
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

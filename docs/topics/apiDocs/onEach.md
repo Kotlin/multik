@@ -1,5 +1,7 @@
 # onEach
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for onEach() — performs an action on each element and returns the array itself
 for chaining.
@@ -31,6 +33,8 @@ inline fun <T, D : Dimension, C : MultiArray<T, D>> C.onEach(
 
 ## Example
 
+<!---FUN onEach_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3])
 
@@ -39,6 +43,8 @@ val result = a
     .map { it * 2 }
 // result: [2, 4, 6]
 ```
+
+<!---END-->
 
 > Unlike `forEach`, `onEach` returns the array itself. Use it for logging or debugging in a chain.
 > {style="tip"}

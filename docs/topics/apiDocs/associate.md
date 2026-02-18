@@ -1,5 +1,7 @@
 # associate
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for associate() — builds a Map from NDArray elements using a transform function
 that produces key-value pairs.
@@ -47,6 +49,8 @@ inline fun <K, D : Dimension, V> MultiArray<K, D>.associateWith(
 
 ## Example
 
+<!---FUN associate_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3])
 
@@ -54,6 +58,8 @@ a.associate { it to it * it }       // {1=1, 2=4, 3=9}
 a.associateBy { it * 10 }           // {10=1, 20=2, 30=3}
 a.associateWith { it.toString() }   // {1="1", 2="2", 3="3"}
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

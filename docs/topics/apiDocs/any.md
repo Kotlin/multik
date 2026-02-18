@@ -1,5 +1,7 @@
 # any
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for any() — returns true if an NDArray has at least one element, or if at least
 one element matches a predicate.
@@ -36,6 +38,8 @@ inline fun <T, D : Dimension> MultiArray<T, D>.any(
 
 ## Example
 
+<!---FUN any_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4])
 
@@ -43,6 +47,8 @@ a.any()              // true
 a.any { it > 3 }     // true
 a.any { it > 10 }    // false
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

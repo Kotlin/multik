@@ -1,5 +1,7 @@
 # toPrimitiveArray
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for toIntArray(), toFloatArray(), toDoubleArray(), and toLongArray() — convert
 an NDArray to a Kotlin primitive array.
@@ -28,6 +30,8 @@ fun <D : Dimension> MultiArray<ComplexDouble, D>.toComplexDoubleArray(): Complex
 
 ## Example
 
+<!---FUN toPrimitiveArray_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3])
 a.toIntArray()       // IntArray [1, 2, 3]
@@ -35,6 +39,8 @@ a.toIntArray()       // IntArray [1, 2, 3]
 val b = mk.ndarray(mk[mk[1.0, 2.0], mk[3.0, 4.0]])
 b.toDoubleArray()    // DoubleArray [1.0, 2.0, 3.0, 4.0]  (flat)
 ```
+
+<!---END-->
 
 > Multi-dimensional arrays are flattened to a 1D primitive array in **row-major** order.
 > {style="note"}

@@ -1,5 +1,7 @@
 # forEach
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for forEach() — performs an action on each element of an NDArray.
 </web-summary>
@@ -38,6 +40,8 @@ inline fun <T, D : Dimension> MultiArray<T, D>.forEachMultiIndexed(
 
 ## Example
 
+<!---FUN forEach_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
 
@@ -52,6 +56,8 @@ a.forEachMultiIndexed { idx, v ->
 // [1, 0] -> 3
 // [1, 1] -> 4
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

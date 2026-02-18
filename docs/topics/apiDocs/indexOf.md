@@ -1,5 +1,7 @@
 # indexOf
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for indexOf() — returns the flat index of the first occurrence of an element
 in an NDArray, or -1 if not found.
@@ -40,6 +42,8 @@ fun <T, D : Dimension> MultiArray<T, D>.lastIndexOf(element: T): Int
 
 ## Example
 
+<!---FUN indexOf_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[10, 20, 30, 20, 10])
 
@@ -49,6 +53,8 @@ a.indexOfFirst { it > 15 }   // 1
 a.indexOfLast { it > 15 }    // 3
 a.indexOf(99)                // -1
 ```
+
+<!---END-->
 
 > The returned index is a **flat** index in row-major order, not a multi-dimensional index.
 > {style="note"}

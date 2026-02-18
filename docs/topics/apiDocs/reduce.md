@@ -1,5 +1,7 @@
 # reduce
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for reduce() — accumulates NDArray elements from left to right, starting
 with the first element as the initial accumulator.
@@ -46,6 +48,8 @@ inline fun <S, D : Dimension, T : S> MultiArray<T, D>.reduceOrNull(
 
 ## Example
 
+<!---FUN reduce_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4])
 
@@ -55,6 +59,8 @@ a.reduce { acc, v -> acc * v }        // 24
 a.reduceIndexed { i, acc, v -> acc + i * v }
 // 1 + 1*2 + 2*3 + 3*4 = 21
 ```
+
+<!---END-->
 
 > `reduce` throws on empty arrays. Use `reduceOrNull` or `fold` with an explicit initial value if
 > the array may be empty.

@@ -1,5 +1,7 @@
 # find
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for find() — returns the first element matching a predicate, or null.
 </web-summary>
@@ -34,6 +36,8 @@ inline fun <T, D : Dimension> MultiArray<T, D>.findLast(
 
 ## Example
 
+<!---FUN find_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5])
 
@@ -41,6 +45,8 @@ a.find { it > 3 }       // 4
 a.findLast { it > 3 }   // 5
 a.find { it > 10 }      // null
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

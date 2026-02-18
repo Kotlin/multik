@@ -1,5 +1,7 @@
 # minimum
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for minimum() — returns an NDArray where each element is the smaller of the
 corresponding elements from two arrays.
@@ -31,12 +33,16 @@ fun <T : Number, D : Dimension> MultiArray<T, D>.minimum(
 
 ## Example
 
+<!---FUN minimum_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[3, 1, 4])
 val b = mk.ndarray(mk[1, 5, 2])
 
 a.minimum(b)  // [1, 1, 2]
 ```
+
+<!---END-->
 
 ## Pitfalls
 

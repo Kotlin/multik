@@ -1,5 +1,7 @@
 # toList
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for toList() — converts an NDArray into a flat Kotlin List, with dimensional
 variants for nested lists.
@@ -31,6 +33,8 @@ fun <T> MultiArray<T, D4>.toListD4(): List<List<List<List<T>>>>
 
 ## Example
 
+<!---FUN toList_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3])
 a.toList()       // [1, 2, 3]
@@ -40,6 +44,8 @@ val m = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
 m.toList()       // [1, 2, 3, 4]  (flat)
 m.toListD2()     // [[1, 2], [3, 4]]  (nested)
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

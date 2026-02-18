@@ -1,5 +1,7 @@
 # flatMap
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for flatMap() — transforms each NDArray element into an iterable and flattens
 the results into a 1D array.
@@ -41,12 +43,16 @@ inline fun <T, reified R> MultiArray<T, D1>.flatMapMultiIndexed(
 
 ## Example
 
+<!---FUN flatMap_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3])
 
 val result = a.flatMap { listOf(it, it * 10) }
 // [1, 10, 2, 20, 3, 30]
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

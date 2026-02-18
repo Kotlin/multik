@@ -1,5 +1,7 @@
 # groupNDArray
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for groupNDArrayBy() — groups NDArray elements by a key function into a map
 of 1D NDArrays.
@@ -41,6 +43,8 @@ inline fun <T, D : Dimension, K> MultiArray<T, D>.groupingNDArrayBy(
 
 ## Example
 
+<!---FUN groupNDArrayBy_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5, 6])
 
@@ -51,6 +55,8 @@ val groups = a.groupNDArrayBy { if (it % 2 == 0) "even" else "odd" }
 val grouping = a.groupingNDArrayBy { it % 3 }
 grouping.eachCount()  // {1=2, 2=2, 0=2}
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

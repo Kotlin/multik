@@ -1,5 +1,7 @@
 # contains
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for contains() — checks if an NDArray contains a specific element.
 </web-summary>
@@ -28,6 +30,8 @@ operator fun <T, D : Dimension> MultiArray<T, D>.contains(element: T): Boolean
 
 ## Example
 
+<!---FUN contains_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5])
 
@@ -35,6 +39,8 @@ a.contains(3)    // true
 3 in a           // true  (operator syntax)
 10 in a          // false
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

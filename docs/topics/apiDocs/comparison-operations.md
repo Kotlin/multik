@@ -1,5 +1,7 @@
 # Comparison Operations
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for comparison operations on Multik NDArrays — element-wise minimum
 and maximum between two arrays.
@@ -31,12 +33,16 @@ Returns a new array where each element is the smaller of the two corresponding e
 ### Example
 {id="minimum-example"}
 
+<!---FUN minimum_comparison_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 5, 3])
 val b = mk.ndarray(mk[4, 2, 6])
 
 val c = a.minimum(b)  // [1, 2, 3]
 ```
+
+<!---END-->
 
 ## maximum
 
@@ -51,12 +57,16 @@ Returns a new array where each element is the larger of the two corresponding el
 ### Example
 {id="maximum-example"}
 
+<!---FUN maximum_comparison_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 5, 3])
 val b = mk.ndarray(mk[4, 2, 6])
 
 val c = a.maximum(b)  // [4, 5, 6]
 ```
+
+<!---END-->
 
 ## Pitfalls
 

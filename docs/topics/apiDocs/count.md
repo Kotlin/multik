@@ -1,5 +1,7 @@
 # count
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for count() — returns the total number of elements or the count of elements
 matching a predicate.
@@ -35,12 +37,16 @@ inline fun <T, D : Dimension> MultiArray<T, D>.count(
 
 ## Example
 
+<!---FUN count_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5])
 
 a.count()            // 5
 a.count { it > 3 }   // 2
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

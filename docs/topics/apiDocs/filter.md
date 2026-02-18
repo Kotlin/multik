@@ -1,5 +1,7 @@
 # filter
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for filter() — returns a 1D NDArray containing only elements that match a predicate.
 </web-summary>
@@ -44,6 +46,8 @@ inline fun <T, D : Dimension> MultiArray<T, D>.filterNot(
 
 ## Example
 
+<!---FUN filter_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[mk[1, 2, 3], mk[4, 5, 6]])
 
@@ -53,6 +57,8 @@ a.filterNot { it > 3 }                    // [1, 2, 3]
 val b = mk.ndarray(mk[10, 20, 30, 40])
 b.filterIndexed { i, v -> i % 2 == 0 }    // [10, 30]
 ```
+
+<!---END-->
 
 > `filter` always returns a **1D** array, regardless of the input dimensionality.
 > {style="note"}

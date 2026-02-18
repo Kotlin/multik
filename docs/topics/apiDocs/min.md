@@ -1,5 +1,7 @@
 # min
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for min() — returns the smallest element in an NDArray, or null if empty.
 </web-summary>
@@ -38,6 +40,8 @@ fun <T, D : Dimension> MultiArray<T, D>.minWith(
 
 ## Example
 
+<!---FUN min_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[3, 1, 4, 1, 5])
 
@@ -45,6 +49,8 @@ a.min()                        // 1
 a.minBy { -it }                // 5  (smallest by negated value)
 a.minWith(compareBy { it })    // 1
 ```
+
+<!---END-->
 
 > For element-wise minimum between two arrays, see [`minimum()`](minimum.md).
 > {style="note"}

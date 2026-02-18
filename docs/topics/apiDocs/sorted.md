@@ -1,5 +1,7 @@
 # sorted
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for sorted() — returns a new NDArray with elements sorted in ascending order.
 </web-summary>
@@ -22,6 +24,8 @@ fun <T : Number, D : Dimension> MultiArray<T, D>.sorted(): NDArray<T, D>
 
 ## Example
 
+<!---FUN sorted_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[3, 1, 4, 1, 5, 9])
 a.sorted()  // [1, 1, 3, 4, 5, 9]
@@ -31,6 +35,8 @@ m.sorted()
 // [[1, 2],
 //  [3, 4]]
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

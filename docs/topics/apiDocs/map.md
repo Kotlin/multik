@@ -1,5 +1,7 @@
 # map
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for map() — transforms each element of an NDArray, returning a new array
 of the same shape.

@@ -1,5 +1,7 @@
 # intersect
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for intersect() — returns a set of elements present in both the NDArray
 and another collection.
@@ -31,12 +33,16 @@ infix fun <T, D : Dimension> MultiArray<T, D>.intersect(
 
 ## Example
 
+<!---FUN intersect_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5])
 
 a intersect listOf(3, 4, 5, 6, 7)    // {3, 4, 5}
 a intersect listOf(10, 20)           // {}
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

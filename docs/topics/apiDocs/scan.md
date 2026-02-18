@@ -1,5 +1,7 @@
 # scan
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for scan() — returns an NDArray of successive accumulation values, including
 the initial value and all intermediate results.
@@ -45,12 +47,16 @@ inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.scanMultiIndexed
 
 ## Example
 
+<!---FUN scan_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4])
 
 a.scan(0) { acc, v -> acc + v }
 // [0, 1, 3, 6, 10]  — cumulative sum with initial 0
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

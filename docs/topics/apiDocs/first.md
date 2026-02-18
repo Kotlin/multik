@@ -1,5 +1,7 @@
 # first
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for first() — returns the first element of an NDArray, or the first matching
 a predicate.
@@ -42,6 +44,8 @@ inline fun <T, D : Dimension> MultiArray<T, D>.firstOrNull(
 
 ## Example
 
+<!---FUN first_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[10, 20, 30])
 
@@ -49,6 +53,8 @@ a.first()                // 10
 a.first { it > 15 }      // 20
 a.firstOrNull { it > 50 } // null
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

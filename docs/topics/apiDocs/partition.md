@@ -1,5 +1,7 @@
 # partition
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for partition() — splits an NDArray into two 1D arrays: elements matching
 a predicate and elements not matching.
@@ -32,6 +34,8 @@ is `true`, `second` contains the rest.
 
 ## Example
 
+<!---FUN partition_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5, 6])
 
@@ -39,6 +43,8 @@ val (evens, odds) = a.partition { it % 2 == 0 }
 // evens: [2, 4, 6]
 // odds:  [1, 3, 5]
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

@@ -1,5 +1,7 @@
 # last
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for last() — returns the last element of an NDArray, or the last matching
 a predicate.
@@ -43,6 +45,8 @@ inline fun <T, D : Dimension> MultiArray<T, D>.lastOrNull(
 
 ## Example
 
+<!---FUN last_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[10, 20, 30])
 
@@ -50,6 +54,8 @@ a.last()                 // 30
 a.last { it < 25 }       // 20
 a.lastOrNull { it > 50 } // null
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

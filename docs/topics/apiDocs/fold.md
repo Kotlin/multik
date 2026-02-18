@@ -1,5 +1,7 @@
 # fold
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for fold() — accumulates a value starting from an initial value, applying an
 operation to each NDArray element from left to right.
@@ -45,6 +47,8 @@ inline fun <T, D : Dimension, R> MultiArray<T, D>.foldMultiIndexed(
 
 ## Example
 
+<!---FUN fold_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4])
 
@@ -54,6 +58,8 @@ a.fold("") { acc, v -> "$acc$v" }              // "1234"
 val b = mk.ndarray(mk[10, 20, 30])
 b.foldIndexed(0) { i, acc, v -> acc + i * v }  // 0*10 + 1*20 + 2*30 = 80
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

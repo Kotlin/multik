@@ -1,5 +1,7 @@
 # drop
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for drop() — removes the first n elements from a 1D NDArray.
 </web-summary>
@@ -33,12 +35,16 @@ inline fun <T> MultiArray<T, D1>.dropWhile(
 
 ## Example
 
+<!---FUN drop_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5])
 
 a.drop(2)                    // [3, 4, 5]
 a.dropWhile { it < 3 }      // [3, 4, 5]
 ```
+
+<!---END-->
 
 > `drop` and `dropWhile` are only available on **1D** arrays (`MultiArray<T, D1>`).
 > {style="note"}

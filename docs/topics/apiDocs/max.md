@@ -1,5 +1,7 @@
 # max
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for max() — returns the largest element in an NDArray, or null if empty.
 </web-summary>
@@ -37,6 +39,8 @@ fun <T, D : Dimension> MultiArray<T, D>.maxWith(
 
 ## Example
 
+<!---FUN max_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[3, 1, 4, 1, 5])
 
@@ -44,6 +48,8 @@ a.max()                        // 5
 a.maxBy { -it }                // 1  (largest by negated value)
 a.maxWith(compareBy { it })    // 5
 ```
+
+<!---END-->
 
 > For element-wise maximum between two arrays, see [`maximum()`](maximum.md).
 > {style="note"}

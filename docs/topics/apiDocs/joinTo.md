@@ -1,5 +1,7 @@
 # joinTo
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for joinTo() and joinToString() — builds a string representation of NDArray
 elements with separators, prefix, and postfix.
@@ -52,6 +54,8 @@ fun <T, D : Dimension> MultiArray<T, D>.joinToString(
 
 ## Example
 
+<!---FUN joinToString_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5])
 
@@ -61,6 +65,8 @@ a.joinToString(prefix = "[", postfix = "]") // "[1, 2, 3, 4, 5]"
 a.joinToString(limit = 3)                  // "1, 2, 3, ..."
 a.joinToString { (it * 10).toString() }    // "10, 20, 30, 40, 50"
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

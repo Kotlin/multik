@@ -1,5 +1,7 @@
 # reversed
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for reversed() — returns a new NDArray with elements in reverse order.
 </web-summary>
@@ -22,6 +24,8 @@ fun <T, D : Dimension> MultiArray<T, D>.reversed(): NDArray<T, D>
 
 ## Example
 
+<!---FUN reversed_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5])
 a.reversed()  // [5, 4, 3, 2, 1]
@@ -31,6 +35,8 @@ m.reversed()
 // [[4, 3],
 //  [2, 1]]
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

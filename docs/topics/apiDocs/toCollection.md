@@ -1,5 +1,7 @@
 # toCollection
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for toCollection(), toSet(), toHashSet(), and toMutableSet() — append NDArray
 elements to Kotlin collections.
@@ -38,6 +40,8 @@ fun <T, D : Dimension> MultiArray<T, D>.toMutableSet(): MutableSet<T>
 
 ## Example
 
+<!---FUN toCollection_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 2, 3, 3, 3])
 
@@ -47,6 +51,8 @@ a.toHashSet()                        // HashSet {1, 2, 3}
 val list = mutableListOf(0)
 a.toCollection(list)                 // [0, 1, 2, 2, 3, 3, 3]
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

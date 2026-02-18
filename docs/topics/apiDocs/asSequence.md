@@ -1,5 +1,7 @@
 # asSequence
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for asSequence() — wraps an NDArray into a lazy Kotlin Sequence.
 </web-summary>
@@ -22,6 +24,8 @@ fun <T, D : Dimension> MultiArray<T, D>.asSequence(): Sequence<T>
 
 ## Example
 
+<!---FUN asSequence_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[mk[1, 2, 3], mk[4, 5, 6]])
 
@@ -31,6 +35,8 @@ val result = a.asSequence()
     .toList()
 // [30, 40, 50, 60]
 ```
+
+<!---END-->
 
 Use `asSequence()` when chaining multiple operations to avoid creating intermediate arrays.
 

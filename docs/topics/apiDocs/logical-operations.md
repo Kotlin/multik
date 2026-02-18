@@ -1,5 +1,7 @@
 # Logical Operations
 
+<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
+
 <web-summary>
 API reference for logical operations on Multik NDArrays — element-wise AND and OR
 that return Int arrays with 1/0 values.
@@ -39,12 +41,16 @@ Returns an `Int` array where each element is the logical AND of the correspondin
 ### Example
 {id="and-example"}
 
+<!---FUN and_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 0, 3, 0])
 val b = mk.ndarray(mk[1, 1, 0, 0])
 
 val c = a and b      // [1, 0, 0, 0]
 ```
+
+<!---END-->
 
 ## or
 
@@ -59,12 +65,16 @@ Returns an `Int` array where each element is the logical OR of the corresponding
 ### Example
 {id="or-example"}
 
+<!---FUN or_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 0, 3, 0])
 val b = mk.ndarray(mk[1, 1, 0, 0])
 
 val c = a or b       // [1, 1, 1, 0]
 ```
+
+<!---END-->
 
 ## Pitfalls
 
