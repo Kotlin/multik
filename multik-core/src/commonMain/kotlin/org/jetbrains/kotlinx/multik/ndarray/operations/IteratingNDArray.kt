@@ -10,6 +10,7 @@ import org.jetbrains.kotlinx.multik.api.toCommonNDArray
 import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.ndarray.complex.*
 import org.jetbrains.kotlinx.multik.ndarray.data.*
+import kotlin.experimental.ExperimentalTypeInference
 import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.jvm.JvmName
@@ -1258,6 +1259,8 @@ public inline fun <T : Number, D : Dimension> MultiArray<T, D>.sumBy(selector: (
  * Returns the sum of all values produced by [selector] function applied to each element in the collection.
  */
 // TODO: complex number
+@OptIn(ExperimentalTypeInference::class)
+@OverloadResolutionByLambdaReturnType
 public inline fun <T : Number, D : Dimension> MultiArray<T, D>.sumBy(selector: (T) -> Double): Double {
     var sum = 0.0
     for (element in this) {
