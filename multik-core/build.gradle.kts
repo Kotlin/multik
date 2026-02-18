@@ -83,11 +83,13 @@ korro {
         include("docs/topics/*.md")
         include("docs/topics/gettingStarted/*md")
         include("docs/topics/userGuide/*md")
+        include("docs/topics/apiDocs/*md")
     }
 
     samples = fileTree(project.projectDir) {
         include("src/commonTest/kotlin/samples/docs/*.kt")
         include("src/commonTest/kotlin/samples/docs/userGuide/*.kt")
+        include("src/commonTest/kotlin/samples/docs/apiDocs/*.kt")
     }
 }
 

@@ -1,5 +1,7 @@
 # Type
 
+<!---IMPORT samples.docs.apiDocs.ArrayObjects-->
+
 <web-summary>
 Reference for the DataType enum — Multik's runtime type identification for NDArray elements.
 Covers enum values, properties, helper methods, and type resolution.
@@ -93,6 +95,8 @@ Resolves a `DataType` from a `KClass`.
 
 ## Usage
 
+<!---FUN type_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1.0, 2.0, 3.0])
 
@@ -105,6 +109,8 @@ a.dtype.isComplex()              // false
 DataType.of(3)                   // DataType.IntDataType
 DataType.ofKClass(Float::class)  // DataType.FloatDataType
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

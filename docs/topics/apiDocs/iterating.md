@@ -1,5 +1,7 @@
 # Iterating
 
+<!---IMPORT samples.docs.apiDocs.ArrayObjects-->
+
 <web-summary>
 API reference for iterating over Multik NDArrays: NDArrayIterator, MultiIndexProgression,
 and collection-style operations like forEach, map, filter, fold, and reduce.
@@ -57,6 +59,8 @@ public class MultiIndexProgression(
 
 ### Creating progressions
 
+<!---FUN creating_progression_example-->
+
 ```kotlin
 val start = intArrayOf(0, 0)
 val end = intArrayOf(1, 2)
@@ -66,7 +70,11 @@ val stepped = (start..end).step(2)       // forward, step 2
 val rev = end downTo start               // backward, step 1
 ```
 
+<!---END-->
+
 ### forEach on progressions
+
+<!---FUN forEach_progression_example-->
 
 ```kotlin
 val m = mk.ndarray(mk[mk[1, 2, 3], mk[4, 5, 6]])
@@ -74,6 +82,8 @@ m.multiIndices.forEach { idx ->
     // idx is IntArray, e.g. [0, 0], [0, 1], ...
 }
 ```
+
+<!---END-->
 
 ## Collection-style operations
 

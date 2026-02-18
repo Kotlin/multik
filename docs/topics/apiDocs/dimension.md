@@ -1,5 +1,7 @@
 # Dimension
 
+<!---IMPORT samples.docs.apiDocs.ArrayObjects-->
+
 <web-summary>
 Reference for Multik's dimension type system — compile-time markers D1 through D4 and DN
 that enforce array rank in the type signature.
@@ -116,6 +118,8 @@ Resolves a dimension class by reified type parameter. When `dim` is provided, cr
 
 ## Usage
 
+<!---FUN dim_example-->
+
 ```kotlin
 val v: D1Array<Int> = mk.ndarray(mk[1, 2, 3])
 v.dim   // D1
@@ -126,16 +130,22 @@ m.dim   // D2
 m.dim.d // 2
 ```
 
+<!---END-->
+
 ### Dimension changes
 
 Operations that change rank return a different dimension type:
 
+<!---FUN change_dim_example-->
+
 ```kotlin
-val m = mk.ndarray(mk[mk[1, 2], mk[3, 4]])  // D2
-val flat = m.flatten()                         // D1
-val reshaped = m.reshape(1, 2, 2)             // D3
-val squeezed = m.reshape(1, 2, 2).squeeze(0)  // DN (d=2)
+val m = mk.ndarray(mk[mk[1, 2], mk[3, 4]])                             // D2
+val flat = m.flatten()                                                       // D1
+val reshaped = m.reshape(1, 2, 2)                       // D3
+val squeezed = m.reshape(1, 2, 2).squeeze(0)   // DN (d=2)
 ```
+
+<!---END-->
 
 > `squeeze`, `unsqueeze`, `view`, and `slice` return `NDArray<T, DN>` because the resulting rank depends on runtime
 > arguments. Use `asD1Array()` … `asD4Array()` to restore a fixed dimension type when you know the rank.

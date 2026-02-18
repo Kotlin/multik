@@ -1,5 +1,7 @@
 # Scalars
 
+<!---IMPORT samples.docs.apiDocs.ArrayObjects-->
+
 <web-summary>
 Reference for scalar element types supported by Multik NDArrays:
 Byte, Short, Int, Long, Float, Double, ComplexFloat, and ComplexDouble.
@@ -72,6 +74,8 @@ Same API as `ComplexFloat` but with `Double` precision.
 
 ### Creating complex values
 
+<!---FUN creating_complex_values_example-->
+
 ```kotlin
 val c1 = ComplexFloat(1.0f, 2.0f)   // 1.0 + 2.0i
 val c2 = ComplexDouble(3.0, -1.0)   // 3.0 - 1.0i
@@ -81,14 +85,20 @@ val real = Complex.r(5.0)           // 5.0 + 0.0i
 val imag = Complex.i(3.0)           // 0.0 + 3.0i
 ```
 
+<!---END-->
+
 ### ComplexFloatArray / ComplexDoubleArray
 
 Backing storage for complex arrays. Each element occupies two primitive slots internally.
+
+<!---FUN creating_complex_array_example-->
 
 ```kotlin
 val arr = ComplexFloatArray(3) { ComplexFloat(it.toFloat(), 0f) }
 arr[0] // ComplexFloat(0.0, 0.0)
 ```
+
+<!---END-->
 
 ## Type conversion
 

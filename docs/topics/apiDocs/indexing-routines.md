@@ -1,5 +1,7 @@
 # Indexing routines
 
+<!---IMPORT samples.docs.apiDocs.ArrayObjects-->
+
 <web-summary>
 API reference for Multik indexing and slicing: Slice, RInt, ReadableView,
 the view and slice extension functions, and open-ended slice helpers.
@@ -43,16 +45,19 @@ public class Slice(start: Int, stop: Int, step: Int) : Indexing, ClosedRange<Int
 `RInt` (Rankable Int) is a value class that enables the `..` operator to produce `Slice` objects instead of `IntRange`.
 
 ```kotlin
-@JvmInline
 public value class RInt(internal val data: Int) : Indexing
 ```
 
 Convert an `Int` to `RInt` with the `.r` extension:
 
+<!---FUN slice_rInt_example-->
+
 ```kotlin
 val s = 0.r..4.r          // Slice(0, 4, 1)
 val s2 = 0.r until 4.r    // Slice(0, 3, 1)
 ```
+
+<!---END-->
 
 `RInt` supports `+`, `-`, `*`, `/`, `..`, and `until`.
 
@@ -66,12 +71,16 @@ The `sl` typealias provides open-ended slice boundaries:
 | `sl.last`   | `SliceEndStub`   | Unbounded end: `k..sl.last`    |
 | `sl.bounds` | `Slice`          | Full axis: `sl.bounds`         |
 
+<!---FUN slice_sl_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[10, 20, 30, 40, 50])
 a[sl.first..2]  // [10, 20, 30]
 a[2..sl.last]   // [30, 40, 50]
 a[sl.bounds]    // [10, 20, 30, 40, 50]
 ```
+
+<!---END-->
 
 ## ReadableView
 
@@ -87,10 +96,14 @@ operator fun get(vararg indices: Int): MultiArray<T, DN>
 
 Access via the `V` property:
 
+<!---FUN view_v_property_example-->
+
 ```kotlin
 val tensor = mk.d3array(2, 3, 4) { it }
 val sub = tensor.asDNArray().V[0]  // DN array of shape (3, 4)
 ```
+
+<!---END-->
 
 ## view function
 
@@ -108,10 +121,15 @@ fun <T, D : Dimension, M : Dimension> MultiArray<T, D>.view(
 
 Each fixed axis removes one dimension from the result.
 
+
+<!---FUN view_example-->
+
 ```kotlin
 val m = mk.ndarray(mk[mk[1, 2, 3], mk[4, 5, 6]])
-val row: D1Array<Int> = m.view(1)          // [4, 5, 6]
+val row: MultiArray<Int, D1> = m.view(1)          // [4, 5, 6]
 ```
+
+<!---END-->
 
 ## slice function
 
@@ -125,10 +143,14 @@ fun <T, D : Dimension, O : Dimension> MultiArray<T, D>.slice(
 ): NDArray<T, O>
 ```
 
+<!---FUN slice_by_range_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[mk[1, 2, 3], mk[4, 5, 6]])
 val cols = a.slice<Int, D2, D2>(0..1, axis = 1) // columns 0 and 1
 ```
+
+<!---END-->
 
 ### By map of axes
 
@@ -140,11 +162,15 @@ fun <T, D : Dimension, O : Dimension> MultiArray<T, D>.slice(
 
 Keys are axis indices; values are `RInt` (reduces dimension) or `Slice` (keeps dimension).
 
+<!---FUN slice_by_map_example-->
+
 ```kotlin
 val t = mk.d3array(2, 3, 4) { it }
 val s = t.slice<Int, D3, D2>(mapOf(0 to 0.r, 2 to (0..2).toSlice()))
 // axis 0 fixed to index 0 (removed), axis 2 sliced to 0..2 (kept)
 ```
+
+<!---END-->
 
 ## Pitfalls
 
