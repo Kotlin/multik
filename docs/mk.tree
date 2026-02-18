@@ -4,7 +4,7 @@
 
 <instance-profile id="mk"
                   name="Multik"
-                  start-page="welcome.topic" is-library="true" status="eap">
+                  start-page="welcome.topic" is-library="true">
 
     <toc-element toc-title="Welcome" topic="welcome.topic"/>
     <toc-element topic="overview.md"/>

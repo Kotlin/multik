@@ -64,7 +64,7 @@
                     <title>Project</title>
                     <a href="https://github.com/Kotlin/multik" summary="Multik on GitHub">GitHub</a>
                     <a href="https://github.com/Kotlin/multik/releases" summary="Releases on Github">Releases on Github</a>
-                    <a href="https://central.sonatype.com/search?namespace=org.jetbrains.kotlinx&q=multik-*" summary="Multik on Maven Central">Maven Central</a>
+                    <a href="https://central.sonatype.com/artifact/org.jetbrains.kotlinx/multik-core" summary="Multik on Maven Central">Maven Central</a>
 <!--                    TODO <a href="https://" summary="Community rules and guidelines">Code of Conduct</a>-->
                     <a href="https://github.com/Kotlin/multik/blob/develop/LICENSE" summary="Apache-2.0 License">License</a>
                 </group>
