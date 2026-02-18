@@ -175,7 +175,7 @@ If you need to change element types, see [](type-casting.md).
 
 <seealso style="cards" title="Next steps">
 <category ref="user-guide">
-  <a href="basic.md" summary="Understand NDArray fundamentals and basic arithmetic."/>
+  <a href="array-fundamentals.md" summary="Understand NDArray fundamentals and basic arithmetic."/>
   <a href="indexing-and-slicing.md" summary="Access elements and subarrays with ranges, slices, and indices."/>
   <a href="shape-manipulation.md" summary="Reshape, transpose, squeeze, and combine arrays."/>
   <a href="copies-and-views.md" summary="Learn when operations return views and how to copy data safely."/>

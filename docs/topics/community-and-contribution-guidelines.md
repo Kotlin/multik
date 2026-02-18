@@ -1,6 +1,0 @@
-# Community and Contribution Guidelines
-
-[//]: # (TODO)
-<web-summary>TODO</web-summary>
-<card-summary>TODO</card-summary>
-<link-summary>TODO</link-summary>

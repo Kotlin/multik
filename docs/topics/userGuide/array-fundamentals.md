@@ -1,4 +1,4 @@
-# Basics of Multik
+# Array Fundamentals
 
 <!---IMPORT samples.docs.userGuide.Basic-->
 

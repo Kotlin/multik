@@ -55,7 +55,7 @@ Other considerations:
 - Native dependencies must be available and compatible with your environment.
 - On Android, the OpenBLAS JVM engine supports arm64-v8a only.
 
-For platform-level constraints, see [](supported-platforms.md).
+For platform-level constraints, see [](multik-on-different-platforms.md).
 
 <seealso style="cards" title="Next steps">
 <category ref="user-guide">
@@ -65,6 +65,6 @@ For platform-level constraints, see [](supported-platforms.md).
 </category>
 <category ref="get-start">
   <a href="installation.md" summary="Add Multik dependencies to your project."/>
-  <a href="supported-platforms.md" summary="Full list of Kotlin target presets supported by Multik."/>
+  <a href="multik-on-different-platforms.md" summary="Full list of Kotlin target presets supported by Multik."/>
 </category>
 </seealso>

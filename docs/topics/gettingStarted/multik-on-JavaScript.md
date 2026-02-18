@@ -44,6 +44,6 @@ See [](installation.md) for Gradle examples.
 </category>
 <category ref="get-start">
   <a href="installation.md" summary="Add Multik dependencies to your project."/>
-  <a href="supported-platforms.md" summary="Full list of Kotlin target presets supported by Multik."/>
+  <a href="multik-on-different-platforms.md" summary="Full list of Kotlin target presets supported by Multik."/>
 </category>
 </seealso>

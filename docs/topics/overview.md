@@ -88,23 +88,33 @@ val d = a + b // compile error (type mismatch)
 val e = a dot c // compile error (dimension mismatch)
 ```
 
+## Core concepts {id="overview-core-concepts"}
+
+The central type in Multik is `NDArray`, a container for dense, homogeneous numeric data.
+Key terms:
+
+- **Dimension** (`dim`) — number of axes (1D, 2D, 3D, 4D, or ND).
+- **Shape** (`shape`) — size of each axis, for example `(2, 3)`.
+- **Strides** (`strides`) — steps in storage needed to move along each axis.
+- **DType** (`dtype`) — the element type, such as `Int`, `Double`, or complex numbers.
+- **Engine** — the execution backend for math, linear algebra, and statistics operations.
+
 ## Architecture {id="overview-architecture"}
 
-Multik provides a unified API across different implementations. One implementation is purely based on Kotlin, ensuring
-maximum platform compatibility and easy installation. Another one incorporates C++/Fortran libraries for lightning-fast
-computations. Moreover, Multik caters to scenarios where users are unsure of the optimal implementation for their tasks.
-In such cases, a default implementation dynamically selects the best fit based on the nature of the task at hand. These
-implementations are organized into modules as depicted in the following diagram:
+Multik separates the API from execution engines, organized into four modules:
+
+- `multik-core` — defines ndarray types and the API surface. All platforms.
+- `multik-kotlin` — pure Kotlin engine. JVM, JS, Native, and WASM.
+- `multik-openblas` — native engine backed by OpenBLAS for high performance. JVM and desktop Native.
+- `multik-default` — bundles the Kotlin and OpenBLAS engines, choosing the best one at runtime.
+
+This lets you pick the best engine for your platform and performance needs without changing your code.
 
 ![Architecture](overview-architecture.png) {width="700"}
 
-The multiplatform technology in Kotlin is being rapidly advanced, greatly simplifying cross-platform project
-development. With the native multiplatform support in Multik, you can effortlessly share your mathematical computations
-across various platforms.
-
 > * More details about the multiplatform technology can be found in
     > the [official Kotlin documentation](https://kotlinlang.org/docs/multiplatform.html).
-> * You can check out the platforms supported by Multik in [this link](supported-platforms.md).
+> * You can check out the platforms supported by Multik in [this link](multik-on-different-platforms.md).
 
 ## Performance {id="overview-performance"}
 

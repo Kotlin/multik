@@ -29,7 +29,19 @@ Multik supports the major Kotlin targets:
 - Native (iOS, macOS, Linux, Windows)
 - WASM
 
-For the full list of target presets, see [](supported-platforms.md).
+### Target presets
+
+The following [target presets](https://kotlinlang.org/docs/multiplatform-dsl-reference.html) are supported:
+
+| Target platform | Target presets                            |
+|-----------------|-------------------------------------------|
+| Kotlin/JVM      | `jvm`                                     |
+| iOS             | `iosArm64`, `iosX64`, `iosSimulatorArm64` |
+| macOS           | `macosX64`, `macosArm64`                  |
+| Linux           | `linuxX64`                                |
+| Windows         | `mingwX64`                                |
+| JS              | `js`                                      |
+| WASM            | `wasm`                                    |
 
 ## Engine availability by platform
 
@@ -79,7 +91,6 @@ If you spot a typo or missing detail, please [open a docs issue](https://github.
   <a href="multik-on-desktop.md" summary="Desktop JVM/Native guidance and OpenBLAS notes."/>
 </category>
 <category ref="get-start">
-  <a href="supported-platforms.md" summary="Full list of Kotlin target presets supported by Multik."/>
   <a href="installation.md" summary="Add Multik dependencies to your project."/>
 </category>
 </seealso>

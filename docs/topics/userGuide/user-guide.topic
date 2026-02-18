@@ -19,8 +19,7 @@
     </link-summary>
 
     <list>
-        <li><a href="about-multik.md"/></li>
-        <li><a href="basic.md"/></li>
+        <li><a href="array-fundamentals.md"/></li>
         <li><a href="creating-multidimensional-arrays.md"/></li>
         <li><a href="indexing-and-slicing.md"/></li>
         <li><a href="shape-manipulation.md"/></li>
