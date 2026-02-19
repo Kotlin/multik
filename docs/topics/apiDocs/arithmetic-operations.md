@@ -1,4 +1,4 @@
-# Arithmetic Operations
+# Arithmetic operations
 
 <!---IMPORT samples.docs.apiDocs.ArrayOperations-->
 

@@ -1,4 +1,4 @@
-# Logical Operations
+# Logical operations
 
 <!---IMPORT samples.docs.apiDocs.ArrayOperations-->
 

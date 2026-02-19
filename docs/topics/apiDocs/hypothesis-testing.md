@@ -1,4 +1,4 @@
-# Hypothesis Testing
+# Hypothesis testing
 
 [//]: # (TODO)
 <web-summary>TODO</web-summary>

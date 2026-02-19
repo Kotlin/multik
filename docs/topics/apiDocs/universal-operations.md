@@ -1,4 +1,4 @@
-# Universal Operations
+# Universal operations
 
 <web-summary>
 API reference for collection-style universal operations on Multik NDArrays — map, filter,

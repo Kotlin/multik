@@ -1,4 +1,4 @@
-# Probability Distributions
+# Probability distributions
 
 [//]: # (TODO)
 <web-summary>TODO</web-summary>

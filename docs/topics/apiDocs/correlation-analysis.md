@@ -1,4 +1,4 @@
-# Correlation Analysis
+# Correlation analysis
 
 [//]: # (TODO)
 <web-summary>TODO</web-summary>

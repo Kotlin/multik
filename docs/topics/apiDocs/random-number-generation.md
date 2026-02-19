@@ -1,4 +1,4 @@
-# Random Number Generation
+# Random number generation
 
 <!---IMPORT samples.docs.apiDocs.ArrayCreation-->
 

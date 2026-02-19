@@ -1,4 +1,4 @@
-# Array Operations
+# Array operations
 
 <web-summary>
 API reference for NDArray operations in Multik — arithmetic, logical, comparison,

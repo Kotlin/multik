@@ -1,4 +1,4 @@
-# Comparison Operations
+# Comparison operations
 
 <!---IMPORT samples.docs.apiDocs.ArrayOperations-->
 
