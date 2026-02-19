@@ -19,12 +19,12 @@ The `norm` function computes the norm of a matrix or vector. The norm type is se
 
 ## Norm types
 
-| Enum value | Formula                                   | Description                                             |
-|------------|-------------------------------------------|---------------------------------------------------------|
-| `Norm.Fro` | sqrt(sum of \|a_ij\|^2)                   | Frobenius norm (square root of sum of squares). Default. |
-| `Norm.N1`  | max over columns of sum \|a_ij\|          | Maximum column sum (1-norm).                            |
-| `Norm.Inf` | max over rows of sum \|a_ij\|             | Maximum row sum (infinity norm).                        |
-| `Norm.Max` | max(\|a_ij\|)                             | Maximum absolute element value.                         |
+| Enum value | Formula                          | Description                                              |
+|------------|----------------------------------|----------------------------------------------------------|
+| `Norm.Fro` | sqrt(sum of \|a_ij\|^2)          | Frobenius norm (square root of sum of squares). Default. |
+| `Norm.N1`  | max over columns of sum \|a_ij\| | Maximum column sum (1-norm).                             |
+| `Norm.Inf` | max over rows of sum \|a_ij\|    | Maximum row sum (infinity norm).                         |
+| `Norm.Max` | max(\|a_ij\|)                    | Maximum absolute element value.                          |
 
 ## Signatures
 
@@ -44,10 +44,10 @@ fun LinAlg.norm(mat: MultiArray<Float, D1>, norm: Norm = Norm.Fro): Float
 
 ## Parameters
 
-| Parameter | Type                         | Description                                         |
-|-----------|------------------------------|-----------------------------------------------------|
-| `mat`     | `MultiArray<Double/Float, D2>` or `MultiArray<Double/Float, D1>` | Input matrix or vector. |
-| `norm`    | `Norm`                       | Norm type. Default: `Norm.Fro`.                     |
+| Parameter | Type                                                             | Description                     |
+|-----------|------------------------------------------------------------------|---------------------------------|
+| `mat`     | `MultiArray<Double/Float, D2>` or `MultiArray<Double/Float, D1>` | Input matrix or vector.         |
+| `norm`    | `Norm`                                                           | Norm type. Default: `Norm.Fro`. |
 
 **Returns:** `Double` or `Float` — the computed norm value.
 

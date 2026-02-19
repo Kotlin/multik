@@ -17,11 +17,11 @@ dot — matrix and vector multiplication.
 
 The `dot` function computes the product of two arrays. The behavior depends on the operand dimensions:
 
-| Left operand | Right operand | Result       | Operation                                |
-|-------------|---------------|--------------|------------------------------------------|
-| 2D matrix   | 2D matrix     | 2D matrix    | Standard matrix multiplication.          |
-| 2D matrix   | 1D vector     | 1D vector    | Matrix-vector multiplication.            |
-| 1D vector   | 1D vector     | Scalar `T`   | Inner (scalar) product.                  |
+| Left operand | Right operand | Result     | Operation                       |
+|--------------|---------------|------------|---------------------------------|
+| 2D matrix    | 2D matrix     | 2D matrix  | Standard matrix multiplication. |
+| 2D matrix    | 1D vector     | 1D vector  | Matrix-vector multiplication.   |
+| 1D vector    | 1D vector     | Scalar `T` | Inner (scalar) product.         |
 
 ## Signatures
 
@@ -56,8 +56,8 @@ infix fun <T : Complex> MultiArray<T, D1>.dot(b: MultiArray<T, D1>): T
 
 ## Parameters
 
-| Parameter | Type                 | Description           |
-|-----------|----------------------|-----------------------|
+| Parameter | Type                                       | Description    |
+|-----------|--------------------------------------------|----------------|
 | `a`       | `MultiArray<T, D2>` or `MultiArray<T, D1>` | Left operand.  |
 | `b`       | `MultiArray<T, D2>` or `MultiArray<T, D1>` | Right operand. |
 
