@@ -1,4 +1,4 @@
-# Multik on Different Platforms
+# Multik on different platforms
 
 <web-summary>
 Learn how Multik runs across JVM, JS, Native, and WASM.

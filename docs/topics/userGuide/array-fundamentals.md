@@ -1,4 +1,4 @@
-# Array Fundamentals
+# Array fundamentals
 
 <!---IMPORT samples.docs.userGuide.Basic-->
 

@@ -1,4 +1,4 @@
-# Input and Output
+# Input and output
 
 <!---IMPORT samples.docs.userGuide.InputAndOutput-->
 

@@ -1,4 +1,4 @@
-# Indexing and Slicing
+# Indexing and slicing
 
 <!---IMPORT samples.docs.userGuide.IndexingAndSlicing-->
 

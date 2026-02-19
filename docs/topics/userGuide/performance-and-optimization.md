@@ -1,4 +1,4 @@
-# Performance and Optimization
+# Performance and optimization
 
 <!---IMPORT samples.docs.userGuide.PerformanceAndOptimization-->
 

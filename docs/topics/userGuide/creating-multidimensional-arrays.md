@@ -1,4 +1,4 @@
-# Creating Multidimensional Arrays
+# Creating multidimensional arrays
 
 <!---IMPORT samples.docs.userGuide.CreatingMultidimensionalArrays-->
 

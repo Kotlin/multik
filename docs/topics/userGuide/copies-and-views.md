@@ -1,4 +1,4 @@
-# Copies and Views
+# Copies and views
 
 <!---IMPORT samples.docs.userGuide.CopiesAndViews-->
 

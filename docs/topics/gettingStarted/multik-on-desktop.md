@@ -1,4 +1,4 @@
-# Multik on Desktop
+# Multik on desktop (MacOS, Win, Linux)
 
 <web-summary>
 Use Multik on desktop platforms (Windows, macOS, Linux) via JVM or Native targets.

@@ -1,4 +1,4 @@
-# Multik on Mobile
+# Multik on mobile (Android, iOS)
 
 <web-summary>
 Use Multik on Android and iOS with Kotlin Multiplatform.

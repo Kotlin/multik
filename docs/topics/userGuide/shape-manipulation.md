@@ -1,4 +1,4 @@
-# Shape Manipulation
+# Shape manipulation
 
 <!---IMPORT samples.docs.userGuide.ShapeManipulation-->
 

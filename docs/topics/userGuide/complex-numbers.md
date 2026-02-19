@@ -1,4 +1,4 @@
-# Complex Numbers
+# Complex numbers
 
 <!---IMPORT samples.docs.userGuide.ComplexNumbers-->
 

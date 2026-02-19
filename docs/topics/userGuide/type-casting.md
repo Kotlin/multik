@@ -1,4 +1,4 @@
-# Type Casting
+# Type casting
 
 <!---IMPORT samples.docs.userGuide.TypeCasting-->
 

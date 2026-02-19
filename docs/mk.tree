@@ -8,7 +8,7 @@
 
     <toc-element toc-title="Welcome" topic="welcome.topic"/>
     <toc-element topic="overview.md"/>
-    <toc-element toc-title="Getting-Started" topic="getting-started.topic">
+    <toc-element toc-title="Getting started" topic="getting-started.topic">
         <toc-element topic="quickstart.md"/>
         <toc-element topic="installation.md"/>
         <toc-element topic="engines-of-multik.md"/>
@@ -16,11 +16,11 @@
             <toc-element topic="multik-on-JVM.md"/>
             <toc-element topic="multik-on-JavaScript.md"/>
             <toc-element topic="multik-on-WASM.md"/>
-            <toc-element toc-title="Multik on Mobile (Android, iOS)" topic="multik-on-mobile.md"/>
-            <toc-element toc-title="Multik on Desktop (MacOS, Win, Linux)" topic="multik-on-desktop.md"/>
+            <toc-element topic="multik-on-mobile.md"/>
+            <toc-element topic="multik-on-desktop.md"/>
         </toc-element>
     </toc-element>
-    <toc-element toc-title="User Guide" topic="user-guide.topic">
+    <toc-element topic="user-guide.topic">
         <toc-element topic="array-fundamentals.md">
             <toc-element topic="creating-multidimensional-arrays.md"/>
             <toc-element topic="indexing-and-slicing.md"/>
@@ -121,9 +121,9 @@
         </toc-element>
         <toc-element topic="statistics.md">
             <toc-element topic="descriptive-statistics.md"/>
-            <toc-element topic="correlation-analysis.md"/>
-            <toc-element topic="hypothesis-testing.md"/>
-            <toc-element topic="probability-distributions.md"/>
+            <toc-element wip="true" topic="correlation-analysis.md"/>
+            <toc-element wip="true" topic="hypothesis-testing.md"/>
+            <toc-element wip="true" topic="probability-distributions.md"/>
         </toc-element>
     </toc-element>
     <toc-element topic="FAQ.md"/>

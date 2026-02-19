@@ -1,4 +1,4 @@
-# Iterating Over Arrays
+# Iterating over arrays
 
 <!---IMPORT samples.docs.userGuide.IteratingOverArrays-->
 
