@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE buildprofiles SYSTEM "https://resources.jetbrains.com/writerside/1.0/build-profiles.dtd">
 <buildprofiles xsi:noNamespaceSchemaLocation="https://resources.jetbrains.com/writerside/1.0/build-profiles.xsd"
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
@@ -8,6 +9,12 @@
         <enable-contribution>true</enable-contribution>
         <contribute-url>https://github.com/Kotlin/multik/edit/develop/docs/</contribute-url>
 
+        <download-title>GitHub</download-title>
+        <download-page>https://github.com/Kotlin/multik</download-page>
+        <showDownloadButton>true</showDownloadButton>
+
+        <primary-color>purple</primary-color>
+
         <web-root>https://kotlin.github.io/multik/</web-root>
         <webmaster>webmaster@jetbrains.com</webmaster>
         <generate-sitemap-url-prefix>https://kotlin.github.io/multik/</generate-sitemap-url-prefix>
@@ -16,7 +23,9 @@
         <custom-favicons>https://kotlinlang.org/assets/images/favicon.svg?v2</custom-favicons>
         <generate-canonicals>true</generate-canonicals>
     </variables>
+
     <llms-txt/>
+    <sitemap priority="0.35" change-frequency="monthly"/>
     <build-profile instance="mk">
         <variables>
             <noindex-content>false</noindex-content>
