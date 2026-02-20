@@ -1,0 +1,96 @@
+name: Build documentation
+
+on:
+  push:
+    branches: ["develop"]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  pages: write
+
+env:
+  INSTANCE: 'docs/mk'
+  DOCKER_VERSION: '2026.02.8644'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifact: ${{ steps.define-ids.outputs.artifact }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Define instance id and artifacts
+        id: define-ids
+        run: |
+          INSTANCE=${INSTANCE#*/}
+          INSTANCE_ID_UPPER=$(echo "$INSTANCE" | tr '[:lower:]' '[:upper:]')
+          ARTIFACT="webHelp${INSTANCE_ID_UPPER}2-all.zip"
+          echo "INSTANCE_ID_UPPER=$INSTANCE_ID_UPPER" >> $GITHUB_ENV
+          echo "ARTIFACT=$ARTIFACT" >> $GITHUB_ENV
+          echo "artifact=$ARTIFACT" >> $GITHUB_OUTPUT
+
+      - name: Build docs using Writerside Docker builder
+        uses: JetBrains/writerside-github-action@v4
+        with:
+          instance: ${{ env.INSTANCE }}
+          docker-version: ${{ env.DOCKER_VERSION }}
+
+      - name: Save artifact with build results
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs
+          path: |
+            artifacts/${{ steps.define-ids.outputs.artifact }}
+            artifacts/report.json
+          retention-days: 7
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docs
+          path: artifacts
+
+      - name: Test documentation
+        uses: JetBrains/writerside-checker-action@v1
+        with:
+          instance: ${{ env.INSTANCE }}
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: docs
+          path: artifacts
+
+      - name: Unzip artifact
+        run: unzip -O UTF-8 -qq "artifacts/${{ needs.build.outputs.artifact }}" -d dir
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Package and upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dir
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
