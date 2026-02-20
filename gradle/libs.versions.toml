@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.2.0"
+kotlin = "2.3.10"
 dokka = "2.1.0"
 korro = "0.1.6"
 commons-csv = "1.14.0"
