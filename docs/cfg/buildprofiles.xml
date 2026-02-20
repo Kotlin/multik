@@ -24,6 +24,7 @@
         <generate-canonicals>true</generate-canonicals>
 
         <analytics-head-script-file>google-analytics.html</analytics-head-script-file>
+        <analytics-body-html-file>google-analytics-body.html</analytics-body-html-file>
     </variables>
 
     <llms-txt/>

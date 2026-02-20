@@ -1,8 +1,6 @@
 name: Build documentation
 
 on:
-  push:
-    branches: ["develop"]
   release:
     types: [published]
   workflow_dispatch:
