@@ -1,11 +1,22 @@
-/*
- * Copyright 2020-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.creation
 
-import org.jetbrains.kotlinx.multik.api.*
-import org.jetbrains.kotlinx.multik.ndarray.complex.*
+import org.jetbrains.kotlinx.multik.api.ExperimentalMultikApi
+import org.jetbrains.kotlinx.multik.api.createAlignedNDArray
+import org.jetbrains.kotlinx.multik.api.d2array
+import org.jetbrains.kotlinx.multik.api.d2arrayIndices
+import org.jetbrains.kotlinx.multik.api.diagonal
+import org.jetbrains.kotlinx.multik.api.identity
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.api.ones
+import org.jetbrains.kotlinx.multik.api.zeros
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+import org.jetbrains.kotlinx.multik.ndarray.complex.complexDoubleArrayOf
+import org.jetbrains.kotlinx.multik.ndarray.complex.complexFloatArrayOf
+import org.jetbrains.kotlinx.multik.ndarray.complex.i
+import org.jetbrains.kotlinx.multik.ndarray.complex.minus
+import org.jetbrains.kotlinx.multik.ndarray.complex.plus
 import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.operations.all
@@ -13,1333 +24,455 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.toListD2
 import org.jetbrains.kotlinx.multik.ndarray.operations.toSet
 import org.jetbrains.kotlinx.multik.shouldBe
 import kotlin.math.round
-import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class Create2DArrayTests {
+abstract class Create2DArrayTestBase<T : Any> {
+    protected val dim1 = 5
+    protected val dim2 = 7
+    protected val n = 7
 
-    /*___________________________Byte_______________________________________*/
+    abstract val zero: T
+    abstract val one: T
 
-    /**
-     * This method checks if a byte array of a given size is correctly created with all elements set to zero.
-     */
+    abstract fun createZeros(): D2Array<T>
+    abstract fun createOnes(): D2Array<T>
+    abstract fun createIdentity(): D2Array<T>
+    abstract fun createDiagonal(): D2Array<T>
+    abstract fun expectedDiagonalElement(i: Int): T
+    abstract fun makeFromNestedList(): Pair<D2Array<T>, List<List<T>>>
+    abstract fun makeFromSet(): Pair<D2Array<T>, Set<T>>
+    abstract fun makeFromPrimitiveArray(): Pair<D2Array<T>, Any>
+    abstract fun createWithInit(): Pair<D2Array<T>, Any>
+    abstract fun createWithIndices(): Pair<D2Array<T>, Any>
+    abstract fun assertDataEquals(a: D2Array<T>, expected: Any)
+
     @Test
-    fun createZeroFilledByteArray() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.zeros<Byte>(dim1, dim2)
-
+    fun createZeroFilledArray() {
+        val a = createZeros()
         assertEquals(dim1 * dim2, a.size)
         assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 0.toByte() } }
+        assertTrue { a.all { it == zero } }
     }
 
-    /**
-     * Creates a byte array filled with ones of a given size and checks if all elements are set to one.
-     */
     @Test
-    fun createByteArrayFilledWithOnes() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.ones<Byte>(dim1, dim2)
-
+    fun createArrayFilledWithOnes() {
+        val a = createOnes()
         assertEquals(dim1 * dim2, a.size)
         assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 1.toByte() } }
+        assertTrue { a.all { it == one } }
     }
 
-    /**
-     * Tests the function 'mk.identity<Byte>(n)' that creates an identity matrix of size n x n.
-     * The test asserts that:
-     * - The size of the resulting matrix matches n*n.
-     * - The diagonal elements of the matrix are 1 and the non-diagonal elements are 0.
-     */
     @Test
-    fun createIdentityByteMatrix() {
-        val n = 7
-        val a = mk.identity<Byte>(n)
-
+    fun createIdentityMatrix() {
+        val a = createIdentity()
         assertEquals(n * n, a.size)
         for (i in 0 until n) {
             for (j in 0 until n) {
                 if (i == j)
-                    assertEquals(1, a[i, j], "Expected diagonal elements to be 1")
+                    assertEquals(one, a[i, j], "Expected diagonal elements to be $one")
                 else
-                    assertEquals(0, a[i, j], "Expected non-diagonal elements to be 0")
+                    assertEquals(zero, a[i, j], "Expected non-diagonal elements to be $zero")
             }
         }
     }
 
-    /**
-     * Tests the function 'mk.diagonal<Byte>(elements)' that creates an identity matrix of size elements.size x elements.size.
-     * The test asserts that:
-     * - The size of the resulting matrix matches elements.size x elements.size.
-     * - The diagonal elements of the matrix are as provided and the non-diagonal elements are 0.
-     */
     @Test
-    fun createDiagonalByteMatrix() {
-        val n = 7
-        val a = mk.diagonal(List(n) { (it + 1).toByte() })
-
+    fun createDiagonalMatrix() {
+        val a = createDiagonal()
         assertEquals(n * n, a.size)
         for (i in 0 until n) {
             for (j in 0 until n) {
                 if (i == j)
-                    assertEquals((i + 1).toByte(), a[i, j], "Expected element at [$i:$j] to be ${i + 1}")
+                    assertEquals(expectedDiagonalElement(i), a[i, j], "Expected element at [$i:$j] to be ${expectedDiagonalElement(i)}")
                 else
-                    assertEquals(0, a[i, j], "Expected non-diagonal elements to be 0")
+                    assertEquals(zero, a[i, j], "Expected non-diagonal elements to be $zero")
             }
         }
     }
 
-    /**
-     * Creates a two-dimensional array from a list of byte lists
-     * and checks if the array's list representation matches the input list.
-     */
     @Test
-    fun createTwoDimensionalArrayFromByteList() {
+    fun createFromNestedList() {
+        val (a, list) = makeFromNestedList()
+        assertEquals(list, a.toListD2())
+    }
+
+    @Test
+    fun createFromSet() {
+        val (a, set) = makeFromSet()
+        assertEquals(set.size, a.size)
+        assertEquals(set, a.toSet())
+    }
+
+    @Test
+    fun createFromPrimitiveArray() {
+        val (a, expected) = makeFromPrimitiveArray()
+        assertEquals(6, a.size)
+        assertDataEquals(a, expected)
+    }
+
+    @Test
+    fun createWithInitFunction() {
+        val (a, expected) = createWithInit()
+        assertEquals(6, a.size)
+        assertDataEquals(a, expected)
+    }
+
+    @Test
+    fun createWithInitAndIndices() {
+        val (a, expected) = createWithIndices()
+        assertEquals(6, a.size)
+        assertDataEquals(a, expected)
+    }
+}
+
+class Create2DByteArrayTests : Create2DArrayTestBase<Byte>() {
+    override val zero: Byte = 0.toByte()
+    override val one: Byte = 1.toByte()
+    override fun createZeros(): D2Array<Byte> = mk.zeros<Byte>(dim1, dim2)
+    override fun createOnes(): D2Array<Byte> = mk.ones<Byte>(dim1, dim2)
+    override fun createIdentity(): D2Array<Byte> = mk.identity<Byte>(n)
+    override fun createDiagonal(): D2Array<Byte> = mk.diagonal(List(n) { (it + 1).toByte() })
+    override fun expectedDiagonalElement(i: Int): Byte = (i + 1).toByte()
+
+    override fun makeFromNestedList(): Pair<D2Array<Byte>, List<List<Byte>>> {
         val list = listOf(listOf<Byte>(1, 3, 8), listOf<Byte>(4, 7, 2))
-        val a: D2Array<Byte> = mk.ndarray(list)
-        assertEquals(list, a.toListD2())
+        return mk.ndarray(list) to list
     }
 
-
-    /**
-     * Creates a two-dimensional array from a set of bytes
-     * and checks if the array's set representation matches the input set.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromByteSet() {
+    override fun makeFromSet(): Pair<D2Array<Byte>, Set<Byte>> {
         val set = setOf<Byte>(1, 3, 8, 4, 9, 2)
-        val shape = intArrayOf(2, 3)
-        val a: D2Array<Byte> = mk.ndarray(set, shape = shape)
-
-        assertEquals(set.size, a.size)
-        assertEquals(set, a.toSet())
+        return mk.ndarray(set, 2, 3) to set
     }
 
-
-    /**
-     * Creates a two-dimensional array from a primitive ByteArray
-     * and checks if the array's ByteArray representation matches the input ByteArray.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromPrimitiveByteArray() {
+    override fun makeFromPrimitiveArray(): Pair<D2Array<Byte>, Any> {
         val array = byteArrayOf(1, 3, 8, 4, 9, 2)
-        val a = mk.ndarray(array, 2, 3)
-
-        assertEquals(array.size, a.size)
-        a.data.getByteArray() shouldBe array
+        return mk.ndarray(array, 2, 3) to array
     }
 
+    override fun createWithInit(): Pair<D2Array<Byte>, Any> =
+        mk.d2array<Byte>(2, 3) { (it + 3).toByte() } to byteArrayOf(3, 4, 5, 6, 7, 8)
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function
-     * and checks if the array's ByteArray representation matches the expected output.
-     */
-    @Test
-    fun createByte2DArrayWithInitializationFunction() {
-        val a = mk.d2array<Byte>(2, 3) { (it + 3).toByte() }
-        val expected = byteArrayOf(3, 4, 5, 6, 7, 8)
+    override fun createWithIndices(): Pair<D2Array<Byte>, Any> =
+        mk.d2arrayIndices(2, 3) { i, j -> (i * j + 7).toByte() } to byteArrayOf(7, 7, 7, 7, 8, 9)
 
-        assertEquals(expected.size, a.size)
-        a.data.getByteArray() shouldBe expected
+    override fun assertDataEquals(a: D2Array<Byte>, expected: Any) {
+        a.data.getByteArray() shouldBe (expected as ByteArray)
     }
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function and indices.
-     * Checks if the array's ByteArray representation matches the expected output.
-     */
-    @Test
-    fun createByte2DArrayWithInitAndIndices() {
-        val a = mk.d2arrayIndices(2, 3) { i, j -> (i * j + 7).toByte() }
-        val expected = byteArrayOf(7, 7, 7, 7, 8, 9)
-
-        assertEquals(expected.size, a.size)
-        a.data.getByteArray() shouldBe expected
-    }
-
-    /**
-     * Tests the function 'createAlignedNDArray' that creates a two-dimensional array from a list of number lists.
-     * The test asserts that:
-     * - The output array's size matches the size of the longest list in the input
-     * and all lists are filled to match this length.
-     * - The lists shorter than the longest one are filled with the specified filling value.
-     */
     @OptIn(ExperimentalMultikApi::class)
     @Test
-    fun createAlignedByte2DArray() {
-        val list = listOf(
-            listOf<Byte>(1, 3, 8),
-            listOf<Byte>(4, 7),
-            listOf<Byte>(2, 5, 9, 10)
-        )
-
-        val expected = listOf(
-            listOf<Byte>(1, 3, 8, 0),
-            listOf<Byte>(4, 7, 0, 0),
-            listOf<Byte>(2, 5, 9, 10)
-        )
-
+    fun createAligned2DArray() {
+        val list = listOf(listOf<Byte>(1, 3, 8), listOf<Byte>(4, 7), listOf<Byte>(2, 5, 9, 10))
+        val expected = listOf(listOf<Byte>(1, 3, 8, 0), listOf<Byte>(4, 7, 0, 0), listOf<Byte>(2, 5, 9, 10))
         val a: D2Array<Byte> = mk.createAlignedNDArray(list, filling = 0.0)
-
         assertEquals(expected, a.toListD2())
     }
+}
 
+class Create2DShortArrayTests : Create2DArrayTestBase<Short>() {
+    override val zero: Short = 0.toShort()
+    override val one: Short = 1.toShort()
+    override fun createZeros(): D2Array<Short> = mk.zeros<Short>(dim1, dim2)
+    override fun createOnes(): D2Array<Short> = mk.ones<Short>(dim1, dim2)
+    override fun createIdentity(): D2Array<Short> = mk.identity<Short>(n)
+    override fun createDiagonal(): D2Array<Short> = mk.diagonal(List(n) { (it + 1).toShort() })
+    override fun expectedDiagonalElement(i: Int): Short = (i + 1).toShort()
 
-    /*___________________________Short_______________________________________*/
-
-    /**
-     * This method checks if a short array of a given size is correctly created with all elements set to zero.
-     */
-    @Test
-    fun createZeroFilledShortArray() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.zeros<Short>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 0.toShort() } }
-    }
-
-    /**
-     * Creates a short array filled with ones of a given size and checks if all elements are set to one.
-     */
-    @Test
-    fun createShortArrayFilledWithOnes() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.ones<Short>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 1.toShort() } }
-    }
-
-    /**
-     * Tests the function 'mk.identity<Short>(n)' that creates an identity matrix of size n x n.
-     * The test asserts that:
-     * - The size of the resulting matrix matches n*n.
-     * - The diagonal elements of the matrix are 1 and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createIdentityShortMatrix() {
-        val n = 7
-        val a = mk.identity<Short>(n)
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(1, a[i, j], "Expected diagonal elements to be 1")
-                else
-                    assertEquals(0, a[i, j], "Expected non-diagonal elements to be 0")
-            }
-        }
-    }
-
-    /**
-     * Tests the function 'mk.diagonal<Short>(elements)' that creates an identity matrix of size elements.size x elements.size.
-     * The test asserts that:
-     * - The size of the resulting matrix matches elements.size x elements.size.
-     * - The diagonal elements of the matrix are as provided and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createDiagonalShortMatrix() {
-        val n = 7
-        val a = mk.diagonal(List(n) { (it + 1).toShort() })
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals((i + 1).toShort(), a[i, j], "Expected element at [$i:$j] to be ${i + 1}")
-                else
-                    assertEquals(0, a[i, j], "Expected non-diagonal elements to be 0")
-            }
-        }
-    }
-
-
-    /**
-     * Creates a two-dimensional array from a list of short lists
-     * and checks if the array's list representation matches the input list.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromShortList() {
+    override fun makeFromNestedList(): Pair<D2Array<Short>, List<List<Short>>> {
         val list = listOf(listOf<Short>(1, 3, 8), listOf<Short>(4, 7, 2))
-        val a: D2Array<Short> = mk.ndarray(list)
-        assertEquals(list, a.toListD2())
+        return mk.ndarray(list) to list
     }
 
-
-    /**
-     * Creates a two-dimensional array from a set of shorts
-     * and checks if the array's set representation matches the input set.
-     */
-    @Test
-    @Ignore
-    fun createTwoDimensionalArrayFromShortSet() {
+    override fun makeFromSet(): Pair<D2Array<Short>, Set<Short>> {
         val set = setOf<Short>(1, 3, 8, 4, 9, 2)
-        val shape = intArrayOf(2, 3)
-        val a: D2Array<Short> = mk.ndarray(set, shape = shape)
-
-        assertEquals(set.size, a.size)
-        assertEquals(set, a.toSet())
+        return mk.ndarray(set, 2, 3) to set
     }
 
-
-    /**
-     * Creates a two-dimensional array from a primitive ShortArray
-     * and checks if the array's ShortArray representation matches the input ShortArray.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromPrimitiveShortArray() {
+    override fun makeFromPrimitiveArray(): Pair<D2Array<Short>, Any> {
         val array = shortArrayOf(1, 3, 8, 4, 9, 2)
-        val a = mk.ndarray(array, 2, 3)
-
-        assertEquals(array.size, a.size)
-        a.data.getShortArray() shouldBe array
+        return mk.ndarray(array, 2, 3) to array
     }
 
+    override fun createWithInit(): Pair<D2Array<Short>, Any> =
+        mk.d2array<Short>(2, 3) { (it + 3).toShort() } to shortArrayOf(3, 4, 5, 6, 7, 8)
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function
-     * and checks if the array's ShortArray representation matches the expected output.
-     */
-    @Test
-    fun createShort2DArrayWithInitializationFunction() {
-        val a = mk.d2array<Short>(2, 3) { (it + 3).toShort() }
-        val expected = shortArrayOf(3, 4, 5, 6, 7, 8)
+    override fun createWithIndices(): Pair<D2Array<Short>, Any> =
+        mk.d2arrayIndices(2, 3) { i, j -> (i * j + 7).toShort() } to shortArrayOf(7, 7, 7, 7, 8, 9)
 
-        assertEquals(expected.size, a.size)
-        a.data.getShortArray() shouldBe expected
+    override fun assertDataEquals(a: D2Array<Short>, expected: Any) {
+        a.data.getShortArray() shouldBe (expected as ShortArray)
     }
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function and indices.
-     * Checks if the array's ShortArray representation matches the expected output.
-     */
-    @Test
-    fun createShort2DArrayWithInitAndIndices() {
-        val a = mk.d2arrayIndices(2, 3) { i, j -> (i * j + 7).toShort() }
-        val expected = shortArrayOf(7, 7, 7, 7, 8, 9)
-
-        assertEquals(expected.size, a.size)
-        a.data.getShortArray() shouldBe expected
-    }
-
-    /**
-     * Tests the function 'createAlignedNDArray' that creates a two-dimensional array from a list of number lists.
-     * The test asserts that:
-     * - The output array's size matches the size of the longest list in the input
-     * and all lists are filled to match this length.
-     * - The lists shorter than the longest one are filled with the specified filling value.
-     */
     @OptIn(ExperimentalMultikApi::class)
     @Test
-    fun createAlignedShort2DArray() {
-        val list = listOf(
-            listOf<Short>(1, 3, 8),
-            listOf<Short>(4, 7),
-            listOf<Short>(2, 5, 9, 10)
-        )
-
-        val expected = listOf(
-            listOf<Short>(1, 3, 8, 0),
-            listOf<Short>(4, 7, 0, 0),
-            listOf<Short>(2, 5, 9, 10)
-        )
-
+    fun createAligned2DArray() {
+        val list = listOf(listOf<Short>(1, 3, 8), listOf<Short>(4, 7), listOf<Short>(2, 5, 9, 10))
+        val expected = listOf(listOf<Short>(1, 3, 8, 0), listOf<Short>(4, 7, 0, 0), listOf<Short>(2, 5, 9, 10))
         val a: D2Array<Short> = mk.createAlignedNDArray(list, filling = 0.0)
-
         assertEquals(expected, a.toListD2())
     }
+}
 
+class Create2DIntArrayTests : Create2DArrayTestBase<Int>() {
+    override val zero: Int = 0
+    override val one: Int = 1
+    override fun createZeros(): D2Array<Int> = mk.zeros<Int>(dim1, dim2)
+    override fun createOnes(): D2Array<Int> = mk.ones<Int>(dim1, dim2)
+    override fun createIdentity(): D2Array<Int> = mk.identity<Int>(n)
+    override fun createDiagonal(): D2Array<Int> = mk.diagonal(List(n) { it + 1 })
+    override fun expectedDiagonalElement(i: Int): Int = i + 1
 
-    /*___________________________Int_______________________________________*/
-
-
-    /**
-     * This method checks if an integer array of a given size is correctly created with all elements set to zero.
-     */
-    @Test
-    fun createZeroFilledIntArray() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.zeros<Int>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 0 } }
-    }
-
-    /**
-     * Creates an integer array filled with ones of a given size and checks if all elements are set to one.
-     */
-    @Test
-    fun createIntArrayFilledWithOnes() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.ones<Int>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 1 } }
-    }
-
-    /**
-     * Tests the function 'mk.identity<Int>(n)' that creates an identity matrix of size n x n.
-     * The test asserts that:
-     * - The size of the resulting matrix matches n*n.
-     * - The diagonal elements of the matrix are 1 and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createIdentityIntMatrix() {
-        val n = 7
-        val a = mk.identity<Int>(n)
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(1, a[i, j], "Expected diagonal elements to be 1")
-                else
-                    assertEquals(0, a[i, j], "Expected non-diagonal elements to be 0")
-            }
-        }
-    }
-
-    /**
-     * Tests the function 'mk.diagonal<Int>(elements)' that creates an identity matrix of size elements.size x elements.size.
-     * The test asserts that:
-     * - The size of the resulting matrix matches elements.size x elements.size.
-     * - The diagonal elements of the matrix are as provided and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createDiagonalIntMatrix() {
-        val n = 7
-        val a = mk.diagonal(List(n) { it + 1 })
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(i + 1, a[i, j], "Expected element at [$i:$j] to be ${i + 1}")
-                else
-                    assertEquals(0, a[i, j], "Expected non-diagonal elements to be 0")
-            }
-        }
-    }
-
-
-    /**
-     * Creates a two-dimensional array from a list of integer lists
-     * and checks if the array's list representation matches the input list.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromIntList() {
+    override fun makeFromNestedList(): Pair<D2Array<Int>, List<List<Int>>> {
         val list = listOf(listOf(1, 3, 8), listOf(4, 7, 2))
-        val a: D2Array<Int> = mk.ndarray(list)
-        assertEquals(list, a.toListD2())
+        return mk.ndarray(list) to list
     }
 
-
-    /**
-     * Creates a two-dimensional array from a set of integers
-     * and checks if the array's set representation matches the input set.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromIntSet() {
+    override fun makeFromSet(): Pair<D2Array<Int>, Set<Int>> {
         val set = setOf(1, 3, 8, 4, 9, 2)
-        val shape = intArrayOf(2, 3)
-        val a: D2Array<Int> = mk.ndarray(set, shape = shape)
-
-        assertEquals(set.size, a.size)
-        assertEquals(set, a.toSet())
+        return mk.ndarray(set, 2, 3) to set
     }
 
-
-    /**
-     * Creates a two-dimensional array from a primitive IntArray
-     * and checks if the array's IntArray representation matches the input IntArray.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromPrimitiveIntArray() {
+    override fun makeFromPrimitiveArray(): Pair<D2Array<Int>, Any> {
         val array = intArrayOf(1, 3, 8, 4, 9, 2)
-        val a = mk.ndarray(array, 2, 3)
-
-        assertEquals(array.size, a.size)
-        a.data.getIntArray() shouldBe array
+        return mk.ndarray(array, 2, 3) to array
     }
 
+    override fun createWithInit(): Pair<D2Array<Int>, Any> =
+        mk.d2array<Int>(2, 3) { it + 3 } to intArrayOf(3, 4, 5, 6, 7, 8)
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function
-     * and checks if the array's IntArray representation matches the expected output.
-     */
-    @Test
-    fun createInt2DArrayWithInitializationFunction() {
-        val a = mk.d2array<Int>(2, 3) { (it + 3) }
-        val expected = intArrayOf(3, 4, 5, 6, 7, 8)
+    override fun createWithIndices(): Pair<D2Array<Int>, Any> =
+        mk.d2arrayIndices(2, 3) { i, j -> i * j + 7 } to intArrayOf(7, 7, 7, 7, 8, 9)
 
-        assertEquals(expected.size, a.size)
-        a.data.getIntArray() shouldBe expected
+    override fun assertDataEquals(a: D2Array<Int>, expected: Any) {
+        a.data.getIntArray() shouldBe (expected as IntArray)
     }
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function and indices.
-     * Checks if the array's IntArray representation matches the expected output.
-     */
-    @Test
-    fun createInt2DArrayWithInitAndIndices() {
-        val a = mk.d2arrayIndices(2, 3) { i, j -> i * j + 7 }
-        val expected = intArrayOf(7, 7, 7, 7, 8, 9)
-
-        assertEquals(expected.size, a.size)
-        a.data.getIntArray() shouldBe expected
-    }
-
-    /**
-     * Tests the function 'createAlignedNDArray' that creates a two-dimensional array from a list of number lists.
-     * The test asserts that:
-     * - The output array's size matches the size of the longest list in the input
-     * and all lists are filled to match this length.
-     * - The lists shorter than the longest one are filled with the specified filling value.
-     */
     @OptIn(ExperimentalMultikApi::class)
     @Test
-    fun createAlignedInt2DArray() {
-        val list = listOf(
-            listOf(1, 3, 8),
-            listOf(4, 7),
-            listOf(2, 5, 9, 10)
-        )
-
-        val expected = listOf(
-            listOf(1, 3, 8, 0),
-            listOf(4, 7, 0, 0),
-            listOf(2, 5, 9, 10)
-        )
-
+    fun createAligned2DArray() {
+        val list = listOf(listOf(1, 3, 8), listOf(4, 7), listOf(2, 5, 9, 10))
+        val expected = listOf(listOf(1, 3, 8, 0), listOf(4, 7, 0, 0), listOf(2, 5, 9, 10))
         val a: D2Array<Int> = mk.createAlignedNDArray(list, filling = 0.0)
-
         assertEquals(expected, a.toListD2())
     }
+}
 
+class Create2DLongArrayTests : Create2DArrayTestBase<Long>() {
+    override val zero: Long = 0L
+    override val one: Long = 1L
+    override fun createZeros(): D2Array<Long> = mk.zeros<Long>(dim1, dim2)
+    override fun createOnes(): D2Array<Long> = mk.ones<Long>(dim1, dim2)
+    override fun createIdentity(): D2Array<Long> = mk.identity<Long>(n)
+    override fun createDiagonal(): D2Array<Long> = mk.diagonal(List(n) { it + 1L })
+    override fun expectedDiagonalElement(i: Int): Long = i + 1L
 
-    /*___________________________Long_______________________________________*/
-
-
-    /**
-     * This method checks if a long array of a given size is correctly created with all elements set to zero.
-     */
-    @Test
-    fun createZeroFilledLongArray() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.zeros<Long>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 0L } }
-    }
-
-    /**
-     * Creates a long array filled with ones of a given size and checks if all elements are set to one.
-     */
-    @Test
-    fun createLongArrayFilledWithOnes() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.ones<Long>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 1L } }
-    }
-
-    /**
-     * Tests the function 'mk.identity<Long>(n)' that creates an identity matrix of size n x n.
-     * The test asserts that:
-     * - The size of the resulting matrix matches n*n.
-     * - The diagonal elements of the matrix are 1 and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createIdentityLongMatrix() {
-        val n = 7
-        val a = mk.identity<Long>(n)
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(1L, a[i, j], "Expected diagonal elements to be 1")
-                else
-                    assertEquals(0L, a[i, j], "Expected non-diagonal elements to be 0")
-            }
-        }
-    }
-
-    /**
-     * Tests the function 'mk.diagonal<Long>(elements)' that creates an identity matrix of size elements.size x elements.size.
-     * The test asserts that:
-     * - The size of the resulting matrix matches elements.size x elements.size.
-     * - The diagonal elements of the matrix are as provided and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createDiagonalLongMatrix() {
-        val n = 7
-        val a = mk.diagonal(List(n) { it + 1L })
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(i + 1L, a[i, j], "Expected element at [$i:$j] to be ${i + 1}")
-                else
-                    assertEquals(0L, a[i, j], "Expected non-diagonal elements to be 0")
-            }
-        }
-    }
-
-    /**
-     * Creates a two-dimensional array from a list of long lists
-     * and checks if the array's list representation matches the input list.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromLongList() {
+    override fun makeFromNestedList(): Pair<D2Array<Long>, List<List<Long>>> {
         val list = listOf(listOf(1L, 3L, 8L), listOf(4L, 7L, 2L))
-        val a: D2Array<Long> = mk.ndarray(list)
-        assertEquals(list, a.toListD2())
+        return mk.ndarray(list) to list
     }
 
-
-    /**
-     * Creates a two-dimensional array from a set of longs
-     * and checks if the array's set representation matches the input set.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromLongSet() {
+    override fun makeFromSet(): Pair<D2Array<Long>, Set<Long>> {
         val set = setOf(1L, 3L, 8L, 4L, 9L, 2L)
-        val shape = intArrayOf(2, 3)
-        val a: D2Array<Long> = mk.ndarray(set, shape = shape)
-
-        assertEquals(set.size, a.size)
-        assertEquals(set, a.toSet())
+        return mk.ndarray(set, 2, 3) to set
     }
 
-
-    /**
-     * Creates a two-dimensional array from a primitive LongArray
-     * and checks if the array's LongArray representation matches the input LongArray.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromPrimitiveLongArray() {
+    override fun makeFromPrimitiveArray(): Pair<D2Array<Long>, Any> {
         val array = longArrayOf(1, 3, 8, 4, 9, 2)
-        val a = mk.ndarray(array, 2, 3)
-
-        assertEquals(array.size, a.size)
-        a.data.getLongArray() shouldBe array
+        return mk.ndarray(array, 2, 3) to array
     }
 
+    override fun createWithInit(): Pair<D2Array<Long>, Any> =
+        mk.d2array<Long>(2, 3) { it + 3L } to longArrayOf(3, 4, 5, 6, 7, 8)
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function
-     * and checks if the array's LongArray representation matches the expected output.
-     */
-    @Test
-    fun createLong2DArrayWithInitializationFunction() {
-        val a = mk.d2array<Long>(2, 3) { it + 3L }
-        val expected = longArrayOf(3, 4, 5, 6, 7, 8)
+    override fun createWithIndices(): Pair<D2Array<Long>, Any> =
+        mk.d2arrayIndices<Long>(2, 3) { i, j -> i * j + 7L } to longArrayOf(7, 7, 7, 7, 8, 9)
 
-        assertEquals(expected.size, a.size)
-        a.data.getLongArray() shouldBe expected
+    override fun assertDataEquals(a: D2Array<Long>, expected: Any) {
+        a.data.getLongArray() shouldBe (expected as LongArray)
     }
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function and indices.
-     * Checks if the array's LongArray representation matches the expected output.
-     */
-    @Test
-    fun createLong2DArrayWithInitAndIndices() {
-        val a = mk.d2arrayIndices<Long>(2, 3) { i, j -> i * j + 7L }
-        val expected = longArrayOf(7, 7, 7, 7, 8, 9)
-
-        assertEquals(expected.size, a.size)
-        a.data.getLongArray() shouldBe expected
-    }
-
-    /**
-     * Tests the function 'createAlignedNDArray' that creates a two-dimensional array from a list of number lists.
-     * The test asserts that:
-     * - The output array's size matches the size of the longest list in the input
-     * and all lists are filled to match this length.
-     * - The lists shorter than the longest one are filled with the specified filling value.
-     */
     @OptIn(ExperimentalMultikApi::class)
     @Test
-    fun createAlignedLong2DArray() {
-        val list = listOf(
-            listOf<Long>(1, 3, 8),
-            listOf<Long>(4, 7),
-            listOf<Long>(2, 5, 9, 10)
-        )
-
-        val expected = listOf(
-            listOf<Long>(1, 3, 8, 0),
-            listOf<Long>(4, 7, 0, 0),
-            listOf<Long>(2, 5, 9, 10)
-        )
-
+    fun createAligned2DArray() {
+        val list = listOf(listOf<Long>(1, 3, 8), listOf<Long>(4, 7), listOf<Long>(2, 5, 9, 10))
+        val expected = listOf(listOf<Long>(1, 3, 8, 0), listOf<Long>(4, 7, 0, 0), listOf<Long>(2, 5, 9, 10))
         val a: D2Array<Long> = mk.createAlignedNDArray(list, filling = 0.0)
-
         assertEquals(expected, a.toListD2())
     }
+}
 
+class Create2DFloatArrayTests : Create2DArrayTestBase<Float>() {
+    override val zero: Float = 0f
+    override val one: Float = 1f
+    override fun createZeros(): D2Array<Float> = mk.zeros<Float>(dim1, dim2)
+    override fun createOnes(): D2Array<Float> = mk.ones<Float>(dim1, dim2)
+    override fun createIdentity(): D2Array<Float> = mk.identity<Float>(n)
+    override fun createDiagonal(): D2Array<Float> = mk.diagonal(List(n) { it + 1f })
+    override fun expectedDiagonalElement(i: Int): Float = i + 1f
 
-    /*___________________________Float_______________________________________*/
-
-    /**
-     * This method checks if a float array of a given size is correctly created with all elements set to zero.
-     */
-    @Test
-    fun createZeroFilledFloatArray() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.zeros<Float>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 0f } }
-    }
-
-    /**
-     * Creates a float array filled with ones of a given size and checks if all elements are set to one.
-     */
-    @Test
-    fun createFloatArrayFilledWithOnes() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.ones<Float>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 1f } }
-    }
-
-    /**
-     * Tests the function 'mk.identity<Float>(n)' that creates an identity matrix of size n x n.
-     * The test asserts that:
-     * - The size of the resulting matrix matches n*n.
-     * - The diagonal elements of the matrix are 1 and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createIdentityFloatMatrix() {
-        val n = 7
-        val a = mk.identity<Float>(n)
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(1f, a[i, j], "Expected diagonal elements to be 1.0")
-                else
-                    assertEquals(0f, a[i, j], "Expected non-diagonal elements to be 0.0")
-            }
-        }
-    }
-
-    /**
-     * Tests the function 'mk.diagonal<Float>(elements)' that creates an identity matrix of size elements.size x elements.size.
-     * The test asserts that:
-     * - The size of the resulting matrix matches elements.size x elements.size.
-     * - The diagonal elements of the matrix are as provided and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createDiagonalFloatMatrix() {
-        val n = 7
-        val a = mk.diagonal(List(n) { it + 1f })
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(i + 1f, a[i, j], "Expected element at [$i:$j] to be ${i + 1}")
-                else
-                    assertEquals(0.0f, a[i, j], "Expected non-diagonal elements to be 0.0")
-            }
-        }
-    }
-
-    /**
-     * Creates a two-dimensional array from a list of float lists
-     * and checks if the array's list representation matches the input list.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromFloatList() {
+    override fun makeFromNestedList(): Pair<D2Array<Float>, List<List<Float>>> {
         val list = listOf(listOf(1f, 3f, 8f), listOf(4f, 7f, 2f))
-        val a: D2Array<Float> = mk.ndarray(list)
-        assertEquals(list, a.toListD2())
+        return mk.ndarray(list) to list
     }
 
-
-    /**
-     * Creates a two-dimensional array from a set of floats
-     * and checks if the array's set representation matches the input set.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromFloatSet() {
+    override fun makeFromSet(): Pair<D2Array<Float>, Set<Float>> {
         val set = setOf(1f, 3f, 8f, 4f, 9f, 2f)
-        val shape = intArrayOf(2, 3)
-        val a: D2Array<Float> = mk.ndarray(set, shape = shape)
-
-        assertEquals(set.size, a.size)
-        assertEquals(set, a.toSet())
+        return mk.ndarray(set, 2, 3) to set
     }
 
-
-    /**
-     * Creates a two-dimensional array from a primitive FloatArray
-     * and checks if the array's FloatArray representation matches the input FloatArray.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromPrimitiveFloatArray() {
+    override fun makeFromPrimitiveArray(): Pair<D2Array<Float>, Any> {
         val array = floatArrayOf(1f, 3f, 8f, 4f, 9f, 2f)
-        val a = mk.ndarray(array, 2, 3)
-
-        assertEquals(array.size, a.size)
-        a.data.getFloatArray() shouldBe array
+        return mk.ndarray(array, 2, 3) to array
     }
 
+    override fun createWithInit(): Pair<D2Array<Float>, Any> =
+        mk.d2array<Float>(2, 3) { it + 3f } to floatArrayOf(3f, 4f, 5f, 6f, 7f, 8f)
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function
-     * and checks if the array's FloatArray representation matches the expected output.
-     */
-    @Test
-    fun createFloat2DArrayWithInitializationFunction() {
-        val a = mk.d2array<Float>(2, 3) { it + 3f }
-        val expected = floatArrayOf(3f, 4f, 5f, 6f, 7f, 8f)
+    override fun createWithIndices(): Pair<D2Array<Float>, Any> =
+        mk.d2arrayIndices<Float>(2, 3) { i, j -> i * j + 7f } to floatArrayOf(7f, 7f, 7f, 7f, 8f, 9f)
 
-        assertEquals(expected.size, a.size)
-        a.data.getFloatArray() shouldBe expected
+    override fun assertDataEquals(a: D2Array<Float>, expected: Any) {
+        a.data.getFloatArray() shouldBe (expected as FloatArray)
     }
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function and indices.
-     * Checks if the array's FloatArray representation matches the expected output.
-     */
-    @Test
-    fun createFloat2DArrayWithInitAndIndices() {
-        val a = mk.d2arrayIndices<Float>(2, 3) { i, j -> i * j + 7f }
-        val expected = floatArrayOf(7f, 7f, 7f, 7f, 8f, 9f)
-
-        assertEquals(expected.size, a.size)
-        a.data.getFloatArray() shouldBe expected
-    }
-
-    /**
-     * Tests the function 'createAlignedNDArray' that creates a two-dimensional array from a list of number lists.
-     * The test asserts that:
-     * - The output array's size matches the size of the longest list in the input
-     * and all lists are filled to match this length.
-     * - The lists shorter than the longest one are filled with the specified filling value.
-     */
     @OptIn(ExperimentalMultikApi::class)
     @Test
-    fun createAlignedFloat2DArray() {
-        val list = listOf(
-            listOf(1f, 3f, 8f),
-            listOf(4f, 7f),
-            listOf(2f, 5f, 9f, 10f)
-        )
-
-        val expected = listOf(
-            listOf(1f, 3f, 8f, 0f),
-            listOf(4f, 7f, 0f, 0f),
-            listOf(2f, 5f, 9f, 10f)
-        )
-
+    fun createAligned2DArray() {
+        val list = listOf(listOf(1f, 3f, 8f), listOf(4f, 7f), listOf(2f, 5f, 9f, 10f))
+        val expected = listOf(listOf(1f, 3f, 8f, 0f), listOf(4f, 7f, 0f, 0f), listOf(2f, 5f, 9f, 10f))
         val a: D2Array<Float> = mk.createAlignedNDArray(list, filling = 0.0)
-
         assertEquals(expected, a.toListD2())
     }
+}
 
+class Create2DDoubleArrayTests : Create2DArrayTestBase<Double>() {
+    override val zero: Double = 0.0
+    override val one: Double = 1.0
+    override fun createZeros(): D2Array<Double> = mk.zeros<Double>(dim1, dim2)
+    override fun createOnes(): D2Array<Double> = mk.ones<Double>(dim1, dim2)
+    override fun createIdentity(): D2Array<Double> = mk.identity<Double>(n)
+    override fun createDiagonal(): D2Array<Double> = mk.diagonal(List(n) { it + 1.0 })
+    override fun expectedDiagonalElement(i: Int): Double = i + 1.0
 
-    /*___________________________Double_______________________________________*/
-
-
-    /**
-     * This method checks if a double array of a given size is correctly created with all elements set to zero.
-     */
-    @Test
-    fun createZeroFilledDoubleArray() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.zeros<Double>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 0.0 } }
-    }
-
-    /**
-     * Creates a double array filled with ones of a given size and checks if all elements are set to one.
-     */
-    @Test
-    fun createDoubleArrayFilledWithOnes() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.ones<Double>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == 1.0 } }
-    }
-
-    /**
-     * Tests the function 'mk.identity<Double>(n)' that creates an identity matrix of size n x n.
-     * The test asserts that:
-     * - The size of the resulting matrix matches n*n.
-     * - The diagonal elements of the matrix are 1 and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createIdentityDoubleMatrix() {
-        val n = 7
-        val a = mk.identity<Double>(n)
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(1.0, a[i, j], "Expected diagonal elements to be 1.0")
-                else
-                    assertEquals(0.0, a[i, j], "Expected non-diagonal elements to be 0.0")
-            }
-        }
-    }
-
-    /**
-     * Tests the function 'mk.diagonal<Double>(elements)' that creates an identity matrix of size elements.size x elements.size.
-     * The test asserts that:
-     * - The size of the resulting matrix matches elements.size x elements.size.
-     * - The diagonal elements of the matrix are as provided and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createDiagonalDoubleMatrix() {
-        val n = 7
-        val a = mk.diagonal(List(n) { it + 1.0 })
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(i + 1.0, a[i, j], "Expected element at [$i:$j] to be ${i + 1}")
-                else
-                    assertEquals(0.0, a[i, j], "Expected non-diagonal elements to be 0.0")
-            }
-        }
-    }
-
-    /**
-     * Creates a two-dimensional array from a list of double lists
-     * and checks if the array's list representation matches the input list.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromDoubleList() {
+    override fun makeFromNestedList(): Pair<D2Array<Double>, List<List<Double>>> {
         val list = listOf(listOf(1.0, 3.0, 8.0), listOf(4.0, 7.0, 2.0))
-        val a: D2Array<Double> = mk.ndarray(list)
-        assertEquals(list, a.toListD2())
+        return mk.ndarray(list) to list
     }
 
-
-    /**
-     * Creates a two-dimensional array from a set of doubles
-     * and checks if the array's set representation matches the input set.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromDoubleSet() {
+    override fun makeFromSet(): Pair<D2Array<Double>, Set<Double>> {
         val set = setOf(1.0, 3.0, 8.0, 4.0, 9.0, 2.0)
-        val shape = intArrayOf(2, 3)
-        val a: D2Array<Double> = mk.ndarray(set, shape = shape)
-
-        assertEquals(set.size, a.size)
-        assertEquals(set, a.toSet())
+        return mk.ndarray(set, 2, 3) to set
     }
 
-
-    /**
-     * Creates a two-dimensional array from a primitive DoubleArray
-     * and checks if the array's DoubleArray representation matches the input DoubleArray.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromPrimitiveDoubleArray() {
+    override fun makeFromPrimitiveArray(): Pair<D2Array<Double>, Any> {
         val array = doubleArrayOf(1.0, 3.0, 8.0, 4.0, 9.0, 2.0)
-        val a = mk.ndarray(array, 2, 3)
-
-        assertEquals(array.size, a.size)
-        a.data.getDoubleArray() shouldBe array
+        return mk.ndarray(array, 2, 3) to array
     }
 
+    override fun createWithInit(): Pair<D2Array<Double>, Any> =
+        mk.d2array<Double>(2, 3) { it + 3.0 } to doubleArrayOf(3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function
-     * and checks if the array's DoubleArray representation matches the expected output.
-     */
-    @Test
-    fun createDouble2DArrayWithInitializationFunction() {
-        val a = mk.d2array<Double>(2, 3) { it + 3.0 }
-        val expected = doubleArrayOf(3.0, 4.0, 5.0, 6.0, 7.0, 8.0)
+    override fun createWithIndices(): Pair<D2Array<Double>, Any> =
+        mk.d2arrayIndices<Double>(2, 3) { i, j -> i * j + 7.0 } to doubleArrayOf(7.0, 7.0, 7.0, 7.0, 8.0, 9.0)
 
-        assertEquals(expected.size, a.size)
-        a.data.getDoubleArray() shouldBe expected
+    override fun assertDataEquals(a: D2Array<Double>, expected: Any) {
+        a.data.getDoubleArray() shouldBe (expected as DoubleArray)
     }
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function and indices.
-     * Checks if the array's DoubleArray representation matches the expected output.
-     */
-    @Test
-    fun createDouble2DArrayWithInitAndIndices() {
-        val a = mk.d2arrayIndices<Double>(2, 3) { i, j -> i * j + 7.0 }
-        val expected = doubleArrayOf(7.0, 7.0, 7.0, 7.0, 8.0, 9.0)
-
-        assertEquals(expected.size, a.size)
-        a.data.getDoubleArray() shouldBe expected
-    }
-
-    /**
-     * Tests the function 'createAlignedNDArray' that creates a two-dimensional array from a list of number lists.
-     * The test asserts that:
-     * - The output array's size matches the size of the longest list in the input
-     * and all lists are filled to match this length.
-     * - The lists shorter than the longest one are filled with the specified filling value.
-     */
     @OptIn(ExperimentalMultikApi::class)
     @Test
-    fun createAlignedDouble2DArray() {
-        val list = listOf(
-            listOf(1.0, 3.0, 8.0),
-            listOf(4.0, 7.0),
-            listOf(2.0, 5.0, 9.0, 10.0)
-        )
-
-        val expected = listOf(
-            listOf(1.0, 3.0, 8.0, 0.0),
-            listOf(4.0, 7.0, 0.0, 0.0),
-            listOf(2.0, 5.0, 9.0, 10.0)
-        )
-
+    fun createAligned2DArray() {
+        val list = listOf(listOf(1.0, 3.0, 8.0), listOf(4.0, 7.0), listOf(2.0, 5.0, 9.0, 10.0))
+        val expected = listOf(listOf(1.0, 3.0, 8.0, 0.0), listOf(4.0, 7.0, 0.0, 0.0), listOf(2.0, 5.0, 9.0, 10.0))
         val a: D2Array<Double> = mk.createAlignedNDArray(list, filling = 0.0)
-
         assertEquals(expected, a.toListD2())
     }
+}
 
+class Create2DComplexFloatArrayTests : Create2DArrayTestBase<ComplexFloat>() {
+    override val zero: ComplexFloat = ComplexFloat.zero
+    override val one: ComplexFloat = ComplexFloat.one
+    override fun createZeros(): D2Array<ComplexFloat> = mk.zeros<ComplexFloat>(dim1, dim2)
+    override fun createOnes(): D2Array<ComplexFloat> = mk.ones<ComplexFloat>(dim1, dim2)
+    override fun createIdentity(): D2Array<ComplexFloat> = mk.identity<ComplexFloat>(n)
+    override fun createDiagonal(): D2Array<ComplexFloat> = mk.diagonal(List(n) { ComplexFloat(it + 1f, it + 1f) })
+    override fun expectedDiagonalElement(i: Int): ComplexFloat = ComplexFloat(i + 1f, i + 1f)
 
-    /*___________________________ComplexFloat_______________________________________*/
-
-    /**
-     * This method checks if a ComplexFloat array of a given size is correctly created with all elements set to zero.
-     */
-    @Test
-    fun createZeroFilledComplexFloatArray() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.zeros<ComplexFloat>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == ComplexFloat.zero } }
-    }
-
-    /**
-     * Creates a ComplexFloat array filled with ones of a given size and checks if all elements are set to one.
-     */
-    @Test
-    fun createComplexFloatArrayFilledWithOnes() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.ones<ComplexFloat>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == ComplexFloat.one } }
-    }
-
-    /**
-     * Tests the function 'mk.identity<ComplexFloat>(n)' that creates an identity matrix of size n x n.
-     * The test asserts that:
-     * - The size of the resulting matrix matches n*n.
-     * - The diagonal elements of the matrix are 1 and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createIdentityComplexFloatMatrix() {
-        val n = 7
-        val a = mk.identity<ComplexFloat>(n)
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(ComplexFloat.one, a[i, j], "Expected diagonal elements to be ${ComplexFloat.one}")
-                else
-                    assertEquals(
-                        ComplexFloat.zero,
-                        a[i, j],
-                        "Expected non-diagonal elements to be ${ComplexFloat.zero}"
-                    )
-            }
-        }
-    }
-
-    /**
-     * Tests the function 'mk.diagonal<ComplexFloat>(elements)' that creates an identity matrix of size elements.size x elements.size.
-     * The test asserts that:
-     * - The size of the resulting matrix matches elements.size x elements.size.
-     * - The diagonal elements of the matrix are as provided and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createDiagonalComplexFloatMatrix() {
-        val n = 7
-        val a = mk.diagonal(List(n) { ComplexFloat(it + 1f, it + 1f) })
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(ComplexFloat(i + 1f, i + 1f), a[i, j], "Expected element at [$i:$j] to be ${ComplexFloat(i + 1f, i + 1f)}")
-                else
-                    assertEquals(ComplexFloat.zero, a[i, j], "Expected non-diagonal elements to be ${ComplexFloat.zero}")
-            }
-        }
-    }
-
-    /**
-     * Creates a two-dimensional array from a list of complex float lists
-     * and checks if the array's list representation matches the input list.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromComplexFloatList() {
+    override fun makeFromNestedList(): Pair<D2Array<ComplexFloat>, List<List<ComplexFloat>>> {
         val list = listOf(
             listOf(ComplexFloat.one, 3f + 0f.i, 8f + 0f.i),
             listOf(4f + 0f.i, 7f + 0f.i, 2f + 0f.i)
         )
-        val a: D2Array<ComplexFloat> = mk.ndarray(list)
-        assertEquals(list, a.toListD2())
+        return mk.ndarray(list) to list
     }
 
-    /**
-     * Creates a two-dimensional array from a set of complex floats
-     * and checks if the array's set representation matches the input set.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromComplexFloatSet() {
+    override fun makeFromSet(): Pair<D2Array<ComplexFloat>, Set<ComplexFloat>> {
         val set = setOf(1f + 0f.i, 3f + 0f.i, 8f + 0f.i, 4f + 0f.i, 9f + 0f.i, 2f + 0f.i)
-        val shape = intArrayOf(2, 3)
-        val a: D2Array<ComplexFloat> = mk.ndarray(set, shape = shape)
-
-        assertEquals(set.size, a.size)
-        assertEquals(set, a.toSet())
+        return mk.ndarray(set, 2, 3) to set
     }
 
-
-    /**
-     * Creates a two-dimensional array from a primitive ComplexFloatArray
-     * and checks if the array's ComplexFloatArray representation matches the input ComplexFloatArray.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromPrimitiveComplexFloatArray() {
+    override fun makeFromPrimitiveArray(): Pair<D2Array<ComplexFloat>, Any> {
         val array = complexFloatArrayOf(1f + 0f.i, 3f + 0f.i, 8f + 0f.i, 4f + 0f.i, 9f + 0f.i, 2f + 0f.i)
-        val a = mk.ndarray(array, 2, 3)
-
-        assertEquals(array.size, a.size)
-        a.data.getComplexFloatArray() shouldBe array
+        return mk.ndarray(array, 2, 3) to array
     }
 
-
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function
-     * and checks if the array's ComplexFloatArray representation matches the expected output.
-     */
-    @Test
-    fun createComplexFloat2DArrayWithInitializationFunction() {
-        val a = mk.d2array<ComplexFloat>(2, 3) { ComplexFloat(it + 3.21f, round((it - .832f) * 1e5f) / 1e5f) }
-        val expected = complexFloatArrayOf(
+    override fun createWithInit(): Pair<D2Array<ComplexFloat>, Any> =
+        mk.d2array<ComplexFloat>(2, 3) { ComplexFloat(it + 3.21f, round((it - .832f) * 1e5f) / 1e5f) } to complexFloatArrayOf(
             3.21f - .832f.i, 4.21f + 0.168f.i, 5.21f + 1.168f.i,
             6.21f + 2.168f.i, 7.21f + 3.168f.i, 8.21f + 4.168f.i
         )
 
-        assertEquals(expected.size, a.size)
-        a.data.getComplexFloatArray() shouldBe expected
+    override fun createWithIndices(): Pair<D2Array<ComplexFloat>, Any> =
+        mk.d2arrayIndices<ComplexFloat>(2, 3) { i, j -> i * j + ComplexFloat(7) } to complexFloatArrayOf(
+            7f + 0f.i, 7f + 0f.i, 7f + 0f.i, 7f + 0f.i, 8f + 0f.i, 9f + 0f.i
+        )
+
+    override fun assertDataEquals(a: D2Array<ComplexFloat>, expected: Any) {
+        a.data.getComplexFloatArray() shouldBe (expected as org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloatArray)
     }
+}
 
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function and indices.
-     * Checks if the array's ComplexFloatArray representation matches the expected output.
-     */
-    @Test
-    fun createComplexFloat2DArrayWithInitAndIndices() {
-        val a = mk.d2arrayIndices<ComplexFloat>(2, 3) { i, j -> i * j + ComplexFloat(7) }
-        val expected = complexFloatArrayOf(7f + 0f.i, 7f + 0f.i, 7f + 0f.i, 7f + 0f.i, 8f + 0f.i, 9f + 0f.i)
+class Create2DComplexDoubleArrayTests : Create2DArrayTestBase<ComplexDouble>() {
+    override val zero: ComplexDouble = ComplexDouble.zero
+    override val one: ComplexDouble = ComplexDouble.one
+    override fun createZeros(): D2Array<ComplexDouble> = mk.zeros<ComplexDouble>(dim1, dim2)
+    override fun createOnes(): D2Array<ComplexDouble> = mk.ones<ComplexDouble>(dim1, dim2)
+    override fun createIdentity(): D2Array<ComplexDouble> = mk.identity<ComplexDouble>(n)
+    override fun createDiagonal(): D2Array<ComplexDouble> = mk.diagonal(List(n) { ComplexDouble(it + 1.0, it + 1.0) })
+    override fun expectedDiagonalElement(i: Int): ComplexDouble = ComplexDouble(i + 1.0, i + 1.0)
 
-        assertEquals(expected.size, a.size)
-        a.data.getComplexFloatArray() shouldBe expected
-    }
-
-
-    /*___________________________ComplexDouble_______________________________________*/
-
-    /**
-     * This method checks if a ComplexDouble array of a given size is correctly created with all elements set to zero.
-     */
-    @Test
-    fun createZeroFilledComplexDoubleArray() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.zeros<ComplexDouble>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == ComplexDouble.zero } }
-    }
-
-    /**
-     * Creates a ComplexDouble array filled with ones of a given size and checks if all elements are set to one.
-     */
-    @Test
-    fun createComplexDoubleArrayFilledWithOnes() {
-        val dim1 = 5
-        val dim2 = 7
-        val a = mk.ones<ComplexDouble>(dim1, dim2)
-
-        assertEquals(dim1 * dim2, a.size)
-        assertEquals(dim1 * dim2, a.data.size)
-        assertTrue { a.all { it == ComplexDouble.one } }
-    }
-
-    /**
-     * Tests the function 'mk.identity<ComplexDouble>(n)' that creates an identity matrix of size n x n.
-     * The test asserts that:
-     * - The size of the resulting matrix matches n*n.
-     * - The diagonal elements of the matrix are 1 and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createIdentityMatrix() {
-        val n = 7
-        val a = mk.identity<ComplexDouble>(n)
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(ComplexDouble.one, a[i, j], "Expected diagonal elements to be ${ComplexDouble.one}")
-                else
-                    assertEquals(
-                        ComplexDouble.zero,
-                        a[i, j],
-                        "Expected non-diagonal elements to be ${ComplexDouble.zero}"
-                    )
-            }
-        }
-    }
-
-    /**
-     * Tests the function 'mk.diagonal<ComplexDouble>(elements)' that creates an identity matrix of size elements.size x elements.size.
-     * The test asserts that:
-     * - The size of the resulting matrix matches elements.size x elements.size.
-     * - The diagonal elements of the matrix are as provided and the non-diagonal elements are 0.
-     */
-    @Test
-    fun createDiagonalComplexDoubleMatrix() {
-        val n = 7
-        val a = mk.diagonal(List(n) { ComplexDouble(it + 1.0, it + 1.0) })
-
-        assertEquals(n * n, a.size)
-        for (i in 0 until n) {
-            for (j in 0 until n) {
-                if (i == j)
-                    assertEquals(ComplexDouble(i + 1.0, i + 1.0), a[i, j], "Expected element at [$i:$j] to be ${ComplexDouble(i + 1.0, i + 1.0)}")
-                else
-                    assertEquals(ComplexDouble.zero, a[i, j], "Expected non-diagonal elements to be ${ComplexDouble.zero}")
-            }
-        }
-    }
-
-    /**
-     * Creates a two-dimensional array from a list of byte lists
-     * and checks if the array's list representation matches the input list.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromComplexDoubleList() {
+    override fun makeFromNestedList(): Pair<D2Array<ComplexDouble>, List<List<ComplexDouble>>> {
         val list = listOf(
             listOf(1.0 + .0.i, 3.0 + .0.i, 8.0 + .0.i),
             listOf(4.0 + .0.i, 7.0 + .0.i, 2.0 + .0.i)
         )
-        val a: D2Array<ComplexDouble> = mk.ndarray(list)
-        assertEquals(list, a.toListD2())
+        return mk.ndarray(list) to list
     }
 
-
-    /**
-     * Creates a two-dimensional array from a set of complex doubles
-     * and checks if the array's set representation matches the input set.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromComplexDoubleSet() {
+    override fun makeFromSet(): Pair<D2Array<ComplexDouble>, Set<ComplexDouble>> {
         val set = setOf(1.0 + .0.i, 3.0 + .0.i, 8.0 + .0.i, 4.0 + .0.i, 9.0 + .0.i, 2.0 + .0.i)
-        val shape = intArrayOf(2, 3)
-        val a: D2Array<ComplexDouble> = mk.ndarray(set, shape = shape)
-
-        assertEquals(set.size, a.size)
-        assertEquals(set, a.toSet())
+        return mk.ndarray(set, 2, 3) to set
     }
 
-
-    /**
-     * Creates a two-dimensional array from a primitive ComplexDoubleArray
-     * and checks if the array's ComplexDoubleArray representation matches the input ComplexDoubleArray.
-     */
-    @Test
-    fun createTwoDimensionalArrayFromPrimitiveComplexDoubleArray() {
+    override fun makeFromPrimitiveArray(): Pair<D2Array<ComplexDouble>, Any> {
         val array = complexDoubleArrayOf(1.0 + .0.i, 3.0 + .0.i, 8.0 + .0.i, 4.0 + .0.i, 9.0 + .0.i, 2.0 + .0.i)
-        val a = mk.ndarray(array, 2, 3)
-
-        assertEquals(array.size, a.size)
-        a.data.getComplexDoubleArray() shouldBe array
+        return mk.ndarray(array, 2, 3) to array
     }
 
-
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function
-     * and checks if the array's ComplexDoubleArray representation matches the expected output.
-     */
-    @Test
-    fun createComplexDouble2DArrayWithInitializationFunction() {
-        val a = mk.d2array<ComplexDouble>(2, 3) { ComplexDouble(it + 3.21, round((it - .832) * 1e5) / 1e5) }
-        val expected = complexDoubleArrayOf(
+    override fun createWithInit(): Pair<D2Array<ComplexDouble>, Any> =
+        mk.d2array<ComplexDouble>(2, 3) { ComplexDouble(it + 3.21, round((it - .832) * 1e5) / 1e5) } to complexDoubleArrayOf(
             3.21 - .832.i, 4.21 + 0.168.i, 5.21 + 1.168.i,
             6.21 + 2.168.i, 7.21 + 3.168.i, 8.21 + 4.168.i
         )
 
-        assertEquals(expected.size, a.size)
-        a.data.getComplexDoubleArray() shouldBe expected
+    override fun createWithIndices(): Pair<D2Array<ComplexDouble>, Any> =
+        mk.d2arrayIndices<ComplexDouble>(2, 3) { i, j -> i * j + ComplexDouble(7) } to complexDoubleArrayOf(
+            7.0 + .0.i, 7.0 + .0.i, 7.0 + .0.i, 7.0 + .0.i, 8.0 + .0.i, 9.0 + .0.i
+        )
+
+    override fun assertDataEquals(a: D2Array<ComplexDouble>, expected: Any) {
+        a.data.getComplexDoubleArray() shouldBe (expected as org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDoubleArray)
     }
-
-    /**
-     * Creates a two-dimensional array with a given size using an initialization function and indices.
-     * Checks if the array's ComplexDoubleArray representation matches the expected output.
-     */
-    @Test
-    fun createComplexDouble2DArrayWithInitAndIndices() {
-        val a = mk.d2arrayIndices<ComplexDouble>(2, 3) { i, j -> i * j + ComplexDouble(7) }
-        val expected = complexDoubleArrayOf(7.0 + .0.i, 7.0 + .0.i, 7.0 + .0.i, 7.0 + .0.i, 8.0 + .0.i, 9.0 + .0.i)
-
-        assertEquals(expected.size, a.size)
-        a.data.getComplexDoubleArray() shouldBe expected
-    }
-
 }
