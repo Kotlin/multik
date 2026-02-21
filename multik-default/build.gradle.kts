@@ -1,149 +1,71 @@
-@file:OptIn(ExperimentalWasmDsl::class)
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
 
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlinx.multik.builds.HostDetection
+import org.jetbrains.kotlinx.multik.builds.MultikNativeTarget
 
 plugins {
-    kotlin("multiplatform")
+    id("multik.base")
+    id("multik.publishing")
 }
 
-
 kotlin {
-    explicitApi()
-
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
-    jvm {
-        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
-        testRuns["test"].executionTask.configure {
-            useJUnit()
-        }
-    }
+    // Web targets
     wasmJs {
-        browser {
-            testTask {
-                enabled = false
-            }
-        }
-        nodejs {
-            testTask {
-                enabled = false
-            }
-        }
+        browser { testTask { enabled = false } }
+        nodejs { testTask { enabled = false } }
         binaries.library()
     }
-    js(IR) {
-        browser {
-            testTask {
-                useMocha()
-            }
-        }
-        nodejs {
-            testTask {
-                useMocha()
-            }
-        }
+    js {
+        browser { testTask { enabled = false } }
+        nodejs { testTask { enabled = false } }
         binaries.library()
     }
 
-    val hostOs = System.getProperty("os.name")
-    val hostArch = System.getProperty("os.arch")
-    val hostTarget = when {
-        hostOs == "Mac OS X" && hostArch == "x86_64" -> macosX64 {
-            binaries { framework { baseName = "multik-default" } }
-        }
-
-        hostOs == "Mac OS X" && hostArch == "aarch64" -> macosArm64 {
-            binaries { framework { baseName = "multik-default" } }
-        }
-
-        hostOs == "Linux" -> linuxX64()
-        hostOs.startsWith("Windows") -> mingwX64()
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
-    iosArm64 {
-        binaries {
-            framework {
-                baseName = "multik-default"
-            }
-        }
-    }
-    iosSimulatorArm64 {
-        binaries {
-            framework {
-                baseName = "multik-default"
-            }
-        }
-    }
-    iosX64 {
-        binaries {
-            framework {
-                baseName = "multik-default"
-            }
-        }
+    // Host-only desktop native
+    val hostTarget = when (HostDetection.currentTarget) {
+        MultikNativeTarget.MACOS_X64 -> macosX64()
+        MultikNativeTarget.MACOS_ARM64 -> macosArm64()
+        MultikNativeTarget.LINUX_X64 -> linuxX64()
+        MultikNativeTarget.MINGW_X64 -> mingwX64()
     }
 
-    targets.withType<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget> {
-        binaries.getTest("debug").apply {
-            debuggable = false
-            optimized = true
-        }
-    }
+    // iOS targets
+    iosArm64()
+    iosSimulatorArm64()
+    iosX64()
+
+    applyDefaultHierarchyTemplate()
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(project(":multik-core"))
                 implementation(project(":multik-kotlin"))
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
-                implementation(project(":multik-openblas"))
-                implementation(kotlin("reflect"))
-            }
-        }
-        val wasmJsMain by getting {
-            dependsOn(commonMain)
-        }
-        val jsMain by getting {
-            dependsOn(commonMain)
-        }
-        val iosMain by creating {
-            dependsOn(commonMain)
-        }
-        names.forEach { name ->
-            if (name.contains("iosArm64Main") ||
-                name.contains("iosSimulatorArm64Main") ||
-                name.contains("iosX64Main")
-            ) {
-                this@sourceSets.getByName(name).apply {
-                    dependsOn(iosMain)
-                }
+                api(project(":multik-openblas"))
             }
         }
 
-        val nativeMain by creating {
-            dependsOn(commonMain)
+        val desktopMain by creating {
+            dependsOn(commonMain.get())
             dependencies {
-                implementation(project(":multik-openblas"))
+                api(project(":multik-openblas"))
             }
+        }
+        val desktopTest by creating {
+            dependsOn(commonTest.get())
         }
 
-        names.forEach { name ->
-            if (name.contains("macos") || name.contains("linux") || name.contains("mingw")
-            ) {
-                this@sourceSets.getByName(name).apply {
-                    dependsOn(nativeMain)
-                }
-            }
-        }
+        val hostName = HostDetection.currentTarget.targetName
+        getByName("${hostName}Main").dependsOn(desktopMain)
+        getByName("${hostName}Test").dependsOn(desktopTest)
     }
 }

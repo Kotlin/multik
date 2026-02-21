@@ -6,11 +6,14 @@ commons-csv = "1.14.1"
 bio-npy = "0.3.5"
 
 [libraries]
+# Plugins
+kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+
+# Libraries
 commons-csv = { group = "org.apache.commons", name = "commons-csv", version.ref = "commons-csv"}
 bio-npy = { group = "org.jetbrains.bio", name = "npy", version.ref = "bio-npy"}
 
 
 [plugins]
-kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-dokka = { id = "org.jetbrains.dokka", version.ref = "dokka"}
 korro = { id = "io.github.devcrocod.korro", version.ref = "korro"}

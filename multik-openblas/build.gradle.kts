@@ -1,27 +1,20 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.konan.target.Family.LINUX
 
 plugins {
-    kotlin("multiplatform")
+    id("multik.host-native-kmp")
+    id("multik.cmake-build")
+    id("multik.publishing")
 }
 
-apply(from = "$rootDir/gradle/multik_jni-cmake.gradle")
-
 kotlin {
-    compilerOptions {
-        freeCompilerArgs.add("-Xexpect-actual-classes")
-    }
-
     jvm {
-        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
-        testRuns["test"].executionTask.configure {
-            useJUnit()
-        }
         val jvmTest by tasks.getting(Test::class) {
             systemProperty("java.library.path", "$projectDir/build/cmake-build")
         }
         val jvmJar by tasks.getting(Jar::class) {
+            dependsOn("copyNativeLibs")
             from("$projectDir/build/libs") {
                 include("libmultik_jni-androidArm64.so")
                 into("lib/arm64-v8a")
@@ -42,72 +35,61 @@ kotlin {
                 include("libmultik_jni-mingwX64.dll")
                 into("lib/mingwX64")
             }
+        }
+    }
 
-        }
-    }
-    val hostOs = System.getProperty("os.name")
-    val hostArch = System.getProperty("os.arch")
-    val hostTarget = when {
-        hostOs == "Mac OS X" && hostArch == "x86_64" -> macosX64 {
-            binaries {
-                framework { baseName = "multik-openblas" }
-            }
-        }
-        hostOs == "Mac OS X" && hostArch == "aarch64" -> macosArm64 {
-            binaries {
-                framework { baseName = "multik-openblas" }
-            }
-        }
-        hostOs == "Linux" -> linuxX64()
-        hostOs.startsWith("Windows") -> mingwX64()
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
+    @Suppress("UNCHECKED_CAST")
+    val hostTarget = project.extra["hostNativeTarget"] as KotlinNativeTarget
 
     hostTarget.apply {
         compilations.getByName("main") {
             cinterops {
                 val libmultik by creating {
                     val cinteropDir = "${projectDir}/cinterop"
-                    val headersDir = "${projectDir}/multik_jni/src/main/headers/"
+                    val headersDir = "${projectDir}/multik_jni/src/main/headers"
                     val cppDir = "${projectDir}/multik_jni/src/main/cpp"
-                    headers("$headersDir/mk_math.h", "$headersDir/mk_linalg.h", "$headersDir/mk_stat.h")
-                    defFile(project.file(("$cinteropDir/libmultik.def")))
+                    val openblasIncludeDir = "${projectDir}/build/cmake-build/openblas-install/include"
 
-                    when (konanTarget.family) {
-                        LINUX -> extraOpts("-Xsource-compiler-option", "-DFORCE_OPENBLAS_COMPLEX_STRUCT=1")
-                        else -> {
-                            // Nothing
-                        }
+                    definitionFile.set(project.file("$cinteropDir/libmultik.def"))
+                    headers("$headersDir/mk_math.h", "$headersDir/mk_linalg.h", "$headersDir/mk_stat.h")
+
+                    // Include directories for cinterop header analysis
+                    includeDirs.allHeaders(headersDir, openblasIncludeDir)
+
+                    // Compiler options for cinterop header analysis
+                    if (konanTarget.family == LINUX) {
+                        compilerOpts("-DFORCE_OPENBLAS_COMPLEX_STRUCT=1")
                     }
 
+                    // Compiler options for C++ source files compiled into the binding
                     extraOpts("-Xsource-compiler-option", "-std=c++14")
                     extraOpts("-Xsource-compiler-option", "-I$headersDir")
-                    extraOpts("-Xsource-compiler-option", "-I${projectDir}/build/cmake-build/openblas-install/include")
+                    extraOpts("-Xsource-compiler-option", "-I$openblasIncludeDir")
+                    if (konanTarget.family == LINUX) {
+                        extraOpts("-Xsource-compiler-option", "-DFORCE_OPENBLAS_COMPLEX_STRUCT=1")
+                    }
+
+                    // C++ source files to compile into the cinterop binding
                     extraOpts("-Xcompile-source", "$cppDir/mk_math.cpp")
                     extraOpts("-Xcompile-source", "$cppDir/mk_linalg.cpp")
                     extraOpts("-Xcompile-source", "$cppDir/mk_stat.cpp")
                 }
             }
         }
-        binaries.all {
-            freeCompilerArgs = freeCompilerArgs + "-Xallocator=std"
-        }
     }
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 api(project(":multik-core"))
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
-        val jvmMain by getting
     }
 }
-
 
 tasks.withType(CInteropProcess::class.java).configureEach { dependsOn("build_cmake") }
