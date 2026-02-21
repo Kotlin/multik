@@ -101,14 +101,14 @@ public abstract class Engine {
             if (enginesProvider.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide LinAlg implementation.")
             if (defaultEngine == null) loadEngine()
             return enginesProvider[defaultEngine]?.getLinAlg()
-                ?: throw throw EngineMultikException("The used engine type is not defined.")
+                ?: throw EngineMultikException("The used engine type is not defined.")
         }
 
         override fun getStatistics(): Statistics {
             if (enginesProvider.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide Statistics implementation.")
             if (defaultEngine == null) loadEngine()
             return enginesProvider[defaultEngine]?.getStatistics()
-                ?: throw throw EngineMultikException("The used engine type is not defined.")
+                ?: throw EngineMultikException("The used engine type is not defined.")
         }
     }
 }
