@@ -1,0 +1,74 @@
+name: Bug Report
+description: Report a bug in Multik
+type: Bug
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug!
+        Please fill out the sections below to help us reproduce and fix the issue.
+
+  - type: input
+    id: version
+    attributes:
+      label: Multik version
+      placeholder: "0.3.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: Module
+      options:
+        - multik-default
+        - multik-kotlin
+        - multik-openblas
+        - multik-core
+    validations:
+      required: true
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      multiple: true
+      options:
+        - JVM
+        - JS
+        - Kotlin/Native
+        - WASM
+        - Android
+        - iOS
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened and what did you expect?
+      placeholder: |
+        Expected: ...
+        Actual: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Reproducer
+      description: Minimal code to reproduce the issue.
+      render: kotlin
+    validations:
+      required: true
+
+  - type: textarea
+    id: stacktrace
+    attributes:
+      label: Stack trace or error output
+      description: Paste the full error message if applicable.
+      render: text
+    validations:
+      required: false
