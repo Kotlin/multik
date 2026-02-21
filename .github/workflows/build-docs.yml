@@ -82,7 +82,7 @@ jobs:
         run: unzip -O UTF-8 -qq "artifacts/${{ needs.build.outputs.artifact }}" -d dir
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
 
       - name: Package and upload Pages artifact
         uses: actions/upload-pages-artifact@v3
