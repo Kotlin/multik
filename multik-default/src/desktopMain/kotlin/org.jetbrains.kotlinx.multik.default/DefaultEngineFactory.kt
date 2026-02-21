@@ -9,7 +9,7 @@ import org.jetbrains.kotlinx.multik.kotlin.KEEngine
 import org.jetbrains.kotlinx.multik.openblas.NativeEngine
 
 internal actual object DefaultEngineFactory : EngineFactory {
-    override fun getEngine(type: EngineType?): Engine =
+    actual override fun getEngine(type: EngineType?): Engine =
         when (type) {
             null -> error("Pass NativeEngineType of KEEngineType")
             KEEngineType -> KEEngine()

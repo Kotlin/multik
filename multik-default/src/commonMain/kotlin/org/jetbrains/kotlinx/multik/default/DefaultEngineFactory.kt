@@ -4,6 +4,10 @@
 
 package org.jetbrains.kotlinx.multik.default
 
+import org.jetbrains.kotlinx.multik.api.Engine
 import org.jetbrains.kotlinx.multik.api.EngineFactory
+import org.jetbrains.kotlinx.multik.api.EngineType
 
-internal expect object DefaultEngineFactory: EngineFactory
+internal expect object DefaultEngineFactory: EngineFactory {
+    override fun getEngine(type: EngineType?): Engine
+}
