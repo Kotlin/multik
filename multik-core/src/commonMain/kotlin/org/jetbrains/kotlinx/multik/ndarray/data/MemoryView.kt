@@ -4,7 +4,16 @@
 
 package org.jetbrains.kotlinx.multik.ndarray.data
 
-import org.jetbrains.kotlinx.multik.ndarray.complex.*
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDoubleArray
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloatArray
+import org.jetbrains.kotlinx.multik.ndarray.complex.copyInto
+import org.jetbrains.kotlinx.multik.ndarray.complex.copyOf
+import org.jetbrains.kotlinx.multik.ndarray.complex.indices
+import org.jetbrains.kotlinx.multik.ndarray.complex.lastIndex
+import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexDoubleArray
+import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexFloatArray
 
 /**
  * View for storing data in a [NDArray] and working them in a uniform style.
@@ -504,7 +513,7 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
 
     public override operator fun divAssign(other: Int) {
         for (i in this.indices) {
-            this.data[i] += other
+            this.data[i] /= other
         }
     }
 }
