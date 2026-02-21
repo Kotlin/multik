@@ -50,13 +50,13 @@ internal fun requireDotShape(aShape: IntArray, bShape: IntArray) = require(aShap
 
 // computes some square root of complex number
 // guarantee csqrt(a) * csqrt(a) = a
-fun csqrt(a: ComplexFloat): ComplexFloat {
+internal fun csqrt(a: ComplexFloat): ComplexFloat {
     val arg = a.angle()
     val absval = a.abs()
     return ComplexFloat(sqrt(absval) * cos(arg / 2), sqrt(absval) * sin(arg / 2))
 }
 
-fun csqrt(a: ComplexDouble): ComplexDouble {
+internal fun csqrt(a: ComplexDouble): ComplexDouble {
     val arg = a.angle()
     val absval = a.abs()
     return ComplexDouble(sqrt(absval) * cos(arg / 2), sqrt(absval) * sin(arg / 2))

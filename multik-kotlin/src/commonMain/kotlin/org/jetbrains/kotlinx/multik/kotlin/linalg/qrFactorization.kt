@@ -14,13 +14,11 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.*
-import org.jetbrains.kotlinx.multik.ndarray.data.set
 import kotlin.math.hypot
 import kotlin.math.min
 import kotlin.math.sqrt
 
-
-fun qrDouble(mat: MultiArray<Double, D2>): Pair<D2Array<Double>, D2Array<Double>> {
+internal fun qrDouble(mat: MultiArray<Double, D2>): Pair<D2Array<Double>, D2Array<Double>> {
     var q = mk.identity<Double>(mat.shape[0]) // TODO shape q = m x n
     val r = mat.deepCopy() as D2Array<Double> // TODO shape r = min(m, n) x n
     for (i in 0 until min(mat.shape[0], mat.shape[1])) {
@@ -43,7 +41,7 @@ fun qrDouble(mat: MultiArray<Double, D2>): Pair<D2Array<Double>, D2Array<Double>
     return Pair(q, r)
 }
 
-fun qrFloat(mat: MultiArray<Float, D2>): Pair<D2Array<Float>, D2Array<Float>> {
+internal fun qrFloat(mat: MultiArray<Float, D2>): Pair<D2Array<Float>, D2Array<Float>> {
     var q = mk.identity<Float>(mat.shape[0])
     val r = mat.deepCopy() as D2Array<Float>
     for (i in 0 until min(mat.shape[0], mat.shape[1])) {
@@ -66,7 +64,7 @@ fun qrFloat(mat: MultiArray<Float, D2>): Pair<D2Array<Float>, D2Array<Float>> {
     return Pair(q, r)
 }
 
-fun qrComplexFloat(mat: MultiArray<ComplexFloat, D2>): Pair<D2Array<ComplexFloat>, D2Array<ComplexFloat>> {
+internal fun qrComplexFloat(mat: MultiArray<ComplexFloat, D2>): Pair<D2Array<ComplexFloat>, D2Array<ComplexFloat>> {
     var q = mk.identity<ComplexFloat>(mat.shape[0])
     val r = mat.deepCopy() as D2Array<ComplexFloat>
 
@@ -109,7 +107,7 @@ fun qrComplexFloat(mat: MultiArray<ComplexFloat, D2>): Pair<D2Array<ComplexFloat
     return Pair(q, r)
 }
 
-fun qrComplexDouble(mat: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
+internal fun qrComplexDouble(mat: MultiArray<ComplexDouble, D2>): Pair<D2Array<ComplexDouble>, D2Array<ComplexDouble>> {
 
     var q = mk.identity<ComplexDouble>(mat.shape[0])
     val r = mat.deepCopy() as D2Array<ComplexDouble>

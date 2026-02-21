@@ -18,8 +18,6 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
 import org.jetbrains.kotlinx.multik.ndarray.operations.CopyStrategy
 import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
 import org.jetbrains.kotlinx.multik.ndarray.operations.toType
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.math.*
 
 internal fun <T, O : Any> eigenValuesCommon(a: MultiArray<T, D2>, dtype: DataType): D1Array<O> {
@@ -643,6 +641,6 @@ private fun absL1(a: ComplexFloat): Float = abs(a.re) + abs(a.im)
  * signum(0) = 1
  * sign(0) = 0
  */
-fun signum(x: Float): Float = (if (x == 0f) 1f else sign(x))
+internal fun signum(x: Float): Float = (if (x == 0f) 1f else sign(x))
 
-fun signum(x: Double): Double = (if (x == 0.0) 1.0 else sign(x))
+internal fun signum(x: Double): Double = (if (x == 0.0) 1.0 else sign(x))
