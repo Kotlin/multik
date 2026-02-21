@@ -42,7 +42,7 @@ jobs:
           docker-version: ${{ env.DOCKER_VERSION }}
 
       - name: Save artifact with build results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: docs
           path: |
