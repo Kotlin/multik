@@ -328,7 +328,7 @@ Requires:
 ### Without OpenBLAS
 
 ```bash
-./gradlew assemble -x cmake_build
+./gradlew assemble -x build_cmake
 ```
 
 ### Individual modules
