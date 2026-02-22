@@ -106,7 +106,7 @@ Import stable `multik` version into notebook:
 > [!IMPORTANT]
 > - On Ubuntu 18.04 and older, `multik-openblas` doesn't work due to older versions of **glibc**.
 > - `multik-openblas` for desktop native targets (_linuxX64_, _mingwX64_, _macosX64_, _macosArm64_) is experimental and
-    unstable.
+>     unstable.
 > - JVM target `multik-openblas` for Android only supports **arm64-v8a** processors.
 
 ## Quickstart
