@@ -8,6 +8,7 @@ import org.jetbrains.kotlinx.multik.api.arange
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.kotlin.stat.KEStatistics
+import org.jetbrains.kotlinx.multik.ndarray.data.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -55,5 +56,20 @@ class KEStatisticsTest {
     fun test_of_mean_function_on_a_2d_ndarray() {
         val ndarray = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
         assertEquals(2.5, KEStatistics.mean(ndarray))
+    }
+
+    @Test
+    fun test_meanDN_returns_DN_dimension() {
+        // Create a 5D array (DN dimension) with shape [2, 2, 2, 2, 2]
+        val shape = intArrayOf(2, 2, 2, 2, 2)
+        val memoryView = initMemoryView<Int>(32, DataType.IntDataType) { it }
+        val ndarray = NDArray(memoryView, shape = shape, dim = DN(5))
+
+        // meanDN along axis 0 should return NDArray<Double, DN>, not NDArray<Double, D4>
+        val result: NDArray<Double, DN> = KEStatistics.meanDN(ndarray, axis = 0)
+
+        // Verify the result shape: removing axis 0 from [2,2,2,2,2] gives [2,2,2,2]
+        assertEquals(4, result.shape.size)
+        assertEquals(intArrayOf(2, 2, 2, 2).toList(), result.shape.toList())
     }
 }

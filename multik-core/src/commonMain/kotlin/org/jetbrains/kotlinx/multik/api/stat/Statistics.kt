@@ -52,7 +52,7 @@ public interface Statistics {
     /**
      * Returns the arithmetic mean of the n-dimensional ndarray [a] elements along the given [axis].
      */
-    public fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, D4>
+    public fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, DN>
 }
 
 /**

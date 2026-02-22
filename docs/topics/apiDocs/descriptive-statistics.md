@@ -50,7 +50,7 @@ Dimension-specific overloads are also available:
 fun <T : Number> Statistics.meanD2(a: MultiArray<T, D2>, axis: Int): NDArray<Double, D1>
 fun <T : Number> Statistics.meanD3(a: MultiArray<T, D3>, axis: Int): NDArray<Double, D2>
 fun <T : Number> Statistics.meanD4(a: MultiArray<T, D4>, axis: Int): NDArray<Double, D3>
-fun <T : Number> Statistics.meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, D4>
+fun <T : Number> Statistics.meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, DN>
 ```
 
 ### Parameters

@@ -29,5 +29,5 @@ public actual object DefaultStatistics : Statistics {
 
     actual override fun <T : Number> meanD4(a: MultiArray<T, D4>, axis: Int): NDArray<Double, D3> = mean(a, axis)
 
-    actual override fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, D4> = mean(a, axis)
+    actual override fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, DN> = mean(a, axis)
 }

@@ -23,5 +23,5 @@ public expect object DefaultStatistics : Statistics {
 
     override fun <T : Number> meanD4(a: MultiArray<T, D4>, axis: Int): NDArray<Double, D3>
 
-    override fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, D4>
+    override fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, DN>
 }

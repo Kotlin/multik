@@ -47,7 +47,7 @@ internal object NativeStatistics : Statistics {
         TODO("Not yet implemented")
     }
 
-    override fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, D4> {
+    override fun <T : Number> meanDN(a: MultiArray<T, DN>, axis: Int): NDArray<Double, DN> {
         TODO("Not yet implemented")
     }
 }
