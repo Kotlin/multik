@@ -94,4 +94,65 @@ class DataStructure(private val seed: Int) {
         val random = Random(seed)
         return Pair(mk.d2array(sizeMD1, sizeMD2) { random.nextFloat() }, mk.d1array(sizeV) { random.nextFloat() })
     }
+
+    fun getComplexFloatV(n: Int): D1Array<ComplexFloat> {
+        val random = Random(seed)
+        return mk.d1array(n) { ComplexFloat(random.nextFloat(), random.nextFloat()) }
+    }
+
+    fun getComplexDoubleV(n: Int): D1Array<ComplexDouble> {
+        val random = Random(seed)
+        return mk.d1array(n) { ComplexDouble(random.nextDouble(), random.nextDouble()) }
+    }
+
+    fun getComplexFloatVV(sizeA: Int, sizeB: Int = sizeA): Pair<D1Array<ComplexFloat>, D1Array<ComplexFloat>> {
+        val random = Random(seed)
+        return Pair(
+            mk.d1array(sizeA) { ComplexFloat(random.nextFloat(), random.nextFloat()) },
+            mk.d1array(sizeB) { ComplexFloat(random.nextFloat(), random.nextFloat()) }
+        )
+    }
+
+    fun getComplexDoubleVV(sizeA: Int, sizeB: Int = sizeA): Pair<D1Array<ComplexDouble>, D1Array<ComplexDouble>> {
+        val random = Random(seed)
+        return Pair(
+            mk.d1array(sizeA) { ComplexDouble(random.nextDouble(), random.nextDouble()) },
+            mk.d1array(sizeB) { ComplexDouble(random.nextDouble(), random.nextDouble()) }
+        )
+    }
+
+    fun getComplexFloatMM(
+        sizeAD1: Int, sizeAD2: Int = sizeAD1,
+        sizeBD1: Int, sizeBD2: Int = sizeBD1
+    ): Pair<D2Array<ComplexFloat>, D2Array<ComplexFloat>> {
+        val random = Random(seed)
+        return Pair(
+            mk.d2array(sizeAD1, sizeAD2) { ComplexFloat(random.nextFloat(), random.nextFloat()) },
+            mk.d2array(sizeBD1, sizeBD2) { ComplexFloat(random.nextFloat(), random.nextFloat()) }
+        )
+    }
+
+    fun getComplexDoubleMV(
+        sizeMD1: Int,
+        sizeMD2: Int = sizeMD1,
+        sizeV: Int = sizeMD2
+    ): Pair<D2Array<ComplexDouble>, D1Array<ComplexDouble>> {
+        val random = Random(seed)
+        return Pair(
+            mk.d2array(sizeMD1, sizeMD2) { ComplexDouble(random.nextDouble(), random.nextDouble()) },
+            mk.d1array(sizeV) { ComplexDouble(random.nextDouble(), random.nextDouble()) }
+        )
+    }
+
+    fun getComplexFloatMV(
+        sizeMD1: Int,
+        sizeMD2: Int = sizeMD1,
+        sizeV: Int = sizeMD2
+    ): Pair<D2Array<ComplexFloat>, D1Array<ComplexFloat>> {
+        val random = Random(seed)
+        return Pair(
+            mk.d2array(sizeMD1, sizeMD2) { ComplexFloat(random.nextFloat(), random.nextFloat()) },
+            mk.d1array(sizeV) { ComplexFloat(random.nextFloat(), random.nextFloat()) }
+        )
+    }
 }
