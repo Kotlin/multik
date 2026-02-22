@@ -40,7 +40,7 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 @OptIn(ExperimentalForeignApi::class)
 internal actual object JniLinAlg {
     actual fun pow(mat: FloatArray, n: Int, result: FloatArray) {
-
+        TODO()
     }
 
     actual fun pow(mat: DoubleArray, n: Int, result: DoubleArray) {
