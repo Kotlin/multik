@@ -25,7 +25,7 @@ public class ComplexFloatArray(public val size: Int = 0) {
         return ComplexFloat(data[i], data[i + 1])
     }
 
-    public operator fun set(index: Int, value: ComplexFloat): Unit {
+    public operator fun set(index: Int, value: ComplexFloat) {
         checkElementIndex(index, size)
         val i = index shl 1
         data[i] = value.re
@@ -81,7 +81,7 @@ public class ComplexDoubleArray(public val size: Int = 0) {
         return ComplexDouble(data[i], data[i + 1])
     }
 
-    public operator fun set(index: Int, value: ComplexDouble): Unit {
+    public operator fun set(index: Int, value: ComplexDouble) {
         checkElementIndex(index, size)
         val i = index shl 1
         data[i] = value.re

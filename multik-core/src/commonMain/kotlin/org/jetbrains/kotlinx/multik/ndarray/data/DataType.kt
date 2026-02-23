@@ -69,7 +69,7 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
          */
         public inline fun <T> of(element: T): DataType {
             element ?: throw IllegalStateException("Element is null cannot find type")
-            return dataTypeOf(element!!::class)
+            return dataTypeOf(element::class)
         }
 
 
