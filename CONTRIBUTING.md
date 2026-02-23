@@ -57,6 +57,14 @@ so do familiarize yourself with the following guidelines.
       name test functions as `testXxx`. Don't use backticks in test names.
 * If you introduce any new public APIs:
     * All new APIs must come with documentation and tests.
+    * Follow the [Kotlin library authors' guidelines](https://kotlinlang.org/docs/api-guidelines-introduction.html).
+      Key points for Multik:
+        * Avoid data classes in public API (breaks binary compatibility when properties are added).
+        * Don't add arguments to existing functions, even with defaults &mdash; use manual overloads instead.
+        * Don't widen or narrow return types of existing functions.
+        * Avoid boolean parameters &mdash; use separate named functions or enum types.
+        * Avoid exposing mutable state &mdash; return read-only collections, make defensive copies of arrays.
+        * Use `@RequiresOptIn` for experimental APIs, `@Deprecated` with progressive levels for removals.
     * If you plan large API additions, then please start by submitting an issue with the proposed API design
       to gather community feedback.
     * [Contact the maintainers](#contacting-maintainers) to coordinate any big piece of work in advance.
@@ -84,7 +92,7 @@ so do familiarize yourself with the following guidelines.
 ./gradlew assemble
 
 # Build without native OpenBLAS (if you don't have the C++ toolchain)
-./gradlew assemble -x cmake_build
+./gradlew assemble -x build_cmake
 
 # Build only core module
 ./gradlew :multik-core:build

@@ -66,7 +66,7 @@ Contributions are welcome — bug fixes, new features, documentation improvement
 ./gradlew assemble
 
 # Build without native OpenBLAS (if you don't have the C++ toolchain)
-./gradlew assemble -x cmake_build
+./gradlew assemble -x build_cmake
 
 # Run JVM tests
 ./gradlew :multik-core:jvmTest
@@ -83,6 +83,12 @@ and a minimal reproducer.
 implement. You can add a new function by:
 1. Adding the signature to the interface in `multik-core`.
 2. Implementing it in `multik-kotlin` (pure Kotlin) and/or `multik-openblas` (native).
+
+When adding or modifying public API, follow the
+[Kotlin library authors' guidelines](https://kotlinlang.org/docs/api-guidelines-introduction.html).
+Key points: always specify explicit visibility and return types (explicit API mode is enabled),
+avoid data classes in public API, don't add arguments to existing functions (use overloads),
+avoid boolean parameters, don't expose mutable state, and use `@RequiresOptIn` for experimental APIs.
 
 **Create a custom engine**
 : Subclass `Engine` and implement the `Math`, `LinAlg`, and `Statistics` interfaces. Register it
