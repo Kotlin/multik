@@ -141,18 +141,6 @@ public fun <T : Number> InplaceOperation<T, DN>.math(init: InplaceMath<T, DN>.()
         }
 }
 
-/*
-- Fix Sin class computing cos instead of sin (silent data corruption)
-- Fix missing throw in operator else branches (exception created but not thrown)
-- Extract applyFloatingPointOp helper to centralize unchecked casts
-- Convert Exp from sealed class to sealed interface
-- Reduce visibility of implementation classes to internal
-- Rename Prod to Mul for consistency with Kotlin operator naming
-- Improve error messages in type-dispatched operators
-- Add KDoc to all public and internal declarations
-
- */
-
 /**
  * DSL scope for defining inplace math operations.
  *
