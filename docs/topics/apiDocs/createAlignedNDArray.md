@@ -52,6 +52,20 @@ Each variant also has an `Array` overload that delegates to the `List` version.
 <!---FUN createAlignedNDArray_example-->
 
 ```kotlin
+val ragged = listOf(
+    listOf(1, 2, 3),
+    listOf(4, 5),
+    listOf(6)
+)
+val aligned = mk.createAlignedNDArray(ragged)
+// [[1, 2, 3],
+//  [4, 5, 0],
+//  [6, 0, 0]]
+
+val padded = mk.createAlignedNDArray(ragged, filling = -1.0)
+// [[1,  2,  3],
+//  [4,  5, -1],
+//  [6, -1, -1]]
 ```
 
 <!---END-->
