@@ -1,6 +1,26 @@
 package samples.docs.apiDocs
 
-import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.ExperimentalMultikApi
+import org.jetbrains.kotlinx.multik.api.arange
+import org.jetbrains.kotlinx.multik.api.createAlignedNDArray
+import org.jetbrains.kotlinx.multik.api.d1array
+import org.jetbrains.kotlinx.multik.api.d2array
+import org.jetbrains.kotlinx.multik.api.d2arrayIndices
+import org.jetbrains.kotlinx.multik.api.d3array
+import org.jetbrains.kotlinx.multik.api.d3arrayIndices
+import org.jetbrains.kotlinx.multik.api.d4array
+import org.jetbrains.kotlinx.multik.api.d4arrayIndices
+import org.jetbrains.kotlinx.multik.api.dnarray
+import org.jetbrains.kotlinx.multik.api.identity
+import org.jetbrains.kotlinx.multik.api.linspace
+import org.jetbrains.kotlinx.multik.api.meshgrid
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.api.ndarrayOf
+import org.jetbrains.kotlinx.multik.api.ones
+import org.jetbrains.kotlinx.multik.api.rand
+import org.jetbrains.kotlinx.multik.api.toNDArray
+import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.ndarray.data.D1
 import org.jetbrains.kotlinx.multik.ndarray.data.D2
 import org.jetbrains.kotlinx.multik.ndarray.data.D3
@@ -261,6 +281,27 @@ class ArrayCreation {
     fun toNDArray_array_of_arrays_example() {
         // SampleStart
         val m = arrayOf(intArrayOf(1, 2), intArrayOf(3, 4)).toNDArray()  // D2Array<Int>
+        // SampleEnd
+    }
+
+    @OptIn(ExperimentalMultikApi::class)
+    @Test
+    fun createAlignedNDArray_example() {
+        // SampleStart
+        val ragged = listOf(
+            listOf(1, 2, 3),
+            listOf(4, 5),
+            listOf(6)
+        )
+        val aligned = mk.createAlignedNDArray(ragged)
+        // [[1, 2, 3],
+        //  [4, 5, 0],
+        //  [6, 0, 0]]
+
+        val padded = mk.createAlignedNDArray(ragged, filling = -1.0)
+        // [[1,  2,  3],
+        //  [4,  5, -1],
+        //  [6, -1, -1]]
         // SampleEnd
     }
 }

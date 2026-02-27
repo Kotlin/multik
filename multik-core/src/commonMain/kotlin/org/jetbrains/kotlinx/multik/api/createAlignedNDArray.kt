@@ -1,12 +1,27 @@
 package org.jetbrains.kotlinx.multik.api
 
-import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
+import org.jetbrains.kotlinx.multik.ndarray.data.D3Array
+import org.jetbrains.kotlinx.multik.ndarray.data.D4Array
+import org.jetbrains.kotlinx.multik.ndarray.data.toPrimitiveType
 import kotlin.jvm.JvmName
 
 /**
- * Creates [NDArray] of 2nd dims filled with values from [data].
- * Sequences in the batch can have a different number of elements the maximum length will be chosen for each dimension.
- * Smaller sequences will be filled with [filling] to the maximum length.
+ * Creates a 2D array from ragged lists by padding shorter rows to the maximum row length.
+ *
+ * Each inner list becomes a row. Rows shorter than the longest are right-padded with [filling].
+ * The resulting shape is `(data.size, maxRowLength)`.
+ *
+ * ```
+ * mk.createAlignedNDArray(listOf(listOf(1, 2, 3), listOf(4, 5)))
+ * // [[1, 2, 3],
+ * //  [4, 5, 0]]
+ * ```
+ *
+ * @param data ragged list of rows.
+ * @param filling value used to pad shorter rows, converted to [T].
+ * @return a new [D2Array] with shape `(data.size, maxRowLength)`.
+ * @throws IllegalArgumentException if [data] is empty.
  */
 @ExperimentalMultikApi
 @JvmName("createAligned2DArray")
@@ -28,9 +43,7 @@ public inline fun <reified T : Number> Multik.createAlignedNDArray(
 }
 
 /**
- * Creates [NDArray] of 2nd dims filled with values from [data].
- * Sequences in the batch can have a different number of elements the maximum length will be chosen for each dimension.
- * Smaller sequences will be filled with [filling] to the maximum length.
+ * Array overload of [createAlignedNDArray] for 2D. See the `List` variant for details.
  */
 @ExperimentalMultikApi
 @JvmName("createAligned2DArray")
@@ -39,9 +52,15 @@ public inline fun <reified T : Number> Multik.createAlignedNDArray(
 ): D2Array<T> = this.createAlignedNDArray(data.map { it.asList() }, filling)
 
 /**
- * Creates [NDArray] of 3rd dims filled with values from `data`.
- * Sequences in the batch can have a different number of elements the maximum length will be chosen for each dimension.
- * Smaller sequences will be filled with [filling] to the maximum length.
+ * Creates a 3D array from ragged nested lists by padding shorter sequences to the maximum length at each depth.
+ *
+ * The resulting shape is `(data.size, maxDim2, maxDim3)` where each `maxDimN` is the maximum
+ * sequence length at that nesting level. Missing elements are filled with [filling].
+ *
+ * @param data ragged nested lists with 3 levels of nesting.
+ * @param filling value used to pad shorter sequences, converted to [T].
+ * @return a new [D3Array] with shape `(data.size, maxDim2, maxDim3)`.
+ * @throws IllegalArgumentException if [data] is empty.
  */
 @ExperimentalMultikApi
 @JvmName("createAligned3DArray")
@@ -67,9 +86,7 @@ public inline fun <reified T : Number> Multik.createAlignedNDArray(
 }
 
 /**
- * Creates [NDArray] of 3rd dims filled with values from `data`.
- * Sequences in the batch can have a different number of elements the maximum length will be chosen for each dimension.
- * Smaller sequences will be filled with [filling] to the maximum length.
+ * Array overload of [createAlignedNDArray] for 3D. See the `List` variant for details.
  */
 @ExperimentalMultikApi
 @JvmName("createAligned3DArray")
@@ -78,9 +95,15 @@ public inline fun <reified T : Number> Multik.createAlignedNDArray(
 ): D3Array<T> = this.createAlignedNDArray(data.map { it2d -> it2d.map { it3d -> it3d.asList() } }, filling)
 
 /**
- * Creates [NDArray] of 3rd dims filled with values from `data`.
- * Sequences in the batch can have a different number of elements the maximum length will be chosen for each dimension.
- * Smaller sequences will be filled with [filling] to the maximum length.
+ * Creates a 4D array from ragged nested lists by padding shorter sequences to the maximum length at each depth.
+ *
+ * The resulting shape is `(data.size, maxDim2, maxDim3, maxDim4)` where each `maxDimN` is the maximum
+ * sequence length at that nesting level. Missing elements are filled with [filling].
+ *
+ * @param data ragged nested lists with 4 levels of nesting.
+ * @param filling value used to pad shorter sequences, converted to [T].
+ * @return a new [D4Array] with shape `(data.size, maxDim2, maxDim3, maxDim4)`.
+ * @throws IllegalArgumentException if [data] is empty.
  */
 @ExperimentalMultikApi
 @JvmName("createAligned4DArray")
@@ -108,9 +131,7 @@ public inline fun <reified T : Number> Multik.createAlignedNDArray(
 }
 
 /**
- * Creates [NDArray] of 3rd dims filled with values from `data`.
- * Sequences in the batch can have a different number of elements the maximum length will be chosen for each dimension.
- * Smaller sequences will be filled with [filling] to the maximum length.
+ * Array overload of [createAlignedNDArray] for 4D. See the `List` variant for details.
  */
 @ExperimentalMultikApi
 @JvmName("createAligned4DArray")

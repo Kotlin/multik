@@ -63,6 +63,7 @@
             <toc-element topic="rand.md"/>
             <toc-element topic="zeros.md"/>
             <toc-element topic="toNDArray.md"/>
+            <toc-element topic="createAlignedNDArray.md"/>
         </toc-element>
         <toc-element topic="random-number-generation.md"/>
         <toc-element topic="array-operations.md">
