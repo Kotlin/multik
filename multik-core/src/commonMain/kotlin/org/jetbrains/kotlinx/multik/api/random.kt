@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.api
 
 import org.jetbrains.kotlinx.multik.ndarray.data.*
@@ -9,11 +5,17 @@ import kotlin.jvm.JvmName
 import kotlin.random.Random
 
 /**
- * Returns a vector of the specified size filled with random numbers uniformly distributed for:
- * Int - [Int.MIN_VALUE, Int.MAX_VALUE)
- * Long - [Long.MIN_VALUE, Long.MAX_VALUE)
- * Float - [0f, 1f)
- * Double - [0.0, 1.0)
+ * Creates a 1D array filled with uniformly distributed random numbers.
+ *
+ * Default ranges by type: `Int` — [[Int.MIN_VALUE], [Int.MAX_VALUE]),
+ * `Long` — [[Long.MIN_VALUE], [Long.MAX_VALUE]), `Float` — [0f, 1f), `Double` — [0.0, 1.0).
+ *
+ * ```
+ * mk.rand<Double>(5) // e.g. [0.123, 0.456, 0.789, 0.012, 0.345]
+ * ```
+ *
+ * @param dim0 the array size (must be positive).
+ * @return a new [D1Array] of random values.
  */
 public inline fun <reified T : Number> Multik.rand(dim0: Int): D1Array<T> {
     require(dim0 > 0) { "Dimension must be positive." }
@@ -24,11 +26,9 @@ public inline fun <reified T : Number> Multik.rand(dim0: Int): D1Array<T> {
 }
 
 /**
- * Returns a matrix of the specified shape filled with random numbers uniformly distributed for:
- * Int - [Int.MIN_VALUE, Int.MAX_VALUE)
- * Long - [Long.MIN_VALUE, Long.MAX_VALUE)
- * Float - [0f, 1f)
- * Double - [0.0, 1.0)
+ * Creates a 2D array of shape ([dim0], [dim1]) filled with uniformly distributed random numbers.
+ *
+ * @see [Multik.rand] (1D) for default ranges by type.
  */
 public inline fun <reified T : Number> Multik.rand(dim0: Int, dim1: Int): D2Array<T> {
     val dtype = DataType.ofKClass(T::class)
@@ -42,11 +42,9 @@ public inline fun <reified T : Number> Multik.rand(dim0: Int, dim1: Int): D2Arra
 }
 
 /**
- * Returns an NDArray of the specified shape filled with random numbers uniformly distributed for:
- * Int - [Int.MIN_VALUE, Int.MAX_VALUE)
- * Long - [Long.MIN_VALUE, Long.MAX_VALUE)
- * Float - [0f, 1f)
- * Double - [0.0, 1.0)
+ * Creates a 3D array of shape ([dim0], [dim1], [dim2]) filled with uniformly distributed random numbers.
+ *
+ * @see [Multik.rand] (1D) for default ranges by type.
  */
 public inline fun <reified T : Number> Multik.rand(dim0: Int, dim1: Int, dim2: Int): D3Array<T> {
     val dtype = DataType.ofKClass(T::class)
@@ -60,11 +58,9 @@ public inline fun <reified T : Number> Multik.rand(dim0: Int, dim1: Int, dim2: I
 }
 
 /**
- * Returns an NDArray of the specified shape filled with random numbers uniformly distributed for:
- * Int - [Int.MIN_VALUE, Int.MAX_VALUE)
- * Long - [Long.MIN_VALUE, Long.MAX_VALUE)
- * Float - [0f, 1f)
- * Double - [0.0, 1.0)
+ * Creates a 4D array of shape ([dim0], [dim1], [dim2], [dim3]) filled with uniformly distributed random numbers.
+ *
+ * @see [Multik.rand] (1D) for default ranges by type.
  */
 public inline fun <reified T : Number> Multik.rand(dim0: Int, dim1: Int, dim2: Int, dim3: Int): D4Array<T> {
     val dtype = DataType.ofKClass(T::class)
@@ -78,11 +74,9 @@ public inline fun <reified T : Number> Multik.rand(dim0: Int, dim1: Int, dim2: I
 }
 
 /**
- * Returns an NDArray of the specified shape filled with random numbers uniformly distributed for:
- * Int - [Int.MIN_VALUE, Int.MAX_VALUE)
- * Long - [Long.MIN_VALUE, Long.MAX_VALUE)
- * Float - [0f, 1f)
- * Double - [0.0, 1.0)
+ * Creates an N-dimensional array filled with uniformly distributed random numbers.
+ *
+ * @see [Multik.rand] (1D) for default ranges by type.
  */
 public inline fun <reified T : Number> Multik.rand(
     dim0: Int, dim1: Int, dim2: Int, dim3: Int, vararg dims: Int
@@ -91,11 +85,11 @@ public inline fun <reified T : Number> Multik.rand(
 }
 
 /**
- * Returns an NDArray of the specified shape filled with random numbers uniformly distributed for:
- * Int - [Int.MIN_VALUE, Int.MAX_VALUE)
- * Long - [Long.MIN_VALUE, Long.MAX_VALUE)
- * Float - [0f, 1f)
- * Double - [0.0, 1.0)
+ * Creates an array of the given [shape] filled with uniformly distributed random numbers.
+ *
+ * @param shape the array shape; all dimensions must be positive.
+ * @return a new [NDArray] of random values.
+ * @see [Multik.rand] (1D) for default ranges by type.
  */
 public inline fun <reified T : Number, reified D : Dimension> Multik.rand(shape: IntArray): NDArray<T, D> {
     val dtype = DataType.ofKClass(T::class)
@@ -112,7 +106,11 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.rand(shape:
 
 
 /**
- * Returns an NDArray of the specified shape filled with number uniformly distributed between [[from], [until])
+ * Creates an array filled with random numbers uniformly distributed in [[from], [until]).
+ *
+ * @param from inclusive lower bound.
+ * @param until exclusive upper bound.
+ * @param dims the array shape as vararg.
  */
 @JvmName("randWithVarArg")
 public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
@@ -121,9 +119,13 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
     Multik.rand(from, until, dims)
 
 /**
- * Returns an NDArray of the specified shape filled with number uniformly distributed between [[from], [until])
+ * Creates an array filled with random numbers uniformly distributed in [[from], [until]).
  *
- * Note: Float generation is inefficient.
+ * Note: `Float` generation is inefficient (converts through `Double` internally).
+ *
+ * @param from inclusive lower bound.
+ * @param until exclusive upper bound.
+ * @param dims the array shape.
  */
 @JvmName("randWithShape")
 public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
@@ -141,10 +143,12 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
 }
 
 /**
- * Returns an NDArray of the specified shape filled with number uniformly distributed between [[from], [until])
- * with the specified [seed].
+ * Creates an array filled with random numbers in [[from], [until]) using the given [seed] for reproducibility.
  *
- * Note: Float generation is inefficient.
+ * @param seed the random seed.
+ * @param from inclusive lower bound.
+ * @param until exclusive upper bound.
+ * @param dims the array shape as vararg.
  */
 @JvmName("randSeedVarArg")
 public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
@@ -152,10 +156,12 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
 ): NDArray<T, D> = Multik.rand(Random(seed), from, until, dims)
 
 /**
- * Returns an NDArray of the specified shape filled with number uniformly distributed between [[from], [until])
- * with the specified [seed].
+ * Creates an array filled with random numbers in [[from], [until]) using the given [seed] for reproducibility.
  *
- * Note: Float generation is inefficient.
+ * @param seed the random seed.
+ * @param from inclusive lower bound.
+ * @param until exclusive upper bound.
+ * @param dims the array shape.
  */
 @JvmName("randSeedShape")
 public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
@@ -163,10 +169,12 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
 ): NDArray<T, D> = Multik.rand(Random(seed), from, until, dims)
 
 /**
- * Returns an NDArray of the specified shape filled with number uniformly distributed between [[from], [until])
- * with the specified [gen].
+ * Creates an array filled with random numbers in [[from], [until]) using the given [gen] random generator.
  *
- * Note: Float generation is inefficient.
+ * @param gen the [Random] generator to use.
+ * @param from inclusive lower bound.
+ * @param until exclusive upper bound.
+ * @param dims the array shape as vararg.
  */
 @JvmName("randGenVarArg")
 public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
@@ -174,10 +182,14 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
 ): NDArray<T, D> = Multik.rand(gen, from, until, dims)
 
 /**
- * Returns an NDArray of the specified shape filled with number uniformly distributed between [[from], [until])
- * with the specified [gen].
+ * Creates an array filled with random numbers in [[from], [until]) using the given [gen] random generator.
  *
- * Note: Float generation is inefficient.
+ * Note: `Float` generation is inefficient (converts through `Double` internally).
+ *
+ * @param gen the [Random] generator to use.
+ * @param from inclusive lower bound.
+ * @param until exclusive upper bound.
+ * @param dims the array shape.
  */
 @JvmName("randGenShape")
 public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
@@ -194,6 +206,7 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.rand(
     return NDArray(data, shape = dims, dim = dim)
 }
 
+/** Returns a random element generator lambda for the given [dtype]. Supports Int, Long, Float, Double. */
 @PublishedApi
 @Suppress("unchecked_cast", "nothing_to_inline")
 internal inline fun <T : Number> fRand(dtype: DataType): () -> T {
@@ -206,6 +219,7 @@ internal inline fun <T : Number> fRand(dtype: DataType): () -> T {
     } as () -> T
 }
 
+/** Generates a [MemoryView] of [size] random elements in [[from], [until]) for the given [dtype]. */
 @PublishedApi
 @Suppress( "unchecked_cast", "nothing_to_inline")
 internal inline fun <T : Number> randData(
