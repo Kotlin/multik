@@ -6,6 +6,7 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.WasmComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType.*
 import kotlin.reflect.KClass
 
+/** Resolves the [DataType] for the given [KClass]. Maps WASM-specific complex types including [WasmComplexDouble]. */
 @PublishedApi
 @Suppress("NOTHING_TO_INLINE")
 internal actual inline fun <T : Any> dataTypeOf(type: KClass<out T>): DataType =

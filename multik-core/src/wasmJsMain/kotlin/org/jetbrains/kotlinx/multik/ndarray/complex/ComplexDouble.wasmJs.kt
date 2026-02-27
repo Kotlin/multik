@@ -18,10 +18,10 @@ public actual fun ComplexDouble(re: Double, im: Double): ComplexDouble = WasmCom
 public actual fun ComplexDouble(re: Number, im: Number): ComplexDouble = ComplexDouble(re.toDouble(), im.toDouble())
 
 /**
- * Represents a complex number with double precision.
+ * WASM/JS [ComplexDouble] implementation that stores both parts as regular [Double] properties.
  *
- * @property re The real part of the complex number.
- * @property im The imaginary part of the complex number.
+ * @property re the real part of the complex number.
+ * @property im the imaginary part of the complex number.
  */
 public class WasmComplexDouble internal constructor(
     public override val re: Double, public override val im: Double
