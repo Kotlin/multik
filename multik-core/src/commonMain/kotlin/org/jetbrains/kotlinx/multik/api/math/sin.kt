@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.api.math
 
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
@@ -12,25 +8,38 @@ import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 import kotlin.jvm.JvmName
 
 /**
- * Returns an ndarray of Double from the given ndarray to each element of which a sin function has been applied.
+ * Applies the sine function element-wise to a numeric array, returning [Double] results.
+ *
+ * @param a the input array (values in radians).
+ * @return a new [NDArray] where each element is `sin(a[i])`.
+ * @see [MultiArray.sin] for the extension equivalent: `a.sin()`.
  */
 @JvmName("sin")
 public fun <T : Number, D : Dimension> Math.sin(a: MultiArray<T, D>): NDArray<Double, D> = this.mathEx.sin(a)
 
 /**
- * Returns an ndarray of Float from the given ndarray to each element of which a sin function has been applied.
+ * Applies the sine function element-wise to a float array, preserving single precision.
+ *
+ * @param a the input float array (values in radians).
+ * @return a new [NDArray] where each element is `sin(a[i])`.
  */
 @JvmName("sinFloat")
 public fun <D : Dimension> Math.sin(a: MultiArray<Float, D>): NDArray<Float, D> = this.mathEx.sinF(a)
 
 /**
- * Returns an ndarray of [ComplexFloat] from the given ndarray to each element of which a sin function has been applied.
+ * Applies the sine function element-wise to a [ComplexFloat] array.
+ *
+ * @param a the input complex float array.
+ * @return a new [NDArray] where each element is `sin(a[i])`.
  */
 @JvmName("sinComplexFloat")
 public fun <D : Dimension> Math.sin(a: MultiArray<ComplexFloat, D>): NDArray<ComplexFloat, D> = this.mathEx.sinCF(a)
 
 /**
- * Returns an ndarray of [ComplexDouble] from the given ndarray to each element of which a sin function has been applied.
+ * Applies the sine function element-wise to a [ComplexDouble] array.
+ *
+ * @param a the input complex double array.
+ * @return a new [NDArray] where each element is `sin(a[i])`.
  */
 @JvmName("sinComplexDouble")
 public fun <D : Dimension> Math.sin(a: MultiArray<ComplexDouble, D>): NDArray<ComplexDouble, D> = this.mathEx.sinCD(a)

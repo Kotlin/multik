@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.api.math
 
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
@@ -12,25 +8,38 @@ import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
 import kotlin.jvm.JvmName
 
 /**
- * Returns a ndarray of Double from the given ndarray to each element of which an exp function has been applied.
+ * Applies the exponential function element-wise to a numeric array, returning [Double] results.
+ *
+ * @param a the input array.
+ * @return a new [NDArray] where each element is `e^(a[i])`.
+ * @see [MultiArray.exp] for the extension equivalent: `a.exp()`.
  */
 @JvmName("exp")
 public fun <T : Number, D : Dimension> Math.exp(a: MultiArray<T, D>): NDArray<Double, D> = this.mathEx.exp(a)
 
 /**
- * Returns a ndarray of Float from the given ndarray to each element of which an exp function has been applied.
+ * Applies the exponential function element-wise to a float array, preserving single precision.
+ *
+ * @param a the input float array.
+ * @return a new [NDArray] where each element is `e^(a[i])`.
  */
 @JvmName("expFloat")
 public fun <D : Dimension> Math.exp(a: MultiArray<Float, D>): NDArray<Float, D> = this.mathEx.expF(a)
 
 /**
- * Returns a ndarray of [ComplexFloat] from the given ndarray to each element of which an exp function has been applied.
+ * Applies the exponential function element-wise to a [ComplexFloat] array.
+ *
+ * @param a the input complex float array.
+ * @return a new [NDArray] where each element is `e^(a[i])`.
  */
 @JvmName("expComplexFloat")
 public fun <D : Dimension> Math.exp(a: MultiArray<ComplexFloat, D>): NDArray<ComplexFloat, D> = this.mathEx.expCF(a)
 
 /**
- * Returns a ndarray of [ComplexDouble] from the given ndarray to each element of which an exp function has been applied.
+ * Applies the exponential function element-wise to a [ComplexDouble] array.
+ *
+ * @param a the input complex double array.
+ * @return a new [NDArray] where each element is `e^(a[i])`.
  */
 @JvmName("expComplexDouble")
 public fun <D : Dimension> Math.exp(a: MultiArray<ComplexDouble, D>): NDArray<ComplexDouble, D> = this.mathEx.expCD(a)
