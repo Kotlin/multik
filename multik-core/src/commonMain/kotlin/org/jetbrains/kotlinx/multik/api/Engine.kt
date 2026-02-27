@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.api
 
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
@@ -9,38 +5,38 @@ import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.api.stat.Statistics
 
 /**
- * Type engine implementations.
+ * Sealed hierarchy of engine types identifying available computational backends.
  *
- * @param name engine type name
+ * @param name the engine type name (e.g., "DEFAULT", "KOTLIN", "NATIVE").
  */
 public sealed class EngineType(public val name: String)
 
-/**
- * Engine type for default implementation.
- */
+/** Engine type for the default implementation that picks the best available backend. */
 public object DefaultEngineType : EngineType("DEFAULT")
 
-/**
- * Engine type for "pure kotlin" implementation.
- */
+/** Engine type for the pure Kotlin implementation (all platforms). */
 public object KEEngineType : EngineType("KOTLIN")
 
-/**
- * Engine type for implementation with OpenBLAS.
- */
+/** Engine type for the OpenBLAS-based native implementation (JVM + desktop Native only). */
 public object NativeEngineType : EngineType("NATIVE")
 
 /**
- * Engine provider.
+ * Platform-specific function that discovers and returns available [Engine] implementations.
+ *
+ * On JVM uses `ServiceLoader`, on Native uses `@EagerInitialization`, on JS/WASM uses module-level registration.
  */
 public expect fun enginesProvider(): Map<EngineType, Engine>
 
 /**
- * This class gives access to different implementations of [LinAlg], [Math], [Statistics].
- * When initializing [Multik], it loads engines, by default `DEFAULT` implementation is used.
+ * Abstract base class for computational backends providing [Math], [LinAlg], and [Statistics] implementations.
  *
- * @property name engine name
- * @property type [EngineType]
+ * Engines are loaded automatically when [Multik] is first used. The default engine is `DEFAULT`
+ * (which delegates to `NativeEngine` when available, falling back to `KEEngine`).
+ * Use [Multik.setEngine] to switch engines at runtime.
+ *
+ * @property name the engine name.
+ * @property type the [EngineType] identifying this engine.
+ * @see [Multik] for the main entry point.
  */
 public abstract class Engine {
 
@@ -48,19 +44,13 @@ public abstract class Engine {
 
     public abstract val type: EngineType
 
-    /**
-     * Returns [Math] implementation.
-     */
+    /** Returns the [Math] implementation provided by this engine. */
     public abstract fun getMath(): Math
 
-    /**
-     * Returns [LinAlg] implementation.
-     */
+    /** Returns the [LinAlg] implementation provided by this engine. */
     public abstract fun getLinAlg(): LinAlg
 
-    /**
-     * Returns [Statistics] implementation.
-     */
+    /** Returns the [Statistics] implementation provided by this engine. */
     public abstract fun getStatistics(): Statistics
 
     internal companion object : Engine() {
@@ -113,6 +103,10 @@ public abstract class Engine {
     }
 }
 
+/**
+ * Exception thrown when an engine operation fails — e.g., no engine is available
+ * or the requested engine type is not registered.
+ */
 public class EngineMultikException(message: String) : Exception(message) {
     public constructor() : this("")
 }

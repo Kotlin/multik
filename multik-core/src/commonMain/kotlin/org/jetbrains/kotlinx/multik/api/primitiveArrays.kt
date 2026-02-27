@@ -1,13 +1,15 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.api
 
 import org.jetbrains.kotlinx.multik.ndarray.data.*
 
 /**
- * Returns an D2Array from Array<ByteArray>.
+ * Creates a [D2Array] from an array of [ByteArray] rows.
+ *
+ * All inner arrays must have the same size.
+ *
+ * @param args the rows of the 2D array.
+ * @return a new [D2Array] with shape `(args.size, args[0].size)`.
+ * @throws IllegalArgumentException if inner arrays have different sizes.
  */
 public fun Multik.ndarray(args: Array<ByteArray>): D2Array<Byte> {
     val dim0 = args.size
@@ -26,7 +28,10 @@ public fun Multik.ndarray(args: Array<ByteArray>): D2Array<Byte> {
 }
 
 /**
- * Returns an D2Array from Array<ShortArray>.
+ * Creates a [D2Array] from an array of [ShortArray] rows.
+ *
+ * @param args the rows of the 2D array; all must have the same size.
+ * @throws IllegalArgumentException if inner arrays have different sizes.
  */
 public fun Multik.ndarray(args: Array<ShortArray>): D2Array<Short> {
     val dim0 = args.size
@@ -45,7 +50,10 @@ public fun Multik.ndarray(args: Array<ShortArray>): D2Array<Short> {
 }
 
 /**
- * Returns an D2Array from Array<IntArray>.
+ * Creates a [D2Array] from an array of [IntArray] rows.
+ *
+ * @param args the rows of the 2D array; all must have the same size.
+ * @throws IllegalArgumentException if inner arrays have different sizes.
  */
 public fun Multik.ndarray(args: Array<IntArray>): D2Array<Int> {
     val dim0 = args.size
@@ -64,7 +72,10 @@ public fun Multik.ndarray(args: Array<IntArray>): D2Array<Int> {
 }
 
 /**
- * Returns an D2Array from Array<LongArray>.
+ * Creates a [D2Array] from an array of [LongArray] rows.
+ *
+ * @param args the rows of the 2D array; all must have the same size.
+ * @throws IllegalArgumentException if inner arrays have different sizes.
  */
 public fun Multik.ndarray(args: Array<LongArray>): D2Array<Long> {
     val dim0 = args.size
@@ -83,7 +94,10 @@ public fun Multik.ndarray(args: Array<LongArray>): D2Array<Long> {
 }
 
 /**
- * Returns an D2Array from Array<FloatArray>.
+ * Creates a [D2Array] from an array of [FloatArray] rows.
+ *
+ * @param args the rows of the 2D array; all must have the same size.
+ * @throws IllegalArgumentException if inner arrays have different sizes.
  */
 public fun Multik.ndarray(args: Array<FloatArray>): D2Array<Float> {
     val dim0 = args.size
@@ -102,7 +116,10 @@ public fun Multik.ndarray(args: Array<FloatArray>): D2Array<Float> {
 }
 
 /**
- * Returns an D2Array from Array<DoubleArray>.
+ * Creates a [D2Array] from an array of [DoubleArray] rows.
+ *
+ * @param args the rows of the 2D array; all must have the same size.
+ * @throws IllegalArgumentException if inner arrays have different sizes.
  */
 public fun Multik.ndarray(args: Array<DoubleArray>): D2Array<Double> {
     val dim0 = args.size
@@ -120,34 +137,22 @@ public fun Multik.ndarray(args: Array<DoubleArray>): D2Array<Double> {
     return D2Array(data, shape = intArrayOf(dim0, dim1), dim = D2)
 }
 
-/**
- * Returns an D2Array.
- */
+/** Converts this array of [ByteArray] rows to a [D2Array]. */
 public fun Array<ByteArray>.toNDArray(): D2Array<Byte> = Multik.ndarray(this)
 
-/**
- * Returns an D2Array.
- */
+/** Converts this array of [ShortArray] rows to a [D2Array]. */
 public fun Array<ShortArray>.toNDArray(): D2Array<Short> = Multik.ndarray(this)
 
-/**
- * Returns an D2Array.
- */
+/** Converts this array of [IntArray] rows to a [D2Array]. */
 public fun Array<IntArray>.toNDArray(): D2Array<Int> = Multik.ndarray(this)
 
-/**
- * Returns an D2Array.
- */
+/** Converts this array of [LongArray] rows to a [D2Array]. */
 public fun Array<LongArray>.toNDArray(): D2Array<Long> = Multik.ndarray(this)
 
-/**
- * Returns an D2Array.
- */
+/** Converts this array of [FloatArray] rows to a [D2Array]. */
 public fun Array<FloatArray>.toNDArray(): D2Array<Float> = Multik.ndarray(this)
 
-/**
- * Returns an D2Array.
- */
+/** Converts this array of [DoubleArray] rows to a [D2Array]. */
 public fun Array<DoubleArray>.toNDArray(): D2Array<Double> = Multik.ndarray(this)
 
 

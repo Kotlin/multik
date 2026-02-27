@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.api
 
 import org.jetbrains.kotlinx.multik.api.Multik.engine
@@ -14,24 +10,30 @@ import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.api.stat.Statistics
 
 /**
- * Abbreviated name for [Multik].
+ * Abbreviated name for [Multik]. This is the primary entry point for all Multik operations.
  */
 public typealias mk = Multik
 
 
 /**
- * The basic object through which calls all ndarray functions. Gives access to ndarray creation and interfaces [Math],
- * [LinAlg] and [Statistics].
- * Calling [Multik] will load the engine. The default is "DEFAULT".
- * If no engine is found, then an exception is thrown only when you call an implementation that requires the engine.
+ * Main entry point for the Multik library providing ndarray creation and access to
+ * [Math], [LinAlg], and [Statistics] operations.
  *
- * Note: Through [Multik], you can set your own interface implementation.
+ * The engine is loaded lazily on first use. The default engine is `DEFAULT` (which picks
+ * `NativeEngine` on supported platforms, falling back to `KEEngine`). If no engine is available,
+ * an [EngineMultikException] is thrown when an engine-dependent operation is called.
  *
- * @property engine currently used engine.
- * @property engines list of engines.
- * @property math returns the [Math] implementation of the corresponding engine.
- * @property linalg returns the [LinAlg] implementation of the corresponding engine.
- * @property stat returns the [Statistics] implementation of the corresponding engine.
+ * ```
+ * val a = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+ * val b = mk.zeros<Double>(3, 3)
+ * val sum = mk.math.sum(a)
+ * ```
+ *
+ * @property engine the name of the currently active engine, or `null` if none is loaded.
+ * @property engines the map of registered engine names to their [EngineType]s.
+ * @property math the [Math] implementation from the current engine.
+ * @property linalg the [LinAlg] implementation from the current engine.
+ * @property stat the [Statistics] implementation from the current engine.
  */
 public object Multik {
     public val engine: String? get() = Engine.getDefaultEngine()
@@ -50,7 +52,9 @@ public object Multik {
     public val stat: Statistics get() = Engine.getStatistics()
 
     /**
-     * Adds engine to [engines].
+     * Registers a custom engine type so it can be selected via [setEngine].
+     *
+     * @param type the [EngineType] to register.
      */
     public fun addEngine(type: EngineType) {
         if (!_engines.containsKey(type.name)) {
@@ -59,7 +63,9 @@ public object Multik {
     }
 
     /**
-     * Sets the engine of type [type] as the current implementation.
+     * Switches the active engine to the specified [type].
+     *
+     * @param type the [EngineType] to activate (must be registered in [engines]).
      */
     public fun setEngine(type: EngineType) {
         if (type.name in engines)
@@ -67,7 +73,11 @@ public object Multik {
     }
 
     /**
-     * Returns a list of [elements]. Sugar for easy array creation.
+     * Creates a list from the given [elements] for convenient nested array construction.
+     *
+     * ```
+     * mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+     * ```
      */
     public operator fun <T> get(vararg elements: T): List<T> = elements.toList()
 }
