@@ -71,7 +71,7 @@ Engines: `KEEngine` (pure Kotlin, all platforms), `NativeEngine` (OpenBLAS, JVM 
 ## API Design Guidelines
 
 Follow
-the [Kotlin library authors' guidelines](https://kotlinlang.org/docs/api-guidelines-introduction.html). Key
+the [Kotlin library authors' guidelines](https://github.com/Kotlin/api-guidelines/tree/main/docs/topics). Key
 Multik-specific rules:
 
 - **No data classes in public API** — adding properties breaks binary compatibility. Use regular classes with explicit
