@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.api
 
 import org.jetbrains.kotlinx.multik.ndarray.complex.*
@@ -41,41 +37,43 @@ public fun <T, D : Dimension> Multik.empty(dims: IntArray, dtype: DataType): NDA
 }
 
 /**
- * Returns a new zero array of 1 dim of type [T] with [dim1] size.
+ * Creates a new 1D array filled with zeros.
  *
- * @sample samples.NDArrayTest.zerosD1
+ * ```
+ * mk.zeros<Int>(5) // [0, 0, 0, 0, 0]
+ * ```
+ *
+ * @param dim1 the array size.
+ * @return a new [D1Array] of zeros.
+ * @see [ones] for an array filled with ones.
  */
 public inline fun <reified T : Any> Multik.zeros(dim1: Int): D1Array<T> =
     zeros(intArrayOf(dim1), DataType.ofKClass(T::class))
 
 /**
- * Returns a new zero array of 2 dim of type [T] with ([dim1], [dim2]) shape.
+ * Creates a new 2D array of shape ([dim1], [dim2]) filled with zeros.
  *
- * @sample samples.NDArrayTest.zerosD2
  */
 public inline fun <reified T : Any> Multik.zeros(dim1: Int, dim2: Int): D2Array<T> =
     zeros(intArrayOf(dim1, dim2), DataType.ofKClass(T::class))
 
 /**
- * Returns a new zero array of 3 dim of type [T] with ([dim1], [dim2], [dim3]) shape.
+ * Creates a new 3D array of shape ([dim1], [dim2], [dim3]) filled with zeros.
  *
- * @sample samples.NDArrayTest.zerosD3
  */
 public inline fun <reified T : Any> Multik.zeros(dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
     zeros(intArrayOf(dim1, dim2, dim3), DataType.ofKClass(T::class))
 
 /**
- * Returns a new zero array of 4 dim of type [T] with ([dim1], [dim2], [dim3], [dim4]) shape.
+ * Creates a new 4D array of shape ([dim1], [dim2], [dim3], [dim4]) filled with zeros.
  *
- * @sample samples.NDArrayTest.zerosD4
  */
 public inline fun <reified T : Any> Multik.zeros(dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<T> =
     zeros(intArrayOf(dim1, dim2, dim3, dim4), DataType.ofKClass(T::class))
 
 /**
- * Returns a new zero array of N dim of type [T] with ([dim1], [dim2], [dim3], [dim4], [dims]) shape.
+ * Creates a new N-dimensional array filled with zeros.
  *
- * @sample samples.NDArrayTest.zerosDN
  */
 public inline fun <reified T : Any> Multik.zeros(
     dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
@@ -83,9 +81,10 @@ public inline fun <reified T : Any> Multik.zeros(
     zeros(intArrayOf(dim1, dim2, dim3, dim4) + dims, DataType.ofKClass(T::class))
 
 /**
- * Returns a new zero array of type [T] with specify shape.
+ * Creates a new array of the given [dims] shape and [dtype] filled with zeros.
  *
- * @sample samples.NDArrayTest.zerosDNWithDtype
+ * @param dims the array shape.
+ * @param dtype the element data type.
  */
 public fun <T, D : Dimension> Multik.zeros(dims: IntArray, dtype: DataType): NDArray<T, D> {
     val dim = dimensionOf<D>(dims.size)
@@ -96,41 +95,39 @@ public fun <T, D : Dimension> Multik.zeros(dims: IntArray, dtype: DataType): NDA
 }
 
 /**
- * Returns a new ones array of 1 dim of type [T] with [dim1] size.
+ * Creates a new 1D array filled with ones.
  *
- * @sample samples.NDArrayTest.onesD1
+ * @param dim1 the array size.
+ * @return a new [D1Array] of ones.
+ * @see [zeros] for an array filled with zeros.
  */
 public inline fun <reified T : Any> Multik.ones(dim1: Int): D1Array<T> =
     ones(intArrayOf(dim1), DataType.ofKClass(T::class))
 
 /**
- * Returns a new ones array of 2 dim of type [T] with ([dim1], [dim2]) shape.
+ * Creates a new 2D array of shape ([dim1], [dim2]) filled with ones.
  *
- * @sample samples.NDArrayTest.onesD2
  */
 public inline fun <reified T : Any> Multik.ones(dim1: Int, dim2: Int): D2Array<T> =
     ones(intArrayOf(dim1, dim2), DataType.ofKClass(T::class))
 
 /**
- * Returns a new ones array of 3 dim of type [T] with ([dim1], [dim2], [dim3]) shape.
+ * Creates a new 3D array of shape ([dim1], [dim2], [dim3]) filled with ones.
  *
- * @sample samples.NDArrayTest.onesD3
  */
 public inline fun <reified T : Any> Multik.ones(dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
     ones(intArrayOf(dim1, dim2, dim3), DataType.ofKClass(T::class))
 
 /**
- * Returns a new ones array of 4 dim of type [T] with ([dim1], [dim2], [dim3], [dim4]) shape.
+ * Creates a new 4D array of shape ([dim1], [dim2], [dim3], [dim4]) filled with ones.
  *
- * @sample samples.NDArrayTest.onesD4
  */
 public inline fun <reified T : Any> Multik.ones(dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<T> =
     ones(intArrayOf(dim1, dim2, dim3, dim4), DataType.ofKClass(T::class))
 
 /**
- * Returns a new ones array of N dim of type [T] with ([dim1], [dim2], [dim3], [dim4], [dims]) shape.
+ * Creates a new N-dimensional array filled with ones.
  *
- * @sample samples.NDArrayTest.onesDN
  */
 public inline fun <reified T : Any> Multik.ones(
     dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
@@ -138,9 +135,10 @@ public inline fun <reified T : Any> Multik.ones(
     ones(intArrayOf(dim1, dim2, dim3, dim4) + dims, DataType.ofKClass(T::class))
 
 /**
- * Returns a new ones array of N dim of type [T] with specify shape.
+ * Creates a new array of the given [dims] shape and [dtype] filled with ones.
  *
- * @sample samples.NDArrayTest.onesDNWithDtype
+ * @param dims the array shape.
+ * @param dtype the element data type.
  */
 @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
 public fun <T, D : Dimension> Multik.ones(dims: IntArray, dtype: DataType): NDArray<T, D> {
@@ -162,11 +160,11 @@ public fun <T, D : Dimension> Multik.ones(dims: IntArray, dtype: DataType): NDAr
 }
 
 /**
- * Returns the identity array.
+ * Creates an [n] x [n] identity matrix with ones on the diagonal and zeros elsewhere.
  *
  * @param n number of rows and columns.
- * @return [D2Array].
- * @sample samples.NDArrayTest.identity
+ * @return a square [D2Array].
+ * @see [diagonal] for a matrix with arbitrary diagonal elements.
  */
 public inline fun <reified T : Any> Multik.identity(n: Int): D2Array<T> {
     val dtype = DataType.ofKClass(T::class)
@@ -174,14 +172,13 @@ public inline fun <reified T : Any> Multik.identity(n: Int): D2Array<T> {
 }
 
 /**
- * Returns the identity array.
+ * Creates an [n] x [n] identity matrix of the specified [dtype].
  *
  * Note: Generic type of elements must match [dtype].
  *
  * @param n number of rows and columns.
- * @param dtype array type.
- * @return [D2Array]
- * @sample samples.NDArrayTest.identityWithDtype
+ * @param dtype the element data type.
+ * @return a square [D2Array].
  */
 public fun <T> Multik.identity(n: Int, dtype: DataType): D2Array<T> {
     val shape = intArrayOf(n, n)
@@ -204,11 +201,11 @@ public fun <T> Multik.identity(n: Int, dtype: DataType): D2Array<T> {
 }
 
 /**
- * Returns a diagonal array.
+ * Creates a square matrix with the given [elements] on the main diagonal and zeros elsewhere.
  *
  * @param elements the elements along the main diagonal.
- * @return [D2Array].
- * @sample samples.NDArrayTest.diagonal
+ * @return a square [D2Array] of size `elements.size` x `elements.size`.
+ * @see [identity] for a standard identity matrix.
  */
 public inline fun <reified T : Any> Multik.diagonal(elements: List<T>): D2Array<T> {
     val dtype = DataType.ofKClass(T::class)
@@ -216,14 +213,13 @@ public inline fun <reified T : Any> Multik.diagonal(elements: List<T>): D2Array<
 }
 
 /**
- * Returns a diagonal array.
+ * Creates a square matrix with the given [elements] on the main diagonal, using the specified [dtype].
  *
  * Note: Generic type of elements must match [dtype].
  *
- * @param dtype array type.
  * @param elements the elements on the main diagonal.
- * @return [D2Array]
- * @sample samples.NDArrayTest.diagonalWithDtype
+ * @param dtype the element data type.
+ * @return a square [D2Array].
  */
 public fun <T> Multik.diagonal(elements: List<T>, dtype: DataType): D2Array<T> {
     val n = elements.size
@@ -236,29 +232,23 @@ public fun <T> Multik.diagonal(elements: List<T>, dtype: DataType): D2Array<T> {
 }
 
 /**
- * Creates the 1-dimension array from [arg] of Number type.
+ * Creates a 1D array from a list of numeric elements.
  *
- * Example:
  * ```
- * mk.ndarray(mk[1, 2, 3]
+ * mk.ndarray(mk[1, 2, 3]) // [1, 2, 3]
  * ```
+ *
  * @param arg list of elements.
- * @return [D1Array].
- * @sample samples.NDArrayTest.ndarray1D
+ * @return a new [D1Array].
  */
 @JvmName("ndarray1D")
 public inline fun <reified T : Number> Multik.ndarray(arg: List<T>): D1Array<T> = ndarrayCommon1D(arg)
 
 /**
- * Creates the 1-dimension array from [arg] of Complex type.
+ * Creates a 1D array from a list of complex elements.
  *
- * Example:
- * ```
- * mk.ndarray(mk[1, 2, 3]
- * ```
  * @param arg list of elements.
- * @return [D1Array].
- * @sample samples.NDArrayTest.ndarray1D
+ * @return a new [D1Array].
  */
 @JvmName("ndarrayComplex1D")
 public inline fun <reified T : Complex> Multik.ndarray(arg: List<T>): D1Array<T> = ndarrayCommon1D(arg)
@@ -271,21 +261,25 @@ internal inline fun <reified T : Any> ndarrayCommon1D(arg: List<T>): D1Array<T> 
 }
 
 /**
- * Creates the 2-dimension array from [arg] of Number type.
+ * Creates a 2D array from a list of rows of numeric elements.
  *
- * @param arg list of rows.
- * @return [D2Array].
- * @sample samples.NDArrayTest.ndarray2D
+ * ```
+ * mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+ * // [[1, 2],
+ * //  [3, 4]]
+ * ```
+ *
+ * @param arg list of rows; all rows must have the same size.
+ * @return a new [D2Array].
  */
 @JvmName("ndarray2D")
 public inline fun <reified T : Number> Multik.ndarray(arg: List<List<T>>): D2Array<T> = ndarrayCommon2D(arg)
 
 /**
- * Creates the 2-dimension array from [arg] of Complex type.
+ * Creates a 2D array from a list of rows of complex elements.
  *
- * @param arg list of rows.
- * @return [D2Array].
- * @sample samples.NDArrayTest.ndarray2D
+ * @param arg list of rows; all rows must have the same size.
+ * @return a new [D2Array].
  */
 @JvmName("ndarrayComplex2D")
 public inline fun <reified T : Complex> Multik.ndarray(arg: List<List<T>>): D2Array<T> = ndarrayCommon2D(arg)
@@ -311,7 +305,6 @@ internal inline fun <reified T : Any> ndarrayCommon2D(arg: List<List<T>>): D2Arr
  *
  * @param arg elements.
  * @return [D3Array].
- * @sample samples.NDArrayTest.ndarray3D
  */
 @JvmName("ndarray3D")
 public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<T>>>): D3Array<T> = ndarrayCommon3D(arg)
@@ -321,7 +314,6 @@ public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<T>>>):
  *
  * @param arg elements.
  * @return [D3Array].
- * @sample samples.NDArrayTest.ndarray3D
  */
 @JvmName("ndarrayComplex3D")
 public inline fun <reified T : Complex> Multik.ndarray(arg: List<List<List<T>>>): D3Array<T> = ndarrayCommon3D(arg)
@@ -351,7 +343,6 @@ internal inline fun <reified T : Any> ndarrayCommon3D(arg: List<List<List<T>>>):
  *
  * @param arg elements.
  * @return [D4Array].
- * @sample samples.NDArrayTest.ndarray4D
  */
 @JvmName("ndarray4D")
 public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<List<T>>>>): D4Array<T> = ndarrayCommon4D(arg)
@@ -361,7 +352,6 @@ public inline fun <reified T : Number> Multik.ndarray(arg: List<List<List<List<T
  *
  * @param arg elements.
  * @return [D4Array].
- * @sample samples.NDArrayTest.ndarray4D
  */
 @JvmName("ndarrayComplex4D")
 public inline fun <reified T : Complex> Multik.ndarray(arg: List<List<List<List<T>>>>): D4Array<T> =
@@ -398,7 +388,6 @@ internal inline fun <reified T : Any> ndarrayCommon4D(arg: List<List<List<List<T
  * @param elements collection of elements.
  * @param shape array shape.
  * @return [NDArray] of [D] dimension.
- * @sample samples.NDArrayTest.ndarrayCollections
  */
 public inline fun <T : Number, reified D : Dimension> Multik.ndarray(
     elements: Collection<T>, shape: IntArray
@@ -411,7 +400,6 @@ public inline fun <T : Number, reified D : Dimension> Multik.ndarray(
  * @param elements collection of elements.
  * @param shape array shape.
  * @return [NDArray] of [D] dimension.
- * @sample samples.NDArrayTest.ndarrayCollections
  */
 @JvmName("ndarrayComplex")
 public inline fun <T : Complex, reified D : Dimension> Multik.ndarray(
@@ -428,7 +416,6 @@ public inline fun <T : Complex, reified D : Dimension> Multik.ndarray(
  * @param shape array shape.
  * @param dim array dimension.
  * @return [NDArray] of [D] dimension.
- * @sample samples.NDArrayTest.ndarrayCollectionsWithDim
  */
 public fun <T : Number, D : Dimension> Multik.ndarray(elements: Collection<T>, shape: IntArray, dim: D): NDArray<T, D> =
     ndarrayCommon(elements, shape, dim)
@@ -442,7 +429,6 @@ public fun <T : Number, D : Dimension> Multik.ndarray(elements: Collection<T>, s
  * @param shape array shape.
  * @param dim array dimension.
  * @return [NDArray] of [D] dimension.
- * @sample samples.NDArrayTest.ndarrayCollectionsWithDim
  */
 @JvmName("ndarrayComplex")
 public fun <T : Complex, D : Dimension> Multik.ndarray(
@@ -475,7 +461,6 @@ internal fun <T, D : Dimension> ndarrayCommon(elements: Collection<T>, shape: In
  *
  * @param elements collection of number elements.
  * @return [D1Array]
- * @sample samples.NDArrayTest.ndarrayCollections1D
  */
 public fun <T : Number> Multik.ndarray(elements: Collection<T>): D1Array<T> =
     ndarray(elements, intArrayOf(elements.size), D1)
@@ -485,7 +470,6 @@ public fun <T : Number> Multik.ndarray(elements: Collection<T>): D1Array<T> =
  *
  * @param elements collection of complex elements.
  * @return [D1Array]
- * @sample samples.NDArrayTest.ndarrayCollections1D
  */
 @JvmName("ndarrayComplex")
 public fun <T : Complex> Multik.ndarray(elements: Collection<T>): D1Array<T> =
@@ -496,7 +480,6 @@ public fun <T : Complex> Multik.ndarray(elements: Collection<T>): D1Array<T> =
  *
  * @param args [ByteArray] of elements.
  * @return [D1Array]
- * @sample samples.NDArrayTest.ndarrayByteArray1D
  */
 public fun Multik.ndarray(args: ByteArray): D1Array<Byte> {
     val data = MemoryViewByteArray(args)
@@ -508,7 +491,6 @@ public fun Multik.ndarray(args: ByteArray): D1Array<Byte> {
  *
  * @param args [ShortArray] of elements.
  * @return [D1Array]
- * @sample samples.NDArrayTest.ndarrayShortArray1D
  */
 public fun Multik.ndarray(args: ShortArray): D1Array<Short> {
     val data = MemoryViewShortArray(args)
@@ -520,7 +502,6 @@ public fun Multik.ndarray(args: ShortArray): D1Array<Short> {
  *
  * @param args [IntArray] of elements.
  * @return [D1Array]
- * @sample samples.NDArrayTest.ndarrayIntArray1D
  */
 public fun Multik.ndarray(args: IntArray): D1Array<Int> {
     val data = MemoryViewIntArray(args)
@@ -532,7 +513,6 @@ public fun Multik.ndarray(args: IntArray): D1Array<Int> {
  *
  * @param args [LongArray] of elements.
  * @return [D1Array]
- * @sample samples.NDArrayTest.ndarrayLongArray1D
  */
 public fun Multik.ndarray(args: LongArray): D1Array<Long> {
     val data = MemoryViewLongArray(args)
@@ -544,7 +524,6 @@ public fun Multik.ndarray(args: LongArray): D1Array<Long> {
  *
  * @param args [FloatArray] of elements.
  * @return [D1Array]
- * @sample samples.NDArrayTest.ndarrayFloatArray1D
  */
 public fun Multik.ndarray(args: FloatArray): D1Array<Float> {
     val data = MemoryViewFloatArray(args)
@@ -556,7 +535,6 @@ public fun Multik.ndarray(args: FloatArray): D1Array<Float> {
  *
  * @param args [DoubleArray] of elements.
  * @return [D1Array]
- * @sample samples.NDArrayTest.ndarrayDoubleArray1D
  */
 public fun Multik.ndarray(args: DoubleArray): D1Array<Double> {
     val data = MemoryViewDoubleArray(args)
@@ -594,7 +572,6 @@ public fun Multik.ndarray(args: ComplexDoubleArray): D1Array<ComplexDouble> {
  * @param dim1 value of 1-dimension.
  * @param dim2 value of 1-dimension.
  * @return [D2Array].
- * @sample samples.NDArrayTest.ndarrayCollections2D
  */
 public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int): D2Array<T> =
     ndarray(elements, intArrayOf(dim1, dim2), D2)
@@ -606,7 +583,6 @@ public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2:
  * @param dim1 value of 1-dimension.
  * @param dim2 value of 1-dimension.
  * @return [D2Array].
- * @sample samples.NDArrayTest.ndarrayCollections2D
  */
 @JvmName("ndarrayComplex")
 public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int): D2Array<T> =
@@ -619,7 +595,6 @@ public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2
  * @param dim1 value of 1-dimension.
  * @param dim2 value of 1-dimension.
  * @return [D2Array].
- * @sample samples.NDArrayTest.ndarrayByteArray2D
  */
 public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int): D2Array<Byte> {
     requireElementsWithShape(args.size, dim1 * dim2)
@@ -634,7 +609,6 @@ public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int): D2Array<Byte> 
  * @param dim1 value of 1-dimension.
  * @param dim2 value of 1-dimension.
  * @return [D2Array].
- * @sample samples.NDArrayTest.ndarrayShortArray2D
  */
 public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int): D2Array<Short> {
     requireElementsWithShape(args.size, dim1 * dim2)
@@ -649,7 +623,6 @@ public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int): D2Array<Short
  * @param dim1 value of 1-dimension.
  * @param dim2 value of 1-dimension.
  * @return [D2Array].
- * @sample samples.NDArrayTest.ndarrayIntArray2D
  */
 public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int): D2Array<Int> {
     requireElementsWithShape(args.size, dim1 * dim2)
@@ -664,7 +637,6 @@ public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int): D2Array<Int> {
  * @param dim1 value of 1-dimension.
  * @param dim2 value of 1-dimension.
  * @return [D2Array].
- * @sample samples.NDArrayTest.ndarrayLongArray2D
  */
 public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int): D2Array<Long> {
     requireElementsWithShape(args.size, dim1 * dim2)
@@ -679,7 +651,6 @@ public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int): D2Array<Long> 
  * @param dim1 value of 1-dimension.
  * @param dim2 value of 1-dimension.
  * @return [D2Array].
- * @sample samples.NDArrayTest.ndarrayFloatArray2D
  */
 public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int): D2Array<Float> {
     requireElementsWithShape(args.size, dim1 * dim2)
@@ -694,7 +665,6 @@ public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int): D2Array<Float
  * @param dim1 value of 1-dimension.
  * @param dim2 value of 1-dimension.
  * @return [D2Array].
- * @sample samples.NDArrayTest.ndarrayDoubleArray2D
  */
 public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int): D2Array<Double> {
     requireElementsWithShape(args.size, dim1 * dim2)
@@ -740,7 +710,6 @@ public fun Multik.ndarray(args: ComplexDoubleArray, dim1: Int, dim2: Int): D2Arr
  * @param dim2 value of 2-dimension.
  * @param dim3 value of 3-dimension.
  * @return [D3Array].
- * @sample samples.NDArrayTest.ndarrayCollections3D
  */
 public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
     ndarray(elements, intArrayOf(dim1, dim2, dim3), D3)
@@ -753,7 +722,6 @@ public fun <T : Number> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2:
  * @param dim2 value of 2-dimension.
  * @param dim3 value of 3-dimension.
  * @return [D3Array].
- * @sample samples.NDArrayTest.ndarrayCollections3D
  */
 @JvmName("ndarrayComplex")
 public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int): D3Array<T> =
@@ -767,7 +735,6 @@ public fun <T : Complex> Multik.ndarray(elements: Collection<T>, dim1: Int, dim2
  * @param dim2 value of 2-dimension.
  * @param dim3 value of 3-dimension.
  * @return [D3Array].
- * @sample samples.NDArrayTest.ndarrayByteArray3D
  */
 public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Byte> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
@@ -783,7 +750,6 @@ public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int, dim3: Int): D3A
  * @param dim2 value of 2-dimension.
  * @param dim3 value of 3-dimension.
  * @return [D3Array].
- * @sample samples.NDArrayTest.ndarrayShortArray3D
  */
 public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Short> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
@@ -799,7 +765,6 @@ public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int, dim3: Int): D3
  * @param dim2 value of 2-dimension.
  * @param dim3 value of 3-dimension.
  * @return [D3Array].
- * @sample samples.NDArrayTest.ndarrayIntArray3D
  */
 public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Int> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
@@ -815,7 +780,6 @@ public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int, dim3: Int): D3Ar
  * @param dim2 value of 2-dimension.
  * @param dim3 value of 3-dimension.
  * @return [D3Array].
- * @sample samples.NDArrayTest.ndarrayLongArray3D
  */
 public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Long> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
@@ -831,7 +795,6 @@ public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int, dim3: Int): D3A
  * @param dim2 value of 2-dimension.
  * @param dim3 value of 3-dimension.
  * @return [D3Array].
- * @sample samples.NDArrayTest.ndarrayFloatArray3D
  */
 public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Float> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
@@ -847,7 +810,6 @@ public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int, dim3: Int): D3
  * @param dim2 value of 2-dimension.
  * @param dim3 value of 3-dimension.
  * @return [D3Array].
- * @sample samples.NDArrayTest.ndarrayDoubleArray3D
  */
 public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int, dim3: Int): D3Array<Double> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3)
@@ -896,7 +858,6 @@ public fun Multik.ndarray(args: ComplexDoubleArray, dim1: Int, dim2: Int, dim3: 
  * @param dim3 value of 3-dimension.
  * @param dim4 value of 4-dimension.
  * @return [D4Array].
- * @sample samples.NDArrayTest.ndarrayCollections4D
  */
 public fun <T : Number> Multik.ndarray(
     elements: Collection<T>,
@@ -916,7 +877,6 @@ public fun <T : Number> Multik.ndarray(
  * @param dim3 value of 3-dimension.
  * @param dim4 value of 4-dimension.
  * @return [D4Array].
- * @sample samples.NDArrayTest.ndarrayCollections4D
  */
 @JvmName("ndarrayComplex")
 public fun <T : Complex> Multik.ndarray(
@@ -937,7 +897,6 @@ public fun <T : Complex> Multik.ndarray(
  * @param dim3 value of 3-dimension.
  * @param dim4 value of 4-dimension.
  * @return [D4Array].
- * @sample samples.NDArrayTest.ndarrayByteArray4D
  */
 public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Byte> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
@@ -954,7 +913,6 @@ public fun Multik.ndarray(args: ByteArray, dim1: Int, dim2: Int, dim3: Int, dim4
  * @param dim3 value of 3-dimension.
  * @param dim4 value of 4-dimension.
  * @return [D4Array].
- * @sample samples.NDArrayTest.ndarrayShortArray4D
  */
 public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Short> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
@@ -971,7 +929,6 @@ public fun Multik.ndarray(args: ShortArray, dim1: Int, dim2: Int, dim3: Int, dim
  * @param dim3 value of 3-dimension.
  * @param dim4 value of 4-dimension.
  * @return [D4Array].
- * @sample samples.NDArrayTest.ndarrayIntArray4D
  */
 public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Int> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
@@ -988,7 +945,6 @@ public fun Multik.ndarray(args: IntArray, dim1: Int, dim2: Int, dim3: Int, dim4:
  * @param dim3 value of 3-dimension.
  * @param dim4 value of 4-dimension.
  * @return [D4Array].
- * @sample samples.NDArrayTest.ndarrayLongArray4D
  */
 public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Long> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
@@ -1005,7 +961,6 @@ public fun Multik.ndarray(args: LongArray, dim1: Int, dim2: Int, dim3: Int, dim4
  * @param dim3 value of 3-dimension.
  * @param dim4 value of 4-dimension.
  * @return [D4Array].
- * @sample samples.NDArrayTest.ndarrayFloatArray4D
  */
 public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Float> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
@@ -1022,7 +977,6 @@ public fun Multik.ndarray(args: FloatArray, dim1: Int, dim2: Int, dim3: Int, dim
  * @param dim3 value of 3-dimension.
  * @param dim4 value of 4-dimension.
  * @return [D4Array].
- * @sample samples.NDArrayTest.ndarrayDoubleArray4D
  */
 public fun Multik.ndarray(args: DoubleArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<Double> {
     requireElementsWithShape(args.size, dim1 * dim2 * dim3 * dim4)
@@ -1080,7 +1034,6 @@ public fun Multik.ndarray(
  * @param dim4 value of 4-dimension.
  * @param dims values of other dimensions.
  * @return [NDArray] of [DN] dimension.
- * @sample samples.NDArrayTest.ndarrayCollectionsDN
  */
 public fun <T : Number> Multik.ndarray(
     elements: Collection<T>, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
@@ -1099,7 +1052,6 @@ public fun <T : Number> Multik.ndarray(
  * @param dim4 value of 4-dimension.
  * @param dims values of other dimensions.
  * @return [NDArray] of [DN] dimension.
- * @sample samples.NDArrayTest.ndarrayCollectionsDN
  */
 @JvmName("ndarrayComplex")
 public fun <T : Complex> Multik.ndarray(
@@ -1119,7 +1071,6 @@ public fun <T : Complex> Multik.ndarray(
  * @param dim4 value of 4-dimension.
  * @param dims values of other dimensions.
  * @return [NDArray] of [DN] dimension.
- * @sample samples.NDArrayTest.ndarrayByteArrayDN
  */
 public fun Multik.ndarray(
     args: ByteArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
@@ -1140,7 +1091,6 @@ public fun Multik.ndarray(
  * @param dim4 value of 4-dimension.
  * @param dims values of other dimensions.
  * @return [NDArray] of [DN] dimension.
- * @sample samples.NDArrayTest.ndarrayShortArrayDN
  */
 public fun Multik.ndarray(
     args: ShortArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
@@ -1161,7 +1111,6 @@ public fun Multik.ndarray(
  * @param dim4 value of 4-dimension.
  * @param dims values of other dimensions.
  * @return [NDArray] of [DN] dimension.
- * @sample samples.NDArrayTest.ndarrayIntArrayDN
  */
 public fun Multik.ndarray(
     args: IntArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
@@ -1182,7 +1131,6 @@ public fun Multik.ndarray(
  * @param dim4 value of 4-dimension.
  * @param dims values of other dimensions.
  * @return [NDArray] of [DN] dimension.
- * @sample samples.NDArrayTest.ndarrayLongArrayDN
  */
 public fun Multik.ndarray(
     args: LongArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
@@ -1203,7 +1151,6 @@ public fun Multik.ndarray(
  * @param dim4 value of 4-dimension.
  * @param dims values of other dimensions.
  * @return [NDArray] of [DN] dimension.
- * @sample samples.NDArrayTest.ndarrayFloatArrayDN
  */
 public fun Multik.ndarray(
     args: FloatArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
@@ -1224,7 +1171,6 @@ public fun Multik.ndarray(
  * @param dim4 value of 4-dimension.
  * @param dims values of other dimensions.
  * @return [NDArray] of [DN] dimension.
- * @sample samples.NDArrayTest.ndarrayDoubleArrayDN
  */
 public fun Multik.ndarray(
     args: DoubleArray, dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int
@@ -1277,12 +1223,15 @@ public fun Multik.ndarray(
 
 //______________________________________________________________________________________________________________________
 /**
- * Returns a 1-dimension array.
+ * Creates a 1D array of the given size, where each element is computed by the [init] function.
  *
- * @param sizeD1 value of 1-dimension.
- * @param init initialization function
- * @return [D1Array].
- * @sample samples.NDArrayTest.d1array
+ * ```
+ * mk.d1array(5) { it * 2 } // [0, 2, 4, 6, 8]
+ * ```
+ *
+ * @param sizeD1 the array size (must be positive).
+ * @param init function that returns the element for each flat index.
+ * @return a new [D1Array].
  */
 public inline fun <reified T : Any> Multik.d1array(sizeD1: Int, noinline init: (Int) -> T): D1Array<T> {
     require(sizeD1 > 0) { "Dimension must be positive." }
@@ -1298,7 +1247,6 @@ public inline fun <reified T : Any> Multik.d1array(sizeD1: Int, noinline init: (
  *
  * The function [init] is called for each array element sequentially starting from the first one.
  * It should return the value for an array element given its index.
- * @sample samples.NDArrayTest.d2array
  */
 public inline fun <reified T : Any> Multik.d2array(sizeD1: Int, sizeD2: Int, noinline init: (Int) -> T): D2Array<T> {
     val dtype = DataType.ofKClass(T::class)
@@ -1316,7 +1264,6 @@ public inline fun <reified T : Any> Multik.d2array(sizeD1: Int, sizeD2: Int, noi
  *
  * The function [init] is called for each array element sequentially starting from the first one.
  * It should return the value for an array element given its indices.
- * @sample samples.NDArrayTest.d2arrayIndices
  */
 public inline fun <reified T : Any> Multik.d2arrayIndices(
     sizeD1: Int, sizeD2: Int, init: (i: Int, j: Int) -> T
@@ -1341,7 +1288,6 @@ public inline fun <reified T : Any> Multik.d2arrayIndices(
  *
  * The function [init] is called for each array element sequentially starting from the first one.
  * It should return the value for an array element given its index.
- * @sample samples.NDArrayTest.d3array
  */
 public inline fun <reified T : Any> Multik.d3array(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, noinline init: (Int) -> T
@@ -1361,7 +1307,6 @@ public inline fun <reified T : Any> Multik.d3array(
  *
  * The function [init] is called for each array element sequentially starting from the first one.
  * It should return the value for an array element given its indices.
- * @sample samples.NDArrayTest.d3arrayIndices
  */
 public inline fun <reified T : Any> Multik.d3arrayIndices(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, init: (i: Int, j: Int, k: Int) -> T
@@ -1390,7 +1335,6 @@ public inline fun <reified T : Any> Multik.d3arrayIndices(
  *
  * The function [init] is called for each array element sequentially starting from the first one.
  * It should return the value for an array element given its index.
- * @sample samples.NDArrayTest.d4array
  */
 public inline fun <reified T : Any> Multik.d4array(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, noinline init: (Int) -> T
@@ -1410,7 +1354,6 @@ public inline fun <reified T : Any> Multik.d4array(
  *
  * The function [init] is called for each array element sequentially starting from the first one.
  * It should return the value for an array element given its indices.
- * @sample samples.NDArrayTest.d4arrayIndices
  */
 public inline fun <reified T : Any> Multik.d4arrayIndices(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, init: (i: Int, j: Int, k: Int, m: Int) -> T
@@ -1441,7 +1384,6 @@ public inline fun <reified T : Any> Multik.d4arrayIndices(
  *
  * The function [init] is called for each array element sequentially starting from the first one.
  * It should return the value for an array element given its index.
- * @sample samples.NDArrayTest.dnarray
  */
 public inline fun <reified T : Any> Multik.dnarray(
     sizeD1: Int, sizeD2: Int, sizeD3: Int, sizeD4: Int, vararg dims: Int, noinline init: (Int) -> T
@@ -1451,7 +1393,6 @@ public inline fun <reified T : Any> Multik.dnarray(
  * Returns a new array with the specified [shape], where each element is calculated by calling the specified
  * [init] function.
  *
- * @sample samples.NDArrayTest.dnarrayWithDims
  */
 public inline fun <reified T : Any, reified D : Dimension> Multik.dnarray(
     shape: IntArray, noinline init: (Int) -> T
@@ -1467,37 +1408,23 @@ public inline fun <reified T : Any, reified D : Dimension> Multik.dnarray(
     return NDArray(data, shape = shape, dim = dimensionOf(shape.size))
 }
 
-/**
- * Returns a new 1-dimension array from [items].
- */
+/** Creates a 1D [Byte] array from the given [items]. */
 public fun Multik.ndarrayOf(vararg items: Byte): D1Array<Byte> = ndarrayOfCommon(items.toTypedArray(), DataType.ByteDataType)
-/**
- * Returns a new 1-dimension array from [items].
- */
+/** Creates a 1D [Short] array from the given [items]. */
 public fun Multik.ndarrayOf(vararg items: Short): D1Array<Short> = ndarrayOfCommon(items.toTypedArray(), DataType.ShortDataType)
 /**
- * Returns a new 1-dimension array from [items].
- * @sample samples.NDArrayTest.ndarrayOf
+ * Creates a 1D [Int] array from the given [items].
  */
 public fun Multik.ndarrayOf(vararg items: Int): D1Array<Int> = ndarrayOfCommon(items.toTypedArray(), DataType.IntDataType)
-/**
- * Returns a new 1-dimension array from [items].
- */
+/** Creates a 1D [Long] array from the given [items]. */
 public fun Multik.ndarrayOf(vararg items: Long): D1Array<Long> = ndarrayOfCommon(items.toTypedArray(), DataType.LongDataType)
-/**
- * Returns a new 1-dimension array from [items].
- */
+/** Creates a 1D [Float] array from the given [items]. */
 public fun Multik.ndarrayOf(vararg items: Float): D1Array<Float> = ndarrayOfCommon(items.toTypedArray(), DataType.FloatDataType)
-/**
- * Returns a new 1-dimension array from [items].
- */
+/** Creates a 1D [Double] array from the given [items]. */
 public fun Multik.ndarrayOf(vararg items: Double): D1Array<Double> = ndarrayOfCommon(items.toTypedArray(), DataType.DoubleDataType)
 
 /**
- * Returns a one-dimensional array of generic complex type T consisting of values specified in input items.
- *
- * @param items Variable number of arguments of generic complex type T.
- * @return One-dimensional array of generic complex type T.
+ * Creates a 1D array of complex elements from the given [items].
  */
 public inline fun <reified T: Complex> Multik.ndarrayOf(vararg items: T): D1Array<T> = ndarrayOfCommon(items, DataType.ofKClass(T::class))
 
@@ -1526,7 +1453,6 @@ internal fun <T> ndarrayOfCommon(items: Array<out T>, dtype: DataType): D1Array<
  * @param stop end value of the interval. The interval doesn't include this value.
  * @param step spacing between value. The default step is 1.
  * @return [D1Array].
- * @sample samples.NDArrayTest.arange
  */
 public inline fun <reified T : Number> Multik.arange(start: Int, stop: Int, step: Int = 1): D1Array<T> {
     return arange(start, stop, step.toDouble())
@@ -1539,7 +1465,6 @@ public inline fun <reified T : Number> Multik.arange(start: Int, stop: Int, step
  * @param stop end value of the interval. The interval doesn't include this value.
  * @param step spacing between value. The step is [Double].
  * @return [D1Array].
- * @sample samples.NDArrayTest.arangeDoubleStep
  */
 public inline fun <reified T : Number> Multik.arange(start: Int, stop: Int, step: Double): D1Array<T> {
     if (start < stop) require(step > 0) { "Step must be positive." }
@@ -1565,7 +1490,6 @@ public inline fun <reified T : Number> Multik.arange(start: Int, stop: Int, step
  * @param stop end of the interval. The interval doesn't include this value.
  * @param step spacing between value. The default step is 1.
  * @return [D1Array].
- * @sample samples.NDArrayTest.arangeWithoutStart
  */
 public inline fun <reified T : Number> Multik.arange(stop: Int, step: Int = 1): D1Array<T> = arange(0, stop, step)
 
@@ -1576,7 +1500,6 @@ public inline fun <reified T : Number> Multik.arange(stop: Int, step: Int = 1): 
  * @param stop end value of the interval. The interval doesn't include this value.
  * @param step spacing between value. The step is [Double].
  * @return [D1Array].
- * @sample samples.NDArrayTest.arangeDoubleStepWithoutStart
  */
 public inline fun <reified T : Number> Multik.arange(stop: Int, step: Double): D1Array<T> = arange(0, stop, step)
 
@@ -1588,7 +1511,6 @@ public inline fun <reified T : Number> Multik.arange(stop: Int, step: Double): D
  * @param stop end of the interval.
  * @param num number of values. Default is 50.
  * @return [D1Array].
- * @sample samples.NDArrayTest.linspace
  */
 public inline fun <reified T : Number> Multik.linspace(start: Int, stop: Int, num: Int = 50): D1Array<T> {
     return linspace(start.toDouble(), stop.toDouble(), num)
@@ -1602,7 +1524,6 @@ public inline fun <reified T : Number> Multik.linspace(start: Int, stop: Int, nu
  * @param stop end of the interval.
  * @param num number of values.
  * @return [D1Array].
- * @sample samples.NDArrayTest.linspaceDouble
  */
 public inline fun <reified T : Number> Multik.linspace(start: Double, stop: Double, num: Int = 50): D1Array<T> {
     require(num > 0) { "The number of elements cannot be less than zero or equal to zero." }
@@ -1622,20 +1543,25 @@ public inline fun <reified T : Number> Multik.linspace(start: Double, stop: Doub
 }
 
 /**
- * Return coordinate matrices from coordinate vectors.
+ * Returns coordinate matrices from coordinate vectors [x] and [y].
+ *
+ * For vectors of length N and M, returns a pair of (N × M) and (N × M) matrices
+ * representing the grid coordinates.
+ *
+ * @param x the x-coordinates (columns).
+ * @param y the y-coordinates (rows).
+ * @return a [Pair] of (X, Y) coordinate matrices.
  */
 public fun <T : Number> Multik.meshgrid(x: MultiArray<T, D1>, y: MultiArray<T, D1>): Pair<D2Array<T>, D2Array<T>> =
     Pair(mk.stack(List(y.size) { x }), mk.stack(List(x.size) { y }, axis = 1))
 
 /**
  * Returns [D1Array] containing all elements.
- * @sample samples.NDArrayTest.toNDArray
  */
 public inline fun <reified T : Number> Iterable<T>.toNDArray(): D1Array<T> = this.toCommonNDArray()
 
 /**
  * Returns [D1Array] containing all elements.
- * @sample samples.NDArrayTest.toNDArray
  */
 @JvmName("toComplexNDArray")
 public inline fun <reified T : Complex> Iterable<T>.toNDArray(): D1Array<T> = this.toCommonNDArray()
