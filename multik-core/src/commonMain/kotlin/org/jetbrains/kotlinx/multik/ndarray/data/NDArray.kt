@@ -1,27 +1,38 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.ndarray.data
 
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.operations.concatenate
 
+/** Convenience alias for a 1-dimensional [NDArray]. */
 public typealias D1Array<T> = NDArray<T, D1>
+
+/** Convenience alias for a 2-dimensional [NDArray]. */
 public typealias D2Array<T> = NDArray<T, D2>
+
+/** Convenience alias for a 3-dimensional [NDArray]. */
 public typealias D3Array<T> = NDArray<T, D3>
+
+/** Convenience alias for a 4-dimensional [NDArray]. */
 public typealias D4Array<T> = NDArray<T, D4>
 
 /**
- * A class that implements multidimensional arrays. This implementation is based on primitive arrays.
- * With the help of [offset], [shape], [strides] there is a multidimensionality representation
- * over a sequential homogeneous array.
+ * Concrete multidimensional array backed by a flat [MemoryView] of primitive values.
  *
- * Native code uses `GetPrimitiveArrayCritical` for calculation.
+ * The array's multidimensional structure is defined by [offset], [shape], and [strides] over
+ * a single contiguous buffer. Slicing, [transpose], and [reshape] return views that share the
+ * underlying [data]; use [copy] or [deepCopy] to detach from the original buffer.
  *
- * @param T type of stored values.
- * @param D dimension.
+ * ```
+ * val a = mk.ndarray(mk[1, 2, 3, 4, 5, 6]).reshape(2, 3)
+ * // [[1, 2, 3],
+ * //  [4, 5, 6]]
+ * ```
+ *
+ * @param T the element type (e.g. [Int], [Double], [ComplexFloat]).
+ * @param D the [Dimension] type ([D1], [D2], [D3], [D4], or [DN]).
+ * @see [MultiArray]
+ * @see [MutableMultiArray]
  */
 public class NDArray<T, D : Dimension> constructor(
     data: ImmutableMemoryView<T>,
@@ -63,12 +74,29 @@ public class NDArray<T, D : Dimension> constructor(
     public override operator fun iterator(): Iterator<T> =
         if (consistent) this.data.iterator() else NDArrayIterator(data, offset, strides, shape)
 
+    /**
+     * Creates a new array with elements converted to the reified numeric type [E].
+     *
+     * ```
+     * val intArray = mk.ndarray(mk[1, 2, 3])
+     * val doubleArray = intArray.asType<Double>() // [1.0, 2.0, 3.0]
+     * ```
+     *
+     * @param E the target numeric type.
+     * @return a new [NDArray] with the converted elements.
+     */
     public inline fun <reified E : Number> asType(): NDArray<E, D> {
         val dataType = DataType.ofKClass(E::class)
         return this.asType(dataType)
     }
 
-    //TODO Unchecked Cast!!!???
+    /**
+     * Creates a new array with elements converted to the given [dataType].
+     *
+     * @param E the target numeric type.
+     * @param dataType the target [DataType].
+     * @return a new [NDArray] with the converted elements.
+     */
     public fun <E : Number> asType(dataType: DataType): NDArray<E, D> {
         val newData = initMemoryView(this.data.size, dataType) { this.data[it] as E }
         return NDArray(newData, this.offset, this.shape, this.strides, this.dim)
@@ -258,28 +286,59 @@ public class NDArray<T, D : Dimension> constructor(
         return result
     }
 
-    //todo extensions
+    /**
+     * Casts this array to a [D1Array].
+     *
+     * @return this array typed as [D1Array].
+     * @throws ClassCastException if this array is not 1-dimensional.
+     */
     public fun asD1Array(): D1Array<T> {
         if (this.dim.d == 1) return this as D1Array<T>
         else throw ClassCastException("Cannot cast NDArray of dimension ${this.dim.d} to NDArray of dimension 1.")
     }
 
-    //todo
+    /**
+     * Casts this array to a [D2Array].
+     *
+     * @return this array typed as [D2Array].
+     * @throws ClassCastException if this array is not 2-dimensional.
+     */
     public fun asD2Array(): D2Array<T> {
         if (this.dim.d == 2) return this as D2Array<T>
         else throw ClassCastException("Cannot cast NDArray of dimension ${this.dim.d} to NDArray of dimension 2.")
     }
 
+    /**
+     * Casts this array to a [D3Array].
+     *
+     * @return this array typed as [D3Array].
+     * @throws ClassCastException if this array is not 3-dimensional.
+     */
     public fun asD3Array(): D3Array<T> {
         if (this.dim.d == 3) return this as D3Array<T>
         else throw ClassCastException("Cannot cast NDArray of dimension ${this.dim.d} to NDArray of dimension 3.")
     }
 
+    /**
+     * Casts this array to a [D4Array].
+     *
+     * @return this array typed as [D4Array].
+     * @throws ClassCastException if this array is not 4-dimensional.
+     */
     public fun asD4Array(): D4Array<T> {
         if (this.dim.d == 4) return this as D4Array<T>
         else throw ClassCastException("Cannot cast NDArray of dimension ${this.dim.d} to NDArray of dimension 4.")
     }
 
+    /**
+     * Wraps this array with the [DN] dimension type.
+     *
+     * For arrays with dimension > 4, returns the array directly. For arrays with dimension 1–4,
+     * creates a new view with [DN] as the dimension type.
+     *
+     * @return this array typed as `NDArray<T, DN>`.
+     * @throws Exception if the array dimension is undefined (-1).
+     */
     public fun asDNArray(): NDArray<T, DN> {
         if (this.dim.d == -1) throw Exception("Array dimension is undefined")
         if (this.dim.d > 4) return this as NDArray<T, DN>

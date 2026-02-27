@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.ndarray.data
 
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
@@ -9,24 +5,28 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType.*
 import kotlin.reflect.KClass
 
+/** Resolves the [DataType] for the given [KClass]. Platform-specific implementation. */
 @PublishedApi
 internal expect inline fun <T : Any> dataTypeOf(type: KClass<out T>): DataType
 
 /**
- * Describes the type of elements stored in a [NDArray].
+ * Describes the element type of an [NDArray].
  *
- * @param nativeCode an integer value of the type. Required to define the type in JNI.
- * @param itemSize size of one ndarray element in bytes.
- * @param clazz [KClass] type.
+ * Each entry maps to a Kotlin primitive (or [ComplexFloat]/[ComplexDouble]) and carries metadata
+ * used by the native JNI layer and memory allocation routines.
  *
- * @property ByteDataType byte.
- * @property ShortDataType short.
- * @property IntDataType int.
- * @property LongDataType long.
- * @property FloatDataType float.
- * @property DoubleDataType double.
- * @property ComplexFloatDataType complex float.
- * @property ComplexDoubleDataType complex double.
+ * @param nativeCode integer identifier used in JNI calls to dispatch to the correct native routine.
+ * @param itemSize size of a single element in bytes.
+ * @param clazz the Kotlin [KClass] of the element type.
+ *
+ * @property ByteDataType 8-bit signed integer ([Byte]).
+ * @property ShortDataType 16-bit signed integer ([Short]).
+ * @property IntDataType 32-bit signed integer ([Int]).
+ * @property LongDataType 64-bit signed integer ([Long]).
+ * @property FloatDataType 32-bit IEEE 754 floating point ([Float]).
+ * @property DoubleDataType 64-bit IEEE 754 floating point ([Double]).
+ * @property ComplexFloatDataType complex number with 32-bit real and imaginary parts ([ComplexFloat]).
+ * @property ComplexDoubleDataType complex number with 64-bit real and imaginary parts ([ComplexDouble]).
  */
 public enum class DataType(public val nativeCode: Int, public val itemSize: Int, public val clazz: KClass<out Any>) {
     ByteDataType(1, 1, Byte::class),
@@ -38,11 +38,21 @@ public enum class DataType(public val nativeCode: Int, public val itemSize: Int,
     ComplexFloatDataType(7, 8, ComplexFloat::class),
     ComplexDoubleDataType(8, 16, ComplexDouble::class);
 
+    /**
+     * Returns `true` if this type represents a real numeric type ([Byte], [Short], [Int], [Long], [Float], [Double]).
+     *
+     * @see [isComplex]
+     */
     public fun isNumber(): Boolean = when (nativeCode) {
         1, 2, 3, 4, 5, 6 -> true
         else -> false
     }
 
+    /**
+     * Returns `true` if this type represents a complex numeric type ([ComplexFloat] or [ComplexDouble]).
+     *
+     * @see [isNumber]
+     */
     public fun isComplex(): Boolean = !isNumber()
 
     public companion object {

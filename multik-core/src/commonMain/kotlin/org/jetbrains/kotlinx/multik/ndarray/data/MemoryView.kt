@@ -12,10 +12,14 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexDoubleArray
 import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexFloatArray
 
 /**
- * View for storing data in a [NDArray] and working them in a uniform style.
+ * Read-only view over a flat primitive array that backs an [NDArray].
  *
- * @property data one of the primitive arrays.
- * @property dtype type of elements in array
+ * Provides uniform typed access to the underlying buffer regardless of the concrete primitive type.
+ * Each element type has a dedicated [MemoryView] subclass (e.g. [MemoryViewIntArray], [MemoryViewDoubleArray]).
+ *
+ * @property data the underlying primitive array (e.g. [IntArray], [DoubleArray]).
+ * @property dtype the [DataType] describing the element type.
+ * @property size the number of elements in this view.
  */
 public interface ImmutableMemoryView<T> : Iterable<T> {
     public val data: Any
@@ -41,7 +45,13 @@ public interface ImmutableMemoryView<T> : Iterable<T> {
     public fun copyOf(): ImmutableMemoryView<T>
 
     /**
+     * Copies elements from this view into [destination].
      *
+     * @param destination the target [MemoryView] to copy into.
+     * @param destinationOffset starting position in [destination].
+     * @param startIndex first index (inclusive) in this view to copy.
+     * @param endIndex last index (exclusive) in this view to copy.
+     * @return the [destination] view.
      */
     public fun copyInto(
         destination: MemoryView<T>, destinationOffset: Int = 0, startIndex: Int = 0, endIndex: Int = size
@@ -93,11 +103,13 @@ public interface ImmutableMemoryView<T> : Iterable<T> {
 }
 
 /**
- * Extends [ImmutableMemoryView].
+ * Mutable extension of [ImmutableMemoryView] that supports element-wise writes and arithmetic operations.
  *
- * @property size number of elements in [data].
- * @property indices indices of [data].
- * @property lastIndex last index in [data].
+ * Concrete subclasses wrap each supported primitive array type (e.g. [MemoryViewIntArray]).
+ * In-place arithmetic operators (`+=`, `-=`, `*=`, `/=`) work element-wise across the entire buffer.
+ *
+ * @property indices valid index range for this view.
+ * @property lastIndex index of the last element.
  */
 public sealed class MemoryView<T> : ImmutableMemoryView<T> {
     public abstract var indices: IntRange
@@ -129,6 +141,7 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
 
     public override fun getComplexDoubleArray(): ComplexDoubleArray = throw UnsupportedOperationException()
 
+    /** Adds each element of [other] to the corresponding element of this view in-place. */
     public operator fun plusAssign(other: MemoryView<T>) {
         when {
             this is MemoryViewFloatArray && other is MemoryViewFloatArray -> this += other
@@ -142,6 +155,7 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
         }
     }
 
+    /** Adds a scalar [other] to every element of this view in-place. */
     public open operator fun plusAssign(other: T) {
         when {
             this is MemoryViewFloatArray && other is Float -> this += other
@@ -155,6 +169,7 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
         }
     }
 
+    /** Subtracts each element of [other] from the corresponding element of this view in-place. */
     public operator fun minusAssign(other: MemoryView<T>) {
         when {
             this is MemoryViewFloatArray && other is MemoryViewFloatArray -> this -= other
@@ -168,6 +183,7 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
         }
     }
 
+    /** Subtracts a scalar [other] from every element of this view in-place. */
     public open operator fun minusAssign(other: T) {
         when {
             this is MemoryViewFloatArray && other is Float -> this -= other
@@ -181,6 +197,7 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
         }
     }
 
+    /** Multiplies each element of this view by the corresponding element of [other] in-place. */
     public operator fun timesAssign(other: MemoryView<T>) {
         when {
             this is MemoryViewFloatArray && other is MemoryViewFloatArray -> this *= other
@@ -194,6 +211,7 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
         }
     }
 
+    /** Multiplies every element of this view by a scalar [other] in-place. */
     public open operator fun timesAssign(other: T) {
         when {
             this is MemoryViewFloatArray && other is Float -> this *= other
@@ -207,6 +225,7 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
         }
     }
 
+    /** Divides each element of this view by the corresponding element of [other] in-place. */
     public operator fun divAssign(other: MemoryView<T>) {
         when {
             this is MemoryViewFloatArray && other is MemoryViewFloatArray -> this /= other
@@ -220,6 +239,7 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
         }
     }
 
+    /** Divides every element of this view by a scalar [other] in-place. */
     public open operator fun divAssign(other: T) {
         when {
             this is MemoryViewFloatArray && other is Float -> this /= other
@@ -235,7 +255,7 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
 }
 
 /**
- * View for [ByteArray].
+ * [MemoryView] backed by a [ByteArray]. Created for arrays with [DataType.ByteDataType].
  */
 public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte>() {
     override val dtype: DataType = DataType.ByteDataType
@@ -328,7 +348,7 @@ public class MemoryViewByteArray(override val data: ByteArray) : MemoryView<Byte
 }
 
 /**
- * View for [ShortArray].
+ * [MemoryView] backed by a [ShortArray]. Created for arrays with [DataType.ShortDataType].
  */
 public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Short>() {
     override val dtype: DataType = DataType.ShortDataType
@@ -421,7 +441,7 @@ public class MemoryViewShortArray(override val data: ShortArray) : MemoryView<Sh
 }
 
 /**
- * View for [IntArray].
+ * [MemoryView] backed by an [IntArray]. Created for arrays with [DataType.IntDataType].
  */
 public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>() {
     override val dtype: DataType = DataType.IntDataType
@@ -515,7 +535,7 @@ public class MemoryViewIntArray(override val data: IntArray) : MemoryView<Int>()
 }
 
 /**
- * View for [LongArray].
+ * [MemoryView] backed by a [LongArray]. Created for arrays with [DataType.LongDataType].
  */
 public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long>() {
     override val dtype: DataType = DataType.LongDataType
@@ -608,7 +628,7 @@ public class MemoryViewLongArray(override val data: LongArray) : MemoryView<Long
 }
 
 /**
- * View for [FloatArray].
+ * [MemoryView] backed by a [FloatArray]. Created for arrays with [DataType.FloatDataType].
  */
 public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Float>() {
     override val dtype: DataType = DataType.FloatDataType
@@ -701,7 +721,7 @@ public class MemoryViewFloatArray(override val data: FloatArray) : MemoryView<Fl
 }
 
 /**
- * View for [DoubleArray].
+ * [MemoryView] backed by a [DoubleArray]. Created for arrays with [DataType.DoubleDataType].
  */
 public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<Double>() {
     override val dtype: DataType = DataType.DoubleDataType
@@ -794,7 +814,8 @@ public class MemoryViewDoubleArray(override val data: DoubleArray) : MemoryView<
 }
 
 /**
- * View for [ComplexFloatArray].
+ * [MemoryView] backed by a [ComplexFloatArray] (interleaved float pairs).
+ * Created for arrays with [DataType.ComplexFloatDataType].
  */
 public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) : MemoryView<ComplexFloat>() {
     override val dtype: DataType = DataType.ComplexFloatDataType
@@ -898,7 +919,8 @@ public class MemoryViewComplexFloatArray(override val data: ComplexFloatArray) :
 }
 
 /**
- * View for [ComplexDoubleArray].
+ * [MemoryView] backed by a [ComplexDoubleArray] (interleaved double pairs).
+ * Created for arrays with [DataType.ComplexDoubleDataType].
  */
 public class MemoryViewComplexDoubleArray(override val data: ComplexDoubleArray) : MemoryView<ComplexDouble>() {
     override val dtype: DataType = DataType.ComplexDoubleDataType
@@ -994,11 +1016,21 @@ public class MemoryViewComplexDoubleArray(override val data: ComplexDoubleArray)
     }
 }
 
+/**
+ * Creates a zero-initialized [MemoryView] of the given [size] for the reified element type [T].
+ *
+ * @param size the number of elements.
+ * @return a new [MemoryView] backed by a zero-initialized primitive array.
+ */
 public inline fun <reified T : Any> initMemoryView(size: Int): MemoryView<T> =
     initMemoryView(size, DataType.ofKClass(T::class))
 
 /**
- * Creates a [MemoryView] based [size] and [dataType].
+ * Creates a zero-initialized [MemoryView] of the given [size] and [dataType].
+ *
+ * @param size the number of elements.
+ * @param dataType the element type.
+ * @return a new [MemoryView] backed by a zero-initialized primitive array.
  */
 public fun <T> initMemoryView(size: Int, dataType: DataType): MemoryView<T> {
     val t = when (dataType) {
@@ -1016,8 +1048,12 @@ public fun <T> initMemoryView(size: Int, dataType: DataType): MemoryView<T> {
 }
 
 /**
- * Create a [MemoryView] based [size] and [dataType], where each elements will be initialized according
- * to the given [init] function.
+ * Creates a [MemoryView] of the given [size] and [dataType], initializing each element with [init].
+ *
+ * @param size the number of elements.
+ * @param dataType the element type.
+ * @param init function called for each index to produce the element value.
+ * @return a new [MemoryView] with elements initialized by [init].
  */
 @Suppress("UNCHECKED_CAST")
 public fun <T> initMemoryView(size: Int, dataType: DataType, init: (Int) -> T): MemoryView<T> {
@@ -1045,6 +1081,12 @@ public fun <T> initMemoryView(size: Int, dataType: DataType, init: (Int) -> T): 
     return t as MemoryView<T>
 }
 
+/**
+ * Converts this [List] to a [MemoryView] backed by a primitive array of the given [dataType].
+ *
+ * @param dataType the target element type.
+ * @return a new [MemoryView] containing the list elements.
+ */
 @Suppress("UNCHECKED_CAST")
 public fun <T> List<T>.toViewPrimitiveArray(dataType: DataType): MemoryView<T> {
     val t = when (dataType) {

@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.ndarray.data
 
 
@@ -111,6 +107,7 @@ internal fun computeStrides(shape: IntArray): IntArray = shape.copyOf().apply {
     }
 }
 
+/** Converts this [Number] to the reified primitive type [T]. */
 @PublishedApi
 internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::class) {
     Byte::class -> this.toByte()
@@ -122,6 +119,13 @@ internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::
     else -> throw Exception("Type not defined.")
 } as T
 
+/**
+ * Converts this [Number] to the numeric type described by [dtype].
+ *
+ * @param dtype the target [DataType] (must be a real numeric type, not complex).
+ * @return this value converted to the target type.
+ * @throws Exception if [dtype] is a complex type.
+ */
 @Suppress("UNCHECKED_CAST")
 public fun <T : Number> Number.toPrimitiveType(dtype: DataType): T = when (dtype.nativeCode) {
     1 -> this.toByte()
@@ -133,6 +137,10 @@ public fun <T : Number> Number.toPrimitiveType(dtype: DataType): T = when (dtype
     else -> throw Exception("Type not defined.")
 } as T
 
+/**
+ * Compares this [Number] to [other] using type-specific comparison when both have the same runtime type,
+ * falling back to [Double] comparison otherwise.
+ */
 public operator fun <T : Number> Number.compareTo(other: T): Int {
     return when {
         this is Float && other is Float -> this.compareTo(other)

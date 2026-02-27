@@ -1,23 +1,22 @@
-/*
- * Copyright 2020-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.ndarray.data
 
 /**
- *  A generic ndarray. Methods in this interface support only read-only access to the ndarray.
+ * Read-only interface for multidimensional arrays.
  *
- *  @property data [MemoryView].
- *  @property offset Offset from the start of an ndarray's data.
- *  @property shape [IntArray] of an ndarray dimensions.
- *  @property strides [IntArray] indices to step in each dimension when iterating an ndarray.
- *  @property size number of elements in an ndarray.
- *  @property dtype [DataType] of an ndarray's data.
- *  @property dim [Dimension].
- *  @property base Base array if [data] is taken from other array. Otherwise - null.
- *  @property consistent indicates whether the array data is homogeneous.
- *  @property indices indices for a one-dimensional ndarray.
- *  @property multiIndices indices for a n-dimensional ndarray.
+ * Provides access to array metadata ([shape], [strides], [offset]) and structural operations
+ * (reshape, transpose, squeeze) without mutation. The concrete implementation is [NDArray].
+ *
+ * @property data the flat memory buffer storing the array elements.
+ * @property offset starting position in [data] for this array or view.
+ * @property shape sizes of each dimension, e.g. `intArrayOf(3, 4)` for a 3x4 matrix.
+ * @property strides number of elements to skip in [data] to advance one position along each dimension.
+ * @property size total number of elements (product of [shape]).
+ * @property dtype the [DataType] of the elements.
+ * @property dim the [Dimension] type token (e.g. [D1], [D2], [DN]).
+ * @property base the parent array when this is a view, or `null` for root arrays.
+ * @property consistent `true` when the data is contiguous (`offset == 0` and `size == data.size`).
+ * @property indices element index range for 1D arrays.
+ * @property multiIndices [MultiIndexProgression] over all valid index tuples.
  */
 public interface MultiArray<T, D : Dimension> {
     public val data: ImmutableMemoryView<T>
@@ -51,82 +50,179 @@ public interface MultiArray<T, D : Dimension> {
     public fun isNotEmpty(): Boolean
 
     /**
-     * Returns new [MultiArray] which is a copy of the original ndarray.
+     * Returns a copy of this array that shares no data with the original.
+     *
+     * The underlying [MemoryView] buffer is copied, but the copy retains the same [offset] and [strides]
+     * layout. Use [deepCopy] to produce a compact contiguous copy.
+     *
+     * @see [deepCopy]
      */
     public fun copy(): MultiArray<T, D>
 
     /**
-     * Returns new [MultiArray] which is a deep copy of the original ndarray.
+     * Returns a contiguous deep copy of this array.
+     *
+     * Unlike [copy], this always allocates a new buffer containing only the meaningful elements
+     * with `offset == 0` and default strides. Useful after slicing or transposing to reclaim memory.
+     *
+     * @see [copy]
      */
     public fun deepCopy(): MultiArray<T, D>
 
+    /**
+     * Returns an iterator over the elements of this ndarray in row-major order.
+     *
+     * For non-[consistent] arrays (views), iteration respects [offset] and [strides].
+     */
     public operator fun iterator(): Iterator<T>
 
     /**
-     * Returns new one-dimensional ndarray which is a copy of the original ndarray.
+     * Returns a new 1D array containing all elements of this array in row-major order.
+     *
+     * Always allocates a new buffer (copy semantics).
+     *
+     * @return a [D1Array] of size [size].
      */
     public fun flatten(): MultiArray<T, D1>
 
 
     // Reshape
+
     /**
-     * Returns an ndarray with a new ([dim1]) shape without changing data.
+     * Returns a view of this array with the given 1D shape.
+     *
+     * The new shape must have the same total [size]. Returns a view when the array is [consistent];
+     * otherwise performs a deep copy first.
+     *
+     * @param dim1 size of the single dimension (must equal [size]).
+     * @return a 1D view or copy with shape `[dim1]`.
+     * @throws IllegalArgumentException if [dim1] is not positive or does not equal [size].
      */
     public fun reshape(dim1: Int): MultiArray<T, D1>
 
     /**
-     * Returns an ndarray with a new ([dim1], [dim2]) shape without changing data.
+     * Returns a view of this array with shape ([dim1], [dim2]).
+     *
+     * @param dim1 size of the first dimension.
+     * @param dim2 size of the second dimension.
+     * @return a 2D view or copy with shape `[dim1, dim2]`.
+     * @throws IllegalArgumentException if the product of dimensions does not equal [size].
+     * @see [reshape]
      */
     public fun reshape(dim1: Int, dim2: Int): MultiArray<T, D2>
 
     /**
-     * Returns an ndarray with a new ([dim1], [dim2], [dim3]) shape without changing data.
+     * Returns a view of this array with shape ([dim1], [dim2], [dim3]).
+     *
+     * @param dim1 size of the first dimension.
+     * @param dim2 size of the second dimension.
+     * @param dim3 size of the third dimension.
+     * @return a 3D view or copy with shape `[dim1, dim2, dim3]`.
+     * @throws IllegalArgumentException if the product of dimensions does not equal [size].
+     * @see [reshape]
      */
     public fun reshape(dim1: Int, dim2: Int, dim3: Int): MultiArray<T, D3>
 
     /**
-     * Returns an ndarray with a new ([dim1], [dim2], [dim3], [dim4]) shape without changing data.
+     * Returns a view of this array with shape ([dim1], [dim2], [dim3], [dim4]).
+     *
+     * @param dim1 size of the first dimension.
+     * @param dim2 size of the second dimension.
+     * @param dim3 size of the third dimension.
+     * @param dim4 size of the fourth dimension.
+     * @return a 4D view or copy with shape `[dim1, dim2, dim3, dim4]`.
+     * @throws IllegalArgumentException if the product of dimensions does not equal [size].
+     * @see [reshape]
      */
     public fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int): MultiArray<T, D4>
 
     /**
-     * Returns an ndarray with a new ([dim1], [dim2], [dim3], [dim4], [dims]) shape without changing data.
+     * Returns a view of this array with shape ([dim1], [dim2], [dim3], [dim4], [dims]).
+     *
+     * @param dim1 size of the first dimension.
+     * @param dim2 size of the second dimension.
+     * @param dim3 size of the third dimension.
+     * @param dim4 size of the fourth dimension.
+     * @param dims sizes of remaining dimensions.
+     * @return an N-dimensional view or copy.
+     * @throws IllegalArgumentException if the product of all dimensions does not equal [size].
+     * @see [reshape]
      */
     public fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int): MultiArray<T, DN>
 
     /**
-     * Reverse or permute the [axes] of an array.
+     * Returns a view with permuted axes. Does not copy data.
+     *
+     * When called with no arguments, reverses all axes (equivalent to a full transpose).
+     * When called with [axes], reorders dimensions according to the given permutation.
+     *
+     * @param axes optional permutation of `0 until dim.d`. Must be a complete permutation with unique values.
+     * @return a view sharing the same data with reordered [shape] and [strides].
+     * @throws IllegalArgumentException if [axes] is non-empty but incomplete, out of range, or contains duplicates.
+     * @see [reshape]
      */
     public fun transpose(vararg axes: Int): MultiArray<T, D>
 
     // TODO(maybe be done on one axis? like pytorch)
     /**
-     * Returns an ndarray with all axes removed equal to one.
+     * Returns a view with size-one dimensions removed.
+     *
+     * When called with no arguments, removes all axes whose size is 1.
+     * When called with specific [axes], removes only those axes (they must have size 1).
+     *
+     * @param axes optional indices of axes to squeeze. Each must have `shape[axis] == 1`.
+     * @return a view with reduced dimensionality.
+     * @throws IllegalArgumentException if any specified axis does not have size 1.
+     * @see [unsqueeze]
      */
     public fun squeeze(vararg axes: Int): MultiArray<T, DN>
 
     // TODO(maybe be done on one axis? like pytorch)
     /**
-     * Returns a new ndarray with a dimension of size one inserted at the specified [axes].
+     * Returns a view with a size-one dimension inserted at each of the specified [axes].
+     *
+     * @param axes positions at which to insert new dimensions of size 1.
+     * @return a view with increased dimensionality.
+     * @see [squeeze]
      */
     public fun unsqueeze(vararg axes: Int): MultiArray<T, DN>
 
     /**
-     * Concatenates this ndarray with [other].
+     * Concatenates this array with [other] along axis 0, returning a new array.
+     *
+     * @param other the array to concatenate with this one.
+     * @return a new [NDArray] containing elements from both arrays.
+     * @throws IllegalArgumentException if shapes are incompatible on non-concatenation axes.
      */
     public infix fun cat(other: MultiArray<T, D>): NDArray<T, D>
 
     /**
-     * Concatenates this ndarray with [other] along the specified [axis].
+     * Concatenates this array with [other] along the given [axis], returning a new array.
+     *
+     * @param other the array to concatenate with this one.
+     * @param axis the axis along which to concatenate (default 0). Supports negative indexing.
+     * @return a new [NDArray] with increased size along [axis].
+     * @throws IllegalArgumentException if [axis] is out of bounds or shapes are incompatible.
      */
     public fun cat(other: MultiArray<T, D>, axis: Int = 0): NDArray<T, D>
 
     /**
-     * Concatenates this ndarray with a list of [other] ndarrays.
+     * Concatenates this array with a list of [other] arrays along the given [axis].
+     *
+     * @param other arrays to concatenate after this one, in order.
+     * @param axis the axis along which to concatenate (default 0).
+     * @return a new [NDArray] with combined size along [axis].
+     * @throws IllegalArgumentException if [axis] is out of bounds or shapes are incompatible.
      */
     public fun cat(other: List<MultiArray<T, D>>, axis: Int = 0): NDArray<T, D>
 }
 
+/**
+ * Casts this [MultiArray] to an [NDArray] with [DN] dimension type.
+ *
+ * @throws ClassCastException if this is not an [NDArray] instance.
+ * @see [NDArray.asDNArray]
+ */
 public fun <T, D : Dimension> MultiArray<T, D>.asDNArray(): NDArray<T, DN> {
     if (this is NDArray<T, D>)
         return this.asDNArray()

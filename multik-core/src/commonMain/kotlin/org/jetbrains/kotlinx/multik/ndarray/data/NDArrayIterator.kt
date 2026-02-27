@@ -1,11 +1,17 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.ndarray.data
 
 /**
- * Iterator over multidimensional arrays. Iterated taking into account the [offset], [strides] and [shape].
+ * Row-major iterator for non-contiguous [NDArray] views.
+ *
+ * Traverses elements by computing flat indices from multi-dimensional coordinates using
+ * [offset] and [strides]. Used when the array is not [consistent][NDArray.consistent]
+ * (e.g. after slicing or transposing).
+ *
+ * @param T the element type.
+ * @param data the underlying [MemoryView].
+ * @param offset the starting offset in [data].
+ * @param strides per-dimension strides.
+ * @param shape per-dimension sizes.
  */
 public class NDArrayIterator<T>(
     private val data: MemoryView<T>,

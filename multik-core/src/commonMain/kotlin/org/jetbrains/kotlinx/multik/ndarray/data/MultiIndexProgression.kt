@@ -1,15 +1,21 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.ndarray.data
 
 /**
- * Multidimensional index.
+ * Multidimensional index progression for iterating over all valid index tuples of an [NDArray].
  *
- * @param first a start array indices.
- * @param last a final array indices.
- * @param step index traversal step, can be negative.
+ * Supports forward and reverse traversal with a configurable [step]. Used via
+ * [MultiArray.multiIndices] to enable destructured iteration:
+ *
+ * ```
+ * for ((i, j) in matrix.multiIndices) {
+ *     println(matrix[i, j])
+ * }
+ * ```
+ *
+ * @param first the starting index tuple (inclusive).
+ * @param last the ending index tuple (inclusive).
+ * @param step the traversal step applied to the last dimension, propagating carries (default 1).
+ * @throws IllegalArgumentException if [step] is 0, [Int.MIN_VALUE], or [first] and [last] have different sizes.
  */
 public class MultiIndexProgression(public val first: IntArray, public val last: IntArray, public val step: Int = 1) {
 
@@ -37,6 +43,7 @@ public class MultiIndexProgression(public val first: IntArray, public val last: 
     }
 }
 
+/** Iterator that traverses multidimensional index tuples from [first] to [last] with carry semantics. */
 internal class MultiIndexIterator(first: IntArray, last: IntArray, private val step: Int) : Iterator<IntArray> {
     private val startElement: IntArray = first.copyOf()
     private val finalElement: IntArray = last.copyOf()
@@ -126,6 +133,9 @@ public infix fun IntArray.downTo(to: IntArray): MultiIndexProgression {
     return MultiIndexProgression(this, to, -1)
 }
 
+/**
+ * Performs the given [operation] on each index tuple in this progression.
+ */
 public inline fun MultiIndexProgression.forEach(operation: (IntArray) -> Unit): Unit {
     for (element in this) operation(element)
 }

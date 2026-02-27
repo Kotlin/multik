@@ -1,11 +1,16 @@
-/*
- * Copyright 2020-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.ndarray.data
 
 /**
- * A generic ndarray. Methods in this interface support write access to the ndarray.
+ * Mutable extension of [MultiArray] that allows element modification.
+ *
+ * Exposes a writable [data] buffer and narrows return types of structural operations
+ * ([copy], [deepCopy], [reshape], [transpose], [squeeze], [unsqueeze]) to [MutableMultiArray]
+ * so that the result remains writable.
+ *
+ * @param T the element type.
+ * @param D the dimension type.
+ * @see [MultiArray]
+ * @see [NDArray]
  */
 public interface MutableMultiArray<T, D : Dimension> : MultiArray<T, D> {
     public override val data: MemoryView<T>

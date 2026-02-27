@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2023 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 @file:Suppress("DuplicatedCode")
 
 package org.jetbrains.kotlinx.multik.ndarray.data
@@ -10,14 +6,28 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import kotlin.jvm.JvmName
 
-//___________________________________________________GenericGetters________________________________________________________
+// =================================== Generic Scalar Getters ===================================
+//
+// Type-erased element access. These are resolved when the element type `T` is not statically
+// known to be a specific primitive. For known types (Byte, Short, Int, Long, Float, Double,
+// ComplexFloat, ComplexDouble), the type-specialized overloads below avoid boxing overhead.
 
+/**
+ * Returns the element at [index] in this 1D array.
+ *
+ * @throws IndexOutOfBoundsException if [index] is out of range.
+ */
 @JvmName("genGet1")
 public operator fun <T> MultiArray<T, D1>.get(index: Int): T {
     checkBounds(index in 0 until this.shape[0], index, 0, this.shape[0])
     return data[unsafeIndex(index)]
 }
 
+/**
+ * Returns the element at ([ind1], [ind2]) in this 2D array.
+ *
+ * @throws IndexOutOfBoundsException if any index is out of range.
+ */
 @JvmName("genGet2")
 public operator fun <T> MultiArray<T, D2>.get(ind1: Int, ind2: Int): T {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
@@ -25,7 +35,7 @@ public operator fun <T> MultiArray<T, D2>.get(ind1: Int, ind2: Int): T {
     return data[unsafeIndex(ind1, ind2)]
 }
 
-
+/** Returns the element at ([ind1], [ind2], [ind3]) in this 3D array. */
 @JvmName("genGet3")
 public operator fun <T> MultiArray<T, D3>.get(ind1: Int, ind2: Int, ind3: Int): T {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
@@ -34,6 +44,7 @@ public operator fun <T> MultiArray<T, D3>.get(ind1: Int, ind2: Int, ind3: Int): 
     return data[unsafeIndex(ind1, ind2, ind3)]
 }
 
+/** Returns the element at ([ind1], [ind2], [ind3], [ind4]) in this 4D array. */
 @JvmName("genGet4")
 public operator fun <T> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int): T {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
@@ -43,10 +54,12 @@ public operator fun <T> MultiArray<T, D4>.get(ind1: Int, ind2: Int, ind3: Int, i
     return data[unsafeIndex(ind1, ind2, ind3, ind4)]
 }
 
+/** Returns the element at the given indices in an array of 5+ dimensions. */
 @JvmName("genGet5")
 public operator fun <T> MultiArray<T, *>.get(ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int): T =
     this[intArrayOf(ind1, ind2, ind3, ind4) + indices]
 
+/** Returns the element at the given [indices] array. The array size must match [dim][MultiArray.dim]`.d`. */
 @JvmName("genGet5")
 public operator fun <T> MultiArray<T, *>.get(indices: IntArray): T {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
@@ -55,14 +68,16 @@ public operator fun <T> MultiArray<T, *>.get(indices: IntArray): T {
     return data[unsafeIndex(indices)]
 }
 
-//___________________________________________________GenericSetters________________________________________________________
+// =================================== Generic Scalar Setters ===================================
 
+/** Sets the element at [index] in this 1D mutable array. */
 @JvmName("genSet1")
 public operator fun <T> MutableMultiArray<T, D1>.set(index: Int, value: T) {
     checkBounds(index in 0 until this.shape[0], index, 0, this.shape[0])
     data[unsafeIndex(index)] = value
 }
 
+/** Sets the element at ([ind1], [ind2]) in this 2D mutable array. */
 @JvmName("genSet2")
 public operator fun <T> MutableMultiArray<T, D2>.set(ind1: Int, ind2: Int, value: T) {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
@@ -70,6 +85,7 @@ public operator fun <T> MutableMultiArray<T, D2>.set(ind1: Int, ind2: Int, value
     data[unsafeIndex(ind1, ind2)] = value
 }
 
+/** Sets the element at ([ind1], [ind2], [ind3]) in this 3D mutable array. */
 @JvmName("genSet3")
 public operator fun <T> MutableMultiArray<T, D3>.set(ind1: Int, ind2: Int, ind3: Int, value: T) {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
@@ -78,6 +94,7 @@ public operator fun <T> MutableMultiArray<T, D3>.set(ind1: Int, ind2: Int, ind3:
     data[unsafeIndex(ind1, ind2, ind3)] = value
 }
 
+/** Sets the element at ([ind1], [ind2], [ind3], [ind4]) in this 4D mutable array. */
 @JvmName("genSet4")
 public operator fun <T> MutableMultiArray<T, D4>.set(ind1: Int, ind2: Int, ind3: Int, ind4: Int, value: T) {
     checkBounds(ind1 in 0 until this.shape[0], ind1, 0, this.shape[0])
@@ -87,6 +104,7 @@ public operator fun <T> MutableMultiArray<T, D4>.set(ind1: Int, ind2: Int, ind3:
     data[unsafeIndex(ind1, ind2, ind3, ind4)] = value
 }
 
+/** Sets the element at the given indices in a mutable array of 5+ dimensions. */
 @JvmName("genSet5")
 public operator fun <T> MutableMultiArray<T, *>.set(
     ind1: Int, ind2: Int, ind3: Int, ind4: Int, vararg indices: Int, value: T
@@ -94,6 +112,7 @@ public operator fun <T> MutableMultiArray<T, *>.set(
     set(intArrayOf(ind1, ind2, ind3, ind4) + indices, value)
 }
 
+/** Sets the element at the given [indices] array. The array size must match [dim][MultiArray.dim]`.d`. */
 @JvmName("genSet5")
 public operator fun <T> MutableMultiArray<T, *>.set(indices: IntArray, value: T) {
     check(indices.size == dim.d) { "number of indices doesn't match dimension: ${indices.size} != ${dim.d}" }
@@ -102,7 +121,8 @@ public operator fun <T> MutableMultiArray<T, *>.set(indices: IntArray, value: T)
     data[unsafeIndex(indices)] = value
 }
 
-//___________________________________________________ByteGetters________________________________________________________
+// =================================== Byte Scalar Getters ===================================
+// Type-specialized overloads that cast to [MemoryViewByteArray] to avoid boxing.
 
 @JvmName("byteGet1")
 public operator fun MultiArray<Byte, D1>.get(index: Int): Byte {
@@ -146,7 +166,7 @@ public operator fun MultiArray<Byte, *>.get(indices: IntArray): Byte {
     return (data as MemoryViewByteArray)[unsafeIndex(indices)]
 }
 
-//___________________________________________________ByteSetters________________________________________________________
+// =================================== Byte Scalar Setters ===================================
 
 @JvmName("byteSet1")
 public operator fun MutableMultiArray<Byte, D1>.set(index: Int, value: Byte) {
@@ -194,7 +214,8 @@ public operator fun MutableMultiArray<Byte, *>.set(indices: IntArray, value: Byt
 }
 
 
-//___________________________________________________ShortGetters________________________________________________________
+// =================================== Short Scalar Getters ===================================
+// Type-specialized overloads that cast to [MemoryViewShortArray] to avoid boxing.
 
 @JvmName("shortGet1")
 public operator fun MultiArray<Short, D1>.get(index: Int): Short {
@@ -238,7 +259,7 @@ public operator fun MultiArray<Short, *>.get(indices: IntArray): Short {
     return (data as MemoryViewShortArray)[unsafeIndex(indices)]
 }
 
-//___________________________________________________ShortSetters________________________________________________________
+// =================================== Short Scalar Setters ===================================
 
 @JvmName("shortSet1")
 public operator fun MutableMultiArray<Short, D1>.set(index: Int, value: Short) {
@@ -286,7 +307,8 @@ public operator fun MutableMultiArray<Short, *>.set(indices: IntArray, value: Sh
 }
 
 
-//___________________________________________________IntGetters________________________________________________________
+// =================================== Int Scalar Getters ===================================
+// Type-specialized overloads that cast to [MemoryViewIntArray] to avoid boxing.
 
 @JvmName("intGet1")
 public operator fun MultiArray<Int, D1>.get(index: Int): Int {
@@ -330,7 +352,7 @@ public operator fun MultiArray<Int, *>.get(indices: IntArray): Int {
     return (data as MemoryViewIntArray)[unsafeIndex(indices)]
 }
 
-//___________________________________________________IntSetters________________________________________________________
+// =================================== Int Scalar Setters ===================================
 
 @JvmName("intSet1")
 public operator fun MutableMultiArray<Int, D1>.set(index: Int, value: Int) {
@@ -378,7 +400,8 @@ public operator fun MutableMultiArray<Int, *>.set(indices: IntArray, value: Int)
 }
 
 
-//___________________________________________________LongGetters________________________________________________________
+// =================================== Long Scalar Getters ===================================
+// Type-specialized overloads that cast to [MemoryViewLongArray] to avoid boxing.
 
 @JvmName("longGet1")
 public operator fun MultiArray<Long, D1>.get(index: Int): Long {
@@ -422,7 +445,7 @@ public operator fun MultiArray<Long, *>.get(indices: IntArray): Long {
     return (data as MemoryViewLongArray)[unsafeIndex(indices)]
 }
 
-//___________________________________________________LongSetters________________________________________________________
+// =================================== Long Scalar Setters ===================================
 
 @JvmName("longSet1")
 public operator fun MutableMultiArray<Long, D1>.set(index: Int, value: Long) {
@@ -470,7 +493,8 @@ public operator fun MutableMultiArray<Long, *>.set(indices: IntArray, value: Lon
 }
 
 
-//___________________________________________________FloatGetters________________________________________________________
+// =================================== Float Scalar Getters ===================================
+// Type-specialized overloads that cast to [MemoryViewFloatArray] to avoid boxing.
 
 @JvmName("floatGet1")
 public operator fun MultiArray<Float, D1>.get(index: Int): Float {
@@ -514,7 +538,7 @@ public operator fun MultiArray<Float, *>.get(indices: IntArray): Float {
     return (data as MemoryViewFloatArray)[unsafeIndex(indices)]
 }
 
-//___________________________________________________FloatSetters________________________________________________________
+// =================================== Float Scalar Setters ===================================
 
 @JvmName("floatSet1")
 public operator fun MutableMultiArray<Float, D1>.set(index: Int, value: Float) {
@@ -562,7 +586,8 @@ public operator fun MutableMultiArray<Float, *>.set(indices: IntArray, value: Fl
 }
 
 
-//___________________________________________________DoubleGetters________________________________________________________
+// =================================== Double Scalar Getters ===================================
+// Type-specialized overloads that cast to [MemoryViewDoubleArray] to avoid boxing.
 
 @JvmName("doubleGet1")
 public operator fun MultiArray<Double, D1>.get(index: Int): Double {
@@ -608,7 +633,7 @@ public operator fun MultiArray<Double, *>.get(indices: IntArray): Double {
     return (data as MemoryViewDoubleArray)[unsafeIndex(indices)]
 }
 
-//___________________________________________________DoubleSetters________________________________________________________
+// =================================== Double Scalar Setters ===================================
 
 @JvmName("doubleSet1")
 public operator fun MutableMultiArray<Double, D1>.set(index: Int, value: Double) {
@@ -656,7 +681,8 @@ public operator fun MutableMultiArray<Double, *>.set(indices: IntArray, value: D
 }
 
 
-//___________________________________________________ComplexFloatGetters________________________________________________________
+// =================================== ComplexFloat Scalar Getters ===================================
+// Type-specialized overloads that cast to [MemoryViewComplexFloatArray].
 
 @JvmName("complexFloatGet1")
 public operator fun MultiArray<ComplexFloat, D1>.get(index: Int): ComplexFloat {
@@ -702,7 +728,7 @@ public operator fun MultiArray<ComplexFloat, *>.get(indices: IntArray): ComplexF
     return (data as MemoryViewComplexFloatArray)[unsafeIndex(indices)]
 }
 
-//___________________________________________________ComplexFloatSetters________________________________________________________
+// =================================== ComplexFloat Scalar Setters ===================================
 
 @JvmName("complexFloatSet1")
 public operator fun MutableMultiArray<ComplexFloat, D1>.set(index: Int, value: ComplexFloat) {
@@ -751,7 +777,8 @@ public operator fun MutableMultiArray<ComplexFloat, *>.set(indices: IntArray, va
     (data as MemoryViewComplexFloatArray)[unsafeIndex(indices)] = value
 }
 
-//___________________________________________________ComplexDoubleGetters________________________________________________________
+// =================================== ComplexDouble Scalar Getters ===================================
+// Type-specialized overloads that cast to [MemoryViewComplexDoubleArray].
 
 @JvmName("complexDoubleGet1")
 public operator fun MultiArray<ComplexDouble, D1>.get(index: Int): ComplexDouble {
@@ -797,7 +824,7 @@ public operator fun MultiArray<ComplexDouble, *>.get(indices: IntArray): Complex
     return (data as MemoryViewComplexDoubleArray)[unsafeIndex(indices)]
 }
 
-//___________________________________________________ComplexDoubleSetters________________________________________________________
+// =================================== ComplexDouble Scalar Setters ===================================
 
 @JvmName("complexDoubleSet1")
 public operator fun MutableMultiArray<ComplexDouble, D1>.set(index: Int, value: ComplexDouble) {
