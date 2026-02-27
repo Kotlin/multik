@@ -73,10 +73,12 @@
             <toc-element topic="universal-operations.md">
                 <toc-element topic="all.md"/>
                 <toc-element topic="any.md"/>
+                <toc-element topic="append.md"/>
                 <toc-element topic="asSequence.md"/>
                 <toc-element topic="associate.md"/>
                 <toc-element topic="average.md"/>
                 <toc-element topic="chunked.md"/>
+                <toc-element topic="clip.md"/>
                 <toc-element topic="contains.md"/>
                 <toc-element topic="count.md"/>
                 <toc-element topic="distinct.md"/>
@@ -101,6 +103,7 @@
                 <toc-element topic="partition.md"/>
                 <toc-element topic="windowed.md"/>
                 <toc-element topic="reduce.md"/>
+                <toc-element topic="repeat.md"/>
                 <toc-element topic="reversed.md"/>
                 <toc-element topic="scan.md"/>
                 <toc-element topic="sorted.md"/>

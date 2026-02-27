@@ -1,17 +1,28 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.ndarray.operations
 
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
-import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.data.D1
+import org.jetbrains.kotlinx.multik.ndarray.data.DataType
+import org.jetbrains.kotlinx.multik.ndarray.data.Dimension
+import org.jetbrains.kotlinx.multik.ndarray.data.MemoryView
+import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
+import org.jetbrains.kotlinx.multik.ndarray.data.MutableMultiArray
+import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
+import org.jetbrains.kotlinx.multik.ndarray.data.forEach
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.data.requireEqualShape
+import org.jetbrains.kotlinx.multik.ndarray.data.set
 
 /**
- * Returns a new NDArray object with all elements negated for the given MultiArray object.
+ * Negates every element, returning a new array.
  *
- * @return The NDArray object with all elements negated.
+ * ```
+ * val a = mk.ndarray(mk[1, -2, 3])
+ * val b = -a // [-1, 2, -3]
+ * ```
+ *
+ * @return a new [NDArray] with each element negated.
  */
 @Suppress("unchecked_cast")
 public operator fun <T, D : Dimension> MultiArray<T, D>.unaryMinus(): NDArray<T, D> =
@@ -27,12 +38,20 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.unaryMinus(): NDArray<T,
     } as NDArray<T, D>
 
 /**
- * Calculates the sum of [this] MultiArray and [other] MultiArray, resulting in a new NDArray with the same
- * Dimension type as the input arrays.
+ * Adds two arrays element-wise, returning a new array.
  *
- * @param other MultiArray to be added to [this] MultiArray
- * @return NDArray<T, D>, the sum of [this] MultiArray and [other] MultiArray
- * @throws IllegalArgumentException if the shape of [this] and [other] [MultiArray] are not equal.
+ * Both arrays must have the same shape. The originals are not modified.
+ *
+ * ```
+ * val a = mk.ndarray(mk[1, 2, 3])
+ * val b = mk.ndarray(mk[10, 20, 30])
+ * val c = a + b // [11, 22, 33]
+ * ```
+ *
+ * @param other the array to add (not modified).
+ * @return a new [NDArray] with the element-wise sums.
+ * @throws IllegalArgumentException if the shapes of [this] and [other] differ.
+ * @see [plusAssign] for the in-place variant.
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.plus(other: MultiArray<T, D>): NDArray<T, D> {
     requireEqualShape(this.shape, other.shape)
@@ -42,10 +61,10 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.plus(other: MultiArray<T
 }
 
 /**
- * Returns a new NDArray with the elements of this MultiArray added with the given element value
+ * Adds a scalar to each element, returning a new array.
  *
- * @param other the element to be added. Must be of the same type as the elements in MultiArray
- * @return a new NDArray object with the same dimensions as this MultiArray but with passed element added to each element
+ * @param other the scalar to add.
+ * @return a new [NDArray] with the scalar added to every element.
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.plus(other: T): NDArray<T, D> {
     val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
@@ -54,11 +73,10 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.plus(other: T): NDArray<
 }
 
 /**
- * Adds the elements of [other] to [this] MultiArray instance and returns this instance.
- * This is an in-place operation.
+ * Adds [other] to this array element-wise in place.
  *
- * @param other the MultiArray instance to add
- * @throws IllegalArgumentException if the shapes of both arrays are not equal
+ * @param other the array to add.
+ * @throws IllegalArgumentException if the shapes of [this] and [other] differ.
  */
 @Suppress("unchecked_cast")
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: MultiArray<T, D>) {
@@ -81,11 +99,9 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.plusAssign(other:
 
 
 /**
- * Adds an element [other] element-wise to the current [MutableMultiArray], modifying it in-place.
+ * Adds a scalar [other] to every element of this array in place.
  *
- * @param other The element to be added to the [MutableMultiArray].
- * @throws ClassCastException If [other] is not one of the following types: Double, Float,
- * Int, Long, ComplexFloat, ComplexDouble, Short, or Byte.
+ * @param other the scalar to add.
  */
 @Suppress("unchecked_cast")
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.plusAssign(other: T) {
@@ -106,12 +122,20 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.plusAssign(other:
 }
 
 /**
- * Calculates the difference of [this] MultiArray and [other] MultiArray, resulting in a new NDArray with the same
- * Dimension type as the input arrays.
+ * Subtracts [other] from this array element-wise, returning a new array.
  *
- * @param other MultiArray to be subtracted from [this] [MultiArray].
- * @return Returns a new [NDArray] object which is the difference between [this] and [other] [MultiArray].
- * @throws IllegalArgumentException if the shape of [this] and [other] [MultiArray] are not equal.
+ * Both arrays must have the same shape. The originals are not modified.
+ *
+ * ```
+ * val a = mk.ndarray(mk[10, 20, 30])
+ * val b = mk.ndarray(mk[1, 2, 3])
+ * val c = a - b // [9, 18, 27]
+ * ```
+ *
+ * @param other the array to subtract (not modified).
+ * @return a new [NDArray] with the element-wise differences.
+ * @throws IllegalArgumentException if the shapes of [this] and [other] differ.
+ * @see [minusAssign] for the in-place variant.
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.minus(other: MultiArray<T, D>): NDArray<T, D> {
     requireEqualShape(this.shape, other.shape)
@@ -121,10 +145,10 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.minus(other: MultiArray<
 }
 
 /**
- * Returns a new NDArray resulting from the subtraction of the given value from all the elements of the MultiArray.
+ * Subtracts a scalar from each element, returning a new array.
  *
- * @param other the value to subtract from the elements of the MultiArray
- * @return a new NDArray representing the result of the subtraction
+ * @param other the scalar to subtract.
+ * @return a new [NDArray] with the scalar subtracted from every element.
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.minus(other: T): NDArray<T, D> {
     val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
@@ -133,15 +157,10 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.minus(other: T): NDArray
 }
 
 /**
- * Subtract [other] from [this] element-wise in place.
+ * Subtracts [other] from this array element-wise in place.
  *
- *  * If both the arrays have the same shape, this method performs an in-place subtract operation and assigns the
- *  * result to this [MutableMultiArray].
- *  * Otherwise, it performs element-wise subtraction of this array and [other] array,
- *  * and assigns the result to this [MutableMultiArray].
- *
- * @param other The array to subtract from this.
- * @throws IllegalArgumentException If the shapes of [this] and [other] are not equal.
+ * @param other the array to subtract.
+ * @throws IllegalArgumentException if the shapes of [this] and [other] differ.
  */
 @Suppress("unchecked_cast")
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: MultiArray<T, D>) {
@@ -163,9 +182,9 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.minusAssign(other
 }
 
 /**
- * Subtract [other] element-wise from the current array. This is an inplace operator.
+ * Subtracts a scalar [other] from every element of this array in place.
  *
- * @param other The element to subtract from the current array.
+ * @param other the scalar to subtract.
  */
 @Suppress("unchecked_cast")
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.minusAssign(other: T) {
@@ -186,11 +205,22 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.minusAssign(other
 }
 
 /**
- * Multiplies this [MultiArray] with [other] [MultiArray] element-wise to produce a new [NDArray].
+ * Multiplies two arrays element-wise, returning a new array.
  *
- * @param other the [MultiArray] to be multiplied with [this]
- * @return an [NDArray] formed by the element-wise multiplication of [this] and [other] [MultiArray]
- * @throws IllegalArgumentException in case the shapes of [this] and [other] [MultiArray] do not match.
+ * This is element-wise multiplication, not matrix multiplication.
+ * Both arrays must have the same shape. The originals are not modified.
+ *
+ * ```
+ * val a = mk.ndarray(mk[2, 3, 4])
+ * val b = mk.ndarray(mk[10, 20, 30])
+ * val c = a * b // [20, 60, 120]
+ * ```
+ *
+ * @param other the array to multiply with (not modified).
+ * @return a new [NDArray] with the element-wise products.
+ * @throws IllegalArgumentException if the shapes of [this] and [other] differ.
+ * @see [timesAssign] for the in-place variant.
+ * @see [org.jetbrains.kotlinx.multik.api.linalg.LinAlg.dot] for matrix multiplication.
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.times(other: MultiArray<T, D>): NDArray<T, D> {
     requireEqualShape(this.shape, other.shape)
@@ -200,9 +230,10 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.times(other: MultiArray<
 }
 
 /**
- * Performs multiplication operation between MultiArray and scalar value.
- * @param other The scalar value of type T to be multiplied.
- * @return NDArray object of type T and dimension D after performing multiplication operation.
+ * Multiplies each element by a scalar, returning a new array.
+ *
+ * @param other the scalar multiplier.
+ * @return a new [NDArray] with every element multiplied by [other].
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.times(other: T): NDArray<T, D> {
     val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
@@ -211,15 +242,10 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.times(other: T): NDArray
 }
 
 /**
- * Multiplies this [MutableMultiArray] by the [other] [MultiArray] element-wise in place.
+ * Multiplies this array by [other] element-wise in place.
  *
- * If both the arrays have the same shape, this method performs an in-place multiplication operation and assigns the
- * result to this [MutableMultiArray].
- * Otherwise, it performs element-wise multiplication of this array and [other] array,
- * and assigns the result to this [MutableMultiArray].
- *
- * @param other the [MultiArray] to be multiplied element-wise with this [MutableMultiArray]
- * @throws IllegalArgumentException if both arrays do not have the same shape.
+ * @param other the array to multiply with.
+ * @throws IllegalArgumentException if the shapes of [this] and [other] differ.
  */
 @Suppress("unchecked_cast")
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: MultiArray<T, D>) {
@@ -241,10 +267,9 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.timesAssign(other
 }
 
 /**
- * Multiplies the [other] element-wise with the current [MutableMultiArray] and updates the current array in place.
+ * Multiplies every element of this array by a scalar [other] in place.
  *
- * @param other the value to be multiplied element-wise with [MutableMultiArray]
- * @throws ClassCastException if [other] is not a compatible data type for the operation
+ * @param other the scalar multiplier.
  */
 @Suppress("unchecked_cast")
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.timesAssign(other: T) {
@@ -265,11 +290,21 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.timesAssign(other
 }
 
 /**
- * Creates a new NDArray as a division of [this] MultiArray object by [other] MultiArray.
+ * Divides this array by [other] element-wise, returning a new array.
  *
- * @param other The MultiArray object to be divided by.
- * @return A new NDArray object containing the result of the division operation.
- * @throws IllegalArgumentException if the shape of [this] and [other] are not equal.
+ * Both arrays must have the same shape. The originals are not modified.
+ * Integer division truncates toward zero.
+ *
+ * ```
+ * val a = mk.ndarray(mk[10.0, 20.0, 30.0])
+ * val b = mk.ndarray(mk[2.0, 4.0, 5.0])
+ * val c = a / b // [5.0, 5.0, 6.0]
+ * ```
+ *
+ * @param other the divisor array (not modified).
+ * @return a new [NDArray] with the element-wise quotients.
+ * @throws IllegalArgumentException if the shapes of [this] and [other] differ.
+ * @see [divAssign] for the in-place variant.
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.div(other: MultiArray<T, D>): NDArray<T, D> {
     requireEqualShape(this.shape, other.shape)
@@ -279,11 +314,10 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.div(other: MultiArray<T,
 }
 
 /**
- * Returns a new NDArray<T, D> resulting from each element of the MultiArray<T, D>
- * being divided by the specified `other` element.
+ * Divides each element by a scalar, returning a new array.
  *
- * @param other The element to divide each element of the MultiArray by.
- * @return A new NDArray<T, D> with the result of the division operation.
+ * @param other the scalar divisor.
+ * @return a new [NDArray] with every element divided by [other].
  */
 public operator fun <T, D : Dimension> MultiArray<T, D>.div(other: T): NDArray<T, D> {
     val ret = if (this.consistent) (this as NDArray).copy() else (this as NDArray).deepCopy()
@@ -292,16 +326,10 @@ public operator fun <T, D : Dimension> MultiArray<T, D>.div(other: T): NDArray<T
 }
 
 /**
- * Divide this [MutableMultiArray] by another [MultiArray] element-wise.
- * This method performs the division operation in place, and modifies the original array.
+ * Divides this array by [other] element-wise in place.
  *
- * If both the arrays have the same shape, this method performs an in-place division operation and assigns the
- * result to this [MutableMultiArray].
- * Otherwise, it performs element-wise division of this array and [other] array,
- * and assigns the result to this [MutableMultiArray].
- *
- * @param other the MultiArray to divide by
- * @throws IllegalArgumentException if [this] and [other] have different shapes
+ * @param other the divisor array.
+ * @throws IllegalArgumentException if the shapes of [this] and [other] differ.
  */
 @Suppress("unchecked_cast")
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.divAssign(other: MultiArray<T, D>) {
@@ -323,10 +351,10 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.divAssign(other: 
 }
 
 /**
- * Divide each element of the multi-dimensional array in place by another element [other].
+ * Divides every element of this array by a scalar [other] in place.
  *
- * @param other The element to divide by.
- * @throws ArithmeticException if [other] is zero or causes an overflow during the division
+ * @param other the scalar divisor.
+ * @throws ArithmeticException if [other] is zero (for integer types).
  */
 @Suppress("unchecked_cast")
 public operator fun <T, D : Dimension> MutableMultiArray<T, D>.divAssign(other: T) {
@@ -347,14 +375,7 @@ public operator fun <T, D : Dimension> MutableMultiArray<T, D>.divAssign(other: 
 }
 
 
-/**
- * Performs a common assignment operation on a MutableMultiArray.
- *
- * @param other An iterator of data is the same type as the MutableMultiArray.
- * @param op A lambda function that takes two arguments of type T and returns a value of the same type.
- * This function is used to perform the common assignment operation.
- * @throws NoSuchElementException If the iterator passed as `other` does not contain enough elements.
- */
+/** Applies [op] pair-wise between this array's elements and [other], storing results in this array. */
 internal inline fun <T : Any, D : Dimension> MutableMultiArray<T, D>.commonAssignOp(
     other: Iterator<T>, op: (T, T) -> T
 ) {
@@ -368,14 +389,7 @@ internal inline fun <T : Any, D : Dimension> MutableMultiArray<T, D>.commonAssig
     }
 }
 
-/**
- * Applies the given operator `op` to each element of `this` and `other` and
- * stores the result in `this`.
- *
- * @param other The element to apply the operator to.
- * @param op The operator function to apply.
- * @throws IndexOutOfBoundsException If `this` and `other` are not the same size.
- */
+/** Applies [op] between each element of this array and the scalar [other], storing results in this array. */
 @Suppress("unchecked_cast")
 private inline fun <T : Any, D : Dimension> MutableMultiArray<T, D>.commonAssignOp(other: T, op: (T, T) -> T) {
     if (dim.d == 1) {

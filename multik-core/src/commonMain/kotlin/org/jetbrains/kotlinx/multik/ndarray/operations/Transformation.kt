@@ -1,15 +1,39 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.ndarray.operations
 
 import org.jetbrains.kotlinx.multik.api.Multik
-import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.data.D1
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
+import org.jetbrains.kotlinx.multik.ndarray.data.D2
+import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
+import org.jetbrains.kotlinx.multik.ndarray.data.D3
+import org.jetbrains.kotlinx.multik.ndarray.data.D3Array
+import org.jetbrains.kotlinx.multik.ndarray.data.D4
+import org.jetbrains.kotlinx.multik.ndarray.data.D4Array
+import org.jetbrains.kotlinx.multik.ndarray.data.DN
+import org.jetbrains.kotlinx.multik.ndarray.data.DataType
+import org.jetbrains.kotlinx.multik.ndarray.data.Dimension
+import org.jetbrains.kotlinx.multik.ndarray.data.MemoryView
+import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
+import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
+import org.jetbrains.kotlinx.multik.ndarray.data.actualAxis
+import org.jetbrains.kotlinx.multik.ndarray.data.dimensionOf
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.data.initMemoryView
 import kotlin.jvm.JvmName
 
 /**
+ * Appends the given [value] elements to this array, returning a new flattened 1D array.
  *
+ * The source array is flattened before appending. The original is not modified.
+ *
+ * ```
+ * val a = mk.ndarray(mk[1, 2, 3])
+ * a.append(4, 5) // [1, 2, 3, 4, 5]
+ * ```
+ *
+ * @param value elements to append.
+ * @return a new [D1Array] with size `this.size + value.size`.
+ * @see [cat] for concatenation along a specific axis.
  */
 public fun <T, D : Dimension> MultiArray<T, D>.append(vararg value: T): D1Array<T> {
     val newSize = this.size + value.size
@@ -18,7 +42,13 @@ public fun <T, D : Dimension> MultiArray<T, D>.append(vararg value: T): D1Array<
 }
 
 /**
+ * Appends all elements of [arr] to this array, returning a new flattened 1D array.
  *
+ * Both arrays are flattened before concatenation. The originals are not modified.
+ *
+ * @param arr the array whose elements are appended.
+ * @return a new [D1Array] with size `this.size + arr.size`.
+ * @see [cat] for concatenation along a specific axis.
  */
 public infix fun <T, D : Dimension, ID : Dimension> MultiArray<T, D>.append(arr: MultiArray<T, ID>): D1Array<T> {
     val newSize = this.size + arr.size
@@ -27,43 +57,76 @@ public infix fun <T, D : Dimension, ID : Dimension> MultiArray<T, D>.append(arr:
 }
 
 /**
+ * Concatenates [arr] to this array along the given [axis], returning a new array.
  *
+ * Both arrays must have the same shape except along [axis]. Delegates to [cat].
+ *
+ * @param arr the array to concatenate.
+ * @param axis the axis along which to join.
+ * @return a new [NDArray] with the two arrays joined along [axis].
+ * @see [cat]
  */
 public fun <T, D : Dimension> MultiArray<T, D>.append(arr: MultiArray<T, D>, axis: Int): NDArray<T, D> =
     this.cat(arr, axis)
 
+/**
+ * Stacks 1D arrays along a new [axis], returning a 2D array.
+ *
+ * All input arrays must have the same shape. The result has one more dimension
+ * than the inputs, with the new dimension at position [axis].
+ *
+ * ```
+ * val a = mk.ndarray(mk[1, 2, 3])
+ * val b = mk.ndarray(mk[4, 5, 6])
+ * mk.stack(a, b) // [[1, 2, 3], [4, 5, 6]]  shape: (2, 3)
+ * ```
+ *
+ * @param arr the arrays to stack (must all have the same shape).
+ * @param axis position of the new axis in the result (default 0).
+ * @return a new [NDArray] with rank = input rank + 1.
+ * @throws IllegalArgumentException if fewer than 2 arrays are provided, shapes differ, or [axis] is out of bounds.
+ * @see [cat] for joining along an existing axis.
+ */
 @JvmName("stackD1")
 public fun <T> Multik.stack(vararg arr: MultiArray<T, D1>, axis: Int = 0): NDArray<T, D2> =
     stack(arr.toList(), axis)
 
+/** Stacks a list of 1D arrays along a new [axis], returning a 2D array. */
 @JvmName("stackD1")
 public fun <T> Multik.stack(arrays: List<MultiArray<T, D1>>, axis: Int = 0): NDArray<T, D2> =
     stackArrays(arrays, axis)
 
+/** Stacks 2D arrays along a new [axis], returning a 3D array. */
 @JvmName("stackD2")
 public fun <T> Multik.stack(vararg arr: MultiArray<T, D2>, axis: Int = 0): NDArray<T, D3> =
     stack(arr.toList(), axis)
 
+/** Stacks a list of 2D arrays along a new [axis], returning a 3D array. */
 @JvmName("stackD2")
 public fun <T> Multik.stack(arrays: List<MultiArray<T, D2>>, axis: Int = 0): NDArray<T, D3> =
     stackArrays(arrays, axis)
 
+/** Stacks 3D arrays along a new [axis], returning a 4D array. */
 @JvmName("stackD3")
 public fun <T> Multik.stack(vararg arr: MultiArray<T, D3>, axis: Int = 0): NDArray<T, D4> =
     stack(arr.toList(), axis)
 
+/** Stacks a list of 3D arrays along a new [axis], returning a 4D array. */
 @JvmName("stackD3")
 public fun <T> Multik.stack(arrays: List<MultiArray<T, D3>>, axis: Int = 0): NDArray<T, D4> =
     stackArrays(arrays, axis)
 
+/** Stacks 4D arrays along a new [axis], returning an N-dimensional array. */
 @JvmName("stackD4")
 public fun <T> Multik.stack(vararg arr: MultiArray<T, D4>, axis: Int = 0): NDArray<T, DN> =
     stack(arr.toList(), axis)
 
+/** Stacks a list of 4D arrays along a new [axis], returning an N-dimensional array. */
 @JvmName("stackD4")
 public fun <T> Multik.stack(arrays: List<MultiArray<T, D4>>, axis: Int = 0): NDArray<T, DN> =
     stackArrays(arrays, axis)
 
+/** Implements stack by inserting a new axis at [axis] and copying elements from [arrays] into the result. */
 private fun <T, ID : Dimension, OD : Dimension> stackArrays(
     arrays: List<MultiArray<T, ID>>,
     axis: Int = 0
@@ -84,7 +147,18 @@ private fun <T, ID : Dimension, OD : Dimension> stackArrays(
 }
 
 /**
+ * Repeats this array's elements [n] times, returning a flat 1D array.
  *
+ * The original array is flattened, then the flat content is tiled [n] times.
+ *
+ * ```
+ * val a = mk.ndarray(mk[1, 2, 3])
+ * a.repeat(2) // [1, 2, 3, 1, 2, 3]
+ * ```
+ *
+ * @param n the number of repetitions (must be >= 1).
+ * @return a new [D1Array] with size `this.size * n`.
+ * @throws IllegalArgumentException if [n] < 1.
  */
 public fun <T, D : Dimension> MultiArray<T, D>.repeat(n: Int): D1Array<T> {
     require(n >= 1) { "The number of repetitions must be more than one." }
@@ -117,6 +191,7 @@ public fun <T, D : Dimension> MultiArray<T, D>.repeat(n: Int): D1Array<T> {
 }
 
 
+/** Copies this array's elements followed by elements from [iter] into a new [MemoryView] of the given [size]. */
 internal fun <T, D : Dimension> MultiArray<T, D>.copyFromTwoArrays(iter: Iterator<T>, size: Int): MemoryView<T> {
     val data = initMemoryView<T>(size, this.dtype)
     if (this.consistent) {
@@ -134,6 +209,7 @@ internal fun <T, D : Dimension> MultiArray<T, D>.copyFromTwoArrays(iter: Iterato
     return data
 }
 
+/** Copies elements from [arrays] into [dest] along the given [axis]. Handles D1 through D4 explicitly. */
 internal fun <T, D : Dimension, O : Dimension> concatenate(
     arrays: List<MultiArray<T, D>>, dest: NDArray<T, O>, axis: Int = 0
 ): NDArray<T, O> {
@@ -278,18 +354,20 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
 }
 
 /**
- * Clips the values in ndarray if value is not in range min..max
+ * Clamps every element to the range [[min], [max]], returning a new array.
  *
- * values bigger than [max] are set to [max]
+ * Elements below [min] become [min]; elements above [max] become [max].
+ * The original array is not modified.
  *
- * values smaller than [min] are set to [min]
+ * ```
+ * val a = mk.ndarray(mk[1, 5, 10])
+ * a.clip(2, 8) // [2, 5, 8]
+ * ```
  *
- * @param min minimum value for clipping where any value in ndarray
- * that is smaller than [min] are clipped and set to [min]
- * @param max maximum value for clipping where any value in ndarray
- * that is bigger than [max] are clipped and set to [max]
- * @return NDArray of which all of its elements are in range min..max
- * @throws IllegalArgumentException if min > max
+ * @param min the lower bound.
+ * @param max the upper bound.
+ * @return a new [NDArray] with all elements in `min..max`.
+ * @throws IllegalArgumentException if [min] > [max].
  */
 public fun <T, D : Dimension> MultiArray<T, D>.clip(min: T, max: T): NDArray<T, D> where T : Comparable<T>, T : Number {
     require(min <= max) {
@@ -303,7 +381,13 @@ public fun <T, D : Dimension> MultiArray<T, D>.clip(min: T, max: T): NDArray<T, 
 }
 
 /**
- * Returns a ndarray with an expanded shape.
+ * Inserts a size-1 axis at position [axis], promoting a 1D array to 2D.
+ *
+ * Returns a view when the array is [consistent][MultiArray.consistent], otherwise copies.
+ *
+ * @param axis position where the new axis is inserted.
+ * @return a 2D view (or copy) with a size-1 dimension at [axis].
+ * @see [unsqueeze]
  */
 @JvmName("expandDimsD1")
 public fun <T> MultiArray<T, D1>.expandDims(axis: Int): MultiArray<T, D2> {
@@ -315,9 +399,7 @@ public fun <T> MultiArray<T, D1>.expandDims(axis: Int): MultiArray<T, D2> {
     return D2Array(newData, newOffset, newShape, dim = D2, base = newBase)
 }
 
-/**
- * Returns a ndarray with an expanded shape.
- */
+/** Inserts a size-1 axis at position [axis], promoting a 2D array to 3D. */
 @JvmName("expandDimsD2")
 public fun <T> MultiArray<T, D2>.expandDims(axis: Int): MultiArray<T, D3> {
     val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
@@ -328,9 +410,7 @@ public fun <T> MultiArray<T, D2>.expandDims(axis: Int): MultiArray<T, D3> {
     return D3Array(newData, newOffset, newShape, dim = D3, base = newBase)
 }
 
-/**
- * Returns a ndarray with an expanded shape.
- */
+/** Inserts a size-1 axis at position [axis], promoting a 3D array to 4D. */
 @JvmName("expandDimsD3")
 public fun <T> MultiArray<T, D3>.expandDims(axis: Int): MultiArray<T, D4> {
     val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
@@ -341,16 +421,15 @@ public fun <T> MultiArray<T, D3>.expandDims(axis: Int): MultiArray<T, D4> {
     return D4Array(newData, newOffset, newShape, dim = D4, base = newBase)
 }
 
-/**
- * Returns a ndarray with an expanded shape.
- */
+/** Inserts a size-1 axis at position [axis], promoting a 4D array to N-dimensional. */
 @JvmName("expandDimsD4")
 public fun <T> MultiArray<T, D4>.expandDims(axis: Int): MultiArray<T, DN> = this.unsqueeze()
 
 /**
- * Returns a ndarray with an expanded shape.
+ * Inserts size-1 axes at the given positions, returning an N-dimensional array.
  *
- * @see MultiArray.unsqueeze
+ * @param axes positions where new axes are inserted.
+ * @see [unsqueeze]
  */
 @JvmName("expandDimsDN")
 public fun <T, D : Dimension> MultiArray<T, D>.expandNDims(vararg axes: Int): MultiArray<T, DN> = this.unsqueeze()

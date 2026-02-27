@@ -35,11 +35,14 @@ conventions. They provide familiar APIs for transforming, filtering, aggregating
 
 ### Transformation
 
-| Function       | Description                                              |
-|----------------|----------------------------------------------------------|
-| [](map.md)     | Transform each element, preserving shape.                |
-| [](flatMap.md) | Transform each element into an iterable, flatten to 1D.  |
-| [](scan.md)    | Running accumulation, returning all intermediate values. |
+| Function        | Description                                              |
+|-----------------|----------------------------------------------------------|
+| [](map.md)      | Transform each element, preserving shape.                |
+| [](flatMap.md)  | Transform each element into an iterable, flatten to 1D.  |
+| [](scan.md)     | Running accumulation, returning all intermediate values. |
+| [](append.md)   | Append elements or another array.                        |
+| [](repeat.md)   | Tile elements *n* times into a flat 1D array.            |
+| [](clip.md)     | Clamp every element to a `min..max` range.               |
 
 ### Filtering
 

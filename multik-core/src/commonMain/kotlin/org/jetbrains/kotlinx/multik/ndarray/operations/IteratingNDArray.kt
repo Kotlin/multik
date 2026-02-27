@@ -1,15 +1,31 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.ndarray.operations
 
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarrayCommon
 import org.jetbrains.kotlinx.multik.api.toCommonNDArray
 import org.jetbrains.kotlinx.multik.api.zeros
-import org.jetbrains.kotlinx.multik.ndarray.complex.*
-import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDoubleArray
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloatArray
+import org.jetbrains.kotlinx.multik.ndarray.complex.copyInto
+import org.jetbrains.kotlinx.multik.ndarray.complex.union
+import org.jetbrains.kotlinx.multik.ndarray.data.D1
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
+import org.jetbrains.kotlinx.multik.ndarray.data.D2
+import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
+import org.jetbrains.kotlinx.multik.ndarray.data.D3
+import org.jetbrains.kotlinx.multik.ndarray.data.D4
+import org.jetbrains.kotlinx.multik.ndarray.data.DataType
+import org.jetbrains.kotlinx.multik.ndarray.data.Dimension
+import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
+import org.jetbrains.kotlinx.multik.ndarray.data.NDArray
+import org.jetbrains.kotlinx.multik.ndarray.data.asDNArray
+import org.jetbrains.kotlinx.multik.ndarray.data.compareTo
+import org.jetbrains.kotlinx.multik.ndarray.data.computeStrides
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.data.initMemoryView
+import org.jetbrains.kotlinx.multik.ndarray.data.requireEqualShape
 import kotlin.experimental.ExperimentalTypeInference
 import kotlin.experimental.and
 import kotlin.experimental.or
@@ -18,6 +34,13 @@ import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * Returns `true` if this array is a transposed view of contiguous data.
+ *
+ * A transposed array has zero offset, spans the full backing data, and has strides
+ * that correspond to the reverse of a contiguous row-major layout.
+ * Always returns `false` for 1-dimensional arrays.
+ */
 public fun <T, D : Dimension> MultiArray<T, D>.isTransposed(): Boolean {
     val x = this as NDArray<T, D>
     if (x.dim == D1) return false
@@ -25,6 +48,19 @@ public fun <T, D : Dimension> MultiArray<T, D>.isTransposed(): Boolean {
             && x.strides.reversedArray().contentEquals(computeStrides(x.shape.reversedArray()))
 }
 
+/**
+ * Performs element-wise logical AND, returning an [Int] array of 0s and 1s.
+ *
+ * For integer types, this is a bitwise AND. For floating-point types, each element is
+ * truthy unless it is zero or NaN — the result is `1` when both elements are truthy, `0` otherwise.
+ *
+ * Both arrays must have the same shape.
+ *
+ * @param other the right-hand operand (not modified).
+ * @return a new [NDArray] of [Int] with `1` where both elements are truthy, `0` otherwise.
+ * @throws IllegalArgumentException if the shapes differ.
+ * @see [or]
+ */
 // TODO: boolean array
 public infix fun <T : Number, D : Dimension> MultiArray<T, D>.and(other: MultiArray<T, D>): NDArray<Int, D> {
     requireEqualShape(this.shape, other.shape)
@@ -62,6 +98,19 @@ public infix fun <T : Number, D : Dimension> MultiArray<T, D>.and(other: MultiAr
     return ret
 }
 
+/**
+ * Performs element-wise logical OR, returning an [Int] array of 0s and 1s.
+ *
+ * For integer types, this is a bitwise OR. For floating-point types, each element is
+ * truthy unless it is zero or NaN — the result is `0` only when both elements are falsy.
+ *
+ * Both arrays must have the same shape.
+ *
+ * @param other the right-hand operand (not modified).
+ * @return a new [NDArray] of [Int] with `1` where at least one element is truthy, `0` otherwise.
+ * @throws IllegalArgumentException if the shapes differ.
+ * @see [and]
+ */
 public infix fun <T : Number, D : Dimension> MultiArray<T, D>.or(other: MultiArray<T, D>): NDArray<Int, D> {
     requireEqualShape(this.shape, other.shape)
 
@@ -1140,7 +1189,16 @@ public inline fun <S, D : Dimension, T : S> MultiArray<T, D>.reduceOrNull(operat
 }
 
 /**
+ * Returns a new array with elements in reverse iteration order.
  *
+ * Always allocates a new contiguous array (not a view).
+ *
+ * ```
+ * val a = mk.ndarray(mk[1, 2, 3])
+ * a.reversed() // [3, 2, 1]
+ * ```
+ *
+ * @return a new [NDArray] with the same shape but elements in reverse order.
  */
 public fun <T, D : Dimension> MultiArray<T, D>.reversed(): NDArray<T, D> {
     if (size <= 1) return this.copy() as NDArray<T, D>
@@ -1221,7 +1279,18 @@ public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.scanMulti
 }
 
 /**
+ * Returns a new array with elements sorted in ascending order.
  *
+ * The underlying flat data is sorted, so multi-dimensional arrays are sorted in row-major order.
+ * Always allocates via [deepCopy] (not a view).
+ *
+ * ```
+ * val a = mk.ndarray(mk[3, 1, 2])
+ * a.sorted() // [1, 2, 3]
+ * ```
+ *
+ * @return a new [NDArray] with sorted elements.
+ * @throws Exception if the element type is [ComplexFloat] or [ComplexDouble].
  */
 public fun <T : Number, D : Dimension> MultiArray<T, D>.sorted(): NDArray<T, D> {
     val ret = this.deepCopy() as NDArray<T, D>
@@ -1356,6 +1425,7 @@ public fun <T> MultiArray<T, D4>.toListD4(): List<List<List<List<T>>>> =
         }
     }
 
+/** Returns a flat [IntArray] containing all elements in iteration order. */
 public fun <D : Dimension> MultiArray<Int, D>.toIntArray(): IntArray {
     val result = IntArray(size)
     if (this.consistent) {
@@ -1368,12 +1438,14 @@ public fun <D : Dimension> MultiArray<Int, D>.toIntArray(): IntArray {
     return result
 }
 
+/** Converts a 2D [Int] array to `Array<IntArray>`. */
 public fun MultiArray<Int, D2>.toArray(): Array<IntArray> =
     Array(shape[0]) { i ->
         this[i].toIntArray()
     }
 
 
+/** Converts a 3D [Int] array to `Array<Array<IntArray>>`. */
 public fun MultiArray<Int, D3>.toArray(): Array<Array<IntArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1382,6 +1454,7 @@ public fun MultiArray<Int, D3>.toArray(): Array<Array<IntArray>> =
     }
 
 
+/** Converts a 4D [Int] array to `Array<Array<Array<IntArray>>>`. */
 public fun MultiArray<Int, D4>.toArray(): Array<Array<Array<IntArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1392,6 +1465,7 @@ public fun MultiArray<Int, D4>.toArray(): Array<Array<Array<IntArray>>> =
     }
 
 
+/** Returns a flat [LongArray] containing all elements in iteration order. */
 public fun <D : Dimension> MultiArray<Long, D>.toLongArray(): LongArray {
     val result = LongArray(size)
     if (this.consistent) {
@@ -1404,12 +1478,14 @@ public fun <D : Dimension> MultiArray<Long, D>.toLongArray(): LongArray {
     return result
 }
 
+/** Converts a 2D [Long] array to `Array<LongArray>`. */
 public fun MultiArray<Long, D2>.toArray(): Array<LongArray> =
     Array(shape[0]) { i ->
         this[i].toLongArray()
     }
 
 
+/** Converts a 3D [Long] array to `Array<Array<LongArray>>`. */
 public fun MultiArray<Long, D3>.toArray(): Array<Array<LongArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1418,6 +1494,7 @@ public fun MultiArray<Long, D3>.toArray(): Array<Array<LongArray>> =
     }
 
 
+/** Converts a 4D [Long] array to `Array<Array<Array<LongArray>>>`. */
 public fun MultiArray<Long, D4>.toArray(): Array<Array<Array<LongArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1428,6 +1505,7 @@ public fun MultiArray<Long, D4>.toArray(): Array<Array<Array<LongArray>>> =
     }
 
 
+/** Returns a flat [FloatArray] containing all elements in iteration order. */
 public fun <D : Dimension> MultiArray<Float, D>.toFloatArray(): FloatArray {
     val result = FloatArray(size)
     if (this.consistent) {
@@ -1440,12 +1518,14 @@ public fun <D : Dimension> MultiArray<Float, D>.toFloatArray(): FloatArray {
     return result
 }
 
+/** Converts a 2D [Float] array to `Array<FloatArray>`. */
 public fun MultiArray<Float, D2>.toArray(): Array<FloatArray> =
     Array(shape[0]) { i ->
         this[i].toFloatArray()
     }
 
 
+/** Converts a 3D [Float] array to `Array<Array<FloatArray>>`. */
 public fun MultiArray<Float, D3>.toArray(): Array<Array<FloatArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1454,6 +1534,7 @@ public fun MultiArray<Float, D3>.toArray(): Array<Array<FloatArray>> =
     }
 
 
+/** Converts a 4D [Float] array to `Array<Array<Array<FloatArray>>>`. */
 public fun MultiArray<Float, D4>.toArray(): Array<Array<Array<FloatArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1464,6 +1545,7 @@ public fun MultiArray<Float, D4>.toArray(): Array<Array<Array<FloatArray>>> =
     }
 
 
+/** Returns a flat [DoubleArray] containing all elements in iteration order. */
 public fun <D : Dimension> MultiArray<Double, D>.toDoubleArray(): DoubleArray {
     val result = DoubleArray(size)
     if (this.consistent) {
@@ -1476,12 +1558,14 @@ public fun <D : Dimension> MultiArray<Double, D>.toDoubleArray(): DoubleArray {
     return result
 }
 
+/** Converts a 2D [Double] array to `Array<DoubleArray>`. */
 public fun MultiArray<Double, D2>.toArray(): Array<DoubleArray> =
     Array(shape[0]) { i ->
         this[i].toDoubleArray()
     }
 
 
+/** Converts a 3D [Double] array to `Array<Array<DoubleArray>>`. */
 public fun MultiArray<Double, D3>.toArray(): Array<Array<DoubleArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1490,6 +1574,7 @@ public fun MultiArray<Double, D3>.toArray(): Array<Array<DoubleArray>> =
     }
 
 
+/** Converts a 4D [Double] array to `Array<Array<Array<DoubleArray>>>`. */
 public fun MultiArray<Double, D4>.toArray(): Array<Array<Array<DoubleArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1500,6 +1585,7 @@ public fun MultiArray<Double, D4>.toArray(): Array<Array<Array<DoubleArray>>> =
     }
 
 
+/** Returns a flat [ComplexFloatArray] containing all elements in iteration order. */
 public fun <D : Dimension> MultiArray<ComplexFloat, D>.toComplexFloatArray(): ComplexFloatArray {
     val result = ComplexFloatArray(size)
     if (this.consistent) {
@@ -1512,12 +1598,14 @@ public fun <D : Dimension> MultiArray<ComplexFloat, D>.toComplexFloatArray(): Co
     return result
 }
 
+/** Converts a 2D [ComplexFloat] array to `Array<ComplexFloatArray>`. */
 public fun MultiArray<ComplexFloat, D2>.toArray(): Array<ComplexFloatArray> =
     Array(shape[0]) { i ->
         this[i].toComplexFloatArray()
     }
 
 
+/** Converts a 3D [ComplexFloat] array to `Array<Array<ComplexFloatArray>>`. */
 public fun MultiArray<ComplexFloat, D3>.toArray(): Array<Array<ComplexFloatArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1526,6 +1614,7 @@ public fun MultiArray<ComplexFloat, D3>.toArray(): Array<Array<ComplexFloatArray
     }
 
 
+/** Converts a 4D [ComplexFloat] array to `Array<Array<Array<ComplexFloatArray>>>`. */
 public fun MultiArray<ComplexFloat, D4>.toArray(): Array<Array<Array<ComplexFloatArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1536,6 +1625,7 @@ public fun MultiArray<ComplexFloat, D4>.toArray(): Array<Array<Array<ComplexFloa
     }
 
 
+/** Returns a flat [ComplexDoubleArray] containing all elements in iteration order. */
 public fun <D : Dimension> MultiArray<ComplexDouble, D>.toComplexDoubleArray(): ComplexDoubleArray {
     val result = ComplexDoubleArray(size)
     if (this.consistent) {
@@ -1548,12 +1638,14 @@ public fun <D : Dimension> MultiArray<ComplexDouble, D>.toComplexDoubleArray(): 
     return result
 }
 
+/** Converts a 2D [ComplexDouble] array to `Array<ComplexDoubleArray>`. */
 public fun MultiArray<ComplexDouble, D2>.toArray(): Array<ComplexDoubleArray> =
     Array(shape[0]) { i ->
         this[i].toComplexDoubleArray()
     }
 
 
+/** Converts a 3D [ComplexDouble] array to `Array<Array<ComplexDoubleArray>>`. */
 public fun MultiArray<ComplexDouble, D3>.toArray(): Array<Array<ComplexDoubleArray>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1562,6 +1654,7 @@ public fun MultiArray<ComplexDouble, D3>.toArray(): Array<Array<ComplexDoubleArr
     }
 
 
+/** Converts a 4D [ComplexDouble] array to `Array<Array<Array<ComplexDoubleArray>>>`. */
 public fun MultiArray<ComplexDouble, D4>.toArray(): Array<Array<Array<ComplexDoubleArray>>> =
     Array(shape[0]) { i ->
         Array(shape[1]) { j ->
@@ -1602,12 +1695,27 @@ public fun <T, D : Dimension> MultiArray<T, D>.toSet(): Set<T> {
 }
 
 /**
+ * Controls how data is copied during type conversion with [toType].
  *
+ * - [FULL] — copies the entire backing buffer including non-meaningful elements (preserves offset and strides).
+ * - [MEANINGFUL] — copies only the elements visible through the view (produces a contiguous result).
  */
 public enum class CopyStrategy { FULL, MEANINGFUL }
 
 /**
+ * Converts this array's element type to [O], returning a new array.
  *
+ * Numeric-to-numeric, numeric-to-complex, and complex-to-complex conversions are supported.
+ * If the target type is the same as the current type, the array is copied according to [copy].
+ *
+ * ```
+ * val intArr = mk.ndarray(mk[1, 2, 3])
+ * val doubleArr = intArr.toType<Int, Double, D1>() // [1.0, 2.0, 3.0]
+ * ```
+ *
+ * @param copy whether to copy the full backing buffer or only meaningful elements.
+ * @return a new [NDArray] with element type [O].
+ * @see [CopyStrategy]
  */
 public inline fun <T, reified O : Any, D : Dimension> MultiArray<T, D>.toType(copy: CopyStrategy = CopyStrategy.FULL): NDArray<O, D> {
     val dtype = DataType.ofKClass(O::class)
@@ -1615,7 +1723,12 @@ public inline fun <T, reified O : Any, D : Dimension> MultiArray<T, D>.toType(co
 }
 
 /**
+ * Converts this array's element type to the given [dtype], returning a new array.
  *
+ * @param dtype the target [DataType].
+ * @param copy whether to copy the full backing buffer or only meaningful elements.
+ * @return a new [NDArray] with the specified element type.
+ * @see [CopyStrategy]
  */
 public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(
     dtype: DataType,
@@ -1743,6 +1856,7 @@ public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(
     return NDArray(view, offset, this.shape.copyOf(), strides, this.dim)
 }
 
+/** Computes the initial capacity for a [HashMap] that will hold [size] elements without rehashing. */
 @PublishedApi
 internal fun mapCapacity(size: Int): Int {
     return when {
@@ -1752,6 +1866,7 @@ internal fun mapCapacity(size: Int): Int {
     }
 }
 
+/** Returns [index] if non-negative, throws [ArithmeticException] on overflow. */
 @PublishedApi
 internal inline fun checkIndexOverflow(index: Int): Int {
     if (index < 0) throw ArithmeticException("Index overflow has happened.")
