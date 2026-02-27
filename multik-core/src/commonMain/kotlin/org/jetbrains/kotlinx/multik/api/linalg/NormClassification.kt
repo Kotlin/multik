@@ -1,32 +1,30 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.api.linalg
 
 /**
- * Matrix norm types.
+ * Matrix norm types used by [LinAlg.norm][LinAlgEx.norm] to select the norm computation.
  *
- * @property lapackCode value for lapack
+ * @property lapackCode the character code passed to LAPACK routines.
+ * @see [LinAlgEx.norm]
+ * @see [LinAlgEx.normF]
  */
 public enum class Norm(public val lapackCode: Char) {
     /**
-     * max(abs(A(i,j)))
+     * Maximum absolute element value: max(|a_ij|).
      */
     Max('M'),
 
     /**
-     * denotes the  one norm of a matrix (maximum column sum)
+     * One-norm (maximum column sum): max over columns of sum(|a_ij|).
      */
     N1('1'),
 
     /**
-     * denotes the  infinity norm  of a matrix  (maximum row sum)
+     * Infinity norm (maximum row sum): max over rows of sum(|a_ij|).
      */
     Inf('I'),
 
     /**
-     * denotes the  Frobenius norm of a matrix (square root of sum of squares)
+     * Frobenius norm (square root of sum of squares): sqrt(sum(|a_ij|^2)). This is the default.
      */
     Fro('F')
 }
