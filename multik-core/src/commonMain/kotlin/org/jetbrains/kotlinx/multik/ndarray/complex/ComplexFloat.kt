@@ -9,36 +9,24 @@ import kotlin.math.atan2
 import kotlin.math.hypot
 
 /**
- * Represents a complex number with single precision.
- * The class is implemented as a single-precision 64-bit complex number.
+ * Single-precision complex number backed by two [Float] values.
  *
- * Properties:
- * - [re]: The real part of the complex number.
- * - [im]: The imaginary part of the complex number.
+ * Implemented as an [inline value class][JvmInline] wrapping a [Long] — the upper 32 bits store
+ * the real part and the lower 32 bits store the imaginary part, avoiding heap allocation on the JVM.
  *
- * Constructors:
- * - [ComplexFloat(re: Float, im: Float)]: Creates a complex number with the given real and imaginary parts.
- * - [ComplexFloat(re: Number, im: Number)]: Creates a complex number with the given real and imaginary parts.
- * - [ComplexFloat(re: Number)]: Creates a complex number with the given real part and an imaginary part of zero.
+ * Supports standard arithmetic via operator overloads ([plus], [minus], [times], [div]) with
+ * both real scalars and other complex numbers. Mixing with [Double] or [ComplexDouble] operands
+ * widens the result to [ComplexDouble].
  *
- * Methods:
- * - [conjugate()]: Returns a new complex number which is the conjugate of the current complex number.
- * - [abs()]: Returns the absolute value of the current complex number.
- * - [angle()]: Returns the angle of the current complex number.
- *
- * Operators:
- * - [plus()]: Adds another value to the current complex number.
- * - [minus()]: Subtracts another value from the current complex number.
- * - [times()]: Multiplies the current complex number by another value.
- * - [div()]: Divides the current complex number by another value.
- * - [unaryPlus()]: Returns a reference to the current complex number.
- * - [unaryMinus()]: Returns the negative of the current complex number.
- * - [component1()]: Returns the real part of the current complex number.
- * - [component2()]: Returns the imaginary part of the current complex number.
+ * Supports destructuring:
+ * ```
+ * val c = ComplexFloat(3f, 4f)
+ * val (re, im) = c // re = 3.0, im = 4.0
+ * ```
  *
  * @property re the real part of the complex number.
  * @property im the imaginary part of the complex number.
- * @throws ArithmeticException if division by zero or infinity occurs during division.
+ * @see ComplexDouble
  */
 @JvmInline
 public value class ComplexFloat private constructor(private val number: Long) : Complex {
@@ -79,44 +67,33 @@ public value class ComplexFloat private constructor(private val number: Long) : 
     public constructor(re: Number) : this(re.toFloat(), 0f)
 
     public companion object {
-        /**
-         * Represents a [ComplexFloat] number with 1f real part and 0f imaginary part.
-         */
+        /** The complex number `1 + 0i`. */
         public val one: ComplexFloat
             get() = ComplexFloat(1f, 0f)
 
-        /**
-         * Represents a [ComplexFloat] number with real and imaginary parts set to 0f.
-         */
+        /** The complex number `0 + 0i`. */
         public val zero: ComplexFloat
             get() = ComplexFloat(0f, 0f)
 
-        /**
-         * Represents a not-a-number (NaN) value in complex floating point arithmetic.
-         */
+        /** A [ComplexFloat] where both real and imaginary parts are [Float.NaN]. */
         public val NaN: ComplexFloat
             get() = ComplexFloat(Float.NaN, Float.NaN)
     }
 
     /**
-     * Returns the complex conjugate value of the current complex number.
+     * Returns the complex conjugate (`re - im*i`).
      *
-     * @return a new ComplexFloat object representing the complex conjugate of the current complex number.
-     * It has the same real part as the current number, but an opposite sign of its imaginary part.
+     * @return a new [ComplexFloat] with the same real part and negated imaginary part.
      */
     public fun conjugate(): ComplexFloat = ComplexFloat(re, -im)
 
     /**
-     * Returns the absolute value of the complex number.
-     *
-     * @return the absolute value of the complex number.
+     * Returns the absolute value (modulus) of this complex number: `sqrt(re² + im²)`.
      */
     public fun abs(): Float = hypot(re, im)
 
     /**
-     * Returns the angle of the complex number.
-     *
-     * @return the angle of the complex number as a Float.
+     * Returns the phase angle (argument) of this complex number in radians, computed as `atan2(im, re)`.
      */
     public fun angle(): Float = atan2(im, re)
 
@@ -363,10 +340,11 @@ public value class ComplexFloat private constructor(private val number: Long) : 
     public operator fun div(other: Double): ComplexDouble = ComplexDouble(re / other, im / other)
 
     /**
-     * Divides this value by the given ComplexFloat value.
+     * Divides this complex number by the given [ComplexFloat] value using Smith's algorithm for numerical stability.
      *
-     * @param other the [ComplexFloat] value to divide this ComplexFloat by.
-     * @return a new [ComplexFloat] value after division.
+     * @param other the [ComplexFloat] divisor.
+     * @return a new [ComplexFloat] representing the quotient.
+     * @throws ArithmeticException if [other] is zero or if the computation produces infinity/NaN.
      */
     public operator fun div(other: ComplexFloat): ComplexFloat = when {
         kotlin.math.abs(other.re) > kotlin.math.abs(other.im) -> {
@@ -391,10 +369,11 @@ public value class ComplexFloat private constructor(private val number: Long) : 
     }
 
     /**
-     * Divides this value by the given ComplexDouble value.
+     * Divides this complex number by the given [ComplexDouble] value, widening the result to [ComplexDouble].
      *
-     * @param other the [ComplexDouble] value to divide this ComplexFloat by.
-     * @return a new [ComplexDouble] value after division.
+     * @param other the [ComplexDouble] divisor.
+     * @return a new [ComplexDouble] representing the quotient.
+     * @throws ArithmeticException if [other] is zero or if the computation produces infinity/NaN.
      */
     public operator fun div(other: ComplexDouble): ComplexDouble = when {
         kotlin.math.abs(other.re) > kotlin.math.abs(other.im) -> {
@@ -424,18 +403,10 @@ public value class ComplexFloat private constructor(private val number: Long) : 
     /** Returns the negative of this value. */
     public operator fun unaryMinus(): ComplexFloat = ComplexFloat(-re, -im)
 
-    /**
-     * Returns the real component of a complex number.
-     *
-     * @return the real part of the complex number as a Float value.
-     */
+    /** Returns the real part for destructuring declarations. */
     public operator fun component1(): Float = re
 
-    /**
-     * Returns the imaginary component of a complex number.
-     *
-     * @return the imaginary part of the complex number as a Float value.
-     */
+    /** Returns the imaginary part for destructuring declarations. */
     public operator fun component2(): Float = im
 
     // TODO
@@ -455,11 +426,6 @@ public value class ComplexFloat private constructor(private val number: Long) : 
 
 //    override fun hashCode(): Int = 31 * re.toBits() + im.toBits()
 
-    /**
-     * Returns a string representation of the complex number object in the form of
-     * "real_part + (imaginary_part)i"
-     *
-     * @return the string representation of the complex number object
-     */
+    /** Returns a string in the form `re+(im)i`, for example `3.0+(4.0)i`. */
     override fun toString(): String = "$re+($im)i"
 }

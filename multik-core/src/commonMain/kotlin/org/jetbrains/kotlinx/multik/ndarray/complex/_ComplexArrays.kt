@@ -19,6 +19,13 @@ import kotlin.random.Random
 public fun <T: ComplexFloat> complexFloatArrayOf(vararg elements: T): ComplexFloatArray =
     if (elements.isEmpty()) ComplexFloatArray(0) else ComplexFloatArray(elements.size) { elements[it] }
 
+/**
+ * Creates a new [ComplexDoubleArray] from the provided vararg [elements].
+ *
+ * @param elements the elements to be included in the new [ComplexDoubleArray].
+ * @return a new [ComplexDoubleArray] containing all the provided [elements],
+ * or an empty [ComplexDoubleArray] if no [elements] were provided.
+ */
 public fun complexDoubleArrayOf(vararg elements: ComplexDouble): ComplexDoubleArray =
     if (elements.isEmpty()) ComplexDoubleArray(0) else ComplexDoubleArray(elements.size) { elements[it] }
 
@@ -1537,13 +1544,19 @@ public fun Array<out ComplexDouble>.toComplexDoubleArray(): ComplexDoubleArray =
     ComplexDoubleArray(size) { index -> this[index] }
 
 /**
- * Returns an array of ComplexFloat containing all of the elements of this generic array.
+ * Interprets this [FloatArray] as interleaved real/imaginary pairs and wraps it into a [ComplexFloatArray].
+ *
+ * The resulting array has `this.size` complex elements, each with a zero imaginary part
+ * padded by the backing flat array copy.
  */
 public fun FloatArray.toComplexFloatArray(): ComplexFloatArray =
     ComplexFloatArray(size).apply { this@toComplexFloatArray.copyInto(this.getFlatArray()) }
 
 /**
- * Returns an array of ComplexDouble containing all of the elements of this generic array.
+ * Interprets this [DoubleArray] as interleaved real/imaginary pairs and wraps it into a [ComplexDoubleArray].
+ *
+ * The resulting array has `this.size` complex elements, each with a zero imaginary part
+ * padded by the backing flat array copy.
  */
 public fun DoubleArray.toComplexDoubleArray(): ComplexDoubleArray =
     ComplexDoubleArray(size).apply { this@toComplexDoubleArray.copyInto(this.getFlatArray()) }
@@ -1560,7 +1573,7 @@ public fun Collection<ComplexFloat>.toComplexFloatArray(): ComplexFloatArray {
 }
 
 /**
- * Returns an array of ComplexDouble containing all of the elements of this generic array.
+ * Returns a [ComplexDoubleArray] containing all of the elements of this collection.
  */
 public fun Collection<ComplexDouble>.toComplexDoubleArray(): ComplexDoubleArray {
     val result = ComplexDoubleArray(size)
@@ -2587,9 +2600,19 @@ public inline fun ComplexDoubleArray.forEachIndexed(action: (index: Int, Complex
     for (item in this) action(index++, item)
 }
 
+/**
+ * Returns the first element yielding the largest value of the given [selector] function.
+ *
+ * @throws NoSuchElementException if the array is empty.
+ */
 public inline fun <R : Comparable<R>> ComplexFloatArray.maxBy(selector: (ComplexFloat) -> R): ComplexFloat =
     maxByOrNull(selector)!!
 
+/**
+ * Returns the first element yielding the largest value of the given [selector] function.
+ *
+ * @throws NoSuchElementException if the array is empty.
+ */
 public inline fun <R : Comparable<R>> ComplexDoubleArray.maxBy(selector: (ComplexDouble) -> R): ComplexDouble =
     maxByOrNull(selector)!!
 
@@ -2769,9 +2792,19 @@ public inline fun <R> ComplexDoubleArray.maxOfWithOrNull(comparator: Comparator<
     return maxValue
 }
 
+/**
+ * Returns the first element yielding the smallest value of the given [selector] function.
+ *
+ * @throws NoSuchElementException if the array is empty.
+ */
 public inline fun <R : Comparable<R>> ComplexFloatArray.minBy(selector: (ComplexFloat) -> R): ComplexFloat =
     minByOrNull(selector)!!
 
+/**
+ * Returns the first element yielding the smallest value of the given [selector] function.
+ *
+ * @throws NoSuchElementException if the array is empty.
+ */
 public inline fun <R : Comparable<R>> ComplexDoubleArray.minBy(selector: (ComplexDouble) -> R): ComplexDouble =
     minByOrNull(selector)!!
 
