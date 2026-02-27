@@ -1,12 +1,51 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package org.jetbrains.kotlinx.multik.iterable
 
-import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.arange
+import org.jetbrains.kotlinx.multik.api.d2array
+import org.jetbrains.kotlinx.multik.api.d3array
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.api.ndarrayOf
 import org.jetbrains.kotlinx.multik.ndarray.data.set
-import org.jetbrains.kotlinx.multik.ndarray.operations.*
+import org.jetbrains.kotlinx.multik.ndarray.operations.associateByTo
+import org.jetbrains.kotlinx.multik.ndarray.operations.associateTo
+import org.jetbrains.kotlinx.multik.ndarray.operations.associateWithTo
+import org.jetbrains.kotlinx.multik.ndarray.operations.average
+import org.jetbrains.kotlinx.multik.ndarray.operations.chunked
+import org.jetbrains.kotlinx.multik.ndarray.operations.contains
+import org.jetbrains.kotlinx.multik.ndarray.operations.count
+import org.jetbrains.kotlinx.multik.ndarray.operations.distinct
+import org.jetbrains.kotlinx.multik.ndarray.operations.distinctBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.drop
+import org.jetbrains.kotlinx.multik.ndarray.operations.dropWhile
+import org.jetbrains.kotlinx.multik.ndarray.operations.filter
+import org.jetbrains.kotlinx.multik.ndarray.operations.filterIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.filterNot
+import org.jetbrains.kotlinx.multik.ndarray.operations.find
+import org.jetbrains.kotlinx.multik.ndarray.operations.findLast
+import org.jetbrains.kotlinx.multik.ndarray.operations.first
+import org.jetbrains.kotlinx.multik.ndarray.operations.firstOrNull
+import org.jetbrains.kotlinx.multik.ndarray.operations.flatMap
+import org.jetbrains.kotlinx.multik.ndarray.operations.flatMapIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.fold
+import org.jetbrains.kotlinx.multik.ndarray.operations.foldIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.groupNDArrayBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.intersect
+import org.jetbrains.kotlinx.multik.ndarray.operations.last
+import org.jetbrains.kotlinx.multik.ndarray.operations.map
+import org.jetbrains.kotlinx.multik.ndarray.operations.mapIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.mapMultiIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.max
+import org.jetbrains.kotlinx.multik.ndarray.operations.maxBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.maximum
+import org.jetbrains.kotlinx.multik.ndarray.operations.min
+import org.jetbrains.kotlinx.multik.ndarray.operations.minBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.minimum
+import org.jetbrains.kotlinx.multik.ndarray.operations.partition
+import org.jetbrains.kotlinx.multik.ndarray.operations.reduce
+import org.jetbrains.kotlinx.multik.ndarray.operations.reversed
+import org.jetbrains.kotlinx.multik.ndarray.operations.scan
+import org.jetbrains.kotlinx.multik.ndarray.operations.sorted
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

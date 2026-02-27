@@ -1,10 +1,23 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 package samples
 
-import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.arange
+import org.jetbrains.kotlinx.multik.api.d1array
+import org.jetbrains.kotlinx.multik.api.d2array
+import org.jetbrains.kotlinx.multik.api.d2arrayIndices
+import org.jetbrains.kotlinx.multik.api.d3array
+import org.jetbrains.kotlinx.multik.api.d3arrayIndices
+import org.jetbrains.kotlinx.multik.api.d4array
+import org.jetbrains.kotlinx.multik.api.d4arrayIndices
+import org.jetbrains.kotlinx.multik.api.diagonal
+import org.jetbrains.kotlinx.multik.api.dnarray
+import org.jetbrains.kotlinx.multik.api.identity
+import org.jetbrains.kotlinx.multik.api.linspace
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.api.ndarrayOf
+import org.jetbrains.kotlinx.multik.api.ones
+import org.jetbrains.kotlinx.multik.api.toNDArray
+import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.ndarray.data.D2
 import org.jetbrains.kotlinx.multik.ndarray.data.D3
 import org.jetbrains.kotlinx.multik.ndarray.data.DN

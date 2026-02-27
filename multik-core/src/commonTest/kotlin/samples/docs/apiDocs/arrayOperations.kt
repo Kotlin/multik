@@ -3,7 +3,80 @@ package samples.docs.apiDocs
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.ndarray.data.D1
-import org.jetbrains.kotlinx.multik.ndarray.operations.*
+import org.jetbrains.kotlinx.multik.ndarray.operations.all
+import org.jetbrains.kotlinx.multik.ndarray.operations.and
+import org.jetbrains.kotlinx.multik.ndarray.operations.any
+import org.jetbrains.kotlinx.multik.ndarray.operations.append
+import org.jetbrains.kotlinx.multik.ndarray.operations.asSequence
+import org.jetbrains.kotlinx.multik.ndarray.operations.associate
+import org.jetbrains.kotlinx.multik.ndarray.operations.associateBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.associateWith
+import org.jetbrains.kotlinx.multik.ndarray.operations.average
+import org.jetbrains.kotlinx.multik.ndarray.operations.chunked
+import org.jetbrains.kotlinx.multik.ndarray.operations.clip
+import org.jetbrains.kotlinx.multik.ndarray.operations.contains
+import org.jetbrains.kotlinx.multik.ndarray.operations.count
+import org.jetbrains.kotlinx.multik.ndarray.operations.distinct
+import org.jetbrains.kotlinx.multik.ndarray.operations.distinctBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.div
+import org.jetbrains.kotlinx.multik.ndarray.operations.drop
+import org.jetbrains.kotlinx.multik.ndarray.operations.dropWhile
+import org.jetbrains.kotlinx.multik.ndarray.operations.filter
+import org.jetbrains.kotlinx.multik.ndarray.operations.filterIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.filterNot
+import org.jetbrains.kotlinx.multik.ndarray.operations.find
+import org.jetbrains.kotlinx.multik.ndarray.operations.findLast
+import org.jetbrains.kotlinx.multik.ndarray.operations.first
+import org.jetbrains.kotlinx.multik.ndarray.operations.firstOrNull
+import org.jetbrains.kotlinx.multik.ndarray.operations.flatMap
+import org.jetbrains.kotlinx.multik.ndarray.operations.fold
+import org.jetbrains.kotlinx.multik.ndarray.operations.foldIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.forEach
+import org.jetbrains.kotlinx.multik.ndarray.operations.forEachMultiIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.groupNDArrayBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.groupingNDArrayBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.indexOf
+import org.jetbrains.kotlinx.multik.ndarray.operations.indexOfFirst
+import org.jetbrains.kotlinx.multik.ndarray.operations.indexOfLast
+import org.jetbrains.kotlinx.multik.ndarray.operations.intersect
+import org.jetbrains.kotlinx.multik.ndarray.operations.joinToString
+import org.jetbrains.kotlinx.multik.ndarray.operations.last
+import org.jetbrains.kotlinx.multik.ndarray.operations.lastIndexOf
+import org.jetbrains.kotlinx.multik.ndarray.operations.lastOrNull
+import org.jetbrains.kotlinx.multik.ndarray.operations.map
+import org.jetbrains.kotlinx.multik.ndarray.operations.max
+import org.jetbrains.kotlinx.multik.ndarray.operations.maxBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.maxWith
+import org.jetbrains.kotlinx.multik.ndarray.operations.maximum
+import org.jetbrains.kotlinx.multik.ndarray.operations.min
+import org.jetbrains.kotlinx.multik.ndarray.operations.minBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.minWith
+import org.jetbrains.kotlinx.multik.ndarray.operations.minimum
+import org.jetbrains.kotlinx.multik.ndarray.operations.minus
+import org.jetbrains.kotlinx.multik.ndarray.operations.onEach
+import org.jetbrains.kotlinx.multik.ndarray.operations.or
+import org.jetbrains.kotlinx.multik.ndarray.operations.partition
+import org.jetbrains.kotlinx.multik.ndarray.operations.plus
+import org.jetbrains.kotlinx.multik.ndarray.operations.plusAssign
+import org.jetbrains.kotlinx.multik.ndarray.operations.reduce
+import org.jetbrains.kotlinx.multik.ndarray.operations.reduceIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.repeat
+import org.jetbrains.kotlinx.multik.ndarray.operations.reversed
+import org.jetbrains.kotlinx.multik.ndarray.operations.scan
+import org.jetbrains.kotlinx.multik.ndarray.operations.sorted
+import org.jetbrains.kotlinx.multik.ndarray.operations.times
+import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
+import org.jetbrains.kotlinx.multik.ndarray.operations.toArray
+import org.jetbrains.kotlinx.multik.ndarray.operations.toCollection
+import org.jetbrains.kotlinx.multik.ndarray.operations.toDoubleArray
+import org.jetbrains.kotlinx.multik.ndarray.operations.toHashSet
+import org.jetbrains.kotlinx.multik.ndarray.operations.toIntArray
+import org.jetbrains.kotlinx.multik.ndarray.operations.toList
+import org.jetbrains.kotlinx.multik.ndarray.operations.toListD2
+import org.jetbrains.kotlinx.multik.ndarray.operations.toMutableList
+import org.jetbrains.kotlinx.multik.ndarray.operations.toSet
+import org.jetbrains.kotlinx.multik.ndarray.operations.toType
+import org.jetbrains.kotlinx.multik.ndarray.operations.unaryMinus
 import kotlin.test.Test
 
 class ArrayOperations {
@@ -594,6 +667,54 @@ class ArrayOperations {
 
         val floats = ints.toType<Int, Float, D1>()
         // D1Array<Float> [1.0, 2.0, 3.0]
+        // SampleEnd
+    }
+
+    // === Transformation Operations ===
+
+    @Test
+    fun append_example() {
+        // SampleStart
+        val a = mk.ndarray(mk[1, 2, 3])
+
+        // Append individual elements
+        a.append(4, 5)               // [1, 2, 3, 4, 5]
+
+        // Append another array (flattened)
+        val b = mk.ndarray(mk[10, 20])
+        a append b                   // [1, 2, 3, 10, 20]
+
+        // Append along an axis
+        val m1 = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+        val m2 = mk.ndarray(mk[mk[5, 6]])
+        m1.append(m2, axis = 0)
+        // [[1, 2],
+        //  [3, 4],
+        //  [5, 6]]
+        // SampleEnd
+    }
+
+    @Test
+    fun repeat_example() {
+        // SampleStart
+        val a = mk.ndarray(mk[1, 2, 3])
+        a.repeat(3) // [1, 2, 3, 1, 2, 3, 1, 2, 3]
+
+        val m = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+        m.repeat(2) // [1, 2, 3, 4, 1, 2, 3, 4]
+        // SampleEnd
+    }
+
+    @Test
+    fun clip_example() {
+        // SampleStart
+        val a = mk.ndarray(mk[1, 5, 10, 15, 20])
+        a.clip(5, 15) // [5, 5, 10, 15, 15]
+
+        val m = mk.ndarray(mk[mk[0.0, 0.5], mk[1.0, 1.5]])
+        m.clip(0.2, 1.0)
+        // [[0.2, 0.5],
+        //  [1.0, 1.0]]
         // SampleEnd
     }
 
