@@ -57,9 +57,12 @@ public class ComplexDouble64 internal constructor(
 }
 
 /**
- * Represents a complex number of single-precision real and imaginary parts.
+ * Memory-efficient [ComplexDouble] that packs two single-precision floats into a single [Long].
  *
- *  @param number The number representing the complex number as a Long value
+ * Used when both real and imaginary parts fit in [Float] without precision loss.
+ * This avoids object allocation on the JVM since the class is an [inline value class][JvmInline].
+ *
+ * @param number two float values packed into a single [Long] (high 32 bits = real, low 32 bits = imaginary).
  * @property re the real part of the complex number.
  * @property im the imaginary part of the complex number.
  */

@@ -235,12 +235,13 @@ public fun <T, D : Dim2> Multik.writeCSV(path: String, ndarray: NDArray<T, D>, d
     writeCSV(FileWriter(path), ndarray, CSVFormat.Builder.create(CSVFormat.DEFAULT).setDelimiter(delimiter).build())
 
 /**
- * Returns an NDArray of type [T] and [D] dimension read from csv file.
- * @param T NDArray element type
- * @param D dimension of NDArray. It can be 1 or 2
- * @param writer
- * @param ndarray array of data
- * @param format csv format from apache
+ * Writes an NDArray to the given [writer] in CSV format.
+ *
+ * @param T NDArray element type.
+ * @param D dimension of NDArray. It can be 1 or 2.
+ * @param writer the output destination.
+ * @param ndarray array of data to write.
+ * @param format CSV format configuration from Apache Commons CSV.
  */
 public fun <T, D : Dim2> Multik.writeCSV(
     writer: Appendable,

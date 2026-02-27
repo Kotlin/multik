@@ -10,17 +10,49 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.notExists
 
+/**
+ * Reads an [NDArray] in NumPy binary format from the file at [fileName].
+ *
+ * Supported element types: `Byte`, `Short`, `Int`, `Long`, `Float`, `Double` (no complex).
+ *
+ * @param T the numeric element type.
+ * @param D the dimension type.
+ * @param fileName path to the `.npy` file.
+ * @throws NoSuchFileException if the file does not exist.
+ * @throws IllegalArgumentException if the file's shape does not match dimension [D].
+ */
 public inline fun <reified T : Number, reified D : Dimension> Multik.readNPY(fileName: String): NDArray<T, D> =
     readNPY(Path(fileName), DataType.ofKClass(T::class), dimensionClassOf<D>())
 
+/**
+ * Reads an [NDArray] in NumPy binary format from the given [file].
+ *
+ * @see [readNPY]
+ */
 public inline fun <reified T : Number, reified D : Dimension> Multik.readNPY(file: File): NDArray<T, D> =
     readNPY(file.toPath(), DataType.ofKClass(T::class), dimensionClassOf<D>())
 
+/**
+ * Reads an [NDArray] in NumPy binary format from the given [path].
+ *
+ * @see [readNPY]
+ */
 public inline fun <reified T : Number, reified D : Dimension> Multik.readNPY(path: Path): NDArray<T, D> {
     if (path.notExists()) throw NoSuchFileException(path.toFile())
     return readNPY(path, DataType.ofKClass(T::class), dimensionClassOf<D>())
 }
 
+/**
+ * Reads an [NDArray] in NumPy binary format from the given [path] with explicit [dtype] and dimension [dim].
+ *
+ * Supported element types: `Byte`, `Short`, `Int`, `Long`, `Float`, `Double`. Complex types are not supported.
+ *
+ * @param path path to the `.npy` file.
+ * @param dtype the expected element data type.
+ * @param dim the expected dimension.
+ * @throws Exception if [dtype] is a complex type.
+ * @throws IllegalArgumentException if the file's shape does not match [dim].
+ */
 public fun <T : Any, D : Dimension> Multik.readNPY(path: Path, dtype: DataType, dim: D): NDArray<T, D> {
     if (dtype.isComplex()) throw Exception("NPY format only supports Number types")
     val npyArray: NpyArray = NpyFile.read(path)
@@ -39,12 +71,32 @@ public fun <T : Any, D : Dimension> Multik.readNPY(path: Path, dtype: DataType, 
     return NDArray(data, shape = npyArray.shape, dim = dim)
 }
 
+/**
+ * Reads all arrays from a NumPy NPZ archive at [fileName].
+ *
+ * Returns a list of arrays in archive order. Each array's dtype and shape are inferred from the archive metadata.
+ * Supported element types: `Byte`, `Short`, `Int`, `Long`, `Float`, `Double`.
+ *
+ * @param fileName path to the `.npz` file.
+ * @return list of arrays contained in the archive.
+ * @throws IllegalArgumentException if an array has an unsupported data type.
+ */
 public fun Multik.readNPZ(fileName: String): List<NDArray<out Number, out DimN>> =
     readNPZ(Path(fileName))
 
+/**
+ * Reads all arrays from a NumPy NPZ archive from the given [file].
+ *
+ * @see [readNPZ]
+ */
 public fun Multik.readNPZ(file: File): List<NDArray<*, out DimN>> =
     readNPZ(file.toPath())
 
+/**
+ * Reads all arrays from a NumPy NPZ archive at the given [path].
+ *
+ * @see [readNPZ]
+ */
 public fun Multik.readNPZ(path: Path): List<NDArray<out Number, out DimN>> {
     return NpzFile.read(path).use {
         val entries = it.introspect()
@@ -64,12 +116,31 @@ public fun Multik.readNPZ(path: Path): List<NDArray<out Number, out DimN>> {
     }
 }
 
+/**
+ * Writes the given [ndArray] to a file at [fileName] in NumPy binary format.
+ *
+ * Supported element types: `Byte`, `Short`, `Int`, `Long`, `Float`, `Double`.
+ *
+ * @param fileName path to the output `.npy` file.
+ * @param ndArray the numeric array to write.
+ * @throws IllegalArgumentException if the array has an unsupported data type.
+ */
 public fun <T : Number, D : Dimension> Multik.writeNPY(fileName: String, ndArray: NDArray<T, D>): Unit =
     this.writeNPY(Path(fileName), ndArray)
 
+/**
+ * Writes the given [ndArray] to the specified [file] in NumPy binary format.
+ *
+ * @see [writeNPY]
+ */
 public fun <T : Number, D : Dimension> Multik.writeNPY(file: File, ndArray: NDArray<T, D>): Unit =
     this.writeNPY(file.toPath(), ndArray)
 
+/**
+ * Writes the given [ndArray] to the specified [path] in NumPy binary format.
+ *
+ * @see [writeNPY]
+ */
 public fun <T : Number, D : Dimension> Multik.writeNPY(path: Path, ndArray: NDArray<T, D>): Unit {
     when (ndArray.dtype) {
         DataType.DoubleDataType -> NpyFile.write(path, ndArray.data.getDoubleArray(), ndArray.shape)
@@ -82,9 +153,24 @@ public fun <T : Number, D : Dimension> Multik.writeNPY(path: Path, ndArray: NDAr
     }
 }
 
+/**
+ * Writes the given arrays to a NumPy NPZ archive at the specified [path].
+ *
+ * Arrays are stored as `arr_0`, `arr_1`, etc.
+ *
+ * @param path path to the output `.npz` file.
+ * @param ndArrays the numeric arrays to write.
+ * @throws IllegalArgumentException if any array has an unsupported data type.
+ * @see [readNPZ]
+ */
 public fun Multik.writeNPZ(path: Path, vararg ndArrays: NDArray<out Number, out Dimension>): Unit =
     this.writeNPZ(path, ndArrays.asList())
 
+/**
+ * Writes the given list of arrays to a NumPy NPZ archive at the specified [path].
+ *
+ * @see [writeNPZ]
+ */
 public fun Multik.writeNPZ(path: Path, ndArrays: List<NDArray<out Number, out Dimension>>): Unit {
     NpzFile.write(path).use {
         ndArrays.forEachIndexed { ind, array ->
