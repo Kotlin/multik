@@ -15,6 +15,10 @@ Transform each element, returning a new array of the same shape.
 map() — element-wise transformation preserving shape.
 </link-summary>
 
+Applies a transformation function to each element and returns a new array of the same shape.
+Indexed variants provide the element's flat index (`mapIndexed`, 1D only) or multi-dimensional
+index (`mapMultiIndexed`). The result element type `R` must be a supported `DataType`.
+
 ## Signatures
 
 ```kotlin
@@ -47,6 +51,8 @@ inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapNotNull(
 
 ## Example
 
+<!---FUN map_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
 
@@ -55,13 +61,15 @@ val doubled = a.map { it * 2 }
 //  [6, 8]]
 
 val b = mk.ndarray(mk[10, 20, 30])
-b.mapIndexed { i, v -> "$i:$v" }
-// ["0:10", "1:20", "2:30"]
+b.mapIndexed { i, v -> v + i }
+// [10, 21, 32]
 
 a.mapMultiIndexed { idx, v -> idx.sum() + v }
 // [[1, 3],
 //  [4, 6]]
 ```
+
+<!---END-->
 
 > `map` preserves the **shape** of the original array. Use `flatMap` if you need to change the shape.
 > {style="note"}

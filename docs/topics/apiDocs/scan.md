@@ -15,6 +15,10 @@ Running accumulation that returns all intermediate values as an array.
 scan() — successive accumulation values as an NDArray.
 </link-summary>
 
+Returns an array of successive accumulation values starting from the initial value, applying the
+operation to each element from left to right. The result contains the initial value followed by
+all intermediate accumulated values.
+
 ## Signatures
 
 ```kotlin

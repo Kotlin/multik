@@ -14,6 +14,9 @@ Create a 3D array where each element is computed from its three axis indices.
 mk.d3arrayIndices() — 3D array from (i, j, k) init lambda.
 </link-summary>
 
+Creates a 3D array of the given shape, where each element is computed from its three axis indices
+`(i, j, k)`. Useful when the element value depends on its position in the 3D space.
+
 ## Signature
 
 ```kotlin

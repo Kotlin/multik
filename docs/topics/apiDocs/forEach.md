@@ -14,6 +14,9 @@ Perform an action on each element. Indexed variants provide element position.
 forEach() — iterate over NDArray elements with an action.
 </link-summary>
 
+Performs the given action on each element of the array. Indexed variants provide the element's
+flat index (`forEachIndexed`, 1D only) or multi-dimensional index (`forEachMultiIndexed`).
+
 ## Signatures
 
 ```kotlin

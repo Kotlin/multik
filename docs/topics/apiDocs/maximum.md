@@ -15,6 +15,9 @@ Element-wise maximum of two arrays with the same shape.
 maximum() — element-wise maximum of two NDArrays.
 </link-summary>
 
+Compares two arrays element by element and returns a new array where each element is the larger of
+the two corresponding values. Both arrays must have the same shape.
+
 ## Signature
 
 ```kotlin

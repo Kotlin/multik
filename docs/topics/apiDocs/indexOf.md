@@ -15,6 +15,10 @@ Find the flat index of an element's first occurrence, or -1.
 indexOf() — flat index of the first occurrence of an element.
 </link-summary>
 
+Returns the flat (row-major) index of the first occurrence of the specified element, or `-1` if
+not found. Predicate-based variants (`indexOfFirst`, `indexOfLast`) and `lastIndexOf` are also
+available.
+
 ## Signatures
 
 ```kotlin

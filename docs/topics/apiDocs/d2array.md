@@ -14,6 +14,10 @@ Create a 2D array where each element is computed by a flat-index init function.
 mk.d2array() — 2D array from flat-index init lambda.
 </link-summary>
 
+Creates a 2D array of the given shape, where each element is computed by a flat-index `init`
+function. Elements are filled in row-major order. For per-element `(i, j)` indices, use
+[d2arrayIndices](d2arrayIndices.md).
+
 ## Signature
 
 ```kotlin

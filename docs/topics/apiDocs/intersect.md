@@ -15,6 +15,9 @@ Set intersection between an NDArray and another collection.
 intersect() — elements common to an NDArray and another collection.
 </link-summary>
 
+Returns a `Set` of elements that are present in both the array and the given iterable. Uses the
+`infix` syntax `array intersect collection`.
+
 ## Signature
 
 ```kotlin

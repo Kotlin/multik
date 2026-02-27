@@ -14,6 +14,10 @@ Filter elements by a predicate, returning a 1D array of matches.
 filter() — select elements matching a predicate.
 </link-summary>
 
+Returns a 1D array containing only the elements that satisfy the given predicate. Indexed
+variants allow filtering based on element position. `filterNot` inverts the predicate. The result
+is always 1D regardless of the input dimensionality.
+
 ## Signatures
 
 ```kotlin

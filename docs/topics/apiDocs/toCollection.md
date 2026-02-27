@@ -15,6 +15,9 @@ Append NDArray elements to a mutable collection, or convert to Set/HashSet.
 toCollection() — convert NDArray elements to Kotlin collections.
 </link-summary>
 
+Appends all array elements to a mutable collection and returns it. Convenience functions `toSet`,
+`toHashSet`, and `toMutableSet` create new set instances containing only the unique elements.
+
 ## Signatures
 
 ```kotlin

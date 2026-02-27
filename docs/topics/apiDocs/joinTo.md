@@ -15,6 +15,10 @@ Build a string from NDArray elements with separators, prefix, and postfix.
 joinTo() / joinToString() — string representation of NDArray elements.
 </link-summary>
 
+Builds a string representation of the array's elements, with configurable separator, prefix,
+postfix, element limit, and optional transform function. `joinTo` appends to an existing
+`Appendable`; `joinToString` returns a `String` directly.
+
 ## Signatures
 
 ```kotlin

@@ -15,6 +15,10 @@ Get the first element, or the first matching a predicate.
 first() — first element of an NDArray.
 </link-summary>
 
+Returns the first element of the array, or the first element matching a predicate. Throws
+`NoSuchElementException` if the array is empty or no match is found; use `firstOrNull` for a
+safe variant that returns `null` instead.
+
 ## Signatures
 
 ```kotlin

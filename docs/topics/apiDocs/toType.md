@@ -15,6 +15,10 @@ Convert NDArray element type — e.g. Int to Double, Float to Long.
 toType() — element type conversion for NDArrays.
 </link-summary>
 
+Converts the element type of the array to a different numeric type (e.g. `Int` to `Double`),
+returning a new array with the same shape. The `CopyStrategy` parameter controls whether data is
+always copied or can be shared when types already match.
+
 ## Signatures
 
 ```kotlin

@@ -14,6 +14,10 @@ Create a 3D array where each element is computed by a flat-index init function.
 mk.d3array() — 3D array from flat-index init lambda.
 </link-summary>
 
+Creates a 3D array of the given shape, where each element is computed by a flat-index `init`
+function. Elements are filled in row-major order. For per-element `(i, j, k)` indices, use
+[d3arrayIndices](d3arrayIndices.md).
+
 ## Signature
 
 ```kotlin

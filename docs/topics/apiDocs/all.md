@@ -14,6 +14,9 @@ Returns true if all elements match a predicate. Empty arrays return true.
 all() — check if all NDArray elements satisfy a predicate.
 </link-summary>
 
+Tests whether every element in the array satisfies the given predicate. Returns `true` for
+empty arrays (vacuous truth), consistent with Kotlin's `Iterable.all`.
+
 ## Signature
 
 ```kotlin

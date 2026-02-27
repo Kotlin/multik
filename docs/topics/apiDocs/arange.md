@@ -15,6 +15,9 @@ Create evenly spaced values in the half-open interval [start, stop).
 mk.arange() — evenly spaced values in [start, stop).
 </link-summary>
 
+Creates a 1D array of evenly spaced values within the half-open interval `[start, stop)`. The
+spacing between values is controlled by `step`, which can be an integer or a double.
+
 ## Signatures
 
 ### With start

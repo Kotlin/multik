@@ -14,6 +14,9 @@ Returns a 1D array of unique elements, preserving first-occurrence order.
 distinct() — unique elements of an NDArray as a 1D array.
 </link-summary>
 
+Returns a 1D array containing only the unique elements, preserving first-occurrence order.
+`distinctBy` compares elements by the key returned from the selector function.
+
 ## Signatures
 
 ```kotlin

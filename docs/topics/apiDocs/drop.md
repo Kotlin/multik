@@ -3,16 +3,21 @@
 <!---IMPORT samples.docs.apiDocs.ArrayOperations-->
 
 <web-summary>
-API reference for drop() — removes the first n elements from a 1D NDArray.
+API reference for drop() and dropWhile() — removes the first n elements or elements matching
+a predicate from a 1D NDArray.
 </web-summary>
 
 <card-summary>
-Drop the first n elements from a 1D array.
+Drop leading elements from a 1D array by count or predicate.
 </card-summary>
 
 <link-summary>
-drop() — remove the first n elements of a 1D NDArray.
+drop() / dropWhile() — remove leading elements from a 1D array.
 </link-summary>
+
+Returns a new 1D array with leading elements removed. `drop(n)` removes the first `n` elements,
+while `dropWhile` removes elements from the front as long as they satisfy the given predicate.
+Both functions are available only on 1D arrays.
 
 ## Signatures
 

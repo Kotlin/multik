@@ -14,6 +14,9 @@ Find the largest element, or null if the array is empty.
 max() — largest element of an NDArray.
 </link-summary>
 
+Returns the largest element in the array, or `null` if the array is empty. `maxBy` and `maxWith`
+variants allow custom comparison via a selector function or a `Comparator`.
+
 ## Signatures
 
 ```kotlin

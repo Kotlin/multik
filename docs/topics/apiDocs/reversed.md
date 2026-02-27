@@ -14,6 +14,8 @@ Return a new array with elements in reverse order.
 reversed() — reverse the element order of an NDArray.
 </link-summary>
 
+Returns a new array with elements in reverse row-major order. The shape is preserved.
+
 ## Signature
 
 ```kotlin

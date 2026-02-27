@@ -15,6 +15,10 @@ Get the last element, or the last matching a predicate.
 last() — last element of an NDArray.
 </link-summary>
 
+Returns the last element of the array, or the last element matching a predicate. Throws
+`NoSuchElementException` if the array is empty or no match is found; use `lastOrNull` for a
+safe variant that returns `null` instead.
+
 ## Signatures
 
 ```kotlin

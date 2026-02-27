@@ -1,7 +1,5 @@
 # sum
 
-<!---IMPORT samples.docs.apiDocs.ArrayOperations-->
-
 <web-summary>
 API reference for sum() — returns the sum of all elements in an NDArray.
 </web-summary>
@@ -13,6 +11,10 @@ Compute the sum of all elements in an NDArray.
 <link-summary>
 sum() — total sum of NDArray elements.
 </link-summary>
+
+Returns the sum of all elements in the array. `sumBy` variants allow mapping each element through
+a selector function before summing, supporting `Int`, `Double`, `ComplexFloat`, and `ComplexDouble`
+result types.
 
 ## Signatures
 

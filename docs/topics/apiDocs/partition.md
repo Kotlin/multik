@@ -15,6 +15,9 @@ Split elements into two 1D arrays: matching and non-matching.
 partition() — split by predicate into (matching, non-matching).
 </link-summary>
 
+Splits the array into two 1D arrays: the first contains elements for which the predicate is `true`,
+the second contains the rest. Supports destructuring into `val (matching, rest) = ...`.
+
 ## Signature
 
 ```kotlin

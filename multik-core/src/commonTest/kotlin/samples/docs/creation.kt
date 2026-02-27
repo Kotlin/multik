@@ -1,11 +1,20 @@
 package samples.docs
 
-import org.jetbrains.kotlinx.multik.api.*
+import org.jetbrains.kotlinx.multik.api.arange
+import org.jetbrains.kotlinx.multik.api.d2arrayIndices
+import org.jetbrains.kotlinx.multik.api.d3array
+import org.jetbrains.kotlinx.multik.api.linspace
+import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.api.ones
+import org.jetbrains.kotlinx.multik.api.toNDArray
+import org.jetbrains.kotlinx.multik.api.zeros
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.complex.i
 import org.jetbrains.kotlinx.multik.ndarray.complex.plus
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 import org.jetbrains.kotlinx.multik.ndarray.operations.toList
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -49,21 +58,22 @@ class ArrayCreation {
         assertEquals(listOf(8.4, 5.2, 9.3, 11.5), listOf(8.4, 5.2, 9.3, 11.5).toNDArray().toList())
     }
 
-//    @Test
-//    fun create_array_from_primitive_with_shape() {
-//        // SampleStart
-//        mk.ndarray(floatArrayOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), 2, 1, 3)
-//        /*
-//        [[[34.2, 13.4, 4.8]],
-//
-//        [[8.8, 3.3, 7.1]]]
-//         */
-//        // SampleEnd
-//
-//        val a = mk.ndarray(floatArrayOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), 2, 1, 3)
-//        assertEquals(listOf(2, 1, 3), a.shape.toList())
-//        assertEquals(listOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), a.toList())
-//    }
+    @Test
+    @Ignore
+    fun create_array_from_primitive_with_shape() {
+        // SampleStart
+        mk.ndarray(floatArrayOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), 2, 1, 3)
+        /*
+        [[[34.2, 13.4, 4.8]],
+
+        [[8.8, 3.3, 7.1]]]
+         */
+        // SampleEnd
+
+        val a = mk.ndarray(floatArrayOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), 2, 1, 3)
+        assertEquals(listOf(2, 1, 3), a.shape.toList())
+        assertEquals(listOf(34.2f, 13.4f, 4.8f, 8.8f, 3.3f, 7.1f), a.toList())
+    }
 
     @Test
     fun create_zeros_and_ones_arrays() {
@@ -106,11 +116,12 @@ class ArrayCreation {
             mk.d3array(2, 2, 3) { it * it }.toList()
         )
 
-        assertEquals(listOf(
-            0f + 0f.i, 0f + 1f.i, 0f + 2f.i,
-            1f + 0f.i, 1f + 1f.i, 1f + 2f.i,
-            2f + 0f.i, 2f + 1f.i, 2f + 2f.i
-        ),
+        assertEquals(
+            listOf(
+                0f + 0f.i, 0f + 1f.i, 0f + 2f.i,
+                1f + 0f.i, 1f + 1f.i, 1f + 2f.i,
+                2f + 0f.i, 2f + 1f.i, 2f + 2f.i
+            ),
             mk.d2arrayIndices(3, 3) { i, j -> ComplexFloat(i, j) }.toList()
         )
     }

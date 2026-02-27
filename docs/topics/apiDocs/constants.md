@@ -30,7 +30,7 @@ import kotlin.math.PI
 import kotlin.math.E
 
 val angles = mk.linspace<Double>(0, 1, 100) * PI  // 0 to PI
-val exponential = mk.d1array(5) { E.pow(it) }
+val exponential = mk.d1array(5) { E.pow(it.toDouble()) }
 ```
 
 ## Special values

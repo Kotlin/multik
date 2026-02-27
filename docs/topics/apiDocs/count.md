@@ -15,6 +15,9 @@ Count all elements or only those matching a predicate.
 count() — count NDArray elements, optionally filtered by predicate.
 </link-summary>
 
+Returns the total number of elements in the array, or the number of elements matching the given
+predicate.
+
 ## Signatures
 
 ```kotlin

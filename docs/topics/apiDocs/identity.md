@@ -14,6 +14,8 @@ Create an n-by-n identity matrix.
 mk.identity() — square identity matrix.
 </link-summary>
 
+Creates an `n x n` square identity matrix with ones on the main diagonal and zeros elsewhere.
+
 ## Signatures
 
 ```kotlin

@@ -14,6 +14,9 @@ Create a 1D array where each element is computed by an init function.
 mk.d1array() — 1D array from init lambda.
 </link-summary>
 
+Creates a 1D array of the given size, where each element is computed by the `init` function
+that receives the element's index.
+
 ## Signature
 
 ```kotlin

@@ -15,6 +15,9 @@ Perform an action on each element and return the array for chaining.
 onEach() — side-effect on each element, returns the array.
 </link-summary>
 
+Performs the given action on each element and returns the array itself, enabling method chaining.
+Use it for side effects like logging or debugging within a pipeline of transformations.
+
 ## Signature
 
 ```kotlin

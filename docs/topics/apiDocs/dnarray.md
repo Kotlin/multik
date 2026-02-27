@@ -14,6 +14,10 @@ Create an N-dimensional array where each element is computed by a flat-index ini
 mk.dnarray() — N-D array from flat-index init lambda.
 </link-summary>
 
+Creates an N-dimensional array where each element is computed by a flat-index `init` function.
+Use the explicit-dimensions overload for 5+ dimensions, or the shape-based overload to create
+arrays of any dimension from a dynamically computed shape.
+
 ## Signatures
 
 ### From explicit dimensions (5+)

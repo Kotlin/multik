@@ -44,6 +44,8 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.last
 import org.jetbrains.kotlinx.multik.ndarray.operations.lastIndexOf
 import org.jetbrains.kotlinx.multik.ndarray.operations.lastOrNull
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
+import org.jetbrains.kotlinx.multik.ndarray.operations.mapIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.mapMultiIndexed
 import org.jetbrains.kotlinx.multik.ndarray.operations.max
 import org.jetbrains.kotlinx.multik.ndarray.operations.maxBy
 import org.jetbrains.kotlinx.multik.ndarray.operations.maxWith
@@ -77,6 +79,8 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.toMutableList
 import org.jetbrains.kotlinx.multik.ndarray.operations.toSet
 import org.jetbrains.kotlinx.multik.ndarray.operations.toType
 import org.jetbrains.kotlinx.multik.ndarray.operations.unaryMinus
+import org.jetbrains.kotlinx.multik.ndarray.operations.windowed
+import kotlin.test.Ignore
 import kotlin.test.Test
 
 class ArrayOperations {
@@ -259,25 +263,25 @@ class ArrayOperations {
 
     // === Transformation ===
 
-    // TODO
-//    @Test
-//    fun map_example() {
-//        // SampleStart
-//        val a = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
-//
-//        val doubled = a.map { it * 2 }
-//        // [[2, 4],
-//        //  [6, 8]]
-//
-//        val b = mk.ndarray(mk[10, 20, 30])
-//        b.mapIndexed { i, v -> "$i:$v" }
-//        // ["0:10", "1:20", "2:30"]
-//
-//        a.mapMultiIndexed { idx, v -> idx.sum() + v }
-//        // [[1, 3],
-//        //  [4, 6]]
-//        // SampleEnd
-//    }
+    @Test
+    @Ignore
+    fun map_example() {
+        // SampleStart
+        val a = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+
+        val doubled = a.map { it * 2 }
+        // [[2, 4],
+        //  [6, 8]]
+
+        val b = mk.ndarray(mk[10, 20, 30])
+        b.mapIndexed { i, v -> v + i }
+        // [10, 21, 32]
+
+        a.mapMultiIndexed { idx, v -> idx.sum() + v }
+        // [[1, 3],
+        //  [4, 6]]
+        // SampleEnd
+    }
 
     @Test
     fun flatMap_example() {
@@ -530,22 +534,22 @@ class ArrayOperations {
         // SampleEnd
     }
 
-    // TODO
-//    @Test
-//    fun windowed_example() {
-//        // SampleStart
-//        val a = mk.ndarray(mk[1, 2, 3, 4, 5])
-//
-//        a.windowed(3)
-//        // [[1, 2, 3],
-//        //  [2, 3, 4],
-//        //  [3, 4, 5]]
-//
-//        a.windowed(3, step = 2)
-//        // [[1, 2, 3],
-//        //  [3, 4, 5]]
-//        // SampleEnd
-//    }
+    @Test
+    @Ignore
+    fun windowed_example() {
+        // SampleStart
+        val a = mk.ndarray(mk[1, 2, 3, 4, 5])
+
+        a.windowed(3)
+        // [[1, 2, 3],
+        //  [2, 3, 4],
+        //  [3, 4, 5]]
+
+        a.windowed(3, step = 2)
+        // [[1, 2, 3],
+        //  [3, 4, 5]]
+        // SampleEnd
+    }
 
     @Test
     fun drop_example() {

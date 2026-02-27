@@ -14,6 +14,9 @@ Append elements or another array, returning a new array.
 append() — append elements or arrays to an NDArray.
 </link-summary>
 
+Appends individual elements or another array, returning a new array. The first two overloads
+flatten both arrays to 1D before concatenating; the axis-based overload preserves dimensionality.
+
 ## Signatures
 
 ```kotlin

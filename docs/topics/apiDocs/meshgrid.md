@@ -14,6 +14,9 @@ Create coordinate matrices from two 1D vectors for grid-based computation.
 mk.meshgrid() — 2D coordinate grids from 1D vectors.
 </link-summary>
 
+Creates a pair of 2D coordinate matrices from two 1D coordinate vectors. Useful for evaluating
+functions on a grid or creating plotting meshes.
+
 ## Signature
 
 ```kotlin

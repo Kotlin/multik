@@ -14,6 +14,9 @@ Check if an element is present in an NDArray. Supports the `in` operator.
 contains() — check if an NDArray contains a given element.
 </link-summary>
 
+Checks whether the array contains the specified element. Because it is declared as an `operator`
+function, you can use the idiomatic `element in array` syntax.
+
 ## Signature
 
 ```kotlin

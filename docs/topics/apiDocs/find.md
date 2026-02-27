@@ -14,6 +14,9 @@ Find the first element matching a predicate, or null if none found.
 find() — first element matching a predicate, or null.
 </link-summary>
 
+Returns the first element matching the predicate, or `null` if no match is found. `findLast`
+searches from the end of the array.
+
 ## Signatures
 
 ```kotlin

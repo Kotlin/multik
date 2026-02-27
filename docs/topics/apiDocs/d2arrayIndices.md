@@ -14,6 +14,9 @@ Create a 2D array where each element is computed from its row and column indices
 mk.d2arrayIndices() — 2D array from (i, j) init lambda.
 </link-summary>
 
+Creates a 2D array of the given shape, where each element is computed from its row (`i`) and
+column (`j`) indices. Useful when the element value depends on its position in the matrix.
+
 ## Signature
 
 ```kotlin

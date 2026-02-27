@@ -14,6 +14,9 @@ Convert a multi-dimensional NDArray to nested Kotlin arrays.
 toArray() — convert NDArray to nested Kotlin arrays.
 </link-summary>
 
+Converts a 2D, 3D, or 4D NDArray into nested Kotlin arrays that mirror the dimensional structure.
+Available for all numeric and complex element types.
+
 ## Signatures
 
 ```kotlin

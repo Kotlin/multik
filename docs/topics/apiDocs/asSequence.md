@@ -14,6 +14,9 @@ Wraps an NDArray into a lazy Sequence for on-demand iteration.
 asSequence() — create a lazy Sequence from an NDArray.
 </link-summary>
 
+Wraps the array into a lazy `Sequence<T>` that yields elements in row-major order on demand.
+Use it when chaining multiple operations to avoid creating intermediate arrays.
+
 ## Signature
 
 ```kotlin
@@ -37,8 +40,6 @@ val result = a.asSequence()
 ```
 
 <!---END-->
-
-Use `asSequence()` when chaining multiple operations to avoid creating intermediate arrays.
 
 <seealso style="cards">
 <category ref="api-docs">

@@ -15,6 +15,9 @@ Accumulate elements from left to right without an initial value.
 reduce() — left-to-right accumulation starting from the first element.
 </link-summary>
 
+Accumulates a value by applying the operation to each element from left to right, using the first
+element as the initial accumulator. Throws on empty arrays; use `reduceOrNull` for a safe variant.
+
 ## Signatures
 
 ```kotlin

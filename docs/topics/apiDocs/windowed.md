@@ -14,6 +14,10 @@ Sliding window over elements, returned as a 2D array.
 windowed() — sliding window segments as a 2D array.
 </link-summary>
 
+Returns a 2D array of sliding window segments over the array's elements. Each row in the result
+is a window of the specified size. The `step` parameter controls how far the window moves on each
+iteration, and `limit` controls whether partial windows at the end are included (zero-padded).
+
 ## Signature
 
 ```kotlin
@@ -36,6 +40,8 @@ fun <T, D : Dimension> MultiArray<T, D>.windowed(
 
 ## Example
 
+<!---FUN windowed_example-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3, 4, 5])
 
@@ -48,6 +54,8 @@ a.windowed(3, step = 2)
 // [[1, 2, 3],
 //  [3, 4, 5]]
 ```
+
+<!---END-->
 
 <seealso style="cards">
 <category ref="api-docs">

@@ -14,6 +14,9 @@ Create a 4D array where each element is computed from its four axis indices.
 mk.d4arrayIndices() — 4D array from (i, j, k, m) init lambda.
 </link-summary>
 
+Creates a 4D array of the given shape, where each element is computed from its four axis indices
+`(i, j, k, m)`. Useful when the element value depends on its position in the 4D space.
+
 ## Signature
 
 ```kotlin

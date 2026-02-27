@@ -14,6 +14,9 @@ Tile array elements n times into a flat 1D array.
 repeat() — repeat NDArray elements n times.
 </link-summary>
 
+Tiles the array's elements `n` times into a new flat 1D array. Multi-dimensional arrays are
+flattened before tiling.
+
 ## Signature
 
 ```kotlin

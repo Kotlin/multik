@@ -14,6 +14,9 @@ Find the smallest element, or null if the array is empty.
 min() — smallest element of an NDArray.
 </link-summary>
 
+Returns the smallest element in the array, or `null` if the array is empty. `minBy` and `minWith`
+variants allow custom comparison via a selector function or a `Comparator`.
+
 ## Signatures
 
 ```kotlin

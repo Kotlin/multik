@@ -14,6 +14,9 @@ Create arrays filled with ones of any shape and type.
 mk.ones() — arrays filled with ones.
 </link-summary>
 
+Creates an array of the given shape filled with ones. Overloads are available for 1D through 4D,
+N-dimensional (5+), and generic shape-based creation.
+
 ## Signatures
 
 ```kotlin

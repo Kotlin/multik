@@ -15,6 +15,9 @@ Transform each element into an iterable and flatten to a 1D array.
 flatMap() — transform and flatten NDArray elements.
 </link-summary>
 
+Transforms each element into an `Iterable` of results and flattens all results into a single 1D
+array. Useful when each element maps to a variable number of output values.
+
 ## Signatures
 
 ```kotlin

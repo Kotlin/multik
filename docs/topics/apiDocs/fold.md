@@ -15,6 +15,10 @@ Accumulate elements from left to right with an initial value.
 fold() — left-to-right accumulation with an initial value.
 </link-summary>
 
+Accumulates a value by applying the operation to each element from left to right, starting from
+the given initial value. The result type `R` can differ from the element type, making `fold`
+suitable for building strings, collections, or other aggregate values from array elements.
+
 ## Signatures
 
 ```kotlin

@@ -15,6 +15,9 @@ Convert an NDArray to a flat Kotlin primitive array (IntArray, DoubleArray, etc.
 toPrimitiveArray — convert NDArray to IntArray, DoubleArray, etc.
 </link-summary>
 
+Converts the array to a flat Kotlin primitive array (`IntArray`, `LongArray`, `FloatArray`,
+`DoubleArray`, etc.) in row-major order. Multi-dimensional arrays are flattened.
+
 ## Signatures
 
 ```kotlin

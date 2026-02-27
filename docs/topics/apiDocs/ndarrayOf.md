@@ -14,6 +14,9 @@ Create a 1D array from vararg elements.
 mk.ndarrayOf() — 1D array from varargs.
 </link-summary>
 
+Creates a 1D array directly from a variable number of elements. Type-specific overloads are
+provided for all primitive numeric types and complex types.
+
 ## Signature
 
 ```kotlin

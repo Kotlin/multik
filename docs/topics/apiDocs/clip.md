@@ -14,6 +14,9 @@ Clamp array elements to a min..max range.
 clip() — clamp NDArray elements to a range.
 </link-summary>
 
+Returns a new array where every element is clamped to the `[min, max]` range. Elements below
+`min` are set to `min`; elements above `max` are set to `max`.
+
 ## Signature
 
 ```kotlin

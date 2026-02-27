@@ -14,6 +14,8 @@ Returns the arithmetic mean of all elements as a Double.
 average() — compute the mean of NDArray elements.
 </link-summary>
 
+Returns the arithmetic mean of all elements as a `Double`. Works on any numeric element type.
+
 ## Signature
 
 ```kotlin

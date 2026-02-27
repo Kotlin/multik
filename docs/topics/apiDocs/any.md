@@ -15,6 +15,9 @@ Returns true if at least one element exists or matches a predicate.
 any() — check if any NDArray element satisfies a condition.
 </link-summary>
 
+Tests whether the array is non-empty (no-arg form) or whether at least one element satisfies the
+given predicate. Returns `false` for empty arrays when a predicate is provided.
+
 ## Signatures
 
 ```kotlin

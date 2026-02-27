@@ -14,6 +14,9 @@ Return a new array with elements sorted in ascending order.
 sorted() — sort NDArray elements in ascending order.
 </link-summary>
 
+Returns a new array with elements sorted in ascending order. The shape is preserved — for
+multi-dimensional arrays, elements are sorted across the entire flat buffer in row-major order.
+
 ## Signature
 
 ```kotlin

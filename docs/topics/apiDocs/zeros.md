@@ -14,6 +14,9 @@ Create arrays filled with zeros of any shape and type.
 mk.zeros() — arrays filled with zeros.
 </link-summary>
 
+Creates an array of the given shape filled with zeros. Overloads are available for 1D through 4D,
+N-dimensional (5+), and generic shape-based creation.
+
 ## Signatures
 
 ```kotlin

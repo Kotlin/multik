@@ -14,6 +14,10 @@ Create evenly spaced values in the closed interval [start, stop].
 mk.linspace() — evenly spaced values in [start, stop].
 </link-summary>
 
+Creates a 1D array of exactly `num` evenly spaced values over the closed interval
+`[start, stop]`. Unlike [arange](arange.md), both endpoints are included and the number of points
+is specified directly rather than a step size.
+
 ## Signatures
 
 ```kotlin

@@ -14,6 +14,10 @@ Split an NDArray into fixed-size chunks as a 2D array.
 chunked() — split an NDArray into fixed-size chunks.
 </link-summary>
 
+Splits the array into non-overlapping chunks of the specified size, returned as rows of a 2D
+array. If the total number of elements is not evenly divisible by the chunk size, the last row
+is padded with zeros.
+
 ## Signature
 
 ```kotlin

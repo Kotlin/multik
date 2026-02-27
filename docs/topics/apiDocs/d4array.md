@@ -14,6 +14,10 @@ Create a 4D array where each element is computed by a flat-index init function.
 mk.d4array() — 4D array from flat-index init lambda.
 </link-summary>
 
+Creates a 4D array of the given shape, where each element is computed by a flat-index `init`
+function. Elements are filled in row-major order. For per-element `(i, j, k, m)` indices, use
+[d4arrayIndices](d4arrayIndices.md).
+
 ## Signature
 
 ```kotlin

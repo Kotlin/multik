@@ -15,6 +15,9 @@ Convert an NDArray to a flat List, MutableList, or nested lists by dimension.
 toList() — convert an NDArray to a Kotlin List.
 </link-summary>
 
+Converts the array to a flat Kotlin `List<T>` in row-major order. Dimensional variants
+(`toListD2`, `toListD3`, `toListD4`) produce nested lists that mirror the array's shape.
+
 ## Signatures
 
 ```kotlin

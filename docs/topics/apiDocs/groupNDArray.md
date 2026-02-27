@@ -15,6 +15,10 @@ Group elements by a key function into a map of 1D NDArrays.
 groupNDArrayBy() — group NDArray elements by key.
 </link-summary>
 
+Groups array elements by a key function, returning a `Map` where each key maps to a 1D NDArray
+of matching elements. `groupingNDArrayBy` returns a `Grouping` for lazy aggregation with
+`eachCount`, `fold`, or `reduce`.
+
 ## Signatures
 
 ```kotlin
