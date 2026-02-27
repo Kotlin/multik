@@ -33,10 +33,13 @@ public actual fun ComplexDouble(re: Double, im: Double): ComplexDouble {
 public actual fun ComplexDouble(re: Number, im: Number): ComplexDouble = ComplexDouble(re.toDouble(), im.toDouble())
 
 /**
- * Represents a complex number with double precision.
+ * Native [ComplexDouble] implementation that packs both double-precision parts into a [Vector128].
  *
- * @property re The real part of the complex number.
- * @property im The imaginary part of the complex number.
+ * Uses the platform's 128-bit SIMD vector to store the real and imaginary parts without heap allocation.
+ *
+ * @param vector a [Vector128] with the real part at index 0 and the imaginary part at index 1.
+ * @property re the real part of the complex number.
+ * @property im the imaginary part of the complex number.
  */
 public value class NativeComplexDouble internal constructor(private val vector: Vector128) : ComplexDouble {
     public override val re: Double

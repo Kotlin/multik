@@ -6,6 +6,7 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.NativeComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType.*
 import kotlin.reflect.KClass
 
+/** Resolves the [DataType] for the given [KClass]. Maps Native-specific complex types including [NativeComplexDouble]. */
 @PublishedApi
 internal actual inline fun <T : Any> dataTypeOf(type: KClass<out T>): DataType =
     when (type) {

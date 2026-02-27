@@ -8,7 +8,9 @@ import kotlin.concurrent.AtomicReference
 public actual fun enginesProvider(): Map<EngineType, Engine> = engines.value
 
 /**
- * Saves and initialize engine.
+ * Thread-safe registry where Native engine factories store their [Engine] instances during initialization.
+ *
+ * Engines register themselves via `@EagerInitialization` objects. [enginesProvider] returns the current snapshot.
  */
 public val engines: AtomicReference<MutableMap<EngineType, Engine>> by lazy {
     AtomicReference(mutableMapOf())
