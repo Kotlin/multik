@@ -21,7 +21,7 @@ in `gradle.properties`.
 ## Build Commands
 
 ```bash
-# Build all modules (requires: JDK 8+, gcc/g++/gfortran 8+, JAVA_HOME set)
+# Build all modules (requires: gcc/g++/gfortran 8+, JAVA_HOME set)
 ./gradlew assemble
 
 # Build without native OpenBLAS (skip the CMake step)
@@ -64,7 +64,7 @@ Engines: `KEEngine` (pure Kotlin, all platforms), `NativeEngine` (OpenBLAS, JVM 
 
 ## Code Conventions
 
-- Kotlin 2.3.10 with `-Xexpect-actual-classes` compiler flag. JVM target: 1.8.
+- Kotlin 2.3.10 with `-Xexpect-actual-classes` compiler flag. JVM target: 11.
 - All development happens on the `develop` branch — base PRs against `develop`.
 - Convention plugins in `buildSrc/src/main/kotlin/`.
 

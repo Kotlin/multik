@@ -82,7 +82,6 @@ so do familiarize yourself with the following guidelines.
 
 ### Prerequisites
 
-* **JDK 8+**.
 * To build native OpenBLAS module: **gcc**, **g++**, and **gfortran** 8+ (same version).
 
 ### Build commands

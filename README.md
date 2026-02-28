@@ -352,7 +352,6 @@ a.inplace {
 
 Requires:
 
-* JDK 8 or higher
 * `JAVA_HOME` environment variable set
 * `gcc`, `g++`, `gfortran` version 8 or higher (must be the same version)
 

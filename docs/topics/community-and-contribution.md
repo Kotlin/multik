@@ -57,8 +57,7 @@ Contributions are welcome — bug fixes, new features, documentation improvement
 ### Setting up the development environment
 
 1. **Fork** the repository on GitHub and clone your fork.
-2. Make sure you have **JDK 8+** installed.
-3. To build all modules including native code, you also need **gcc**, **g++**, and **gfortran** 8+
+2. To build all modules including native code, you also need **gcc**, **g++**, and **gfortran** 8+
    (same version), and the `JAVA_HOME` environment variable set.
 
 ```bash

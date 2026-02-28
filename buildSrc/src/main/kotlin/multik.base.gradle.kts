@@ -9,12 +9,16 @@ plugins {
 kotlin {
     explicitApi = ExplicitApiMode.Strict
 
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+
     compilerOptions {
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 
     jvm {
-        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
+        compilerOptions.jvmTarget = JvmTarget.JVM_11
 
         tasks.withType<Test>().configureEach {
             useJUnitPlatform()
