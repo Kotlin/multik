@@ -2,6 +2,7 @@
 kotlin = "2.3.10"
 dokka = "2.1.0"
 korro = "0.1.6"
+maven-publish = "0.36.0"
 commons-csv = "1.14.1"
 bio-npy = "0.3.5"
 
@@ -9,6 +10,7 @@ bio-npy = "0.3.5"
 # Plugins
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
+maven-publish-gradle = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }
 
 # Libraries
 commons-csv = { group = "org.apache.commons", name = "commons-csv", version.ref = "commons-csv"}
