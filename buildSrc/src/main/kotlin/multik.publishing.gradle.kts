@@ -34,9 +34,9 @@ mavenPublishing {
             }
         }
         scm {
-            url.set("https://github.com/Kotlin/multik")
-            connection.set("scm:git:git://github.com/Kotlin/multik.git")
-            developerConnection.set("scm:git:ssh://github.com/Kotlin/multik.git")
+            url = "https://github.com/Kotlin/multik"
+            connection = "scm:git:https://github.com/Kotlin/multik.git"
+            developerConnection = "scm:git:git@github.com:Kotlin/multik.git"
         }
     }
 }
