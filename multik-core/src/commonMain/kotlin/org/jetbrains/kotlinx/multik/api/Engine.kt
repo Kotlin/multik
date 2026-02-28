@@ -3,6 +3,7 @@ package org.jetbrains.kotlinx.multik.api
 import org.jetbrains.kotlinx.multik.api.linalg.LinAlg
 import org.jetbrains.kotlinx.multik.api.math.Math
 import org.jetbrains.kotlinx.multik.api.stat.Statistics
+import kotlin.concurrent.Volatile
 
 /**
  * Sealed hierarchy of engine types identifying available computational backends.
@@ -57,13 +58,18 @@ public abstract class Engine {
 
         private val enginesProvider: Map<EngineType, Engine> = enginesProvider()
 
-        public var defaultEngine: EngineType? = null
+        @Volatile
+        var defaultEngine: EngineType? = null
 
-        public fun loadEngine() {
-            defaultEngine = when {
+        fun loadEngine() {
+            if (defaultEngine != null) return
+            val resolved: EngineType? = when {
                 enginesProvider.containsKey(DefaultEngineType) -> DefaultEngineType
                 enginesProvider.isNotEmpty() -> enginesProvider.iterator().next().key
                 else -> null
+            }
+            if (defaultEngine == null) {
+                defaultEngine = resolved
             }
         }
 
@@ -73,7 +79,14 @@ public abstract class Engine {
         override val type: EngineType
             get() = throw EngineMultikException("For a companion object, the type is undefined.")
 
-        internal fun getDefaultEngine(): String? = defaultEngine?.name ?: loadEngine().let { defaultEngine?.name }
+        internal fun getDefaultEngine(): String? {
+            var engine = defaultEngine
+            if (engine == null) {
+                loadEngine()
+                engine = defaultEngine
+            }
+            return engine?.name
+        }
 
         internal fun setDefaultEngine(type: EngineType) {
             if (!enginesProvider.containsKey(type)) throw EngineMultikException("This type of engine is not available.")
@@ -82,22 +95,34 @@ public abstract class Engine {
 
         override fun getMath(): Math {
             if (enginesProvider.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide Math implementation.")
-            if (defaultEngine == null) loadEngine()
-            return enginesProvider[defaultEngine]?.getMath()
+            var engine = defaultEngine
+            if (engine == null) {
+                loadEngine()
+                engine = defaultEngine
+            }
+            return enginesProvider[engine]?.getMath()
                 ?: throw EngineMultikException("The used engine type is not defined.")
         }
 
         override fun getLinAlg(): LinAlg {
             if (enginesProvider.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide LinAlg implementation.")
-            if (defaultEngine == null) loadEngine()
-            return enginesProvider[defaultEngine]?.getLinAlg()
+            var engine = defaultEngine
+            if (engine == null) {
+                loadEngine()
+                engine = defaultEngine
+            }
+            return enginesProvider[engine]?.getLinAlg()
                 ?: throw EngineMultikException("The used engine type is not defined.")
         }
 
         override fun getStatistics(): Statistics {
             if (enginesProvider.isEmpty()) throw EngineMultikException("The map of engines is empty. Can not provide Statistics implementation.")
-            if (defaultEngine == null) loadEngine()
-            return enginesProvider[defaultEngine]?.getStatistics()
+            var engine = defaultEngine
+            if (engine == null) {
+                loadEngine()
+                engine = defaultEngine
+            }
+            return enginesProvider[engine]?.getStatistics()
                 ?: throw EngineMultikException("The used engine type is not defined.")
         }
     }
