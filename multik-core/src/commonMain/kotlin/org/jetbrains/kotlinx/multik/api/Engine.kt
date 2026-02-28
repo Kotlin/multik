@@ -59,7 +59,7 @@ public abstract class Engine {
         private val enginesProvider: Map<EngineType, Engine> = enginesProvider()
 
         @Volatile
-        var defaultEngine: EngineType? = null
+        private var defaultEngine: EngineType? = null
 
         fun loadEngine() {
             if (defaultEngine != null) return
