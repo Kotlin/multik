@@ -48,11 +48,8 @@ jobs:
       - name: Build native library
         run: ./gradlew :multik-openblas:build_cmake
 
-      - name: Run JVM tests
-        run: ./gradlew jvmTest
-
-      - name: Run Native tests
-        run: ./gradlew linuxX64Test
+      - name: Build
+        run: ./gradlew build
 
       - name: Upload test reports
         if: always()
