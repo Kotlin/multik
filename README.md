@@ -3,6 +3,8 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.jetbrains.kotlinx/multik-core)](https://central.sonatype.com/artifact/org.jetbrains.kotlinx/multik-core)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 
+<!---IMPORT samples.ReadmeSnippets-->
+
 # Multik
 
 Multidimensional array library for Kotlin.
@@ -115,6 +117,8 @@ Visit [Multik documentation](https://kotlin.github.io/multik) for a detailed fea
 
 ### Creating arrays
 
+<!---FUN creatingArrays-->
+
 ```kotlin
 val a = mk.ndarray(mk[1, 2, 3])
 /* [1, 2, 3] */
@@ -146,15 +150,16 @@ mk.ndarray<Float, D2>(setOf(30f, 2f, 13f, 12f), intArrayOf(2, 2)) // create an a
 [[30.0, 2.0],
 [13.0, 12.0]]
 */
+
 val d = mk.ndarray(
     doubleArrayOf(1.0, 1.3, 3.0, 4.0, 9.5, 5.0),
-    2,
-    3
+    2, 3
 ) // create an array of shape(2, 3) from a primitive array
 /*
 [[1.0, 1.3, 3.0],
 [4.0, 9.5, 5.0]]
 */
+
 mk.d3array(2, 2, 3) { it * it } // create an array of 3 dimension
 /*
 [[[0, 1, 4],
@@ -192,7 +197,11 @@ val diag = mk.diagonal(mk[2, 4, 8]) // create a diagonal array
  */
 ```
 
+<!---END-->
+
 ### Array properties
+
+<!---FUN arrayProperties-->
 
 ```kotlin
 a.shape // Array dimensions
@@ -202,7 +211,11 @@ a.dim.d // number of array dimensions
 a.dtype // Data type of array elements
 ```
 
+<!---END-->
+
 ### Arithmetic operations
+
+<!---FUN arithmeticOperations-->
 
 ```kotlin
 val f = b - d // subtraction
@@ -230,12 +243,16 @@ f * d // multiplication
 */
 ```
 
+<!---END-->
+
 ### Math, Linear Algebra, and Statistics
 
 See documentation for other methods of
 [mathematics](https://kotlin.github.io/multik/multik-core/org.jetbrains.kotlinx.multik.api.math/index.html),
 [linear algebra](https://kotlin.github.io/multik/multik-core/org.jetbrains.kotlinx.multik.api.linalg/index.html),
 [statistics](https://kotlin.github.io/multik/multik-core/org.jetbrains.kotlinx.multik.api.stat/index.html).
+
+<!---FUN mathFunctions-->
 
 ```kotlin
 a.sin() // element-wise sin, equivalent to mk.math.sin(a)
@@ -252,14 +269,22 @@ mk.stat.mean(a) // mean
 mk.stat.median(b) // median
 ```
 
+<!---END-->
+
 ### Copying arrays
+
+<!---FUN copyingArrays-->
 
 ```kotlin
 val f = a.copy() // create a copy of the array and its data
 val h = b.deepCopy() // create a copy of the array and copy the meaningful data
 ```
 
+<!---END-->
+
 ### Collection Operations
+
+<!---FUN collectionOperations-->
 
 ```kotlin
 c.filter { it < 3 } // select all elements less than 3
@@ -268,7 +293,11 @@ c.groupNDArrayBy { it % 2 } // group elements by condition
 c.sorted() // sort elements
 ```
 
+<!---END-->
+
 ### Indexing/Slicing/Iterating
+
+<!---FUN indexingSlicingIterating-->
 
 ```kotlin
 a[2] // select the element at the 2 index
@@ -288,7 +317,11 @@ for (index in q.multiIndices) {
 }
 ```
 
+<!---END-->
+
 ### Inplace
+
+<!---FUN inplaceOperations-->
 
 ```kotlin
 val a = mk.linspace<Float>(0, 1, 10)
@@ -310,6 +343,8 @@ a.inplace {
 }
 // a = [64.0, 64.88888, 65.77778, 66.66666, 67.55556, 68.44444, 69.333336, 70.22222, 71.111115, 72.0]
 ```
+
+<!---END-->
 
 ## Building
 

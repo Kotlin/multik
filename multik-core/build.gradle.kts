@@ -22,6 +22,7 @@ kotlin {
 
 korro {
     docs = fileTree(rootProject.rootDir) {
+        include("README.md")
         include("docs/topics/*.md")
         include("docs/topics/gettingStarted/*md")
         include("docs/topics/userGuide/*md")
@@ -29,6 +30,7 @@ korro {
     }
 
     samples = fileTree(project.projectDir) {
+        include("src/commonTest/kotlin/samples/*.kt")
         include("src/commonTest/kotlin/samples/docs/*.kt")
         include("src/commonTest/kotlin/samples/docs/userGuide/*.kt")
         include("src/commonTest/kotlin/samples/docs/apiDocs/*.kt")
