@@ -1,18 +1,25 @@
+import org.jetbrains.kotlinx.multik.builds.HomebrewGccDetection
 import org.jetbrains.kotlinx.multik.builds.HostDetection
 
 val cmakePath = "${rootDir}/multik-openblas/multik_jni"
 val cmakeBuildDir = layout.buildDirectory.dir("cmake-build").map { it.asFile.absolutePath }
 
-val cmakeCCompiler = System.getenv("CMAKE_C_COMPILER") ?: "gcc"
-val cmakeCxxCompiler = System.getenv("CMAKE_CXX_COMPILER") ?: "g++"
-val gccLibPath = System.getenv("GCC_LIB_Path") ?: run {
-    try {
-        val process = ProcessBuilder(cmakeCCompiler, "-print-libgcc-file-name").start()
-        val output = process.inputStream.bufferedReader().readText().trim()
-        process.waitFor()
-        if (output.isNotEmpty()) java.io.File(output).parent ?: "" else ""
-    } catch (e: Exception) { "" }
-}
+val cmakeCCompiler = System.getenv("CMAKE_C_COMPILER")
+    ?: HomebrewGccDetection.cCompiler
+    ?: "gcc"
+val cmakeCxxCompiler = System.getenv("CMAKE_CXX_COMPILER")
+    ?: HomebrewGccDetection.cxxCompiler
+    ?: "g++"
+val gccLibPath = System.getenv("GCC_LIB_Path")
+    ?: HomebrewGccDetection.libPath
+    ?: run {
+        try {
+            val process = ProcessBuilder(cmakeCCompiler, "-print-libgcc-file-name").start()
+            val output = process.inputStream.bufferedReader().readText().trim()
+            process.waitFor()
+            if (output.isNotEmpty()) File(output).parent ?: "" else ""
+        } catch (_: Exception) { "" }
+    }
 val targetOS = HostDetection.targetOSForCMake
 
 val createBuildDir by tasks.registering {
