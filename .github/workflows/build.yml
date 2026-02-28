@@ -8,11 +8,6 @@ on:
   workflow_dispatch:
 
 env:
-  GRADLE_OPTS: >-
-    -Dorg.gradle.jvmargs=-Xmx4g
-    -Dorg.gradle.daemon=false
-    -Dorg.gradle.parallel=true
-    -Dorg.gradle.caching=true
   CMAKE_C_COMPILER: gcc-12
   CMAKE_CXX_COMPILER: g++-12
   GCC_LIB_Path: /usr/lib/gcc/x86_64-linux-gnu/12
