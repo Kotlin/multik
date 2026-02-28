@@ -1,7 +1,7 @@
 name: Bug Report
 description: Report a bug in Multik
 type: Bug
-labels: [ "bug" ]
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
@@ -27,7 +27,7 @@ body:
         - multik-kotlin
         - multik-openblas
         - multik-core
-      default: none
+      default: 0
     validations:
       required: false
 
