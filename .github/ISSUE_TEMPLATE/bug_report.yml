@@ -1,7 +1,7 @@
 name: Bug Report
 description: Report a bug in Multik
 type: Bug
-labels: ["bug"]
+labels: [ "bug" ]
 body:
   - type: markdown
     attributes:
@@ -22,12 +22,14 @@ body:
     attributes:
       label: Module
       options:
+        - none
         - multik-default
         - multik-kotlin
         - multik-openblas
         - multik-core
+      default: none
     validations:
-      required: true
+      required: false
 
   - type: dropdown
     id: platform
@@ -39,10 +41,21 @@ body:
         - JS
         - Kotlin/Native
         - WASM
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Windows
+        - Linux
         - Android
         - iOS
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: description
@@ -62,7 +75,7 @@ body:
       description: Minimal code to reproduce the issue.
       render: kotlin
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: stacktrace
