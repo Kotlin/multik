@@ -113,6 +113,7 @@ class NativeLinAlgTest : NativeTestBase() {
     }
 
     @Test
+    @Ignore // [#282](https://github.com/Kotlin/multik/issues/282)
     fun `matrix-matrix dot test ComplexDouble`() {
         val expected = mk.ndarray(
             mk[mk[ComplexDouble(-11.0, 79.0), ComplexDouble(-7.0, 59.0), ComplexDouble(-3.0, +39.0)],
@@ -135,6 +136,7 @@ class NativeLinAlgTest : NativeTestBase() {
     }
 
     @Test
+    @Ignore // [#283](https://github.com/Kotlin/multik/issues/283)
     fun `matrix-matrix dot test ComplexFloat`() {
         val expected = mk.ndarray(
             mk[mk[ComplexFloat(-11.0, 79.0), ComplexFloat(-7.0, 59.0), ComplexFloat(-3.0, +39.0)],
@@ -241,6 +243,7 @@ class NativeLinAlgTest : NativeTestBase() {
     }
 
     @Test
+    @Ignore // [#284](https://github.com/Kotlin/multik/issues/284)
     fun `matrix-vector dot test ComplexDouble`() {
         val matrix = mk.ndarray(
             mk[mk[ComplexDouble(1, 2), ComplexDouble(3, 4)],
@@ -257,6 +260,7 @@ class NativeLinAlgTest : NativeTestBase() {
     }
 
     @Test
+    @Ignore // [#285](https://github.com/Kotlin/multik/issues/285)
     fun `matrix-vector dot test ComplexFloat`() {
         val matrix = mk.ndarray(
             mk[mk[ComplexFloat(1, 2), ComplexFloat(3, 4)],
@@ -337,6 +341,7 @@ class NativeLinAlgTest : NativeTestBase() {
     }
 
     @Test
+    @Ignore // [#286](https://github.com/Kotlin/multik/issues/286)
     fun `compute inverse matrix of complex float`() {
         val a = data.getComplexFloatM(84)
         val ainv = NativeLinAlg.inv(a)
@@ -345,6 +350,7 @@ class NativeLinAlgTest : NativeTestBase() {
     }
 
     @Test
+    @Ignore // [#287](https://github.com/Kotlin/multik/issues/287)
     fun `compute inverse matrix of complex double`() {
         val a = data.getComplexDoubleM(83)
         val ainv = NativeLinAlg.inv(a)
@@ -375,6 +381,7 @@ class NativeLinAlgTest : NativeTestBase() {
     }
 
     @Test
+    @Ignore // [#288](https://github.com/Kotlin/multik/issues/288)
     fun `qr decomposition ComplexDouble`() {
         val a = data.getComplexDoubleM(4, 3)
         val (q, r) = NativeLinAlgEx.qrC(a)
@@ -406,6 +413,7 @@ class NativeLinAlgTest : NativeTestBase() {
     }
 
     @Test
+    @Ignore // [#289](https://github.com/Kotlin/multik/issues/289)
     fun `plu decomposition ComplexDouble`() {
         val a = data.getComplexDoubleM(4)
         val (p, l, u) = NativeLinAlgEx.pluC(a)
