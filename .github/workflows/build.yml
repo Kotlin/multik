@@ -39,6 +39,15 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Cache OpenBLAS native build
+        uses: actions/cache@v4
+        with:
+          path: multik-openblas/build/cmake-build
+          key: ${{ runner.os }}-openblas-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt', 'multik-openblas/multik_jni/src/**') }}
+          restore-keys: |
+            ${{ runner.os }}-openblas-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt') }}
+            ${{ runner.os }}-openblas-
+
       - name: Build and test
         run: ./gradlew build
 
