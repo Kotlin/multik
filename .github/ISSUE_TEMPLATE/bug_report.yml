@@ -61,6 +61,7 @@ body:
       label: Description
       description: What happened and what did you expect?
       placeholder: |
+        Description: ...
         Expected: ...
         Actual: ...
     validations:
@@ -76,10 +77,10 @@ body:
       required: false
 
   - type: textarea
-    id: stacktrace
+    id: additional_info
     attributes:
-      label: Stack trace or error output
-      description: Paste the full error message if applicable.
+      label: Additional information
+      description: Add any extra details, logs, stack traces, screenshots, or context that may help.
       render: text
     validations:
       required: false
