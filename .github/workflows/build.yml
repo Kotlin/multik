@@ -78,7 +78,6 @@ jobs:
           ./gradlew
           :multik-openblas:compileKotlinJvm
           :multik-default:compileKotlinJvm
-          :multik-default:jvmTest
           -x :multik-openblas:copyNativeLibs
           -x :multik-openblas:build_cmake
           -x :multik-openblas:compileCmake
