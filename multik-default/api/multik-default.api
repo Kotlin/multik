@@ -1,0 +1,113 @@
+public final class org/jetbrains/kotlinx/multik/default/DefaultEngine : org/jetbrains/kotlinx/multik/api/Engine {
+	public fun <init> ()V
+	public fun getLinAlg ()Lorg/jetbrains/kotlinx/multik/api/linalg/LinAlg;
+	public fun getMath ()Lorg/jetbrains/kotlinx/multik/api/math/Math;
+	public fun getStatistics ()Lorg/jetbrains/kotlinx/multik/api/stat/Statistics;
+	public fun getType ()Lorg/jetbrains/kotlinx/multik/api/EngineType;
+}
+
+public final class org/jetbrains/kotlinx/multik/default/linalg/DefaultLinAlg : org/jetbrains/kotlinx/multik/api/linalg/LinAlg {
+	public static final field INSTANCE Lorg/jetbrains/kotlinx/multik/default/linalg/DefaultLinAlg;
+	public fun getLinAlgEx ()Lorg/jetbrains/kotlinx/multik/api/linalg/LinAlgEx;
+	public fun pow (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+}
+
+public final class org/jetbrains/kotlinx/multik/default/linalg/DefaultLinAlgEx : org/jetbrains/kotlinx/multik/api/linalg/LinAlgEx {
+	public static final field INSTANCE Lorg/jetbrains/kotlinx/multik/default/linalg/DefaultLinAlgEx;
+	public fun dotMM (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun dotMMComplex (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun dotMV (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun dotMVComplex (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun dotVV (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Ljava/lang/Number;
+	public fun dotVVComplex (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/complex/Complex;
+	public fun eig (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lkotlin/Pair;
+	public fun eigC (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lkotlin/Pair;
+	public fun eigF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lkotlin/Pair;
+	public fun eigVals (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun eigValsC (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun eigValsF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun inv (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun invC (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun invF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun norm (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/api/linalg/Norm;)D
+	public fun normF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/api/linalg/Norm;)F
+	public fun plu (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lkotlin/Triple;
+	public fun pluC (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lkotlin/Triple;
+	public fun pluF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lkotlin/Triple;
+	public fun qr (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lkotlin/Pair;
+	public fun qrC (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lkotlin/Pair;
+	public fun qrF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lkotlin/Pair;
+	public fun solve (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun solveC (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun solveF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+}
+
+public final class org/jetbrains/kotlinx/multik/default/math/DefaultMath : org/jetbrains/kotlinx/multik/api/math/Math {
+	public static final field INSTANCE Lorg/jetbrains/kotlinx/multik/default/math/DefaultMath;
+	public fun argMax (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)I
+	public fun argMax (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun argMaxD2 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun argMaxD3 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun argMaxD4 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun argMaxDN (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun argMin (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)I
+	public fun argMin (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun argMinD2 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun argMinD3 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun argMinD4 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun argMinDN (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun cumSum (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun cumSum (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun getMathEx ()Lorg/jetbrains/kotlinx/multik/api/math/MathEx;
+	public fun max (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Ljava/lang/Number;
+	public fun max (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun maxD2 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun maxD3 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun maxD4 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun maxDN (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun min (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Ljava/lang/Number;
+	public fun min (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun minD2 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun minD3 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun minD4 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun minDN (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun sum (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Ljava/lang/Number;
+	public fun sum (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun sumD2 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun sumD3 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun sumD4 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun sumDN (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+}
+
+public final class org/jetbrains/kotlinx/multik/default/math/DefaultMathEx : org/jetbrains/kotlinx/multik/api/math/MathEx {
+	public static final field INSTANCE Lorg/jetbrains/kotlinx/multik/default/math/DefaultMathEx;
+	public fun cos (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun cosCD (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun cosCF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun cosF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun exp (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun expCD (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun expCF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun expF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun log (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun logCD (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun logCF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun logF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun sin (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun sinCD (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun sinCF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun sinF (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+}
+
+public final class org/jetbrains/kotlinx/multik/default/stat/DefaultStatistics : org/jetbrains/kotlinx/multik/api/stat/Statistics {
+	public static final field INSTANCE Lorg/jetbrains/kotlinx/multik/default/stat/DefaultStatistics;
+	public fun average (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)D
+	public fun mean (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)D
+	public fun mean (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun meanD2 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun meanD3 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun meanD4 (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun meanDN (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;I)Lorg/jetbrains/kotlinx/multik/ndarray/data/NDArray;
+	public fun median (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;)Ljava/lang/Double;
+}
+

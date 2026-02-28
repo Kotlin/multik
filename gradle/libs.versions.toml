@@ -2,6 +2,7 @@
 kotlin = "2.3.10"
 dokka = "2.1.0"
 korro = "0.1.6"
+bcv = "0.18.1"
 maven-publish = "0.36.0"
 commons-csv = "1.14.1"
 bio-npy = "0.3.5"
@@ -19,3 +20,4 @@ bio-npy = { group = "org.jetbrains.bio", name = "npy", version.ref = "bio-npy"}
 
 [plugins]
 korro = { id = "io.github.devcrocod.korro", version.ref = "korro"}
+bcv = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "bcv" }

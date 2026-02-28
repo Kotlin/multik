@@ -1,3 +1,7 @@
+plugins {
+    alias(libs.plugins.bcv)
+}
+
 val multikVersion: String by project
 
 allprojects {
@@ -7,4 +11,8 @@ allprojects {
 
 tasks.withType<org.jetbrains.kotlin.gradle.targets.js.npm.tasks.KotlinNpmInstallTask>().configureEach {
     args.add("--ignore-engines")
+}
+
+apiValidation {
+    nonPublicMarkers.add("org.jetbrains.kotlinx.multik.api.ExperimentalMultikApi")
 }

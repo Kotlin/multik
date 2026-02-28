@@ -1,0 +1,16 @@
+public final class org/jetbrains/kotlinx/multik/openblas/JvmNativeEngine : org/jetbrains/kotlinx/multik/openblas/NativeEngine {
+	public fun <init> ()V
+	public fun getLinAlg ()Lorg/jetbrains/kotlinx/multik/api/linalg/LinAlg;
+	public fun getMath ()Lorg/jetbrains/kotlinx/multik/api/math/Math;
+	public fun getStatistics ()Lorg/jetbrains/kotlinx/multik/api/stat/Statistics;
+}
+
+public class org/jetbrains/kotlinx/multik/openblas/NativeEngine : org/jetbrains/kotlinx/multik/api/Engine {
+	public fun <init> ()V
+	public fun getLinAlg ()Lorg/jetbrains/kotlinx/multik/api/linalg/LinAlg;
+	public fun getMath ()Lorg/jetbrains/kotlinx/multik/api/math/Math;
+	protected fun getName ()Ljava/lang/String;
+	public fun getStatistics ()Lorg/jetbrains/kotlinx/multik/api/stat/Statistics;
+	public fun getType ()Lorg/jetbrains/kotlinx/multik/api/EngineType;
+}
+

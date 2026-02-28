@@ -1,0 +1,8 @@
+public final class org/jetbrains/kotlinx/multik/kotlin/KEEngine : org/jetbrains/kotlinx/multik/api/Engine {
+	public fun <init> ()V
+	public fun getLinAlg ()Lorg/jetbrains/kotlinx/multik/api/linalg/LinAlg;
+	public fun getMath ()Lorg/jetbrains/kotlinx/multik/api/math/Math;
+	public fun getStatistics ()Lorg/jetbrains/kotlinx/multik/api/stat/Statistics;
+	public fun getType ()Lorg/jetbrains/kotlinx/multik/api/EngineType;
+}
+
