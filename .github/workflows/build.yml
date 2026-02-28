@@ -11,9 +11,9 @@ permissions:
   contents: read
 
 env:
-  CMAKE_C_COMPILER: gcc-15
-  CMAKE_CXX_COMPILER: g++-15
-  GCC_LIB_Path: /usr/lib/gcc/x86_64-linux-gnu/15
+  CMAKE_C_COMPILER: gcc-14
+  CMAKE_CXX_COMPILER: g++-14
+  GCC_LIB_Path: /usr/lib/gcc/x86_64-linux-gnu/14
 
 jobs:
   build-and-test:
@@ -26,14 +26,14 @@ jobs:
 
       - name: Install native build tools
         run: |
-          sudo apt update
-          sudo apt install -y gcc-15 g++-15 gfortran-15 cmake
+          sudo apt-get update
+          sudo apt-get install -y gcc-14 g++-14 gfortran-14 cmake
 
-      - name: Set gcc-15 as default
+      - name: Set gcc-14 as default
         run: |
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-15 150
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-15 150
-          sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-15 150
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 140
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 140
+          sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-14 140
 
       - name: Setup JDK 21
         uses: actions/setup-java@v4
