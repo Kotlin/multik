@@ -17,7 +17,8 @@ env:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-22.04
+    name: Build & Test
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
