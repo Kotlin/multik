@@ -22,12 +22,10 @@ body:
     attributes:
       label: Module
       options:
-        - none
         - multik-default
         - multik-kotlin
         - multik-openblas
         - multik-core
-      default: 0
     validations:
       required: false
 
