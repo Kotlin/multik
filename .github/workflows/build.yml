@@ -7,6 +7,9 @@ on:
     branches: [ develop ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   CMAKE_C_COMPILER: gcc-12
   CMAKE_CXX_COMPILER: g++-12
@@ -40,10 +43,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Build native library
-        run: ./gradlew :multik-openblas:build_cmake
-
-      - name: Build
+      - name: Build and test
         run: ./gradlew build
 
       - name: Upload test reports
