@@ -116,6 +116,7 @@ jobs:
           GCC_VER=$(ls "$BREW_GCC_PREFIX/bin/" | grep -oE '^gcc-[0-9]+$' | sort -t- -k2 -n | tail -1 | cut -d- -f2)
           echo "CC=$BREW_GCC_PREFIX/bin/gcc-$GCC_VER" >> "$GITHUB_ENV"
           echo "CXX=$BREW_GCC_PREFIX/bin/g++-$GCC_VER" >> "$GITHUB_ENV"
+          echo "$BREW_GCC_PREFIX/bin" >> "$GITHUB_PATH"
 
       - name: Cache OpenBLAS build
         uses: actions/cache@v5
@@ -176,6 +177,7 @@ jobs:
           GCC_VER=$(ls "$BREW_GCC_PREFIX/bin/" | grep -oE '^gcc-[0-9]+$' | sort -t- -k2 -n | tail -1 | cut -d- -f2)
           echo "CC=$BREW_GCC_PREFIX/bin/gcc-$GCC_VER" >> "$GITHUB_ENV"
           echo "CXX=$BREW_GCC_PREFIX/bin/g++-$GCC_VER" >> "$GITHUB_ENV"
+          echo "$BREW_GCC_PREFIX/bin" >> "$GITHUB_PATH"
 
       - name: Cache OpenBLAS build
         uses: actions/cache@v5
