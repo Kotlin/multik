@@ -1,9 +1,13 @@
-name: Build documentation
+¯name: Build documentation
 
 on:
   release:
     types: [published]
   workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
