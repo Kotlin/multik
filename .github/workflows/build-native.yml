@@ -1,0 +1,363 @@
+name: Build Native Libraries
+
+on:
+  push:
+    branches: [ develop ]
+    paths:
+      - 'multik-openblas/multik_jni/**'
+      - 'multik-openblas/cinterop/**'
+      - 'buildSrc/src/main/kotlin/multik.cmake-build.gradle.kts'
+  pull_request:
+    branches: [ develop ]
+    paths:
+      - 'multik-openblas/multik_jni/**'
+      - 'multik-openblas/cinterop/**'
+      - 'buildSrc/src/main/kotlin/multik.cmake-build.gradle.kts'
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build (or "all")'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - linuxX64
+          - macosArm64
+          - macosX64
+          - mingwX64
+          - androidArm64
+
+permissions:
+  contents: read
+
+jobs:
+  # ── Linux x86_64 ─────────────────────────────────────────────
+  build-linuxX64:
+    name: Linux x64
+    if: >-
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.platform == 'all' ||
+      github.event.inputs.platform == 'linuxX64'
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-12 g++-12 gfortran-12 cmake make
+          sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-12 100
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Detect GCC library path
+        run: |
+          GCC_LIB_PATH=$(dirname "$(gcc-12 -print-libgcc-file-name)")
+          echo "GCC_LIB_PATH=$GCC_LIB_PATH" >> "$GITHUB_ENV"
+
+      - name: Cache OpenBLAS build
+        uses: actions/cache@v5
+        with:
+          path: build/cmake-build/openblas*
+          key: openblas-linuxX64-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt') }}
+          restore-keys: |
+            openblas-linuxX64-
+
+      - name: Configure CMake
+        run: |
+          cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER=gcc-12 \
+            -DCMAKE_CXX_COMPILER=g++-12 \
+            -DGCC_LIB_PATH="$GCC_LIB_PATH" \
+            -DTARGET_OS=linuxX64 \
+            -S multik-openblas/multik_jni \
+            -B build/cmake-build
+
+      - name: Build native library
+        run: cmake --build build/cmake-build --target multik_jni-linuxX64 -- -j "$(nproc)"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-linuxX64
+          path: |
+            build/cmake-build/libmultik_jni-*
+            build/cmake-build/openblas-install/include/
+            build/cmake-build/openblas-install/lib/libopenblas.a
+          retention-days: 90
+
+  # ── macOS ARM64 ──────────────────────────────────────────────
+  build-macosArm64:
+    name: macOS ARM64
+    if: >-
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.platform == 'all' ||
+      github.event.inputs.platform == 'macosArm64'
+    runs-on: macos-26
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install build dependencies
+        run: brew install gcc cmake
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Detect Homebrew GCC
+        run: |
+          BREW_GCC_PREFIX=$(brew --prefix gcc)
+          GCC_VER=$(ls "$BREW_GCC_PREFIX/bin/" | grep -oE '^gcc-[0-9]+$' | sort -t- -k2 -n | tail -1 | cut -d- -f2)
+          echo "CC=$BREW_GCC_PREFIX/bin/gcc-$GCC_VER" >> "$GITHUB_ENV"
+          echo "CXX=$BREW_GCC_PREFIX/bin/g++-$GCC_VER" >> "$GITHUB_ENV"
+          echo "GCC_LIB_PATH=$BREW_GCC_PREFIX/lib/gcc/current" >> "$GITHUB_ENV"
+
+      - name: Cache OpenBLAS build
+        uses: actions/cache@v5
+        with:
+          path: build/cmake-build/openblas*
+          key: openblas-macosArm64-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt') }}
+          restore-keys: |
+            openblas-macosArm64-
+
+      - name: Configure CMake
+        run: |
+          cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER="$CC" \
+            -DCMAKE_CXX_COMPILER="$CXX" \
+            -DGCC_LIB_PATH="$GCC_LIB_PATH" \
+            -DTARGET_OS=macosArm64 \
+            -S multik-openblas/multik_jni \
+            -B build/cmake-build
+
+      - name: Build native library
+        run: cmake --build build/cmake-build --target multik_jni-macosArm64 -- -j "$(sysctl -n hw.ncpu)"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-macosArm64
+          path: |
+            build/cmake-build/libmultik_jni-*
+            build/cmake-build/openblas-install/include/
+            build/cmake-build/openblas-install/lib/libopenblas.a
+          retention-days: 90
+
+  # ── macOS x86_64 ─────────────────────────────────────────────
+  build-macosX64:
+    name: macOS x64
+    if: >-
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.platform == 'all' ||
+      github.event.inputs.platform == 'macosX64'
+    runs-on: macos-26-intel
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install build dependencies
+        run: brew install gcc cmake
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Detect Homebrew GCC
+        run: |
+          BREW_GCC_PREFIX=$(brew --prefix gcc)
+          GCC_VER=$(ls "$BREW_GCC_PREFIX/bin/" | grep -oE '^gcc-[0-9]+$' | sort -t- -k2 -n | tail -1 | cut -d- -f2)
+          echo "CC=$BREW_GCC_PREFIX/bin/gcc-$GCC_VER" >> "$GITHUB_ENV"
+          echo "CXX=$BREW_GCC_PREFIX/bin/g++-$GCC_VER" >> "$GITHUB_ENV"
+          echo "GCC_LIB_PATH=$BREW_GCC_PREFIX/lib/gcc/current" >> "$GITHUB_ENV"
+
+      - name: Cache OpenBLAS build
+        uses: actions/cache@v5
+        with:
+          path: build/cmake-build/openblas*
+          key: openblas-macosX64-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt') }}
+          restore-keys: |
+            openblas-macosX64-
+
+      - name: Configure CMake
+        run: |
+          cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER="$CC" \
+            -DCMAKE_CXX_COMPILER="$CXX" \
+            -DGCC_LIB_PATH="$GCC_LIB_PATH" \
+            -DTARGET_OS=macosX64 \
+            -S multik-openblas/multik_jni \
+            -B build/cmake-build
+
+      - name: Build native library
+        run: cmake --build build/cmake-build --target multik_jni-macosX64 -- -j "$(sysctl -n hw.ncpu)"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-macosX64
+          path: |
+            build/cmake-build/libmultik_jni-*
+            build/cmake-build/openblas-install/include/
+            build/cmake-build/openblas-install/lib/libopenblas.a
+          retention-days: 90
+
+  # ── Windows x86_64 (MSYS2 MinGW) ────────────────────────────
+  build-mingwX64:
+    name: Windows x64 (MinGW)
+    if: >-
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.platform == 'all' ||
+      github.event.inputs.platform == 'mingwX64'
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: false
+          install: >-
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-make
+
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Detect GCC library path
+        run: |
+          GCC_LIB_PATH=$(dirname "$(gcc -print-libgcc-file-name)")
+          echo "GCC_LIB_PATH=$GCC_LIB_PATH" >> "$GITHUB_ENV"
+
+      - name: Cache OpenBLAS download
+        uses: actions/cache@v5
+        with:
+          path: build/cmake-build/openblas*
+          key: openblas-mingwX64-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt') }}
+          restore-keys: |
+            openblas-mingwX64-
+
+      - name: Configure CMake
+        run: |
+          cmake \
+            -G "MinGW Makefiles" \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER=gcc \
+            -DCMAKE_CXX_COMPILER=g++ \
+            -DGCC_LIB_PATH="$GCC_LIB_PATH" \
+            -DTARGET_OS=mingwX64 \
+            -S multik-openblas/multik_jni \
+            -B build/cmake-build
+
+      - name: Build native library
+        run: cmake --build build/cmake-build --target multik_jni-mingwX64 -- -j "$(nproc)"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-mingwX64
+          path: |
+            build/cmake-build/libmultik_jni-*
+            build/cmake-build/openblas-install/include/
+            build/cmake-build/openblas-install/lib/
+            build/cmake-build/openblas-install/bin/libopenblas.dll
+          retention-days: 90
+
+  # ── Android ARM64 ────────────────────────────────────────────
+  build-androidArm64:
+    name: Android ARM64
+    if: >-
+      github.event_name != 'workflow_dispatch' ||
+      github.event.inputs.platform == 'all' ||
+      github.event.inputs.platform == 'androidArm64'
+    runs-on: ubuntu-22.04
+    env:
+      NDK_VERSION: r27c
+      ANDROID_API: 28
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake make
+
+      - name: Cache Android NDK
+        uses: actions/cache@v5
+        id: ndk-cache
+        with:
+          path: /opt/android-ndk-r27c
+          key: android-ndk-r27c
+
+      - name: Download Android NDK
+        if: steps.ndk-cache.outputs.cache-hit != 'true'
+        run: |
+          wget -q "https://dl.google.com/android/repository/android-ndk-${NDK_VERSION}-linux.zip"
+          sudo unzip -q -d /opt "android-ndk-${NDK_VERSION}-linux.zip"
+          rm "android-ndk-${NDK_VERSION}-linux.zip"
+
+      - name: Set up NDK toolchain
+        run: |
+          TOOLCHAIN="/opt/android-ndk-${NDK_VERSION}/toolchains/llvm/prebuilt/linux-x86_64"
+          echo "$TOOLCHAIN/bin" >> "$GITHUB_PATH"
+          echo "CMAKE_C_COMPILER=aarch64-linux-android${ANDROID_API}-clang" >> "$GITHUB_ENV"
+          echo "CMAKE_CXX_COMPILER=aarch64-linux-android${ANDROID_API}-clang++" >> "$GITHUB_ENV"
+
+      - name: Cache OpenBLAS build
+        uses: actions/cache@v5
+        with:
+          path: build/cmake-build/openblas*
+          key: openblas-androidArm64-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt') }}
+          restore-keys: |
+            openblas-androidArm64-
+
+      - name: Configure CMake
+        run: |
+          cmake \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER="$CMAKE_C_COMPILER" \
+            -DCMAKE_CXX_COMPILER="$CMAKE_CXX_COMPILER" \
+            -DTARGET_OS=androidArm64 \
+            -S multik-openblas/multik_jni \
+            -B build/cmake-build
+
+      - name: Build native library
+        run: cmake --build build/cmake-build --target multik_jni-androidArm64 -- -j "$(nproc)"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-androidArm64
+          path: |
+            build/cmake-build/libmultik_jni-*
+            build/cmake-build/openblas-install/include/
+            build/cmake-build/openblas-install/lib/libopenblas.a
+          retention-days: 90
