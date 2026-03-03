@@ -10,16 +10,6 @@ val cmakeCCompiler = System.getenv("CMAKE_C_COMPILER")
 val cmakeCxxCompiler = System.getenv("CMAKE_CXX_COMPILER")
     ?: HomebrewGccDetection.cxxCompiler
     ?: "g++"
-val gccLibPath = System.getenv("GCC_LIB_Path")
-    ?: HomebrewGccDetection.libPath
-    ?: run {
-        try {
-            val process = ProcessBuilder(cmakeCCompiler, "-print-libgcc-file-name").start()
-            val output = process.inputStream.bufferedReader().readText().trim()
-            process.waitFor()
-            if (output.isNotEmpty()) File(output).parent ?: "" else ""
-        } catch (_: Exception) { "" }
-    }
 val targetOS = HostDetection.targetOSForCMake
 
 val createBuildDir by tasks.registering {
@@ -40,7 +30,6 @@ val configureCmake by tasks.registering(Exec::class) {
         "-DCMAKE_BUILD_TYPE=Release",
         "-DCMAKE_C_COMPILER=$cmakeCCompiler",
         "-DCMAKE_CXX_COMPILER=$cmakeCxxCompiler",
-        "-DGCC_LIB_PATH=$gccLibPath",
         "-DTARGET_OS=$targetOS",
         "-S", cmakePath,
         "-B", cmakeBuildDir.get()

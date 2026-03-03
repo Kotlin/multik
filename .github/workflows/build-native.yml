@@ -57,11 +57,6 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Detect GCC library path
-        run: |
-          GCC_LIB_PATH=$(dirname "$(gcc-12 -print-libgcc-file-name)")
-          echo "GCC_LIB_PATH=$GCC_LIB_PATH" >> "$GITHUB_ENV"
-
       - name: Cache OpenBLAS build
         uses: actions/cache@v5
         with:
@@ -76,7 +71,6 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_C_COMPILER=gcc-12 \
             -DCMAKE_CXX_COMPILER=g++-12 \
-            -DGCC_LIB_PATH="$GCC_LIB_PATH" \
             -DTARGET_OS=linuxX64 \
             -S multik-openblas/multik_jni \
             -B build/cmake-build
@@ -122,7 +116,6 @@ jobs:
           GCC_VER=$(ls "$BREW_GCC_PREFIX/bin/" | grep -oE '^gcc-[0-9]+$' | sort -t- -k2 -n | tail -1 | cut -d- -f2)
           echo "CC=$BREW_GCC_PREFIX/bin/gcc-$GCC_VER" >> "$GITHUB_ENV"
           echo "CXX=$BREW_GCC_PREFIX/bin/g++-$GCC_VER" >> "$GITHUB_ENV"
-          echo "GCC_LIB_PATH=$BREW_GCC_PREFIX/lib/gcc/current" >> "$GITHUB_ENV"
 
       - name: Cache OpenBLAS build
         uses: actions/cache@v5
@@ -138,7 +131,6 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_C_COMPILER="$CC" \
             -DCMAKE_CXX_COMPILER="$CXX" \
-            -DGCC_LIB_PATH="$GCC_LIB_PATH" \
             -DTARGET_OS=macosArm64 \
             -S multik-openblas/multik_jni \
             -B build/cmake-build
@@ -184,7 +176,6 @@ jobs:
           GCC_VER=$(ls "$BREW_GCC_PREFIX/bin/" | grep -oE '^gcc-[0-9]+$' | sort -t- -k2 -n | tail -1 | cut -d- -f2)
           echo "CC=$BREW_GCC_PREFIX/bin/gcc-$GCC_VER" >> "$GITHUB_ENV"
           echo "CXX=$BREW_GCC_PREFIX/bin/g++-$GCC_VER" >> "$GITHUB_ENV"
-          echo "GCC_LIB_PATH=$BREW_GCC_PREFIX/lib/gcc/current" >> "$GITHUB_ENV"
 
       - name: Cache OpenBLAS build
         uses: actions/cache@v5
@@ -200,7 +191,6 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_C_COMPILER="$CC" \
             -DCMAKE_CXX_COMPILER="$CXX" \
-            -DGCC_LIB_PATH="$GCC_LIB_PATH" \
             -DTARGET_OS=macosX64 \
             -S multik-openblas/multik_jni \
             -B build/cmake-build
@@ -250,11 +240,6 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Detect GCC library path
-        run: |
-          GCC_LIB_PATH=$(dirname "$(gcc -print-libgcc-file-name)")
-          echo "GCC_LIB_PATH=$GCC_LIB_PATH" >> "$GITHUB_ENV"
-
       - name: Cache OpenBLAS download
         uses: actions/cache@v5
         with:
@@ -270,7 +255,6 @@ jobs:
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_C_COMPILER=gcc \
             -DCMAKE_CXX_COMPILER=g++ \
-            -DGCC_LIB_PATH="$GCC_LIB_PATH" \
             -DTARGET_OS=mingwX64 \
             -S multik-openblas/multik_jni \
             -B build/cmake-build
