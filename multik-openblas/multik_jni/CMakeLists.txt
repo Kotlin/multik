@@ -31,7 +31,6 @@ set(TARGET_CPU )
 
 if(${TARGET_OS} STREQUAL "androidArm64")
     set(suffix androidArm64)
-    set(CC $ENV{CMAKE_C_COMPILER})
     set(HOSTCC gcc)
     set(RANLIB llvm-ranlib)
     set(AR llvm-ar)
@@ -92,6 +91,9 @@ if (${TARGET_OS} STREQUAL "mingwX64")
     ########################
 else ()
     find_program(MAKE_EXE NAMES make mingw32-make)
+    if (NOT MAKE_EXE)
+        message(FATAL_ERROR "Could not find 'make' executable (tried: make, mingw32-make). Please install it and ensure it is in your PATH.")
+    endif ()
 
     set(OPENBLAS_BUILD_ARGS
             -C <SOURCE_DIR> -s
@@ -173,19 +175,23 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     set(LIB_GFORTRAN -static-libgfortran)
     set(LIB_QUADMATH "")
 else()
+    find_program(GFORTRAN_EXECUTABLE NAMES gfortran)
+    if (NOT GFORTRAN_EXECUTABLE)
+        message(FATAL_ERROR "gfortran not found. It is required to locate libgfortran.a and libquadmath.a for linking.")
+    endif ()
+
     execute_process(
-        COMMAND gfortran -print-file-name=libgfortran.a
+        COMMAND ${GFORTRAN_EXECUTABLE} -print-file-name=libgfortran.a
         OUTPUT_VARIABLE LIB_GFORTRAN
         OUTPUT_STRIP_TRAILING_WHITESPACE
         ERROR_QUIET
     )
     if(NOT LIB_GFORTRAN OR LIB_GFORTRAN STREQUAL "libgfortran.a")
-        message(WARNING "libgfortran.a not found")
-        set(LIB_GFORTRAN "")
+        message(FATAL_ERROR "libgfortran.a not found by ${GFORTRAN_EXECUTABLE}. It is required to link multik_jni.")
     endif()
 
     execute_process(
-        COMMAND gfortran -print-file-name=libquadmath.a
+        COMMAND ${GFORTRAN_EXECUTABLE} -print-file-name=libquadmath.a
         OUTPUT_VARIABLE LIB_QUADMATH
         OUTPUT_STRIP_TRAILING_WHITESPACE
         ERROR_QUIET
