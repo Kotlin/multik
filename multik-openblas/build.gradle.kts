@@ -15,6 +15,10 @@ kotlin {
         }
         val jvmJar by tasks.getting(Jar::class) {
             dependsOn("copyNativeLibs")
+            from("${rootProject.projectDir}") {
+                include("NOTICE")
+                into("META-INF")
+            }
             from("$projectDir/build/libs") {
                 include("libmultik_jni-androidArm64.so")
                 into("lib/arm64-v8a")

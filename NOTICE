@@ -1,0 +1,12 @@
+=========================================================================
+==  NOTICE file corresponding to the section 4 d of                    ==
+==  the Apache License, Version 2.0,                                   ==
+==  in this case for the Multik library.                               ==
+=========================================================================
+
+Multik library.
+Copyright 2020-2026 JetBrains s.r.o. and respective authors and developers
+
+This product includes software developed by the OpenBLAS Project (https://www.openblas.net/).
+Copyright (c) 2011-2014, The OpenBLAS Project. All rights reserved.
+Licensed under the BSD 3-Clause License (https://github.com/OpenMathLib/OpenBLAS/blob/develop/LICENSE).

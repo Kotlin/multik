@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 #include "jni_JniLinAlg.h"
 #include "mk_linalg.h"
 #include <ComplexDouble.h>

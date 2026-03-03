@@ -1,7 +1,3 @@
-/*
- * Copyright 2020-2022 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
- */
-
 @file:Suppress("DuplicatedCode")
 
 package org.jetbrains.kotlinx.multik.kotlin.linalg
@@ -14,11 +10,21 @@ import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexDouble
 import org.jetbrains.kotlinx.multik.ndarray.complex.toComplexFloat
-import org.jetbrains.kotlinx.multik.ndarray.data.*
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
+import org.jetbrains.kotlinx.multik.ndarray.data.D2
+import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
+import org.jetbrains.kotlinx.multik.ndarray.data.DataType
+import org.jetbrains.kotlinx.multik.ndarray.data.MultiArray
+import org.jetbrains.kotlinx.multik.ndarray.data.get
+import org.jetbrains.kotlinx.multik.ndarray.data.set
 import org.jetbrains.kotlinx.multik.ndarray.operations.CopyStrategy
 import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
 import org.jetbrains.kotlinx.multik.ndarray.operations.toType
-import kotlin.math.*
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.sign
+import kotlin.math.sqrt
 
 internal fun <T, O : Any> eigenValuesCommon(a: MultiArray<T, D2>, dtype: DataType): D1Array<O> {
     requireSquare(a.shape)
