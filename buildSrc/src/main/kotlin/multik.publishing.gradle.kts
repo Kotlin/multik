@@ -4,13 +4,12 @@ import com.vanniktech.maven.publish.KotlinMultiplatform
 plugins {
     id("com.vanniktech.maven.publish")
     id("multik.dokka")
+    signing
 }
 
 mavenPublishing {
-    publishToMavenCentral()
-    if (project.findProperty("signing.keyId") != null || project.findProperty("signing.gnupg.keyName") != null) {
-        signAllPublications()
-    }
+    publishToMavenCentral(true)
+
     configure(KotlinMultiplatform(javadocJar = JavadocJar.Dokka("dokkaGeneratePublicationHtml")))
 
     pom {
@@ -38,5 +37,16 @@ mavenPublishing {
             connection = "scm:git:https://github.com/Kotlin/multik.git"
             developerConnection = "scm:git:git@github.com:Kotlin/multik.git"
         }
+    }
+}
+
+afterEvaluate {
+    signing {
+        val signingKeyId: String? by project
+        val signingKey: String? by project
+        val signingPassword: String? by project
+        useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+        mavenPublishing.signAllPublications()
+        isRequired = !signingKey.isNullOrBlank()
     }
 }
