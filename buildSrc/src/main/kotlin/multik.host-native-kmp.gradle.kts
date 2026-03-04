@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.gradle.tasks.KotlinNativeCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
 import org.jetbrains.kotlinx.multik.builds.HostDetection
@@ -33,7 +34,7 @@ val isMainHost = (findProperty("multik.mainHost") as? String)?.toBoolean() ?: tr
 
 tasks.configureEach {
     when (this) {
-        is KotlinNativeCompile, is KotlinNativeLink -> {
+        is CInteropProcess, is KotlinNativeCompile, is KotlinNativeLink -> {
             val isNonHost = allNativeTargetNames
                 .filter { it != hostTargetName }
                 .any { name.contains(it, ignoreCase = true) }
