@@ -23,15 +23,33 @@ kotlin {
     project.extra["hostNativeTarget"] = hostTarget
 }
 
-// Disable compile, link, and test tasks for non-host native targets.
-// CInterop tasks are kept enabled so stubs are generated for IDE support.
-// Each CI machine builds and publishes only its own platform.
 val hostTargetName = (project.extra["hostNativeTarget"] as KotlinNativeTarget).name
+val allNativeTargetNames = kotlin.targets.withType<KotlinNativeTarget>().map { it.name }
+
+// multik.mainHost (Gradle property, default=true):
+//   true  → main host: publishes everything except non-host native
+//   false → platform runner: publishes only host native klib
+val isMainHost = (findProperty("multik.mainHost") as? String)?.toBoolean() ?: true
+
 tasks.configureEach {
-    if (this is KotlinNativeCompile || this is KotlinNativeLink) {
-        val isNonHost = kotlin.targets.withType<KotlinNativeTarget>()
-            .matching { it.name != hostTargetName }
-            .any { name.contains(it.name, ignoreCase = true) }
-        if (isNonHost) enabled = false
+    when (this) {
+        is KotlinNativeCompile, is KotlinNativeLink -> {
+            val isNonHost = allNativeTargetNames
+                .filter { it != hostTargetName }
+                .any { name.contains(it, ignoreCase = true) }
+            if (isNonHost) enabled = false
+        }
+
+        is AbstractPublishToMaven, is GenerateModuleMetadata -> {
+            if (isMainHost) {
+                val isNonHostNative = allNativeTargetNames
+                    .filter { it != hostTargetName }
+                    .any { name.contains(it, ignoreCase = true) }
+                if (isNonHostNative) enabled = false
+            } else {
+                val isHostNative = name.contains(hostTargetName, ignoreCase = true)
+                if (!isHostNative) enabled = false
+            }
+        }
     }
 }
