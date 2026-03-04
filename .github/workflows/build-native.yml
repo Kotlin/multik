@@ -348,6 +348,4 @@ jobs:
           name: native-androidArm64
           path: |
             build/cmake-build/libmultik_jni-*
-            build/cmake-build/openblas-install/include/
-            build/cmake-build/openblas-install/lib/libopenblas.a
           retention-days: 90
