@@ -106,9 +106,9 @@ Import stable `multik` version into notebook:
 | **iosSimulatorArm64** |       ✅       |        ✅        |         —         |        ✅         |
 
 > [!IMPORTANT]
-> - On Ubuntu 20.04 and older, `multik-openblas` doesn't work due to older versions of **glibc**.
+> - On Linux distributions with **glibc** older than 2.31, `multik-openblas` doesn't work.
 > - `multik-openblas` for desktop native targets (_linuxX64_, _mingwX64_, _macosX64_, _macosArm64_) is experimental and
->     unstable.
+> unstable.
 > - JVM target `multik-openblas` for Android only supports **arm64-v8a** processors.
 
 ## Quickstart
