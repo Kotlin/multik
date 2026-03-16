@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 0
 
       - name: Detect multik-openblas changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         id: changes
         if: github.event_name != 'workflow_dispatch'
         with:
