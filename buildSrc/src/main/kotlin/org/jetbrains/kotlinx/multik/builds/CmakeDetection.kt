@@ -14,9 +14,9 @@ object CmakeDetection {
 
     /** Absolute path to `cmake`, or plain `"cmake"` as a last resort. */
     val executable: String by lazy {
-        System.getenv("CMAKE")?.takeIf { File(it).canExecute() }
+        System.getenv("CMAKE")?.let(::File)?.takeIf { it.isFile && it.canExecute() }?.absolutePath
             ?: findOnPath()
-            ?: commonInstallPaths.firstOrNull { File(it).canExecute() }
+            ?: commonInstallPaths.map(::File).firstOrNull { it.isFile && it.canExecute() }?.absolutePath
             ?: "cmake"
     }
 
@@ -39,7 +39,7 @@ object CmakeDetection {
             if (dir.isEmpty()) continue
             for (name in exeNames) {
                 val candidate = File(dir, name)
-                if (candidate.canExecute()) return candidate.absolutePath
+                if (candidate.isFile && candidate.canExecute()) return candidate.absolutePath
             }
         }
         return null
