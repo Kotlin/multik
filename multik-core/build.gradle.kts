@@ -21,18 +21,23 @@ kotlin {
 }
 
 korro {
-    docs = fileTree(rootProject.rootDir) {
-        include("README.md")
-        include("docs/topics/*.md")
-        include("docs/topics/gettingStarted/*md")
-        include("docs/topics/userGuide/*md")
-        include("docs/topics/apiDocs/*md")
+    docs {
+        from(fileTree(rootProject.rootDir) {
+            include("README.md")
+            include("docs/topics/*.md")
+            include("docs/topics/gettingStarted/*md")
+            include("docs/topics/userGuide/*md")
+            include("docs/topics/apiDocs/*md")
+        })
+        baseDir = rootProject.rootDir
     }
 
-    samples = fileTree(project.projectDir) {
-        include("src/commonTest/kotlin/samples/*.kt")
-        include("src/commonTest/kotlin/samples/docs/*.kt")
-        include("src/commonTest/kotlin/samples/docs/userGuide/*.kt")
-        include("src/commonTest/kotlin/samples/docs/apiDocs/*.kt")
+    samples {
+        from(fileTree(project.projectDir) {
+            include("src/commonTest/kotlin/samples/*.kt")
+            include("src/commonTest/kotlin/samples/docs/*.kt")
+            include("src/commonTest/kotlin/samples/docs/userGuide/*.kt")
+            include("src/commonTest/kotlin/samples/docs/apiDocs/*.kt")
+        })
     }
 }

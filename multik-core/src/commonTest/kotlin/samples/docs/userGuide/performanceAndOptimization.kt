@@ -17,11 +17,13 @@ class PerformanceAndOptimization {
         val a = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
         val v = a[0] // view
 
-        assertFalse(v.consistent)
+        println("v.consistent is ${v.consistent}") // false
 
         val c = v.deepCopy()
-        assertTrue(c.consistent)
+        println("c.consistent is ${c.consistent}") // true
         // SampleEnd
+        assertFalse(v.consistent)
+        assertTrue(c.consistent)
     }
 
     @Test
