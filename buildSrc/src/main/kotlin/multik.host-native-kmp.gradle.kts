@@ -24,28 +24,32 @@ kotlin {
 }
 
 val hostTargetName = (project.extra["hostNativeTarget"] as KotlinNativeTarget).name
-val allNativeTargetNames = kotlin.targets.withType<KotlinNativeTarget>().map { it.name }
+
+// Targets that need host-gating because of CInterop/CMake JNI (see multik-openblas).
+// iOS/JS/WASM are pure Kotlin and follow standard KMP rules — Kotlin disables unsupported
+// host compilations itself, and non-desktop klibs should publish normally from the main host.
+val gatedTargetNames = listOf("macosArm64", "macosX64", "linuxX64", "mingwX64")
 
 // multik.mainHost (Gradle property, default=true):
-//   true  → main host: publishes everything except non-host native
+//   true  → main host: publishes everything except non-host gated native
 //   false → platform runner: publishes only host native klib
 val isMainHost = (findProperty("multik.mainHost") as? String)?.toBoolean() ?: true
 
 tasks.configureEach {
     when (this) {
         is KotlinNativeCompile, is KotlinNativeLink -> {
-            val isNonHost = allNativeTargetNames
+            val isNonHostGated = gatedTargetNames
                 .filter { it != hostTargetName }
                 .any { name.contains(it, ignoreCase = true) }
-            if (isNonHost) enabled = false
+            if (isNonHostGated) enabled = false
         }
 
         is AbstractPublishToMaven, is GenerateModuleMetadata -> {
             if (isMainHost) {
-                val isNonHostNative = allNativeTargetNames
+                val isNonHostGated = gatedTargetNames
                     .filter { it != hostTargetName }
                     .any { name.contains(it, ignoreCase = true) }
-                if (isNonHostNative) enabled = false
+                if (isNonHostGated) enabled = false
             } else {
                 val isHostNative = name.contains(hostTargetName, ignoreCase = true)
                 if (!isHostNative) enabled = false
