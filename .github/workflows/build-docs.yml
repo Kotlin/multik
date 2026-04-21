@@ -21,7 +21,7 @@ env:
   ALGOLIA_INDEX_NAME: multik
   ALGOLIA_KEY: ${{ secrets.ALGOLIA_KEY }}
   CONFIG_JSON_PRODUCT: 'mk'
-  CONFIG_JSON_VERSION: '0.3.0' # no multi-version docs
+  CONFIG_JSON_VERSION: '0.3.1' # no multi-version docs
 
 jobs:
   build:
