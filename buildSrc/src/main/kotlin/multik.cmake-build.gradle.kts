@@ -1,9 +1,11 @@
+import org.jetbrains.kotlinx.multik.builds.CmakeDetection
 import org.jetbrains.kotlinx.multik.builds.HomebrewGccDetection
 import org.jetbrains.kotlinx.multik.builds.HostDetection
 
 val cmakePath = "${rootDir}/multik-openblas/multik_jni"
 val cmakeBuildDir = layout.buildDirectory.dir("cmake-build").map { it.asFile.absolutePath }
 
+val cmakeExecutable = CmakeDetection.executable
 val cmakeCCompiler = System.getenv("CMAKE_C_COMPILER")
     ?: HomebrewGccDetection.cCompiler
     ?: "gcc"
@@ -26,7 +28,7 @@ val configureCmake by tasks.registering(Exec::class) {
     dependsOn(createBuildDir)
 
     val args = mutableListOf(
-        "cmake",
+        cmakeExecutable,
         "-DCMAKE_BUILD_TYPE=Release",
         "-DCMAKE_C_COMPILER=$cmakeCCompiler",
         "-DCMAKE_CXX_COMPILER=$cmakeCxxCompiler",
@@ -46,7 +48,7 @@ val compileCmake by tasks.registering(Exec::class) {
     dependsOn(configureCmake)
 
     val processors = Runtime.getRuntime().availableProcessors().toString()
-    commandLine("cmake", "--build", cmakeBuildDir.get(), "--target", "multik_jni-$targetOS", "--", "-j", processors)
+    commandLine(cmakeExecutable, "--build", cmakeBuildDir.get(), "--target", "multik_jni-$targetOS", "--", "-j", processors)
 }
 
 val copyNativeLibs by tasks.registering {
