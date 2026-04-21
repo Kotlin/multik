@@ -53,13 +53,7 @@ internal class JvmLoader(private val name: String) : Loader {
     private val prefixPath = when (os) {
         "android" -> "lib/arm64-v8a/"
         "linux" -> "lib/linuxX64/"
-        "macos" -> {
-            if (arch == "Arm64")
-                "lib/macosArm64/"
-            else
-                "lib/macosX64/"
-        }
-
+        "macos" -> "lib/macosArm64/"
         else -> "lib/mingwX64/"
     }
 

@@ -34,10 +34,6 @@ kotlin {
                 into("lib/macosArm64")
             }
             from("$projectDir/build/libs") {
-                include("libmultik_jni-macosX64.dylib")
-                into("lib/macosX64")
-            }
-            from("$projectDir/build/libs") {
                 include("libmultik_jni-mingwX64.dll")
                 into("lib/mingwX64")
             }

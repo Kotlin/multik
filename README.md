@@ -99,7 +99,6 @@ Import stable `multik` version into notebook:
 |      **WasmJS**       |       ✅       |        ✅        |         —         |        ✅         |
 |     **linuxX64**      |       ✅       |        ✅        |         ✅         |        ✅         |
 |     **mingwX64**      |       ✅       |        ✅        |         ✅         |        ✅         |
-|     **macosX64**      |       ✅       |        ✅        |         ✅         |        ✅         |
 |    **macosArm64**     |       ✅       |        ✅        |         ✅         |        ✅         |
 |     **iosArm64**      |       ✅       |        ✅        |         —         |        ✅         |
 |      **iosX64**       |       ✅       |        ✅        |         —         |        ✅         |
@@ -107,7 +106,7 @@ Import stable `multik` version into notebook:
 
 > [!IMPORTANT]
 > - On Linux distributions with **glibc** older than 2.31, `multik-openblas` doesn't work.
-> - `multik-openblas` for desktop native targets (_linuxX64_, _mingwX64_, _macosX64_, _macosArm64_) is experimental and
+> - `multik-openblas` for desktop native targets (_linuxX64_, _mingwX64_, _macosArm64_) is experimental and
 > unstable.
 > - JVM target `multik-openblas` for Android only supports **arm64-v8a** processors.
 

@@ -22,7 +22,6 @@ object CmakeDetection {
 
     private val commonInstallPaths: List<String> = when {
         HostDetection.isMacosArm64 -> listOf("/opt/homebrew/bin/cmake", "/usr/local/bin/cmake")
-        HostDetection.isMacosX64 -> listOf("/usr/local/bin/cmake", "/opt/homebrew/bin/cmake")
         HostDetection.isLinux -> listOf("/usr/bin/cmake", "/usr/local/bin/cmake")
         HostDetection.isWindows -> listOf(
             "C:\\Program Files\\CMake\\bin\\cmake.exe",

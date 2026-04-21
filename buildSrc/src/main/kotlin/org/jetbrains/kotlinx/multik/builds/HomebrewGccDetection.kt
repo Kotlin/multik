@@ -50,5 +50,5 @@ object HomebrewGccDetection {
         if (current != null && current.isDirectory) current.absolutePath else null
     }
 
-    private val isMacos: Boolean get() = HostDetection.isMacosX64 || HostDetection.isMacosArm64
+    private val isMacos: Boolean get() = HostDetection.isMacosArm64
 }

@@ -37,7 +37,7 @@ The following [target presets](https://kotlinlang.org/docs/multiplatform-dsl-ref
 |-----------------|-------------------------------------------|
 | Kotlin/JVM      | `jvm`                                     |
 | iOS             | `iosArm64`, `iosX64`, `iosSimulatorArm64` |
-| macOS           | `macosX64`, `macosArm64`                  |
+| macOS           | `macosArm64`                              |
 | Linux           | `linuxX64`                                |
 | Windows         | `mingwX64`                                |
 | JS              | `js`                                      |
@@ -56,7 +56,7 @@ Multik separates the API from execution engines:
 | JVM              | DEFAULT, KOTLIN, NATIVE (OpenBLAS)            | NATIVE requires the OpenBLAS artifact.                                                                               |
 | JS               | KOTLIN                                        | Browser and Node.js targets.                                                                                         |
 | WASM             | KOTLIN                                        | Kotlin/WASM targets.                                                                                                 |
-| Native (desktop) | KOTLIN; NATIVE (OpenBLAS) on selected targets | OpenBLAS for desktop native targets (`linuxX64`, `mingwX64`, `macosX64`, `macosArm64`) is experimental and unstable. |
+| Native (desktop) | KOTLIN; NATIVE (OpenBLAS) on selected targets | OpenBLAS for desktop native targets (`linuxX64`, `mingwX64`, `macosArm64`) is experimental and unstable.            |
 | Native (iOS)     | KOTLIN                                        | OpenBLAS is not available.                                                                                           |
 
 For details such as Android ABI limits, see the platform pages below.

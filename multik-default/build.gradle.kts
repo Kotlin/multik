@@ -34,11 +34,9 @@ kotlin {
         val desktopTest by creating { dependsOn(commonTest.get()) }
 
         getByName("macosArm64Main").dependsOn(desktopMain)
-        getByName("macosX64Main").dependsOn(desktopMain)
         getByName("linuxX64Main").dependsOn(desktopMain)
         getByName("mingwX64Main").dependsOn(desktopMain)
         getByName("macosArm64Test").dependsOn(desktopTest)
-        getByName("macosX64Test").dependsOn(desktopTest)
         getByName("linuxX64Test").dependsOn(desktopTest)
         getByName("mingwX64Test").dependsOn(desktopTest)
     }

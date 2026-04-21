@@ -10,12 +10,10 @@ plugins {
 
 kotlin {
     macosArm64()
-    macosX64()
     linuxX64()
     mingwX64()
 
     val hostTarget = when (HostDetection.currentTarget) {
-        MultikNativeTarget.MACOS_X64 -> targets.getByName("macosX64")
         MultikNativeTarget.MACOS_ARM64 -> targets.getByName("macosArm64")
         MultikNativeTarget.LINUX_X64 -> targets.getByName("linuxX64")
         MultikNativeTarget.MINGW_X64 -> targets.getByName("mingwX64")
@@ -28,7 +26,7 @@ val hostTargetName = (project.extra["hostNativeTarget"] as KotlinNativeTarget).n
 // Targets that need host-gating because of CInterop/CMake JNI (see multik-openblas).
 // iOS/JS/WASM are pure Kotlin and follow standard KMP rules — Kotlin disables unsupported
 // host compilations itself, and non-desktop klibs should publish normally from the main host.
-val gatedTargetNames = listOf("macosArm64", "macosX64", "linuxX64", "mingwX64")
+val gatedTargetNames = listOf("macosArm64", "linuxX64", "mingwX64")
 
 // multik.mainHost (Gradle property, default=true):
 //   true  → main host: publishes everything except non-host gated native

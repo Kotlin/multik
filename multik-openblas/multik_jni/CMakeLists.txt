@@ -48,12 +48,6 @@ elseif (${TARGET_OS} STREQUAL "macosArm64" OR ${PLATFORM} MATCHES "Darwin-arm64"
     set(FEXTRALIB "-lgfortran")
     set(NO_AVX512 1)
     set(DYNAMIC_ARCH 1)
-elseif(${TARGET_OS} STREQUAL "macosX64" OR ${PLATFORM} MATCHES "Darwin-x86_64")
-    set(suffix macosX64)
-    set(FC "gfortran")
-    set(FEXTRALIB "-lgfortran")
-    set(NO_AVX512 0)
-    set(DYNAMIC_ARCH 1)
 # linuxArm64: uncomment when needed
 # elseif(${TARGET_OS} STREQUAL "linuxArm64")
 #     set(suffix linuxArm64)

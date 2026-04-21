@@ -28,7 +28,7 @@ Both can use the same Multik API, with engine choice depending on platform and p
 | Target                                                            | Engines                            | Notes                                                             |
 |-------------------------------------------------------------------|------------------------------------|-------------------------------------------------------------------|
 | JVM desktop                                                       | DEFAULT, KOTLIN, NATIVE (OpenBLAS) | NATIVE requires `multik-openblas`.                                |
-| Native desktop (`linuxX64`, `mingwX64`, `macosX64`, `macosArm64`) | KOTLIN; NATIVE (OpenBLAS)          | OpenBLAS for desktop native targets is experimental and unstable. |
+| Native desktop (`linuxX64`, `mingwX64`, `macosArm64`)             | KOTLIN; NATIVE (OpenBLAS)          | OpenBLAS for desktop native targets is experimental and unstable. |
 
 ## Dependencies
 
