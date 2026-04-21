@@ -65,6 +65,8 @@ kotlin {
                         compilerOpts("-DFORCE_OPENBLAS_COMPLEX_STRUCT=1")
                     }
 
+                    extraOpts("-Xccall-mode", "indirect")
+
                     extraOpts("-Xsource-compiler-option", "-std=c++14")
                     extraOpts("-Xsource-compiler-option", "-I$headersDir")
                     extraOpts("-Xsource-compiler-option", "-I$openblasIncludeDir")
