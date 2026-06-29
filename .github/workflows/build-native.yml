@@ -61,7 +61,7 @@ jobs:
           java-version: '21'
 
       - name: Cache OpenBLAS build
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: build/cmake-build/openblas*
           key: openblas-linuxX64-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt') }}
@@ -122,7 +122,7 @@ jobs:
           echo "$BREW_GCC_PREFIX/bin" >> "$GITHUB_PATH"
 
       - name: Cache OpenBLAS build
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: build/cmake-build/openblas*
           key: openblas-macosArm64-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt') }}
@@ -185,7 +185,7 @@ jobs:
           java-version: '21'
 
       - name: Cache OpenBLAS download
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: build/cmake-build/openblas*
           key: openblas-mingwX64-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt') }}
@@ -239,7 +239,7 @@ jobs:
           sudo apt-get install -y cmake make
 
       - name: Cache Android NDK
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: ndk-cache
         with:
           path: /opt/android-ndk-r27c
@@ -260,7 +260,7 @@ jobs:
           echo "CMAKE_CXX_COMPILER=aarch64-linux-android${ANDROID_API}-clang++" >> "$GITHUB_ENV"
 
       - name: Cache OpenBLAS build
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: build/cmake-build/openblas*
           key: openblas-androidArm64-${{ hashFiles('multik-openblas/multik_jni/CMakeLists.txt') }}
