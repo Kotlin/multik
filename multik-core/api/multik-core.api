@@ -1377,6 +1377,7 @@ public final class org/jetbrains/kotlinx/multik/ndarray/data/InternalsKt {
 }
 
 public abstract class org/jetbrains/kotlinx/multik/ndarray/data/MemoryView : org/jetbrains/kotlinx/multik/ndarray/data/ImmutableMemoryView {
+	public synthetic fun copyOf ()Lorg/jetbrains/kotlinx/multik/ndarray/data/ImmutableMemoryView;
 	public abstract fun copyOf ()Lorg/jetbrains/kotlinx/multik/ndarray/data/MemoryView;
 	public fun divAssign (Ljava/lang/Object;)V
 	public final fun divAssign (Lorg/jetbrains/kotlinx/multik/ndarray/data/MemoryView;)V
@@ -1763,16 +1764,27 @@ public final class org/jetbrains/kotlinx/multik/ndarray/data/MultiIndexProgressi
 }
 
 public abstract interface class org/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray : org/jetbrains/kotlinx/multik/ndarray/data/MultiArray {
+	public synthetic fun copy ()Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;
 	public abstract fun copy ()Lorg/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray;
+	public synthetic fun deepCopy ()Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;
 	public abstract fun deepCopy ()Lorg/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray;
+	public synthetic fun getData ()Lorg/jetbrains/kotlinx/multik/ndarray/data/ImmutableMemoryView;
 	public abstract fun getData ()Lorg/jetbrains/kotlinx/multik/ndarray/data/MemoryView;
+	public synthetic fun reshape (I)Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;
 	public abstract fun reshape (I)Lorg/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray;
+	public synthetic fun reshape (II)Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;
 	public abstract fun reshape (II)Lorg/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray;
+	public synthetic fun reshape (III)Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;
 	public abstract fun reshape (III)Lorg/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray;
+	public synthetic fun reshape (IIII)Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;
 	public abstract fun reshape (IIII)Lorg/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray;
+	public synthetic fun reshape (IIII[I)Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;
 	public abstract fun reshape (IIII[I)Lorg/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray;
+	public synthetic fun squeeze ([I)Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;
 	public abstract fun squeeze ([I)Lorg/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray;
+	public synthetic fun transpose ([I)Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;
 	public abstract fun transpose ([I)Lorg/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray;
+	public synthetic fun unsqueeze ([I)Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;
 	public abstract fun unsqueeze ([I)Lorg/jetbrains/kotlinx/multik/ndarray/data/MutableMultiArray;
 }
 
