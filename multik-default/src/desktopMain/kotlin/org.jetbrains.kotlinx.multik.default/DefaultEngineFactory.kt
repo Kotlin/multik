@@ -12,7 +12,7 @@ import org.jetbrains.kotlinx.multik.openblas.NativeEngine
 internal actual object DefaultEngineFactory : EngineFactory {
     actual override fun getEngine(type: EngineType?): Engine =
         when (type) {
-            null -> error("Pass NativeEngineType of KEEngineType")
+            null -> throw IllegalArgumentException("Engine type is required: pass NativeEngineType or KEEngineType.")
             KEEngineType -> KEEngine()
             NativeEngineType -> NativeEngine()
             DefaultEngineType -> error("Default Engine doesn't link to Default Engine")

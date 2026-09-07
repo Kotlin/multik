@@ -4,11 +4,8 @@ import org.jetbrains.kotlinx.multik.api.Multik
 import org.jetbrains.kotlinx.multik.ndarray.data.D1
 import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
 import org.jetbrains.kotlinx.multik.ndarray.data.D2
-import org.jetbrains.kotlinx.multik.ndarray.data.D2Array
 import org.jetbrains.kotlinx.multik.ndarray.data.D3
-import org.jetbrains.kotlinx.multik.ndarray.data.D3Array
 import org.jetbrains.kotlinx.multik.ndarray.data.D4
-import org.jetbrains.kotlinx.multik.ndarray.data.D4Array
 import org.jetbrains.kotlinx.multik.ndarray.data.DN
 import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 import org.jetbrains.kotlinx.multik.ndarray.data.Dimension
@@ -19,6 +16,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.actualAxis
 import org.jetbrains.kotlinx.multik.ndarray.data.dimensionOf
 import org.jetbrains.kotlinx.multik.ndarray.data.get
 import org.jetbrains.kotlinx.multik.ndarray.data.initMemoryView
+import org.jetbrains.kotlinx.multik.ndarray.data.reshapeTo
 import kotlin.jvm.JvmName
 
 /**
@@ -346,7 +344,9 @@ internal fun <T, D : Dimension, O : Dimension> concatenate(
                     }
                 }
 
-                else -> throw UnsupportedOperationException()
+                else -> throw UnsupportedOperationException(
+                    "Concatenation is not supported for arrays of dimension ${dest.dim.d}."
+                )
             }
         }
     }
@@ -383,53 +383,50 @@ public fun <T, D : Dimension> MultiArray<T, D>.clip(min: T, max: T): NDArray<T, 
 /**
  * Inserts a size-1 axis at position [axis], promoting a 1D array to 2D.
  *
- * Returns a view when the array is [consistent][MultiArray.consistent], otherwise copies.
+ * Always returns a view sharing this array's data; no elements are copied.
  *
  * @param axis position where the new axis is inserted.
- * @return a 2D view (or copy) with a size-1 dimension at [axis].
+ * @return a 2D view with a size-1 dimension at [axis].
  * @see [unsqueeze]
  */
 @JvmName("expandDimsD1")
-public fun <T> MultiArray<T, D1>.expandDims(axis: Int): MultiArray<T, D2> {
-    val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
-    // TODO(get rid of copying)
-    val newData = if (consistent) this.data else this.deepCopy().data
-    val newBase = if (consistent) this.base ?: this else null
-    val newOffset = if (consistent) this.offset else 0
-    return D2Array(newData, newOffset, newShape, dim = D2, base = newBase)
-}
+public fun <T> MultiArray<T, D1>.expandDims(axis: Int): MultiArray<T, D2> =
+    reshapeTo(shape.toMutableList().apply { add(axis, 1) }.toIntArray(), D2)
 
-/** Inserts a size-1 axis at position [axis], promoting a 2D array to 3D. */
+/**
+ * Inserts a size-1 axis at position [axis], promoting a 2D array to 3D.
+ *
+ * Always returns a view sharing this array's data; no elements are copied.
+ */
 @JvmName("expandDimsD2")
-public fun <T> MultiArray<T, D2>.expandDims(axis: Int): MultiArray<T, D3> {
-    val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
-    // TODO(get rid of copying)
-    val newData = if (consistent) this.data else this.deepCopy().data
-    val newBase = if (consistent) this.base ?: this else null
-    val newOffset = if (consistent) this.offset else 0
-    return D3Array(newData, newOffset, newShape, dim = D3, base = newBase)
-}
+public fun <T> MultiArray<T, D2>.expandDims(axis: Int): MultiArray<T, D3> =
+    reshapeTo(shape.toMutableList().apply { add(axis, 1) }.toIntArray(), D3)
 
-/** Inserts a size-1 axis at position [axis], promoting a 3D array to 4D. */
+/**
+ * Inserts a size-1 axis at position [axis], promoting a 3D array to 4D.
+ *
+ * Always returns a view sharing this array's data; no elements are copied.
+ */
 @JvmName("expandDimsD3")
-public fun <T> MultiArray<T, D3>.expandDims(axis: Int): MultiArray<T, D4> {
-    val newShape = shape.toMutableList().apply { add(axis, 1) }.toIntArray()
-    // TODO(get rid of copying)
-    val newData = if (consistent) this.data else this.deepCopy().data
-    val newBase = if (consistent) this.base ?: this else null
-    val newOffset = if (consistent) this.offset else 0
-    return D4Array(newData, newOffset, newShape, dim = D4, base = newBase)
-}
+public fun <T> MultiArray<T, D3>.expandDims(axis: Int): MultiArray<T, D4> =
+    reshapeTo(shape.toMutableList().apply { add(axis, 1) }.toIntArray(), D4)
 
-/** Inserts a size-1 axis at position [axis], promoting a 4D array to N-dimensional. */
+/**
+ * Inserts a size-1 axis at position [axis], promoting a 4D array to N-dimensional.
+ *
+ * Always returns a view sharing this array's data; no elements are copied.
+ */
 @JvmName("expandDimsD4")
-public fun <T> MultiArray<T, D4>.expandDims(axis: Int): MultiArray<T, DN> = this.unsqueeze()
+public fun <T> MultiArray<T, D4>.expandDims(axis: Int): MultiArray<T, DN> = this.unsqueeze(axis)
 
 /**
  * Inserts size-1 axes at the given positions, returning an N-dimensional array.
+ *
+ * Always returns a view sharing this array's data; no elements are copied.
  *
  * @param axes positions where new axes are inserted.
  * @see [unsqueeze]
  */
 @JvmName("expandDimsDN")
-public fun <T, D : Dimension> MultiArray<T, D>.expandNDims(vararg axes: Int): MultiArray<T, DN> = this.unsqueeze()
+public fun <T, D : Dimension> MultiArray<T, D>.expandNDims(vararg axes: Int): MultiArray<T, DN> =
+    this.unsqueeze(*axes)

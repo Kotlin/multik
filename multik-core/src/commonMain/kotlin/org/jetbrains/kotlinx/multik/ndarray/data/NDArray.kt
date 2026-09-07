@@ -131,22 +131,12 @@ public class NDArray<T, D : Dimension> constructor(
         return D1Array(data, 0, intArrayOf(size), dim = D1)
     }
 
-    // TODO(strides? : view.reshape().reshape()?)
     override fun reshape(dim1: Int): D1Array<T> {
         // todo negative shape?
         requirePositiveShape(dim1)
         require(dim1 == size) { "Cannot reshape array of size $size into a new shape ($dim1)" }
 
-        // TODO(get rid of copying)
-        val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) this.base ?: this else null
-        val newOffset = if (consistent) this.offset else 0
-
-        return if (this.dim.d == 1 && this.shape.first() == dim1) {
-            this as D1Array<T>
-        } else {
-            D1Array(newData, newOffset, intArrayOf(dim1), dim = D1, base = newBase)
-        }
+        return reshapeTo(intArrayOf(dim1), D1)
     }
 
     override fun reshape(dim1: Int, dim2: Int): D2Array<T> {
@@ -154,16 +144,7 @@ public class NDArray<T, D : Dimension> constructor(
         newShape.forEach { requirePositiveShape(it) }
         require(dim1 * dim2 == size) { "Cannot reshape array of size $size into a new shape ($dim1, $dim2)" }
 
-        // TODO(get rid of copying)
-        val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) this.base ?: this else null
-        val newOffset = if (consistent) this.offset else 0
-
-        return if (this.shape.contentEquals(newShape)) {
-            this as D2Array<T>
-        } else {
-            D2Array(newData, newOffset, newShape, dim = D2, base = newBase)
-        }
+        return reshapeTo(newShape, D2)
     }
 
     override fun reshape(dim1: Int, dim2: Int, dim3: Int): D3Array<T> {
@@ -171,16 +152,7 @@ public class NDArray<T, D : Dimension> constructor(
         newShape.forEach { requirePositiveShape(it) }
         require(dim1 * dim2 * dim3 == size) { "Cannot reshape array of size $size into a new shape ($dim1, $dim2, $dim3)" }
 
-        // TODO(get rid of copying)
-        val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) base ?: this else null
-        val newOffset = if (consistent) this.offset else 0
-
-        return if (this.shape.contentEquals(newShape)) {
-            this as D3Array<T>
-        } else {
-            D3Array(newData, newOffset, newShape, dim = D3, base = newBase)
-        }
+        return reshapeTo(newShape, D3)
     }
 
     override fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int): D4Array<T> {
@@ -188,16 +160,7 @@ public class NDArray<T, D : Dimension> constructor(
         newShape.forEach { requirePositiveShape(it) }
         require(dim1 * dim2 * dim3 * dim4 == size) { "Cannot reshape array of size $size into a new shape ($dim1, $dim2, $dim3, $dim4)" }
 
-        // TODO(get rid of copying)
-        val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) this.base ?: this else null
-        val newOffset = if (consistent) this.offset else 0
-
-        return if (this.shape.contentEquals(newShape)) {
-            this as D4Array<T>
-        } else {
-            D4Array(newData, newOffset, newShape, dim = D4, base = newBase)
-        }
+        return reshapeTo(newShape, D4)
     }
 
     override fun reshape(dim1: Int, dim2: Int, dim3: Int, dim4: Int, vararg dims: Int): NDArray<T, DN> {
@@ -207,16 +170,7 @@ public class NDArray<T, D : Dimension> constructor(
             "Cannot reshape array of size $size into a new shape ${newShape.joinToString(prefix = "(", postfix = ")")}"
         }
 
-        // TODO(get rid of copying)
-        val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) this.base ?: this else null
-        val newOffset = if (consistent) this.offset else 0
-
-        return if (this.shape.contentEquals(newShape)) {
-            this as NDArray<T, DN>
-        } else {
-            NDArray(newData, newOffset, newShape, dim = DN(newShape.size), base = newBase)
-        }
+        return reshapeTo(newShape, DN(newShape.size))
     }
 
     override fun transpose(vararg axes: Int): NDArray<T, D> {
@@ -244,24 +198,37 @@ public class NDArray<T, D : Dimension> constructor(
         val cutAxes = if (axes.isEmpty()) {
             shape.withIndex().filter { it.value == 1 }.map { it.index }
         } else {
-            require(axes.all { shape[it] == 1 }) { "Cannot select an axis to squeeze out which has size not equal to one." }
+            for (axis in axes) {
+                require(axis in shape.indices) { "Axis $axis is out of bounds for an array of dimension ${dim.d}." }
+                require(shape[axis] == 1) {
+                    "Cannot squeeze axis $axis of shape ${shape.joinToString(prefix = "(", postfix = ")")}: " +
+                        "its size is ${shape[axis]}, not 1."
+                }
+            }
             axes.toList()
         }
-        val newShape = this.shape.sliceArray(this.shape.indices - cutAxes)
-        return NDArray(this.data, this.offset, newShape, dim = DN(newShape.size), base = base ?: this)
+        val squeezed = this.shape.sliceArray(this.shape.indices - cutAxes)
+        // no rank-0 arrays, so keep one size-one axis when every axis would be dropped.
+        val newShape = if (squeezed.isEmpty()) intArrayOf(1) else squeezed
+        return reshapeTo(newShape, DN(newShape.size))
     }
 
     override fun unsqueeze(vararg axes: Int): NDArray<T, DN> {
+        val newRank = dim.d + axes.size
+        for (axis in axes) {
+            require(axis in 0 until newRank) {
+                "Axis $axis is out of bounds for the resulting array of dimension $newRank."
+            }
+        }
+        require(axes.toSet().size == axes.size) {
+            "The specified axes must be unique, but got ${axes.joinToString(prefix = "(", postfix = ")")}."
+        }
+
         val newShape = shape.toMutableList()
         for (axis in axes.sorted()) {
             newShape.add(axis, 1)
         }
-        // TODO(get rid of copying)
-        val newData = if (consistent) this.data else this.deepCopy().data
-        val newBase = if (consistent) this.base ?: this else null
-        val newOffset = if (consistent) this.offset else 0
-
-        return NDArray(newData, newOffset, newShape.toIntArray(), dim = DN(newShape.size), base = newBase)
+        return reshapeTo(newShape.toIntArray(), DN(newShape.size))
     }
 
     override infix fun cat(other: MultiArray<T, D>): NDArray<T, D> =
@@ -337,10 +304,11 @@ public class NDArray<T, D : Dimension> constructor(
      * creates a new view with [DN] as the dimension type.
      *
      * @return this array typed as `NDArray<T, DN>`.
-     * @throws Exception if the array dimension is undefined (-1).
+     * @throws IllegalStateException if the array's dimension is undefined (-1), which indicates a
+     *   malformed array rather than a caller error.
      */
     public fun asDNArray(): NDArray<T, DN> {
-        if (this.dim.d == -1) throw Exception("Array dimension is undefined")
+        check(this.dim.d != -1) { "Array dimension is undefined: the array was built with DN(-1)." }
         if (this.dim.d > 4) return this as NDArray<T, DN>
 
         return NDArray(this.data, this.offset, this.shape, this.strides, DN(this.dim.d), base = base ?: this)

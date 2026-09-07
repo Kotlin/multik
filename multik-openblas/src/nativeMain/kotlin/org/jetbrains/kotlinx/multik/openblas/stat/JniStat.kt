@@ -14,6 +14,6 @@ internal actual object JniStat {
         is LongArray -> arr.usePinned { array_median(it.addressOf(0), size, dtype) }
         is ByteArray -> arr.usePinned { array_median(it.addressOf(0), size, dtype) }
         is ShortArray -> arr.usePinned { array_median(it.addressOf(0), size, dtype) }
-        else -> throw Exception("Only primitive arrays are supported for Kotlin/Native `median`")
+        else -> throw UnsupportedOperationException("Only primitive arrays are supported for Kotlin/Native `median`")
     }
 }

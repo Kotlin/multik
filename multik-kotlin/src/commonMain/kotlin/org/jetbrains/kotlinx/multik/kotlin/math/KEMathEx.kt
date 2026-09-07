@@ -78,10 +78,8 @@ internal object KEMathEx : MathEx {
     ): NDArray<Double, D> {
         val iter = a.iterator()
         val data = initMemoryView(a.size, DataType.DoubleDataType) {
-            if (iter.hasNext())
-                function(iter.next().toDouble())
-            else
-                0.0
+            check(iter.hasNext()) { "Iterator over an array of ${a.size} elements was exhausted early." }
+            function(iter.next().toDouble())
         }
         return NDArray(data, 0, a.shape, dim = a.dim)
     }
@@ -92,10 +90,8 @@ internal object KEMathEx : MathEx {
     ): NDArray<Float, D> {
         val iter = a.iterator()
         val data = initMemoryView(a.size, DataType.FloatDataType) {
-            if (iter.hasNext())
-                function(iter.next())
-            else
-                0f
+            check(iter.hasNext()) { "Iterator over an array of ${a.size} elements was exhausted early." }
+            function(iter.next())
         }
         return NDArray(data, 0, a.shape, dim = a.dim)
     }
@@ -106,7 +102,7 @@ internal object KEMathEx : MathEx {
     ): NDArray<T, D> {
         val iter = a.iterator()
         val data = initMemoryView(a.size, a.dtype) {
-            if (!iter.hasNext()) throw Exception("")
+            check(iter.hasNext()) { "Iterator over an array of ${a.size} elements was exhausted early." }
             function(iter.next())
         }
         return NDArray(data, 0, a.shape, dim = a.dim)

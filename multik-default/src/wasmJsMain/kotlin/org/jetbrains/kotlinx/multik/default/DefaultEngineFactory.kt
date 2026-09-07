@@ -12,6 +12,8 @@ internal actual object DefaultEngineFactory : EngineFactory {
     actual override fun getEngine(type: EngineType?): Engine =
         when (type) {
             null, KEEngineType, DefaultEngineType -> KEEngine()
-            NativeEngineType -> error("Don't exist native engine for iOS targets")
+            NativeEngineType -> throw UnsupportedOperationException(
+                "There is no native engine for WASM targets; use KEEngineType."
+            )
         }
 }

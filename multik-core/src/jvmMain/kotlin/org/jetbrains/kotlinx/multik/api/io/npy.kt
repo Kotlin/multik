@@ -50,11 +50,10 @@ public inline fun <reified T : Number, reified D : Dimension> Multik.readNPY(pat
  * @param path path to the `.npy` file.
  * @param dtype the expected element data type.
  * @param dim the expected dimension.
- * @throws Exception if [dtype] is a complex type.
- * @throws IllegalArgumentException if the file's shape does not match [dim].
+ * @throws IllegalArgumentException if [dtype] is a complex type, or if the file's shape does not match [dim].
  */
 public fun <T : Any, D : Dimension> Multik.readNPY(path: Path, dtype: DataType, dim: D): NDArray<T, D> {
-    if (dtype.isComplex()) throw Exception("NPY format only supports Number types")
+    require(dtype.isNumber()) { "NPY format does not support ${dtype.name}: only real numeric types are supported." }
     val npyArray: NpyArray = NpyFile.read(path)
     require(npyArray.shape.size == dim.d) { "Not match dimensions: shape of npy array = ${npyArray.shape.joinToString()}, and dimension = ${dim.d}" }
 
@@ -65,7 +64,7 @@ public fun <T : Any, D : Dimension> Multik.readNPY(path: Path, dtype: DataType, 
         DataType.LongDataType -> MemoryViewLongArray(npyArray.asLongArray())
         DataType.ShortDataType -> MemoryViewShortArray(npyArray.asShortArray())
         DataType.ByteDataType -> MemoryViewByteArray(npyArray.asByteArray())
-        else -> throw Exception("not supported complex arrays")
+        else -> throw IllegalArgumentException("NPY format does not support ${dtype.name}: only real numeric types are supported.")
     } as MemoryView<T>
 
     return NDArray(data, shape = npyArray.shape, dim = dim)

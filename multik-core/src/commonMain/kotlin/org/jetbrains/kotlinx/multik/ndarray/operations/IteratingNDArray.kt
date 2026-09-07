@@ -92,7 +92,7 @@ public infix fun <T : Number, D : Dimension> MultiArray<T, D>.and(other: MultiAr
             DataType.LongDataType -> (lIter.next().toLong() and rIter.next().toLong()).toInt()
             DataType.ShortDataType -> (lIter.next().toShort() and rIter.next().toShort()).toInt()
             DataType.ByteDataType -> (lIter.next().toByte() and rIter.next().toByte()).toInt()
-            else -> throw Exception("")
+            else -> throw UnsupportedOperationException("`and` is not supported for ${dtype.name}.")
         }
     }
     return ret
@@ -141,7 +141,7 @@ public infix fun <T : Number, D : Dimension> MultiArray<T, D>.or(other: MultiArr
             DataType.LongDataType -> (lIter.next().toLong() or rIter.next().toLong()).toInt()
             DataType.ShortDataType -> (lIter.next().toShort() or rIter.next().toShort()).toInt()
             DataType.ByteDataType -> (lIter.next().toByte() or rIter.next().toByte()).toInt()
-            else -> throw Exception("")
+            else -> throw UnsupportedOperationException("`or` is not supported for ${dtype.name}.")
         }
     }
     return ret
@@ -869,7 +869,7 @@ public fun <T: Number, D : Dimension> MultiArray<T, D>.minimum(other: MultiArray
         DataType.LongDataType -> (ret as NDArray<Long, D>).commonAssignOp(other.iterator() as Iterator<Long>) { a, b -> min(a, b) }
         DataType.ShortDataType -> (ret as NDArray<Short, D>).commonAssignOp(other.iterator() as Iterator<Short>) { a, b -> (minOf(a, b)) }
         DataType.ByteDataType -> (ret as NDArray<Byte, D>).commonAssignOp(other.iterator() as Iterator<Byte>) { a, b -> (minOf(a, b)) }
-        else -> throw UnsupportedOperationException("The operations is not supported for the $dtype")
+        else -> throw UnsupportedOperationException("`minimum` is not supported for ${dtype.name}.")
     }
     return ret
 }
@@ -887,7 +887,7 @@ public fun <T: Number, D : Dimension> MultiArray<T, D>.maximum(other: MultiArray
         DataType.LongDataType -> (ret as NDArray<Long, D>).commonAssignOp(other.iterator() as Iterator<Long>) { a, b -> max(a, b) }
         DataType.ShortDataType -> (ret as NDArray<Short, D>).commonAssignOp(other.iterator() as Iterator<Short>) { a, b ->(maxOf (a, b)) }
         DataType.ByteDataType -> (ret as NDArray<Byte, D>).commonAssignOp(other.iterator() as Iterator<Byte>) { a, b ->(maxOf (a, b)) }
-        else -> throw UnsupportedOperationException("The operations is not supported for the $dtype")
+        else -> throw UnsupportedOperationException("`maximum` is not supported for ${dtype.name}.")
     }
     return ret
 }
@@ -1302,7 +1302,7 @@ public fun <T : Number, D : Dimension> MultiArray<T, D>.sorted(): NDArray<T, D> 
         DataType.FloatDataType -> ret.data.getFloatArray().sort()
         DataType.DoubleDataType -> ret.data.getDoubleArray().sort()
         DataType.ComplexFloatDataType, DataType.ComplexDoubleDataType ->
-            throw Exception("Complex numbers cannot be sorted.")
+            throw UnsupportedOperationException("Cannot sort an array of ${dtype.name}: complex numbers have no natural order.")
     }
     return ret
 }
@@ -1851,7 +1851,7 @@ public fun <T, O : Any, D : Dimension> MultiArray<T, D>.toType(
                 }
             }
         }
-        else -> throw Exception()
+        else -> throw UnsupportedOperationException("Cannot convert an array of ${this.dtype.name} to ${dtype.name}.")
     }
     return NDArray(view, offset, this.shape.copyOf(), strides, this.dim)
 }

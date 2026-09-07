@@ -103,16 +103,16 @@ It is **not** available on iOS, JS, or WASM.
 
 ## Common pitfalls
 
-### Reshaping a sliced array produces wrong data
+### Reshaping a sliced array returns a view, not a copy
 
-Slicing returns a **view** that shares the underlying data buffer with non-contiguous strides.
-`reshape` assumes contiguous memory, so it can produce incorrect results on views.
+`reshape` returns a **view** whenever the new shape can be addressed with strides over the existing
+data — which includes most slices. Writing to the result writes through to the original array.
 
-**Fix:** Call `.copy()` before reshaping:
+**Fix:** Call `.deepCopy()` first if you need a standalone array:
 
 ```kotlin
-val slice = array[0..2, 0..2]
-val reshaped = slice.copy().reshape(1, 4)  // correct
+val slice = array[0..1, 0..1]
+val reshaped = slice.deepCopy().reshape(1, 4)  // detached from `array`
 ```
 
 ### Mixing numeric types causes a runtime error

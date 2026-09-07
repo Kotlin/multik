@@ -83,7 +83,8 @@ Typical view-producing operations:
 
 * Indexing and slicing
 * `view(...)` and `slice(...)`
-* `transpose()` and `squeeze()`
+* `transpose()`
+* `squeeze()`, `unsqueeze()`, `expandDims(...)` and `expandNDims(...)`
 
 Operations that always allocate new storage:
 
@@ -91,8 +92,9 @@ Operations that always allocate new storage:
 * `flatten()`
 * `cat(...)` and `mk.stack(...)`
 
-Operations like `reshape()` and `unsqueeze()` return views when the array is contiguous;
-otherwise they materialize a copy to keep data consistent.
+`reshape()` returns a view whenever the new shape can be addressed with strides over the existing
+data. That covers contiguous arrays and most slices; it copies only when no such strides exist, as
+when a transposed array is reshaped across its axes.
 
 <seealso style="cards" title="Next steps">
 <category ref="user-guide">

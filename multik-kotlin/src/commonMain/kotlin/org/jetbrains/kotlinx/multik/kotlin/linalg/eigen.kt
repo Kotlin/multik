@@ -32,7 +32,7 @@ internal fun <T, O : Any> eigenValuesCommon(a: MultiArray<T, D2>, dtype: DataTyp
     return when (dtype) {
         DataType.ComplexFloatDataType -> eigenvaluesFloat(mat as MultiArray<ComplexFloat, D2>)
         DataType.ComplexDoubleDataType -> eigenvaluesDouble(mat as MultiArray<ComplexDouble, D2>)
-        else -> throw UnsupportedOperationException()
+        else -> throw UnsupportedOperationException("`eig` is not supported for ${dtype.name}.")
     } as D1Array<O>
 }
 

@@ -59,22 +59,25 @@ public inline fun <reified T : Any, reified D : Dimension> Multik.read(path: Pat
  * @param dtype the expected element data type.
  * @param dim the expected dimension.
  * @throws NoSuchFileException if the file does not exist.
- * @throws Exception if the format is unsupported or incompatible with [dtype]/[dim].
+ * @throws IllegalArgumentException if the format is unsupported or incompatible with [dtype]/[dim].
  */
 public fun <T : Any, D : Dimension> Multik.read(path: Path, dtype: DataType, dim: D): NDArray<T, D> {
     if (path.notExists()) throw NoSuchFileException(path.toFile())
     return when (path.extension) {
         FileFormats.NPY.extension -> {
-            if (dtype.isComplex()) throw Exception("NPY format only supports Number types")
+            require(dtype.isNumber()) { "NPY format does not support ${dtype.name}: only real numeric types are supported." }
             this.readNPY(path, dtype, dim)
         }
 
         FileFormats.CSV.extension -> {
-            if (dim.d > 2) throw Exception("CSV format only supports 1 and 2 dimensions")
+            require(dim.d <= 2) { "CSV format supports 1- and 2-dimensional arrays, but got dimension ${dim.d}." }
             this.readRaw(path.toFile(), dtype, dim as Dim2) as NDArray<T, D>
         }
 
-        else -> throw Exception("Format ${path.extension} does not support reading ndarrays. If it is `npz` format, try `mk.readNPZ`")
+        else -> throw IllegalArgumentException(
+            "Cannot read an ndarray from a `.${path.extension}` file. Supported formats: `npy`, `csv`. " +
+                "For `npz` archives use `mk.readNPZ`."
+        )
     }
 }
 
@@ -108,21 +111,25 @@ public fun Multik.write(file: File, ndarray: NDArray<*, *>): Unit =
  *
  * @param path path to the output file.
  * @param ndarray the array to write.
- * @throws Exception if the format is unsupported or incompatible with the array's type or dimension.
+ * @throws IllegalArgumentException if the format is unsupported or incompatible with the array's type or dimension.
  */
 public fun Multik.write(path: Path, ndarray: NDArray<*, *>): Unit =
     when (path.extension) {
         FileFormats.NPY.extension -> {
-            require(ndarray.dtype != DataType.ComplexFloatDataType || ndarray.dtype != DataType.ComplexFloatDataType) {
-                "NPY format does not support complex numbers."
+            require(ndarray.dtype.isNumber()) {
+                "NPY format does not support ${ndarray.dtype.name}: only real numeric types are supported."
             }
             this.writeNPY(path, ndarray as NDArray<out Number, *>)
         }
 
         FileFormats.CSV.extension -> {
-            require(ndarray.dim.d < 2) { "Expected array of dimension less than 2, but got array of dimension ${ndarray.dim.d}." }
+            require(ndarray.dim.d <= 2) {
+                "CSV format supports 1- and 2-dimensional arrays, but got dimension ${ndarray.dim.d}."
+            }
             this.writeCSV(path.toFile(), ndarray as NDArray<*, out Dim2>)
         }
 
-        else -> throw Exception("Unknown format `${path.extension}`. Please use one of the supported formats: `npy`, `csv`.")
+        else -> throw IllegalArgumentException(
+            "Cannot write an ndarray to a `.${path.extension}` file. Supported formats: `npy`, `csv`."
+        )
     }

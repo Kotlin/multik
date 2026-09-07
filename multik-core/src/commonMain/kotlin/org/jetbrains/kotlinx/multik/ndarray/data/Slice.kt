@@ -106,13 +106,13 @@ public fun IntRange.toSlice(): Slice = Slice(this.first, this.last, 1)
  *
  * Supports [Slice], [IntRange], or any other [ClosedRange]<[Int]>.
  *
- * @throws IllegalStateException if the range type is not [Slice] or [IntRange].
+ * @throws IllegalArgumentException if the range type is not [Slice] or [IntRange].
  */
 public fun ClosedRange<Int>.toSlice(): Slice =
     when(this) {
         is Slice -> this
         is IntRange -> this.toSlice()
-        else -> throw IllegalStateException("${this::class} not supported, please use Slice or IntRange.")
+        else -> throw IllegalArgumentException("${this::class} is not supported, please use Slice or IntRange.")
     }
 
 /**

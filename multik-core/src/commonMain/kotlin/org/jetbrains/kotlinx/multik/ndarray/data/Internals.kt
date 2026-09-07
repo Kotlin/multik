@@ -107,6 +107,94 @@ internal fun computeStrides(shape: IntArray): IntArray = shape.copyOf().apply {
     }
 }
 
+/**
+ * Computes strides addressing [newShape] over the memory described by [shape] and [strides],
+ * without moving any element.
+ *
+ * A shape change can be expressed as a view whenever every group of old axes that the new shape
+ * merges is contiguous with respect to itself. Axes of size one are ignored, because a single
+ * element is reachable regardless of the stride assigned to its axis. This is the rule NumPy uses,
+ * so a copy is only needed when the requested layout genuinely cannot be strided over the existing
+ * buffer — for example when reshaping a transposed array to a shape that mixes its axes.
+ *
+ * @param shape the current shape.
+ * @param strides the current strides, in elements.
+ * @param newShape the requested shape; must describe the same number of elements as [shape].
+ * @return strides for [newShape] over the same memory, or `null` when the elements must be copied.
+ */
+internal fun reshapeStrides(shape: IntArray, strides: IntArray, newShape: IntArray): IntArray? {
+    if (newShape.isEmpty()) return IntArray(0)
+    // An empty array addresses no elements, so the packed strides of the new shape always fit.
+    if (shape.any { it == 0 }) return computeStrides(newShape)
+
+    // Drop axes of size one: their stride is never used and would otherwise break up
+    // groups of axes that are in fact contiguous.
+    var oldNd = 0
+    val oldShape = IntArray(shape.size)
+    val oldStrides = IntArray(shape.size)
+    for (axis in shape.indices) {
+        if (shape[axis] != 1) {
+            oldShape[oldNd] = shape[axis]
+            oldStrides[oldNd] = strides[axis]
+            oldNd++
+        }
+    }
+
+    val newStrides = IntArray(newShape.size)
+    // [oi, oj) and [ni, nj) delimit the groups of old and new axes holding the same elements.
+    var oi = 0
+    var oj = 1
+    var ni = 0
+    var nj = 1
+    while (ni < newShape.size && oi < oldNd) {
+        var newSize = newShape[ni]
+        var oldSize = oldShape[oi]
+        while (newSize != oldSize) {
+            if (newSize < oldSize) newSize *= newShape[nj++] else oldSize *= oldShape[oj++]
+        }
+
+        // Merging old axes is only possible when each one packs the next one exactly.
+        for (axis in oi until oj - 1) {
+            if (oldStrides[axis] != oldShape[axis + 1] * oldStrides[axis + 1]) return null
+        }
+
+        newStrides[nj - 1] = oldStrides[oj - 1]
+        for (axis in nj - 1 downTo ni + 1) {
+            newStrides[axis - 1] = newStrides[axis] * newShape[axis]
+        }
+
+        ni = nj++
+        oi = oj++
+    }
+
+    // Trailing axes of size one in the new shape; their stride is never used.
+    val lastStride = if (ni > 0) newStrides[ni - 1] else 1
+    for (axis in ni until newShape.size) newStrides[axis] = lastStride
+
+    return newStrides
+}
+
+/**
+ * Returns an array of [newShape] over this array's elements, sharing memory whenever possible.
+ *
+ * The result is a view whose [base][MultiArray.base] is the owner of this array's buffer when
+ * [reshapeStrides] can express [newShape] over the current layout, and a freshly packed copy
+ * otherwise.
+ *
+ * @param newShape the requested shape; callers must have checked that it holds [MultiArray.size] elements.
+ * @param newDim the [Dimension] matching [newShape].
+ */
+internal fun <T, D : Dimension, O : Dimension> MultiArray<T, D>.reshapeTo(
+    newShape: IntArray, newDim: O
+): NDArray<T, O> {
+    val newStrides = reshapeStrides(shape, strides, newShape)
+    return if (newStrides != null) {
+        NDArray(data, offset, newShape, newStrides, newDim, base ?: this)
+    } else {
+        NDArray(deepCopy().data, 0, newShape, computeStrides(newShape), newDim)
+    }
+}
+
 /** Converts this [Number] to the reified primitive type [T]. */
 @PublishedApi
 internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::class) {
@@ -116,7 +204,9 @@ internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::
     Long::class -> this.toLong()
     Float::class -> this.toFloat()
     Double::class -> this.toDouble()
-    else -> throw Exception("Type not defined.")
+    else -> throw IllegalArgumentException(
+        "Cannot convert $this to ${T::class.simpleName}: expected Byte, Short, Int, Long, Float or Double."
+    )
 } as T
 
 /**
@@ -124,7 +214,7 @@ internal inline fun <reified T : Number> Number.toPrimitiveType(): T = when (T::
  *
  * @param dtype the target [DataType] (must be a real numeric type, not complex).
  * @return this value converted to the target type.
- * @throws Exception if [dtype] is a complex type.
+ * @throws IllegalArgumentException if [dtype] is not a real numeric type.
  */
 @Suppress("UNCHECKED_CAST")
 public fun <T : Number> Number.toPrimitiveType(dtype: DataType): T = when (dtype.nativeCode) {
@@ -134,7 +224,9 @@ public fun <T : Number> Number.toPrimitiveType(dtype: DataType): T = when (dtype
     4 -> this.toLong()
     5 -> this.toFloat()
     6 -> this.toDouble()
-    else -> throw Exception("Type not defined.")
+    else -> throw IllegalArgumentException(
+        "Cannot convert $this to ${dtype.name}: expected a real numeric type, not a complex one."
+    )
 } as T
 
 /**
