@@ -48,7 +48,9 @@ val c = b.reshape(3, 2)
 <!---END-->
 
 There is no `-1` dimension inference, so all dimensions must be specified explicitly.
-When possible, `reshape` returns a view; otherwise it may copy data to keep storage consistent.
+`reshape` returns a view whenever the new shape can be addressed with strides over the existing
+data — writing to the result then writes through to the original array. It copies only when no such
+strides exist, as when a transposed array is reshaped across its axes.
 
 ## Flatten
 
@@ -121,6 +123,12 @@ val row = v.unsqueeze(0) // shape (1, 3)
 <!---END-->
 
 You can also use `expandDims` / `expandNDims` as helpers for adding size-1 axes.
+
+Adding or removing a size-1 axis never moves data, so `squeeze`, `unsqueeze`, `expandDims`, and
+`expandNDims` always return a view sharing the original array's storage.
+
+Multik has no rank-0 arrays. When every axis has size 1 — `mk.zeros<Double>(1, 1)`, or any
+single-element array — `squeeze` keeps one axis and returns shape `(1)`.
 
 ## Concatenate and stack
 

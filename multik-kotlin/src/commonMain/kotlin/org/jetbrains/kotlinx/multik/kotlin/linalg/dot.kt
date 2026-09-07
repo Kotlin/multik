@@ -71,7 +71,7 @@ private fun <T> dotMatrixCommon(a: MultiArray<T, D2>, b: MultiArray<T, D2>): D2A
                 a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides,
                 newShape[0], newShape[1], a.shape[1], ret.data.getByteArray(), ret.strides[0]
             )
-        else -> throw UnsupportedOperationException()
+        else -> throw UnsupportedOperationException("`dot` of two matrices is not supported for ${a.dtype.name}.")
     }
     return ret
 }
@@ -306,7 +306,7 @@ private fun <T> dotMatrixToVectorCommon(a: MultiArray<T, D2>, b: MultiArray<T, D
                 a.data.getByteArray(), a.offset, a.strides, b.data.getByteArray(), b.offset, b.strides[0],
                 newShape[0], b.shape[0], ret.data.getByteArray()
             )
-        else -> throw UnsupportedOperationException()
+        else -> throw UnsupportedOperationException("`dot` of a matrix and a vector is not supported for ${a.dtype.name}.")
     }
     return ret
 }
@@ -459,7 +459,7 @@ internal fun <T : Number> dotVecToVec(a: MultiArray<T, D1>, b: MultiArray<T, D1>
             a.data.getByteArray(), a.offset, a.strides[0],
             b.data.getByteArray(), b.offset, b.strides[0], a.size
         )
-    else -> throw UnsupportedOperationException()
+    else -> throw UnsupportedOperationException("`dot` of two vectors is not supported for ${a.dtype.name}.")
 } as T
 
 internal fun <T : Complex> dotVecToVecComplex(a: MultiArray<T, D1>, b: MultiArray<T, D1>): T = when (a.dtype) {
@@ -473,7 +473,7 @@ internal fun <T : Complex> dotVecToVecComplex(a: MultiArray<T, D1>, b: MultiArra
             a.data.getComplexDoubleArray(), a.offset, a.strides[0],
             b.data.getComplexDoubleArray(), b.offset, b.strides[0], a.size
         )
-    else -> throw UnsupportedOperationException()
+    else -> throw UnsupportedOperationException("`dot` of two complex vectors is not supported for ${a.dtype.name}.")
 } as T
 
 private fun dotVecToVec(

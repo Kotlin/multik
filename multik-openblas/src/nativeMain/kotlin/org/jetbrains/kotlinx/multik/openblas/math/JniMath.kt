@@ -118,7 +118,7 @@ internal actual object JniMath {
                 )
             }
 
-            else -> throw Exception("Only primitive arrays are supported for Kotlin/Native `argMin`")
+            else -> throw UnsupportedOperationException("Only primitive arrays are supported for Kotlin/Native `argMin`")
         }
 
     actual fun argMax(arr: Any, offset: Int, size: Int, shape: IntArray, strides: IntArray?, dtype: Int): Int =
@@ -195,7 +195,7 @@ internal actual object JniMath {
                 )
             }
 
-            else -> throw Exception("Only primitive arrays are supported for Kotlin/Native `argMax`")
+            else -> throw UnsupportedOperationException("Only primitive arrays are supported for Kotlin/Native `argMax`")
         }
 
     actual fun exp(arr: FloatArray, size: Int): Boolean = arr.usePinned {

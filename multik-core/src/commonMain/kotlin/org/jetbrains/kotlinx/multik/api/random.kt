@@ -237,6 +237,8 @@ internal inline fun <T : Number> randData(
         from is Long && until is Long -> initMemoryView(size, dtype) { random.nextLong(from, until) }
         from is Float && until is Float -> initMemoryView(size, dtype) { random.nextDouble(f, u).toFloat() }
         from is Double && until is Double -> initMemoryView(size, dtype) { random.nextDouble(from, until) }
-        else -> throw UnsupportedOperationException()
+        else -> throw UnsupportedOperationException(
+            "Cannot draw random values in [$from, $until): the bounds must both be Int, Long, Float or Double."
+        )
     } as MemoryView<T>
 }

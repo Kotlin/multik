@@ -89,13 +89,16 @@ public interface MultiArray<T, D : Dimension> {
     // Reshape
 
     /**
-     * Returns a view of this array with the given 1D shape.
+     * Returns this array with the given 1D shape.
      *
-     * The new shape must have the same total [size]. Returns a view when the array is [consistent];
-     * otherwise performs a deep copy first.
+     * The new shape must have the same total [size]. The result is a view sharing this array's
+     * [data] whenever the requested shape can be addressed with strides over the current layout.
+     * That is always so for a [consistent] array and usually so for a slice; only a layout that
+     * cannot be strided — reshaping a transposed array across its axes, for instance — copies the
+     * elements into a new buffer. Writing to a view writes through to the original array.
      *
      * @param dim1 size of the single dimension (must equal [size]).
-     * @return a 1D view or copy with shape `[dim1]`.
+     * @return a 1D view with shape `[dim1]`, or a copy when the new shape cannot be strided over [data].
      * @throws IllegalArgumentException if [dim1] is not positive or does not equal [size].
      */
     public fun reshape(dim1: Int): MultiArray<T, D1>
@@ -105,7 +108,7 @@ public interface MultiArray<T, D : Dimension> {
      *
      * @param dim1 size of the first dimension.
      * @param dim2 size of the second dimension.
-     * @return a 2D view or copy with shape `[dim1, dim2]`.
+     * @return a 2D view with shape `[dim1, dim2]`, or a copy when it cannot be strided over [data].
      * @throws IllegalArgumentException if the product of dimensions does not equal [size].
      * @see [reshape]
      */
@@ -117,7 +120,7 @@ public interface MultiArray<T, D : Dimension> {
      * @param dim1 size of the first dimension.
      * @param dim2 size of the second dimension.
      * @param dim3 size of the third dimension.
-     * @return a 3D view or copy with shape `[dim1, dim2, dim3]`.
+     * @return a 3D view with shape `[dim1, dim2, dim3]`, or a copy when it cannot be strided over [data].
      * @throws IllegalArgumentException if the product of dimensions does not equal [size].
      * @see [reshape]
      */
@@ -130,7 +133,7 @@ public interface MultiArray<T, D : Dimension> {
      * @param dim2 size of the second dimension.
      * @param dim3 size of the third dimension.
      * @param dim4 size of the fourth dimension.
-     * @return a 4D view or copy with shape `[dim1, dim2, dim3, dim4]`.
+     * @return a 4D view with shape `[dim1, dim2, dim3, dim4]`, or a copy when it cannot be strided over [data].
      * @throws IllegalArgumentException if the product of dimensions does not equal [size].
      * @see [reshape]
      */
@@ -144,7 +147,7 @@ public interface MultiArray<T, D : Dimension> {
      * @param dim3 size of the third dimension.
      * @param dim4 size of the fourth dimension.
      * @param dims sizes of remaining dimensions.
-     * @return an N-dimensional view or copy.
+     * @return an N-dimensional view, or a copy when the new shape cannot be strided over [data].
      * @throws IllegalArgumentException if the product of all dimensions does not equal [size].
      * @see [reshape]
      */
@@ -170,9 +173,15 @@ public interface MultiArray<T, D : Dimension> {
      * When called with no arguments, removes all axes whose size is 1.
      * When called with specific [axes], removes only those axes (they must have size 1).
      *
-     * @param axes optional indices of axes to squeeze. Each must have `shape[axis] == 1`.
-     * @return a view with reduced dimensionality.
-     * @throws IllegalArgumentException if any specified axis does not have size 1.
+     * Dropping a size-one axis never moves data, so the result always shares this array's [data].
+     *
+     * Multik has no rank-0 arrays. When every axis has size 1 — `mk.zeros<Double>(1, 1)`, or any
+     * single-element array — one axis is kept and the result has shape `[1]`, the same array
+     * `squeeze(0)` already returns today.
+     *
+     * @param axes optional indices of axes to squeeze. Each must be in `0 until dim.d` and have `shape[axis] == 1`.
+     * @return a view with reduced dimensionality, sharing this array's data.
+     * @throws IllegalArgumentException if any specified axis is out of bounds or does not have size 1.
      * @see [unsqueeze]
      */
     public fun squeeze(vararg axes: Int): MultiArray<T, DN>
@@ -181,8 +190,12 @@ public interface MultiArray<T, D : Dimension> {
     /**
      * Returns a view with a size-one dimension inserted at each of the specified [axes].
      *
-     * @param axes positions at which to insert new dimensions of size 1.
-     * @return a view with increased dimensionality.
+     * Inserting a size-one axis never moves data, so the result always shares this array's [data].
+     *
+     * @param axes positions at which to insert new dimensions of size 1. Each must be unique and in
+     *   `0 until (dim.d + axes.size)`, i.e. addressed in the resulting array's coordinates.
+     * @return a view with increased dimensionality, sharing this array's data.
+     * @throws IllegalArgumentException if [axes] contains duplicates or an out-of-bounds position.
      * @see [squeeze]
      */
     public fun unsqueeze(vararg axes: Int): MultiArray<T, DN>

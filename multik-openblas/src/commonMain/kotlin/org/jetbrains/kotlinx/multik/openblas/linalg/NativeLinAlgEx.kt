@@ -45,12 +45,14 @@ internal object NativeLinAlgEx : LinAlgEx {
             DataType.DoubleDataType -> JniLinAlg.inv(mat.shape[0], mat.data.getDoubleArray(), mat.strides[0])
             DataType.ComplexFloatDataType -> JniLinAlg.invC(mat.shape[0], mat.data.getFloatArray(), mat.strides[0])
             DataType.ComplexDoubleDataType -> JniLinAlg.invC(mat.shape[0], mat.data.getDoubleArray(), mat.strides[0])
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`inv` is not supported for ${mat.dtype.name}.")
         }
 
         when {
-            info < 0 -> throw IllegalArgumentException("${-info} argument had illegal value. ")
-            info > 0 -> throw Exception("U($info, $info) is exactly zero. Matrix is singular and its inverse could not be computed")
+            info < 0 -> error("LAPACK getri/getrf rejected argument ${-info} passed by Multik.")
+            info > 0 -> throw ArithmeticException(
+                "Matrix is singular: U($info, $info) is exactly zero, so the inverse could not be computed."
+            )
         }
 
         return mat as NDArray<T, D2>
@@ -86,10 +88,14 @@ internal object NativeLinAlgEx : LinAlgEx {
             DataType.ComplexDoubleDataType -> JniLinAlg.solveC(
                 a.shape[0], nhrs, a.data.getDoubleArray(), a.strides[0], b.data.getDoubleArray(), b.strides[0]
             )
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`solve` is not supported for ${a.dtype.name}.")
         }
+        if (info < 0) error("LAPACK gesv rejected argument ${-info} passed by Multik.")
         if (info > 0) {
-            throw Exception("The diagonal element of the triangular factor of a is zero, so that A is singular. The solution could not be computed.")
+            throw ArithmeticException(
+                "Matrix a is singular or almost singular: U($info, $info) of its triangular factor is zero, " +
+                    "so the solution could not be computed."
+            )
         }
 
         return b as NDArray<T, D>
@@ -127,10 +133,10 @@ internal object NativeLinAlgEx : LinAlgEx {
             DataType.DoubleDataType -> JniLinAlg.qr(m, n, q.data.getDoubleArray(), q.strides[0], r.data.getDoubleArray())
             DataType.ComplexFloatDataType -> JniLinAlg.qrC(m, n, q.data.getFloatArray(), q.strides[0], r.data.getFloatArray())
             DataType.ComplexDoubleDataType -> JniLinAlg.qrC(m, n, q.data.getDoubleArray(), q.strides[0], r.data.getDoubleArray())
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`qr` is not supported for ${retDType.name}.")
         }
 
-        if (info < 0) throw IllegalArgumentException("${-info} argument had illegal value. ")
+        if (info < 0) error("LAPACK geqrf/orgqr rejected argument ${-info} passed by Multik.")
 
         // TODO internal copyOf(end: Int)
         return Pair(q[Slice.bounds, 0 until mn].deepCopy() as D2Array<O>, r)
@@ -146,7 +152,7 @@ internal object NativeLinAlgEx : LinAlgEx {
         when (mat.dtype) {
             DataType.ComplexFloatDataType -> pluCommon(mat, mat.dtype, ComplexFloat.one as T)
             DataType.ComplexDoubleDataType -> pluCommon(mat, mat.dtype, ComplexDouble.one as T)
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`plu` is not supported for ${mat.dtype.name}.")
         }
 
     private fun <T, O : Any> pluCommon(mat: MultiArray<T, D2>, dtype: DataType, one: O): Triple<D2Array<O>, D2Array<O>, D2Array<O>> {
@@ -161,10 +167,10 @@ internal object NativeLinAlgEx : LinAlgEx {
             DataType.DoubleDataType -> JniLinAlg.plu(m, n, a.data.getDoubleArray(), a.strides[0], ipiv)
             DataType.ComplexFloatDataType -> JniLinAlg.pluC(m, n, a.data.getFloatArray(), a.strides[0], ipiv)
             DataType.ComplexDoubleDataType -> JniLinAlg.pluC(m, n, a.data.getDoubleArray(), a.strides[0], ipiv)
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`plu` is not supported for ${dtype.name}.")
         }
 
-        if (info < 0) throw IllegalArgumentException("${-info} argument had illegal value. ")
+        if (info < 0) error("LAPACK getrf rejected argument ${-info} passed by Multik.")
 
         val P = mk.identity<O>(m, dtype)
         val L = mk.zeros<O, D2>(intArrayOf(m, mn), dtype)
@@ -209,7 +215,7 @@ internal object NativeLinAlgEx : LinAlgEx {
         when (mat.dtype) {
             DataType.ComplexFloatDataType -> svdCommon(mat, mat.dtype)
             DataType.ComplexDoubleDataType -> svdCommon(mat, mat.dtype)
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`svd` is not supported for ${mat.dtype.name}.")
         }
 
     private fun <T, O: Any> svdCommon(mat: MultiArray<T, D2>, dtype: DataType): Triple<D2Array<O>, D1Array<O>, D2Array<O>> {
@@ -246,13 +252,13 @@ internal object NativeLinAlgEx : LinAlgEx {
                     u.data.getDoubleArray(), ldu, vt.data.getDoubleArray(), ldvt
                 )
 
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`svd` is not supported for ${dtype.name}.")
         }
 
         when {
-            info == -4 -> throw IllegalStateException("mat had a NaN entry.")
-            info < 0 -> throw IllegalArgumentException("the ${-info}-th argument had and illegal value.")
-            info > 0 -> throw IllegalStateException("DBDSDC did not converge, updating process failed.")
+            info == -4 -> throw IllegalArgumentException("mat has a NaN entry.")
+            info < 0 -> error("LAPACK gesdd rejected argument ${-info} passed by Multik.")
+            info > 0 -> throw ArithmeticException("Singular value decomposition did not converge.")
         }
 
         return Triple(u, s, vt)
@@ -297,12 +303,14 @@ internal object NativeLinAlgEx : LinAlgEx {
                 vr = if (computeVectors) mk.zeros(intArrayOf(n, n), DataType.ComplexDoubleDataType) else null
                 JniLinAlg.eig(n, mat.data.getDoubleArray(), w.data.getDoubleArray(), computeV, vr?.data?.getDoubleArray())
             }
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`eig` is not supported for ${mat.dtype.name}.")
         }
 
         when {
-            info < 0 -> throw IllegalArgumentException("The ${-info}-th argument had an illegal value")
-            info > 0 -> throw Exception("Failed to compute all the eigenvalues.")
+            info < 0 -> error("LAPACK geev rejected argument ${-info} passed by Multik.")
+            info > 0 -> throw ArithmeticException(
+                "Eigenvalue computation did not converge: only eigenvalues ${info + 1}..$n were computed."
+            )
         }
 
         return Pair(w, vr)
@@ -355,7 +363,7 @@ internal object NativeLinAlgEx : LinAlgEx {
                     transA, aN.offset, aN.data.getDoubleArray(), m, k, lda,
                     transB, bN.offset, bN.data.getDoubleArray(), n, ldb, cView.getDoubleArray()
                 )
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`dot` of two matrices is not supported for ${a.dtype.name}.")
         }
 
         return D2Array(cView, 0, shape, dim = D2)
@@ -402,7 +410,7 @@ internal object NativeLinAlgEx : LinAlgEx {
                     transA, aN.offset, aN.data.getDoubleArray(), m, n, lda,
                     b.offset, b.data.getDoubleArray(), b.strides[0], cView.getDoubleArray()
                 )
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`dot` of a matrix and a vector is not supported for ${a.dtype.name}.")
         }
 
         return D1Array(cView, 0, shape, dim = D1)
@@ -416,7 +424,7 @@ internal object NativeLinAlgEx : LinAlgEx {
                 JniLinAlg.dotVV(a.size, a.offset, a.data.getFloatArray(), a.strides[0], b.offset, b.data.getFloatArray(), b.strides[0])
             DataType.DoubleDataType ->
                 JniLinAlg.dotVV(a.size, a.offset, a.data.getDoubleArray(), a.strides[0], b.offset, b.data.getDoubleArray(), b.strides[0])
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`dot` of two vectors is not supported for ${a.dtype.name}.")
         } as T
     }
 
@@ -428,7 +436,7 @@ internal object NativeLinAlgEx : LinAlgEx {
                 JniLinAlg.dotVVC(a.size, a.offset, a.data.getFloatArray(), a.strides[0], b.offset, b.data.getFloatArray(), b.strides[0])
             DataType.ComplexDoubleDataType ->
                 JniLinAlg.dotVVC(a.size, a.offset, a.data.getDoubleArray(), a.strides[0], b.offset, b.data.getDoubleArray(), b.strides[0])
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`dot` of two complex vectors is not supported for ${a.dtype.name}.")
         } as T
     }
 }

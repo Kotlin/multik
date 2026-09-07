@@ -42,7 +42,7 @@ internal fun <T> pluCompressed(mat: MultiArray<T, D2>): Triple<D1Array<Int>, D2A
             pluDecompositionInplaceComplexFloat(mat as D2Array<ComplexFloat>, perm)
             fillLowerMatrix(L as D2Array<ComplexFloat>, mat, ComplexFloat.one)
         }
-        else -> throw UnsupportedOperationException()
+        else -> throw UnsupportedOperationException("PLU decomposition is not supported for ${mat.dtype.name}.")
     }
 
     // todo fillUpperMatrix

@@ -53,7 +53,7 @@ internal object KELinAlgEx : LinAlgEx {
             DataType.FloatDataType -> solveFloat(_a as D2Array<Float>, _b as D2Array<Float>)
             DataType.ComplexDoubleDataType -> solveComplexDouble(_a as D2Array<ComplexDouble>, _b as D2Array<ComplexDouble>)
             DataType.ComplexFloatDataType -> solveComplexFloat(_a as D2Array<ComplexFloat>, _b as D2Array<ComplexFloat>)
-            else -> throw UnsupportedOperationException()
+            else -> throw UnsupportedOperationException("`solve` is not supported for ${dtype.name}.")
         }
         return (if (b.dim.d == 2) ans else ans.reshape(ans.shape[0])) as NDArray<O, D>
     }

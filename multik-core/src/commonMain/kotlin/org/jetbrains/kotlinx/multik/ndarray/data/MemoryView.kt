@@ -125,21 +125,29 @@ public sealed class MemoryView<T> : ImmutableMemoryView<T> {
 
     public abstract override fun copyOf(): MemoryView<T>
 
-    public override fun getByteArray(): ByteArray = throw UnsupportedOperationException()
+    public override fun getByteArray(): ByteArray =
+        throw UnsupportedOperationException("Cannot read this buffer as a ByteArray: it holds ${dtype.name} elements.")
 
-    public override fun getShortArray(): ShortArray = throw UnsupportedOperationException()
+    public override fun getShortArray(): ShortArray =
+        throw UnsupportedOperationException("Cannot read this buffer as a ShortArray: it holds ${dtype.name} elements.")
 
-    public override fun getIntArray(): IntArray = throw UnsupportedOperationException()
+    public override fun getIntArray(): IntArray =
+        throw UnsupportedOperationException("Cannot read this buffer as an IntArray: it holds ${dtype.name} elements.")
 
-    public override fun getLongArray(): LongArray = throw UnsupportedOperationException()
+    public override fun getLongArray(): LongArray =
+        throw UnsupportedOperationException("Cannot read this buffer as a LongArray: it holds ${dtype.name} elements.")
 
-    public override fun getFloatArray(): FloatArray = throw UnsupportedOperationException()
+    public override fun getFloatArray(): FloatArray =
+        throw UnsupportedOperationException("Cannot read this buffer as a FloatArray: it holds ${dtype.name} elements.")
 
-    public override fun getDoubleArray(): DoubleArray = throw UnsupportedOperationException()
+    public override fun getDoubleArray(): DoubleArray =
+        throw UnsupportedOperationException("Cannot read this buffer as a DoubleArray: it holds ${dtype.name} elements.")
 
-    public override fun getComplexFloatArray(): ComplexFloatArray = throw UnsupportedOperationException()
+    public override fun getComplexFloatArray(): ComplexFloatArray =
+        throw UnsupportedOperationException("Cannot read this buffer as a ComplexFloatArray: it holds ${dtype.name} elements.")
 
-    public override fun getComplexDoubleArray(): ComplexDoubleArray = throw UnsupportedOperationException()
+    public override fun getComplexDoubleArray(): ComplexDoubleArray =
+        throw UnsupportedOperationException("Cannot read this buffer as a ComplexDoubleArray: it holds ${dtype.name} elements.")
 
     /** Adds each element of [other] to the corresponding element of this view in-place. */
     public operator fun plusAssign(other: MemoryView<T>) {

@@ -62,6 +62,7 @@ class SliceTest {
 
     @Test
     fun testBase() {
+        // `base` always points at the array that owns the buffer, not at the immediate parent view.
         val a = mk.ndarrayOf(0, 1, 2, 3, 4, 5)
         val b = a[1 until 5]
         val c = a[1 until 3]
@@ -72,15 +73,16 @@ class SliceTest {
         val a2 = a.reshape(3, 2)
         val b2 = b.reshape(4, 1)
         assertSame(a, a2.base)
-        assertSame(null, b2.base)
+        // (4, 1) is expressible with strides over the slice, so no copy is made.
+        assertSame(a, b2.base)
 
         val d1 = b2.squeeze()
         val d2 = d1.unsqueeze()
-        assertSame(b2, d1.base)
-        assertSame(b2, d2.base)
+        assertSame(a, d1.base)
+        assertSame(a, d2.base)
 
         val e = b2.transpose()
-        assertSame(b2, e.base)
+        assertSame(a, e.base)
 
         val f = a2[1]
         assertSame(a, f.base)
