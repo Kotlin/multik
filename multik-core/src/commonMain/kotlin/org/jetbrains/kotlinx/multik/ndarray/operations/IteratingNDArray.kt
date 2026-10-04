@@ -358,8 +358,7 @@ public inline fun <T, D : Dimension, K> MultiArray<T, D>.distinctBy(selector: (T
         if (set.add(key))
             list.add(e)
     }
-    val dtype = DataType.of(list.first())
-    return list.toCommonNDArray(dtype)
+    return list.toCommonNDArray(this.dtype)
 }
 
 /**
@@ -397,8 +396,7 @@ public inline fun <T> MultiArray<T, D1>.dropWhile(predicate: (T) -> Boolean): ND
 public inline fun <T, D : Dimension> MultiArray<T, D>.filter(predicate: (T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     forEach { if (predicate(it)) list.add(it) }
-    val dtype = DataType.of(list.first())
-    return list.toCommonNDArray(dtype)
+    return list.toCommonNDArray(this.dtype)
 }
 
 /**
@@ -408,8 +406,7 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.filter(predicate: (T) -> B
 public inline fun <T> MultiArray<T, D1>.filterIndexed(predicate: (index: Int, T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     forEachIndexed { index, element -> if (predicate(index, element)) list.add(element) }
-    val dtype = DataType.of(list.first())
-    return list.toCommonNDArray(dtype)
+    return list.toCommonNDArray(this.dtype)
 }
 
 
@@ -420,8 +417,7 @@ public inline fun <T> MultiArray<T, D1>.filterIndexed(predicate: (index: Int, T)
 public inline fun <T, D : Dimension> MultiArray<T, D>.filterMultiIndexed(predicate: (index: IntArray, T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     forEachMultiIndexed { index, element -> if (predicate(index, element)) list.add(element) }
-    val dtype = DataType.of(list.first())
-    return list.toCommonNDArray(dtype)
+    return list.toCommonNDArray(this.dtype)
 }
 
 /**
@@ -430,8 +426,7 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.filterMultiIndexed(predica
 public inline fun <T, D : Dimension> MultiArray<T, D>.filterNot(predicate: (T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     for (element in this) if (!predicate(element)) list.add(element)
-    val dtype = DataType.of(list.first())
-    return list.toCommonNDArray(dtype)
+    return list.toCommonNDArray(this.dtype)
 }
 
 /**
@@ -1077,8 +1072,7 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.partition(predicate: (T) -
             second.add(element)
         }
     }
-    val dtype = DataType.of(first.first())
-    return Pair(first.toCommonNDArray(dtype), second.toCommonNDArray(dtype))
+    return Pair(first.toCommonNDArray(this.dtype), second.toCommonNDArray(this.dtype))
 }
 
 /**

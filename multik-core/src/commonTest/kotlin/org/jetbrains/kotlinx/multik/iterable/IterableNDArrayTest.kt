@@ -18,8 +18,12 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.distinct
 import org.jetbrains.kotlinx.multik.ndarray.operations.distinctBy
 import org.jetbrains.kotlinx.multik.ndarray.operations.drop
 import org.jetbrains.kotlinx.multik.ndarray.operations.dropWhile
+import org.jetbrains.kotlinx.multik.api.zeros
+import org.jetbrains.kotlinx.multik.ndarray.data.D1
+import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 import org.jetbrains.kotlinx.multik.ndarray.operations.filter
 import org.jetbrains.kotlinx.multik.ndarray.operations.filterIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.filterMultiIndexed
 import org.jetbrains.kotlinx.multik.ndarray.operations.filterNot
 import org.jetbrains.kotlinx.multik.ndarray.operations.find
 import org.jetbrains.kotlinx.multik.ndarray.operations.findLast
@@ -179,6 +183,37 @@ class IterableNDArrayTest {
         val actual = data.filterNot { it in 23..27 }
         val expectedList = list.filterNot { it in 23..27 }
         assertEquals(mk.ndarray(expectedList), actual)
+    }
+
+    @Test
+    fun `test_filter_empty_result`() {
+        val data = mk.arange<Int>(10, 30, 1)
+        val actual = data.filter { it > 100 }
+        assertEquals(0, actual.size)
+        assertEquals(DataType.IntDataType, actual.dtype)
+
+        val actualIndexed = data.filterIndexed { _, v -> v > 100 }
+        assertEquals(0, actualIndexed.size)
+        assertEquals(DataType.IntDataType, actualIndexed.dtype)
+
+        val actualMultiIndexed = data.filterMultiIndexed { _, v -> v > 100 }
+        assertEquals(0, actualMultiIndexed.size)
+        assertEquals(DataType.IntDataType, actualMultiIndexed.dtype)
+
+        val actualNot = data.filterNot { it < 100 }
+        assertEquals(0, actualNot.size)
+        assertEquals(DataType.IntDataType, actualNot.dtype)
+
+        val emptyData = mk.zeros<Int>(0)
+        val actualDistinctBy = emptyData.distinctBy { it }
+        assertEquals(0, actualDistinctBy.size)
+        assertEquals(DataType.IntDataType, actualDistinctBy.dtype)
+
+        val (firstEmpty, secondAll) = data.partition { it > 100 }
+        assertEquals(0, firstEmpty.size)
+        assertEquals(data.size, secondAll.size)
+        assertEquals(DataType.IntDataType, firstEmpty.dtype)
+        assertEquals(DataType.IntDataType, secondAll.dtype)
     }
 
     @Test
