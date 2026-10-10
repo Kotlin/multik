@@ -13,7 +13,7 @@ import org.jetbrains.kotlinx.multik.ndarray.data.*
  */
 public fun Multik.ndarray(args: Array<ByteArray>): D2Array<Byte> {
     val dim0 = args.size
-    val dim1 = args[0].size
+    val dim1 = if (args.isEmpty()) 0 else args[0].size
     require(args.all { dim1 == it.size }) { "Arrays must be the same size." }
 
     val array = ByteArray(dim0 * dim1)
@@ -35,7 +35,7 @@ public fun Multik.ndarray(args: Array<ByteArray>): D2Array<Byte> {
  */
 public fun Multik.ndarray(args: Array<ShortArray>): D2Array<Short> {
     val dim0 = args.size
-    val dim1 = args[0].size
+    val dim1 = if (args.isEmpty()) 0 else args[0].size
     require(args.all { dim1 == it.size }) { "Arrays must be the same size." }
 
     val array = ShortArray(dim0 * dim1)
@@ -57,7 +57,7 @@ public fun Multik.ndarray(args: Array<ShortArray>): D2Array<Short> {
  */
 public fun Multik.ndarray(args: Array<IntArray>): D2Array<Int> {
     val dim0 = args.size
-    val dim1 = args[0].size
+    val dim1 = if (args.isEmpty()) 0 else args[0].size
     require(args.all { dim1 == it.size }) { "Arrays must be the same size." }
 
     val array = IntArray(dim0 * dim1)
@@ -79,7 +79,7 @@ public fun Multik.ndarray(args: Array<IntArray>): D2Array<Int> {
  */
 public fun Multik.ndarray(args: Array<LongArray>): D2Array<Long> {
     val dim0 = args.size
-    val dim1 = args[0].size
+    val dim1 = if (args.isEmpty()) 0 else args[0].size
     require(args.all { dim1 == it.size }) { "Arrays must be the same size." }
 
     val array = LongArray(dim0 * dim1)
@@ -101,7 +101,7 @@ public fun Multik.ndarray(args: Array<LongArray>): D2Array<Long> {
  */
 public fun Multik.ndarray(args: Array<FloatArray>): D2Array<Float> {
     val dim0 = args.size
-    val dim1 = args[0].size
+    val dim1 = if (args.isEmpty()) 0 else args[0].size
     require(args.all { dim1 == it.size }) { "Arrays must be the same size." }
 
     val array = FloatArray(dim0 * dim1)
@@ -123,7 +123,7 @@ public fun Multik.ndarray(args: Array<FloatArray>): D2Array<Float> {
  */
 public fun Multik.ndarray(args: Array<DoubleArray>): D2Array<Double> {
     val dim0 = args.size
-    val dim1 = args[0].size
+    val dim1 = if (args.isEmpty()) 0 else args[0].size
     require(args.all { dim1 == it.size }) { "Arrays must be the same size." }
 
     val array = DoubleArray(dim0 * dim1)
