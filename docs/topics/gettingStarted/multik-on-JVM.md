@@ -53,7 +53,7 @@ Other considerations:
 
 - OpenBLAS is useful for heavy linear algebra.
 - Native dependencies must be available and compatible with your environment.
-- On Android, the OpenBLAS JVM engine supports arm64-v8a only.
+- Android has its own artifacts; see [](multik-on-mobile.md).
 
 For platform-level constraints, see [](multik-on-different-platforms.md).
 

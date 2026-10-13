@@ -18,17 +18,18 @@ Use Multik on Android and iOS with the Kotlin engine and KMP setup.
 
 Multik can be used in mobile apps via Kotlin Multiplatform:
 
-- Android - JVM target.
+- Android - Android target (AAR artifacts, minSdk 28).
 - iOS - Kotlin/Native target.
 
 The recommended engine for mobile is **KOTLIN**, which provides the broadest compatibility.
+On Android, **DEFAULT** also uses OpenBLAS on `arm64-v8a` devices.
 
 ## Engine availability
 
-| Target        | Engines                   | Notes                             |
-|---------------|---------------------------|-----------------------------------|
-| Android (JVM) | KOTLIN; NATIVE (OpenBLAS) | OpenBLAS supports arm64-v8a only. |
-| iOS (Native)  | KOTLIN                    | OpenBLAS is not available.        |
+| Target       | Engines                            | Notes                                                                 |
+|--------------|------------------------------------|-----------------------------------------------------------------------|
+| Android      | DEFAULT, KOTLIN, NATIVE (OpenBLAS) | OpenBLAS supports `arm64-v8a` only; on other ABIs DEFAULT uses KOTLIN. |
+| iOS (Native) | KOTLIN                             | OpenBLAS is not available.                                            |
 
 ## Dependencies
 
@@ -41,7 +42,8 @@ See [](installation.md) for Gradle examples.
 
 > **Notes:**
 >
-> Use OpenBLAS on Android only if you control the ABI and need the extra performance.
+> With `multik-openblas` alone, the NATIVE engine throws `EngineMultikException` on ABIs other than `arm64-v8a`;
+> `multik-default` falls back to the Kotlin engine instead.
 > For iOS, the Kotlin engine is the only supported option.
 
 <seealso style="cards" title="Next steps">

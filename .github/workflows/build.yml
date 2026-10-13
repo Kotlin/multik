@@ -76,12 +76,14 @@ jobs:
         if: steps.changes.outputs.openblas == 'false'
         run: ./gradlew :multik-core:build :multik-kotlin:build
 
-      - name: Build multik-openblas and multik-default (JVM only)
+      - name: Build multik-openblas and multik-default (JVM and Android only)
         if: steps.changes.outputs.openblas == 'false'
         run: >
           ./gradlew
           :multik-openblas:compileKotlinJvm
+          :multik-openblas:compileAndroidMain
           :multik-default:compileKotlinJvm
+          :multik-default:compileAndroidMain
           -x :multik-openblas:copyNativeLibs
           -x :multik-openblas:build_cmake
           -x :multik-openblas:compileCmake
