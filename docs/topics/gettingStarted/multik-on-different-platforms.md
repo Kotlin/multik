@@ -17,7 +17,7 @@ See how Multik works across JVM, JS, Native, and WASM targets.
 ## Overview
 
 Multik is a Kotlin Multiplatform library.
-You can use the same NDArray API across JVM, JS, Native, and WASM,
+You can use the same NDArray API across JVM, Android, JS, Native, and WASM,
 and choose an execution engine that fits your target and performance needs.
 
 ## Supported targets
@@ -25,6 +25,7 @@ and choose an execution engine that fits your target and performance needs.
 Multik supports the major Kotlin targets:
 
 - JVM
+- Android
 - JS
 - Native (iOS, macOS, Linux, Windows)
 - WASM
@@ -36,6 +37,7 @@ The following [target presets](https://kotlinlang.org/docs/multiplatform-dsl-ref
 | Target platform | Target presets                            |
 |-----------------|-------------------------------------------|
 | Kotlin/JVM      | `jvm`                                     |
+| Android         | `androidTarget`, `android`                |
 | iOS             | `iosArm64`, `iosX64`, `iosSimulatorArm64` |
 | macOS           | `macosArm64`                              |
 | Linux           | `linuxX64`                                |
@@ -54,6 +56,7 @@ Multik separates the API from execution engines:
 | Target           | Engines                                       | Notes                                                                                                                |
 |------------------|-----------------------------------------------|----------------------------------------------------------------------------------------------------------------------|
 | JVM              | DEFAULT, KOTLIN, NATIVE (OpenBLAS)            | NATIVE requires the OpenBLAS artifact.                                                                               |
+| Android          | DEFAULT, KOTLIN, NATIVE (OpenBLAS)            | Requires minSdk 28. NATIVE supports `arm64-v8a` only; on other ABIs DEFAULT uses KOTLIN.                             |
 | JS               | KOTLIN                                        | Browser and Node.js targets.                                                                                         |
 | WASM             | KOTLIN                                        | Kotlin/WASM targets.                                                                                                 |
 | Native (desktop) | KOTLIN; NATIVE (OpenBLAS) on selected targets | OpenBLAS for desktop native targets (`linuxX64`, `mingwX64`, `macosArm64`) is experimental and unstable.            |
@@ -67,7 +70,7 @@ A common approach is:
 
 - Add `multik-core` to `commonMain`.
 - Add engine dependencies per target: `multik-kotlin` for JS/WASM/Native, and `multik-default` or `multik-openblas` for
-  JVM.
+  JVM and Android.
 
 For dependency examples, see [](installation.md).
 

@@ -11,17 +11,19 @@ Base PRs against `develop`.
 
 | Module | Provides | Targets |
 |---|---|---|
-| `multik-core` | ndarray types, the `mk` entry point, `Math`/`LinAlg`/`Statistics` interfaces | all; CSV/NPY IO is JVM-only |
+| `multik-core` | ndarray types, the `mk` entry point, `Math`/`LinAlg`/`Statistics` interfaces | all; CSV/NPY IO is JVM/Android-only |
 | `multik-kotlin` | `KEEngine`, pure Kotlin | all |
-| `multik-openblas` | `NativeEngine`, OpenBLAS via C++/JNI (`multik_jni/`) | JVM + desktop Native only — no iOS/JS/WASM |
-| `multik-default` | `DefaultEngine`: `NativeEngine` where available, else `KEEngine` | all |
+| `multik-openblas` | `NativeEngine`, OpenBLAS via C++/JNI (`multik_jni/`) | JVM, Android (arm64-v8a) and desktop Native — no iOS/JS/WASM |
+| `multik-default` | `DefaultEngine`: `NativeEngine` where its library loads, else `KEEngine` | all |
 
-Put new APIs in the broadest source set that supports them (`commonMain` first).
+Put new APIs in the broadest source set that supports them (`commonMain` first). Code for any JVM goes
+to `jvmAndAndroidMain`, shared by the `jvm` and `android` targets; `jvmMain` is for desktop-only code.
+Android artifacts are AARs with minSdk 28.
 
 ## Build and test
 
 ```bash
-./gradlew assemble                     # needs gcc/g++/gfortran 8+ and JAVA_HOME
+./gradlew assemble                     # needs gcc/g++/gfortran 8+, JAVA_HOME and the Android SDK (ANDROID_HOME)
 ./gradlew assemble -x build_cmake      # skip the native OpenBLAS build
 ./gradlew :multik-core:jvmTest
 ./gradlew :multik-core:macosArm64Test  # or linuxX64Test / mingwX64Test
@@ -30,6 +32,9 @@ Put new APIs in the broadest source set that supports them (`commonMain` first).
 
 `:multik-openblas:jvmTest` needs the native library built by `build_cmake`; those tests extend
 `NativeTestBase`, which loads it in `@BeforeTest`.
+
+The Android library (`libmultik_jni-androidArm64.so`) is built only by `.github/workflows/build-native.yml`
+with the NDK. `multik-openblas` packs it into the AAR from `build/libs`, like the desktop libraries in the JVM jar.
 
 Name test functions `testXxx` — no backticks, unlike common Kotlin style.
 

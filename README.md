@@ -95,6 +95,7 @@ Import stable `multik` version into notebook:
 |       Platform        | `multik-core` | `multik-kotlin` | `multik-openblas` | `multik-default` |
 |:---------------------:|:-------------:|:---------------:|:-----------------:|:----------------:|
 |        **JVM**        |       ✅       |        ✅        |         ✅         |        ✅         |
+|      **Android**      |       ✅       |        ✅        |         ✅         |        ✅         |
 |        **JS**         |       ✅       |        ✅        |         —         |        ✅         |
 |      **WasmJS**       |       ✅       |        ✅        |         —         |        ✅         |
 |     **linuxX64**      |       ✅       |        ✅        |         ✅         |        ✅         |
@@ -108,7 +109,8 @@ Import stable `multik` version into notebook:
 > - On Linux distributions with **glibc** older than 2.31, `multik-openblas` doesn't work.
 > - `multik-openblas` for desktop native targets (_linuxX64_, _mingwX64_, _macosArm64_) is experimental and
 > unstable.
-> - JVM target `multik-openblas` for Android only supports **arm64-v8a** processors.
+> - On Android, Multik requires **minSdk 28**, and `multik-openblas` only supports **arm64-v8a** processors;
+> `multik-default` uses the Kotlin engine on other ABIs.
 
 ## Quickstart
 

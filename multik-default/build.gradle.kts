@@ -7,8 +7,6 @@ plugins {
 }
 
 kotlin {
-    applyDefaultHierarchyTemplate()
-
     sourceSets {
         commonMain {
             dependencies {
@@ -21,7 +19,7 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        jvmMain {
+        named("jvmAndAndroidMain") {
             dependencies {
                 api(project(":multik-openblas"))
             }
