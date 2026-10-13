@@ -11,7 +11,7 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        jvmMain {
+        named("jvmAndAndroidMain") {
             dependencies {
                 api(libs.commons.csv)
                 api(libs.bio.npy)

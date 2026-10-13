@@ -1,5 +1,6 @@
 [versions]
 kotlin = "2.4.20"
+agp = "9.4.1"
 dokka = "2.2.0"
 korro = "0.2.2"
 bcv = "0.18.2"
@@ -10,6 +11,7 @@ bio-npy = "0.3.5"
 [libraries]
 # Plugins
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+android-gradle = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 maven-publish-gradle = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "maven-publish" }
 

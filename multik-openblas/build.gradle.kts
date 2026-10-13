@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
 import org.jetbrains.kotlin.konan.target.Family.LINUX
+import org.jetbrains.kotlinx.multik.builds.SyncIntoSubdirectory
 
 plugins {
     id("multik.host-native-kmp")
@@ -17,14 +18,6 @@ kotlin {
         }
         val jvmJar by tasks.getting(Jar::class) {
             dependsOn("copyNativeLibs")
-            from("${rootProject.projectDir}") {
-                include("NOTICE")
-                into("META-INF")
-            }
-            from("$projectDir/build/libs") {
-                include("libmultik_jni-androidArm64.so")
-                into("lib/arm64-v8a")
-            }
             from("$projectDir/build/libs") {
                 include("libmultik_jni-linuxX64.so")
                 into("lib/linuxX64")
@@ -38,6 +31,11 @@ kotlin {
                 into("lib/mingwX64")
             }
         }
+    }
+
+    android {
+        // AGP drops META-INF/NOTICE from Java resources by default, but the AAR bundles OpenBLAS and must keep it.
+        packaging.resources.excludes -= "/META-INF/NOTICE"
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {
@@ -95,5 +93,31 @@ kotlin {
 tasks.withType(CInteropProcess::class.java).configureEach {
     if (name.contains(hostTargetName, ignoreCase = true)) {
         dependsOn("build_cmake")
+    }
+}
+
+// NOTICE carries the OpenBLAS attribution, so the JVM jar and the AAR, which both bundle the library, ship it.
+val noticeResources = tasks.register<SyncIntoSubdirectory>("noticeResources") {
+    files.from(rootProject.layout.projectDirectory.file("NOTICE"))
+    subdirectory = "META-INF"
+    outputDir = layout.buildDirectory.dir("generated/notice")
+}
+
+// The Android library is built by build-native.yml, not by build_cmake.
+// Like the desktop libraries in jvmJar, it is picked up from build/libs; the AAR ships it in jni/arm64-v8a/.
+val androidJniLibs = tasks.register<SyncIntoSubdirectory>("androidJniLibs") {
+    files.from(layout.buildDirectory.file("libs/libmultik_jni-androidArm64.so"))
+    subdirectory = "arm64-v8a"
+    outputDir = layout.buildDirectory.dir("generated/jniLibs")
+}
+
+kotlin.sourceSets.named("jvmMain") {
+    resources.srcDir(noticeResources.flatMap { it.outputDir })
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.sources.resources?.addGeneratedSourceDirectory(noticeResources, SyncIntoSubdirectory::outputDir)
+        variant.sources.jniLibs?.addGeneratedSourceDirectory(androidJniLibs, SyncIntoSubdirectory::outputDir)
     }
 }

@@ -203,7 +203,9 @@ endif()
 if (${TARGET_OS} STREQUAL "mingwX64")
     set(LIB_GCC "-static-libgcc -static-libstdc++ -static -lpthread")
 elseif(${TARGET_OS} STREQUAL "androidArm64")
-    set(LIB_GCC "-ldl -lm")
+    # libc++ is linked statically: nothing ships libc++_shared.so next to the library.
+    # 16 KB ELF alignment: devices with 16 KB pages refuse to load 4 KB-aligned libraries.
+    set(LIB_GCC "-ldl -lm -static-libstdc++ -Wl,-z,max-page-size=16384")
 else()
     set(LIB_GCC "-static-libgcc")
 endif()
