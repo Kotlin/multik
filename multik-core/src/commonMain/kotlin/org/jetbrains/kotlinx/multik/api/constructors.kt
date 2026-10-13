@@ -289,7 +289,7 @@ internal inline fun <reified T : Any> ndarrayCommon2D(arg: List<List<T>>): D2Arr
     val dtype = DataType.ofKClass(T::class)
     val size = IntArray(2).apply {
         this[0] = arg.size
-        this[1] = arg.first().size
+        this[1] = if (arg.isEmpty()) 0 else arg.first().size
     }
     val res = ArrayList<T>()
     for (ax0 in arg) {
@@ -323,8 +323,8 @@ internal inline fun <reified T : Any> ndarrayCommon3D(arg: List<List<List<T>>>):
     val dtype = DataType.ofKClass(T::class)
     val size = IntArray(3).apply {
         this[0] = arg.size
-        this[1] = arg.first().size
-        this[2] = arg.first().first().size
+        this[1] = if (arg.isEmpty()) 0 else arg.first().size
+        this[2] = if (arg.isEmpty() || arg.first().isEmpty()) 0 else arg.first().first().size
     }
     val res = ArrayList<T>()
     for (ax0 in arg) {
@@ -362,9 +362,9 @@ internal inline fun <reified T : Any> ndarrayCommon4D(arg: List<List<List<List<T
     val dtype = DataType.ofKClass(T::class)
     val size = IntArray(4).apply {
         this[0] = arg.size
-        this[1] = arg.first().size
-        this[2] = arg.first().first().size
-        this[3] = arg.first().first().first().size
+        this[1] = if (arg.isEmpty()) 0 else arg.first().size
+        this[2] = if (arg.isEmpty() || arg.first().isEmpty()) 0 else arg.first().first().size
+        this[3] = if (arg.isEmpty() || arg.first().isEmpty() || arg.first().first().isEmpty()) 0 else arg.first().first().first().size
     }
     val res = ArrayList<T>()
     for (ax0 in arg) {
@@ -445,8 +445,8 @@ internal fun <T, D : Dimension> ndarrayCommon(elements: Collection<T>, shape: In
     requireElementsWithShape(elements.size, shape.fold(1, Int::times))
     val size = shape.reduce { acc, el -> acc * el }
 
-    val dtypeFromFirst = DataType.of(elements.first())
-    val data = initMemoryView<T>(size, dtype ?: dtypeFromFirst).apply {// TODO: boxing/unboxing!!! Find all usages
+    val actualDtype = dtype ?: if (elements.isNotEmpty()) DataType.of(elements.first()) else throw IllegalArgumentException("Cannot determine DataType of an empty collection when dtype is not specified.")
+    val data = initMemoryView<T>(size, actualDtype).apply {// TODO: boxing/unboxing!!! Find all usages
         var count = 0
         for (el in elements)
             this[count++] = el
