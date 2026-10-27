@@ -1,10 +1,13 @@
 package org.jetbrains.kotlinx.multik.ndarray.data
 
 import org.jetbrains.kotlinx.multik.api.mk
+import org.jetbrains.kotlinx.multik.api.ndarray
+import org.jetbrains.kotlinx.multik.api.ndarrayCommon
 import org.jetbrains.kotlinx.multik.api.ndarrayOf
 import org.jetbrains.kotlinx.multik.api.zeros
 import kotlin.test.Test
 import kotlin.test.assertContains
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /**
@@ -65,5 +68,20 @@ class ErrorHandlingTest {
             override val endInclusive: Int get() = 2
         }
         assertFailsWith<IllegalArgumentException> { range.toSlice() }
+    }
+
+    @Test
+    fun testEmptyCollectionWithoutDtypeThrowsIllegalArgument() {
+        val e = assertFailsWith<IllegalArgumentException> {
+            mk.ndarray(emptyList<Int>(), intArrayOf(0), D1)
+        }
+        assertContains(e.message.orEmpty(), "Cannot determine DataType")
+    }
+
+    @Test
+    fun testEmptyCollectionWithExplicitDtypeSucceeds() {
+        val arr = ndarrayCommon(emptyList<Int>(), intArrayOf(0), D1, DataType.IntDataType)
+        assertEquals(0, arr.size)
+        assertEquals(DataType.IntDataType, arr.dtype)
     }
 }

@@ -358,8 +358,7 @@ public inline fun <T, D : Dimension, K> MultiArray<T, D>.distinctBy(selector: (T
         if (set.add(key))
             list.add(e)
     }
-    val dtype = DataType.of(list.first())
-    return list.toCommonNDArray(dtype)
+    return list.toCommonNDArray(this.dtype)
 }
 
 /**
@@ -388,7 +387,7 @@ public inline fun <T> MultiArray<T, D1>.dropWhile(predicate: (T) -> Boolean): ND
             list.add(item)
             yielding = true
         }
-    return ndarrayCommon(list, intArrayOf(list.size), D1)
+    return list.toCommonNDArray(this.dtype)
 }
 
 /**
@@ -397,8 +396,7 @@ public inline fun <T> MultiArray<T, D1>.dropWhile(predicate: (T) -> Boolean): ND
 public inline fun <T, D : Dimension> MultiArray<T, D>.filter(predicate: (T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     forEach { if (predicate(it)) list.add(it) }
-    val dtype = DataType.of(list.first())
-    return list.toCommonNDArray(dtype)
+    return list.toCommonNDArray(this.dtype)
 }
 
 /**
@@ -408,8 +406,7 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.filter(predicate: (T) -> B
 public inline fun <T> MultiArray<T, D1>.filterIndexed(predicate: (index: Int, T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     forEachIndexed { index, element -> if (predicate(index, element)) list.add(element) }
-    val dtype = DataType.of(list.first())
-    return list.toCommonNDArray(dtype)
+    return list.toCommonNDArray(this.dtype)
 }
 
 
@@ -420,8 +417,7 @@ public inline fun <T> MultiArray<T, D1>.filterIndexed(predicate: (index: Int, T)
 public inline fun <T, D : Dimension> MultiArray<T, D>.filterMultiIndexed(predicate: (index: IntArray, T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     forEachMultiIndexed { index, element -> if (predicate(index, element)) list.add(element) }
-    val dtype = DataType.of(list.first())
-    return list.toCommonNDArray(dtype)
+    return list.toCommonNDArray(this.dtype)
 }
 
 /**
@@ -430,8 +426,7 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.filterMultiIndexed(predica
 public inline fun <T, D : Dimension> MultiArray<T, D>.filterNot(predicate: (T) -> Boolean): D1Array<T> {
     val list = ArrayList<T>()
     for (element in this) if (!predicate(element)) list.add(element)
-    val dtype = DataType.of(list.first())
-    return list.toCommonNDArray(dtype)
+    return list.toCommonNDArray(this.dtype)
 }
 
 /**
@@ -485,13 +480,13 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.firstOrNull(predicate: (T)
  * Returns a flat ndarray of all elements resulting from calling the [transform] function on each element
  * in this ndarray.
  */
-public inline fun <T, D : Dimension, reified R> MultiArray<T, D>.flatMap(transform: (T) -> Iterable<R>): D1Array<R> {
+public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.flatMap(transform: (T) -> Iterable<R>): D1Array<R> {
     val destination = ArrayList<R>()
     for (element in this) {
         val list = transform(element)
         destination.addAll(list)
     }
-    val dtype = DataType.of(destination.first())
+    val dtype = DataType.ofKClass(R::class)
     return destination.toCommonNDArray(dtype)
 }
 
@@ -500,14 +495,14 @@ public inline fun <T, D : Dimension, reified R> MultiArray<T, D>.flatMap(transfo
  * index in this d1 ndarray.
  */
 @JvmName("flatMapD1Indexed")
-public inline fun <T, reified R> MultiArray<T, D1>.flatMapIndexed(transform: (index: Int, T) -> Iterable<R>): D1Array<R> {
+public inline fun <T, reified R : Any> MultiArray<T, D1>.flatMapIndexed(transform: (index: Int, T) -> Iterable<R>): D1Array<R> {
     var index = 0
     val destination = ArrayList<R>()
     for (element in this) {
         val list = transform(checkIndexOverflow(index++), element)
         destination.addAll(list)
     }
-    val dtype = DataType.of(destination.first())
+    val dtype = DataType.ofKClass(R::class)
     return destination.toCommonNDArray(dtype)
 }
 
@@ -516,7 +511,7 @@ public inline fun <T, reified R> MultiArray<T, D1>.flatMapIndexed(transform: (in
  * index in this dn ndarray.
  */
 @JvmName("flatMapDNIndexed")
-public inline fun <T, reified R> MultiArray<T, D1>.flatMapMultiIndexed(transform: (index: IntArray, T) -> Iterable<R>): D1Array<R> {
+public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.flatMapMultiIndexed(transform: (index: IntArray, T) -> Iterable<R>): D1Array<R> {
     val indexIter = this.multiIndices.iterator()
     val destination = ArrayList<R>()
     for (element in this) {
@@ -527,7 +522,7 @@ public inline fun <T, reified R> MultiArray<T, D1>.flatMapMultiIndexed(transform
             throw ArithmeticException("Index overflow has happened.")
         }
     }
-    val dtype = DataType.of(destination.first())
+    val dtype = DataType.ofKClass(R::class)
     return destination.toCommonNDArray(dtype)
 }
 
@@ -647,8 +642,7 @@ public inline fun <T, D : Dimension, K, M : MutableMap<in K, NDArray<T, D1>>> Mu
         list.add(element)
     }
     for (item in map) {
-        val dtype = DataType.of(item.value.first())
-        destination.put(item.key, item.value.toCommonNDArray(dtype = dtype))
+        destination.put(item.key, item.value.toCommonNDArray(dtype = this.dtype))
     }
     return destination
 }
@@ -1077,8 +1071,7 @@ public inline fun <T, D : Dimension> MultiArray<T, D>.partition(predicate: (T) -
             second.add(element)
         }
     }
-    val dtype = DataType.of(first.first())
-    return Pair(first.toCommonNDArray(dtype), second.toCommonNDArray(dtype))
+    return Pair(first.toCommonNDArray(this.dtype), second.toCommonNDArray(this.dtype))
 }
 
 /**
