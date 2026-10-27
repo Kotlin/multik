@@ -75,7 +75,10 @@ class ErrorHandlingTest {
         val e = assertFailsWith<IllegalArgumentException> {
             mk.ndarray(emptyList<Int>(), intArrayOf(0), D1)
         }
-        assertContains(e.message.orEmpty(), "Cannot determine DataType")
+        assertContains(e.message.orEmpty(), "empty collection with shape (0)")
+
+        val e2D = assertFailsWith<IllegalArgumentException> { mk.ndarray(emptySet<Int>(), 0, 3) }
+        assertContains(e2D.message.orEmpty(), "(0, 3)")
     }
 
     @Test

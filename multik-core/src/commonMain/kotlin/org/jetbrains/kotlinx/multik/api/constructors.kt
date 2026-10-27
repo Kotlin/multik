@@ -445,7 +445,13 @@ internal fun <T, D : Dimension> ndarrayCommon(elements: Collection<T>, shape: In
     requireElementsWithShape(elements.size, shape.fold(1, Int::times))
     val size = shape.reduce { acc, el -> acc * el }
 
-    val actualDtype = dtype ?: if (elements.isNotEmpty()) DataType.of(elements.first()) else throw IllegalArgumentException("Cannot determine DataType of an empty collection when dtype is not specified.")
+    val actualDtype = dtype ?: run {
+        require(elements.isNotEmpty()) {
+            "Cannot infer the dtype of an empty collection with shape " +
+                "${shape.joinToString(prefix = "(", postfix = ")")}: use toNDArray() or mk.zeros<T>(...) instead."
+        }
+        DataType.of(elements.first())
+    }
     val data = initMemoryView<T>(size, actualDtype).apply {// TODO: boxing/unboxing!!! Find all usages
         var count = 0
         for (el in elements)

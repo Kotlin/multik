@@ -26,7 +26,7 @@ inline fun <T, D : Dimension, K> MultiArray<T, D>.groupNDArrayBy(
     keySelector: (T) -> K
 ): Map<K, NDArray<T, D1>>
 
-inline fun <T, D : Dimension, K, V : Number> MultiArray<T, D>.groupNDArrayBy(
+inline fun <T, D : Dimension, K, reified V : Number> MultiArray<T, D>.groupNDArrayBy(
     keySelector: (T) -> K,
     valueTransform: (T) -> V
 ): Map<K, NDArray<V, D1>>

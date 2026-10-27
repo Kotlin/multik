@@ -21,15 +21,15 @@ array. Useful when each element maps to a variable number of output values.
 ## Signatures
 
 ```kotlin
-inline fun <T, D : Dimension, reified R> MultiArray<T, D>.flatMap(
+inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.flatMap(
     transform: (T) -> Iterable<R>
 ): D1Array<R>
 
-inline fun <T, reified R> MultiArray<T, D1>.flatMapIndexed(
+inline fun <T, reified R : Any> MultiArray<T, D1>.flatMapIndexed(
     transform: (index: Int, T) -> Iterable<R>
 ): D1Array<R>
 
-inline fun <T, reified R> MultiArray<T, D1>.flatMapMultiIndexed(
+inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.flatMapMultiIndexed(
     transform: (index: IntArray, T) -> Iterable<R>
 ): D1Array<R>
 ```
