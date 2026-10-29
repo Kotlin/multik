@@ -5,13 +5,22 @@ plugins {
 }
 
 kotlin {
+    android {
+        optimization {
+            consumerKeepRules.apply {
+                publish = true
+                file("consumer-rules.pro")
+            }
+        }
+    }
+
     sourceSets {
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
             }
         }
-        jvmMain {
+        named("jvmAndAndroidMain") {
             dependencies {
                 api(libs.commons.csv)
                 api(libs.bio.npy)

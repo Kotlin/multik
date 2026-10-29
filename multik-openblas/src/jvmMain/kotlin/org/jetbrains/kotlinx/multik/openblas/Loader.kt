@@ -11,6 +11,7 @@ internal class JvmLoader(private val name: String) : Loader {
     override val isLoaded: Boolean
         get() = _isLoaded
 
+    @Volatile
     private var _isLoaded: Boolean = false
 
     private val lock = Any()
@@ -20,7 +21,6 @@ internal class JvmLoader(private val name: String) : Loader {
             val osProperty: String = System.getProperty("os.name").lowercase()
             return when {
                 osProperty.contains("mac") -> "macos"
-                System.getProperty("java.vm.name").contains("Dalvik") -> "android"
                 osProperty.contains("nux") -> "linux"
                 osProperty.contains("win") -> "mingw"
                 else -> error("Unsupported operating system: $osProperty")
@@ -41,31 +41,35 @@ internal class JvmLoader(private val name: String) : Loader {
     }
 
 
-    private val nativeNameLib = buildString {
-        if (os == "mingw")
-            append("lib")
-        append(name)
-        append('-')
-        append(os)
-        append(arch)
+    // Resolved lazily: on an unsupported platform os/arch throw, and load() reports that as a failed load.
+    private val nativeNameLib by lazy {
+        buildString {
+            if (os == "mingw")
+                append("lib")
+            append(name)
+            append('-')
+            append(os)
+            append(arch)
+        }
     }
 
-    private val prefixPath = when (os) {
-        "android" -> "lib/arm64-v8a/"
-        "linux" -> "lib/linuxX64/"
-        "macos" -> "lib/macosArm64/"
-        else -> "lib/mingwX64/"
+    private val prefixPath by lazy {
+        when (os) {
+            "linux" -> "lib/linuxX64/"
+            "macos" -> "lib/macosArm64/"
+            else -> "lib/mingwX64/"
+        }
     }
 
     override fun load(): Boolean {
         synchronized(lock) {
-            if (_isLoaded) return false
+            if (_isLoaded) return true
 
-            val resource = System.mapLibraryName(nativeNameLib)
-            val inputStream = Loader::class.java.classLoader.getResourceAsStream("$prefixPath$resource")
             var libraryPath: Path? = null
 
             return try {
+                val resource = System.mapLibraryName(nativeNameLib)
+                val inputStream = Loader::class.java.classLoader.getResourceAsStream("$prefixPath$resource")
                 if (inputStream != null) {
                     libraryPath = libraryDir.resolve(resource)
                     Files.copy(inputStream, libraryPath!!, StandardCopyOption.REPLACE_EXISTING)
@@ -91,7 +95,7 @@ internal class JvmLoader(private val name: String) : Loader {
 
     override fun manualLoad(javaPath: String?): Boolean {
         synchronized(lock) {
-            if (_isLoaded) return false
+            if (_isLoaded) return true
 
             return try {
                 if (javaPath.isNullOrEmpty()) {

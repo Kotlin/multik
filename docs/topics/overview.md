@@ -104,8 +104,8 @@ Key terms:
 Multik separates the API from execution engines, organized into four modules:
 
 - `multik-core` — defines ndarray types and the API surface. All platforms.
-- `multik-kotlin` — pure Kotlin engine. JVM, JS, Native, and WASM.
-- `multik-openblas` — native engine backed by OpenBLAS for high performance. JVM and desktop Native.
+- `multik-kotlin` — pure Kotlin engine. JVM, Android, JS, Native, and WASM.
+- `multik-openblas` — native engine backed by OpenBLAS for high performance. JVM, Android (`arm64-v8a`), and desktop Native.
 - `multik-default` — bundles the Kotlin and OpenBLAS engines, choosing the best one at runtime.
 
 This lets you pick the best engine for your platform and performance needs without changing your code.

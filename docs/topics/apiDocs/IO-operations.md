@@ -1,12 +1,12 @@
 # IO operations
 
 <web-summary>
-API reference for Multik I/O: JVM-only file operations for CSV, NPY, and NPZ formats,
+API reference for Multik I/O: file operations for CSV, NPY, and NPZ formats on the JVM and Android,
 plus cross-platform in-memory conversions to lists, sets, and primitive arrays.
 </web-summary>
 
 <card-summary>
-File I/O (CSV, NPY, NPZ) on the JVM and cross-platform in-memory conversions.
+File I/O (CSV, NPY, NPZ) on the JVM and Android, and cross-platform in-memory conversions.
 </card-summary>
 
 <link-summary>
@@ -15,15 +15,16 @@ I/O API — CSV, NPY, NPZ file operations and in-memory array conversions.
 
 ## Platform support
 
-| Operation                | JVM | JS  | WASM | Native |
-|--------------------------|:---:|:---:|:----:|:------:|
-| File I/O (CSV, NPY, NPZ) | Yes |  —  |  —   |   —    |
-| In-memory conversions    | Yes | Yes | Yes  |  Yes   |
+| Operation                | JVM | Android | JS  | WASM | Native |
+|--------------------------|:---:|:-------:|:---:|:----:|:------:|
+| File I/O (CSV, NPY, NPZ) | Yes |   Yes   |  —  |  —   |   —    |
+| In-memory conversions    | Yes |   Yes   | Yes | Yes  |  Yes   |
 
-## File I/O (JVM only) {id="file-io"}
+## File I/O (JVM and Android) {id="file-io"}
 
 All file I/O functions are extension functions on the `Multik` (`mk`) object.
 Import from `org.jetbrains.kotlinx.multik.api.io`.
+On Android, pass paths inside the app's storage, such as `context.filesDir`.
 
 ### Generic read / write
 
@@ -76,7 +77,7 @@ fun Multik.writeNPZ(path: Path, ndArrays: List<NDArray<*, *>>)
 val a = mk.ndarray(mk[1, 2, 3])
 val b = mk.ndarray(mk[4.0, 5.0])
 
-mk.writeNPZ(Path.of("bundle.npz"), a, b)
+mk.writeNPZ(Path("bundle.npz"), a, b)
 val arrays = mk.readNPZ("bundle.npz") // List of 2 arrays
 ```
 

@@ -81,20 +81,19 @@ and loaded via JNI. Subsequent calls are fast.
 
 ### Does Multik work on Android?
 
-Yes, but with caveats:
+Yes. Every Multik module publishes an Android artifact (AAR), so add the same dependencies as on other targets.
 
-- **Use `multik-kotlin`**, not `multik-openblas` or `multik-default`. The OpenBLAS JAR bundles desktop
-  `.so` files that cause build errors like `"libmultik_jni-linuxX64.so is not an ABI"` or AAB
-  packaging failures.
-- On older Android devices, `multik-default` may crash with `NoClassDefFoundError`.
-- The native engine currently supports `arm64-v8a` only; `armv7` and `x86_64` Android ABIs are not
-  supported.
+- Android artifacts require **minSdk 28**.
+- The native engine ships a library for **`arm64-v8a`** only. On other ABIs (`x86_64` emulators, `armeabi-v7a`),
+  `multik-default` uses the Kotlin engine instead.
+- Depend on `multik-default` or `multik-openblas`, not on `multik-openblas-jvm`. The `-jvm` artifact is built for the
+  desktop JVM: it bundles desktop `.so` files that fail Android builds with `"libmultik_jni-linuxX64.so is not an ABI"`.
 
 ### Does Multik work on Kotlin/Native, JS, and WASM?
 
-`multik-kotlin` supports **JVM, JS, Native, and WASM** targets.
+`multik-kotlin` supports **JVM, Android, JS, Native, and WASM** targets.
 
-`multik-openblas` is available only on **JVM and desktop Native** (Linux x64, macOS x64/arm64, Windows x64).
+`multik-openblas` is available only on **JVM, Android, and desktop Native** (Linux x64, macOS arm64, Windows x64).
 It is **not** available on iOS, JS, or WASM.
 
 > WASM support is experimental. Some operations (e.g., type casting in the multidimensional case) may
@@ -179,7 +178,7 @@ and vector-vector products. See [dot](dot.md) for details.
 
 ### Can I read `.npy` files?
 
-`.npy` format is supported on **JVM only**. It is not available on Native, JS, or WASM targets.
+`.npy` format is supported on **JVM and Android**. It is not available on Native, JS, or WASM targets.
 
 ### Can I read CSV files with complex numbers?
 

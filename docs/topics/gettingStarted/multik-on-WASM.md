@@ -7,7 +7,7 @@ Learn how to set dependencies and where to find platform-specific notes.
 
 <card-summary>
 Multik works on WASM via the Kotlin engine.
-Keep the same NDArray API across JVM, JS, Native, and WASM.
+Keep the same NDArray API across JVM, Android, JS, Native, and WASM.
 </card-summary>
 
 <link-summary>

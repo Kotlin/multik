@@ -71,6 +71,8 @@ hs_err_pid*
 # Gradle
 .gradle/
 
+local.properties
+
 # CMake
 cmake-build-*/
 

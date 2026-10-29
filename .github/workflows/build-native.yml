@@ -280,6 +280,20 @@ jobs:
       - name: Build native library
         run: cmake --build build/cmake-build --target multik_jni-androidArm64 -- -j "$(nproc)"
 
+      - name: Check native library
+        run: |
+          lib=build/cmake-build/libmultik_jni-androidArm64.so
+          if llvm-readelf --dynamic "$lib" | grep -q 'libc++_shared.so'; then
+            echo "::error::$lib depends on libc++_shared.so, which nothing ships next to it"
+            exit 1
+          fi
+          for align in $(llvm-readelf --program-headers --wide "$lib" | awk '$1 == "LOAD" { print $NF }'); do
+            if (( align < 0x4000 )); then
+              echo "::error::$lib has a LOAD segment aligned to $align; devices with 16 KB pages need 0x4000"
+              exit 1
+            fi
+          done
+
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
