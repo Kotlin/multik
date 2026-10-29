@@ -36,6 +36,13 @@ kotlin {
     android {
         // AGP drops META-INF/NOTICE from Java resources by default, but the AAR bundles OpenBLAS and must keep it.
         packaging.resources.excludes -= "/META-INF/NOTICE"
+
+        optimization {
+            consumerKeepRules.apply {
+                publish = true
+                file("consumer-rules.pro")
+            }
+        }
     }
 
     targets.withType<KotlinNativeTarget>().configureEach {
