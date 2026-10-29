@@ -5,6 +5,15 @@ plugins {
 }
 
 kotlin {
+    android {
+        optimization {
+            consumerKeepRules.apply {
+                publish = true
+                file("consumer-rules.pro")
+            }
+        }
+    }
+
     sourceSets {
         commonTest {
             dependencies {
