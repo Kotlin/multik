@@ -178,7 +178,7 @@ and vector-vector products. See [dot](dot.md) for details.
 
 ### Can I read `.npy` files?
 
-`.npy` format is supported on **JVM only**. It is not available on Native, JS, or WASM targets.
+`.npy` format is supported on **JVM and Android**. It is not available on Native, JS, or WASM targets.
 
 ### Can I read CSV files with complex numbers?
 

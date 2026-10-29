@@ -6,12 +6,12 @@ Learn which engines are available and what limitations to expect on mobile targe
 </web-summary>
 
 <card-summary>
-Multik runs on Android and iOS via the Kotlin engine.
-OpenBLAS is limited and platform-dependent on mobile.
+Multik runs on Android and iOS.
+On Android, OpenBLAS is available on arm64-v8a devices; iOS uses the Kotlin engine.
 </card-summary>
 
 <link-summary>
-Use Multik on Android and iOS with the Kotlin engine and KMP setup.
+Engine availability and KMP setup for Multik on Android and iOS.
 </link-summary>
 
 ## Overview

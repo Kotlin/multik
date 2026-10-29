@@ -4,15 +4,15 @@
 
 <web-summary>
 Learn how to move data in and out of Multik ndarrays.
-Convert arrays to Kotlin collections or primitive arrays, and use JVM-only file I/O for CSV/NPY/NPZ.
+Convert arrays to Kotlin collections or primitive arrays, and read or write CSV/NPY/NPZ files on the JVM and Android.
 </web-summary>
 
 <card-summary>
-Convert ndarrays to lists and primitive arrays, and use JVM I/O for CSV/NPY/NPZ.
+Convert ndarrays to lists and primitive arrays, and use CSV/NPY/NPZ file I/O on the JVM and Android.
 </card-summary>
 
 <link-summary>
-Move data between Multik and Kotlin collections, and use JVM file I/O utilities.
+Move data between Multik and Kotlin collections, and use file I/O on the JVM and Android.
 </link-summary>
 
 ## Overview
@@ -20,7 +20,7 @@ Move data between Multik and Kotlin collections, and use JVM file I/O utilities.
 Multik provides two groups of I/O tools:
 
 - **In-memory conversions** for lists, sets, and primitive arrays (available on all platforms).
-- **File I/O** for CSV/NPY/NPZ on the JVM.
+- **File I/O** for CSV/NPY/NPZ on the JVM and Android.
 
 ## In-memory conversions
 
@@ -74,11 +74,14 @@ val arr2 = mat.toArray() // Array<DoubleArray>
 
 Similar helpers exist for `Long`, `Float`, `Double`, and complex types.
 
-## JVM file I/O
+## File I/O
 
-File-based I/O is available on the JVM only.
+File-based I/O is available on the JVM and Android.
 For NPY, you can use `mk.read` and `mk.write`.
 For CSV and NPZ, use the format-specific helpers below.
+
+> On Android, use paths inside the app's storage, for example `File(context.filesDir, "matrix.npy")`.
+> {style="note"}
 
 | Format | Read         | Write         | Dimensions | Notes                                                  |
 |--------|--------------|---------------|------------|--------------------------------------------------------|
@@ -98,7 +101,7 @@ val loaded = mk.read<Double, D2>("matrix.npy")
 ### NPZ
 
 ```kotlin
-mk.writeNPZ("bundle.npz", a)
+mk.writeNPZ(Path("bundle.npz"), a)
 val arrays = mk.readNPZ("bundle.npz")
 ```
 
@@ -109,7 +112,7 @@ mk.writeCSV("matrix.csv", a)
 val csv = mk.readCSV<Double, D2>("matrix.csv")
 ```
 
-## Non-JVM platforms
+## Other platforms
 
 On JS, WASM, and Native, use in-memory conversions and a platform-specific serialization library.
 A common approach is to convert to primitive arrays or lists and serialize those.

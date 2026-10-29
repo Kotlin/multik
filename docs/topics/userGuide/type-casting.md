@@ -111,6 +111,6 @@ Conversions between complex types are supported as well.
 <category ref="user-guide">
   <a href="creating-multidimensional-arrays.md" summary="Build ndarrays from literals, collections, primitives, and factories."/>
   <a href="shape-manipulation.md" summary="Reshape, transpose, squeeze, and combine arrays."/>
-  <a href="input-and-output.md" summary="Convert arrays and use file I/O on the JVM."/>
+  <a href="input-and-output.md" summary="Convert arrays and use file I/O on the JVM and Android."/>
 </category>
 </seealso>

@@ -1,17 +1,17 @@
 # Multik on different platforms
 
 <web-summary>
-Learn how Multik runs across JVM, JS, Native, and WASM.
+Learn how Multik runs across JVM, Android, JS, Native, and WASM.
 Understand which engines are available on each platform and where to find platform-specific guidance.
 </web-summary>
 
 <card-summary>
 Multik is multiplatform by design.
-See how engines map to JVM, JS, Native, and WASM targets.
+See how engines map to JVM, Android, JS, Native, and WASM targets.
 </card-summary>
 
 <link-summary>
-See how Multik works across JVM, JS, Native, and WASM targets.
+See how Multik works across JVM, Android, JS, Native, and WASM targets.
 </link-summary>
 
 ## Overview

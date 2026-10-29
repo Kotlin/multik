@@ -23,4 +23,4 @@ This section documents the core array object model in Multik.
 * **[](dimension.md)** — compile-time dimension markers `D1`–`D4` and `DN`.
 * **[](indexing-routines.md)** — `Slice`, `RInt`, `ReadableView`, and the `slice`/`view` helpers.
 * **[](iterating.md)** — `NDArrayIterator`, `MultiIndexProgression`, and collection-style operations.
-* **[](IO-operations.md)** — file I/O (CSV, NPY, NPZ) on the JVM and in-memory conversions on all platforms.
+* **[](IO-operations.md)** — file I/O (CSV, NPY, NPZ) on the JVM and Android, and in-memory conversions on all platforms.
