@@ -2247,9 +2247,7 @@ public final class org/jetbrains/kotlinx/multik/ndarray/operations/IteratingNDAr
 	public static final fun forEachD1Indexed (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lkotlin/jvm/functions/Function2;)V
 	public static final fun forEachDNIndexed (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lkotlin/jvm/functions/Function2;)V
 	public static final fun groupNDArrayBy (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
-	public static final fun groupNDArrayBy (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
 	public static final fun groupNDArrayByTo (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Ljava/util/Map;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
-	public static final fun groupNDArrayByTo (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Ljava/util/Map;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Ljava/util/Map;
 	public static final fun groupingNDArrayBy (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lkotlin/jvm/functions/Function1;)Lkotlin/collections/Grouping;
 	public static final fun indexOf (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Ljava/lang/Object;)I
 	public static final fun indexOfFirst (Lorg/jetbrains/kotlinx/multik/ndarray/data/MultiArray;Lkotlin/jvm/functions/Function1;)I

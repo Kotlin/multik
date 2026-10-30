@@ -6,6 +6,12 @@ import org.jetbrains.kotlinx.multik.api.d3array
 import org.jetbrains.kotlinx.multik.api.mk
 import org.jetbrains.kotlinx.multik.api.ndarray
 import org.jetbrains.kotlinx.multik.api.ndarrayOf
+import org.jetbrains.kotlinx.multik.api.toNDArray
+import org.jetbrains.kotlinx.multik.api.zeros
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
+import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
+import org.jetbrains.kotlinx.multik.ndarray.data.D1Array
+import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 import org.jetbrains.kotlinx.multik.ndarray.data.set
 import org.jetbrains.kotlinx.multik.ndarray.operations.associateByTo
 import org.jetbrains.kotlinx.multik.ndarray.operations.associateTo
@@ -18,9 +24,6 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.distinct
 import org.jetbrains.kotlinx.multik.ndarray.operations.distinctBy
 import org.jetbrains.kotlinx.multik.ndarray.operations.drop
 import org.jetbrains.kotlinx.multik.ndarray.operations.dropWhile
-import org.jetbrains.kotlinx.multik.api.zeros
-import org.jetbrains.kotlinx.multik.ndarray.data.D1
-import org.jetbrains.kotlinx.multik.ndarray.data.DataType
 import org.jetbrains.kotlinx.multik.ndarray.operations.filter
 import org.jetbrains.kotlinx.multik.ndarray.operations.filterIndexed
 import org.jetbrains.kotlinx.multik.ndarray.operations.filterMultiIndexed
@@ -29,15 +32,13 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.find
 import org.jetbrains.kotlinx.multik.ndarray.operations.findLast
 import org.jetbrains.kotlinx.multik.ndarray.operations.first
 import org.jetbrains.kotlinx.multik.ndarray.operations.firstOrNull
-import org.jetbrains.kotlinx.multik.api.toNDArray
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexDouble
-import org.jetbrains.kotlinx.multik.ndarray.complex.ComplexFloat
 import org.jetbrains.kotlinx.multik.ndarray.operations.flatMap
 import org.jetbrains.kotlinx.multik.ndarray.operations.flatMapIndexed
 import org.jetbrains.kotlinx.multik.ndarray.operations.flatMapMultiIndexed
 import org.jetbrains.kotlinx.multik.ndarray.operations.fold
 import org.jetbrains.kotlinx.multik.ndarray.operations.foldIndexed
 import org.jetbrains.kotlinx.multik.ndarray.operations.groupNDArrayBy
+import org.jetbrains.kotlinx.multik.ndarray.operations.groupNDArrayByTo
 import org.jetbrains.kotlinx.multik.ndarray.operations.intersect
 import org.jetbrains.kotlinx.multik.ndarray.operations.last
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
@@ -54,7 +55,9 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.reduce
 import org.jetbrains.kotlinx.multik.ndarray.operations.reversed
 import org.jetbrains.kotlinx.multik.ndarray.operations.scan
 import org.jetbrains.kotlinx.multik.ndarray.operations.sorted
+import org.jetbrains.kotlinx.multik.ndarray.operations.windowed
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -122,6 +125,18 @@ class IterableNDArrayTest {
     }
 
     @Test
+    fun testChunkedAndWindowedOnEmptyArray() {
+        val empty = mk.zeros<Int>(0)
+
+        val chunks = empty.chunked(2)
+        assertContentEquals(intArrayOf(0, 0), chunks.shape)
+        assertEquals(DataType.IntDataType, chunks.dtype)
+
+        assertContentEquals(intArrayOf(0, 0), empty.windowed(3).shape)
+        assertContentEquals(intArrayOf(0, 0), mk.zeros<Double>(0, 3).windowed(2, step = 2).shape)
+    }
+
+    @Test
     fun `test_of_function_contains`() {
         val ndarray = mk.d2array(5, 5) { it - 3f }
         assertTrue(-1f in ndarray)
@@ -167,7 +182,7 @@ class IterableNDArrayTest {
     }
 
     @Test
-    fun `test_dropWhile_empty_result`() {
+    fun testDropWhileEmptyResult() {
         val data = mk.arange<Long>(10)
         val actual = data.dropWhile { it < 100 }
         assertEquals(0, actual.size)
@@ -203,7 +218,7 @@ class IterableNDArrayTest {
     }
 
     @Test
-    fun `test_filter_empty_result`() {
+    fun testFilterEmptyResult() {
         val data = mk.arange<Int>(10, 30, 1)
         val actual = data.filter { it > 100 }
         assertEquals(0, actual.size)
@@ -234,7 +249,7 @@ class IterableNDArrayTest {
     }
 
     @Test
-    fun `test_filter_empty_across_dtypes`() {
+    fun testFilterEmptyAcrossDtypes() {
         val dbl = mk.ndarray(listOf(1.0, 2.0, 3.0))
         val emptyDbl = dbl.filter { it > 10.0 }
         assertEquals(0, emptyDbl.size)
@@ -254,7 +269,7 @@ class IterableNDArrayTest {
     }
 
     @Test
-    fun `test_toNDArray_empty_iterable`() {
+    fun testToNDArrayEmptyIterable() {
         val emptyInt = emptyList<Int>().toNDArray()
         assertEquals(0, emptyInt.size)
         assertEquals(DataType.IntDataType, emptyInt.dtype)
@@ -367,7 +382,7 @@ class IterableNDArrayTest {
     }
 
     @Test
-    fun `test_flatMap_empty_result`() {
+    fun testFlatMapEmptyResult() {
         val data = mk.arange<Int>(5)
         val actual = data.flatMap { emptyList<Double>() }
         assertEquals(0, actual.size)
@@ -390,13 +405,13 @@ class IterableNDArrayTest {
         assertEquals(0, actualFromEmptyIndexed.size)
         assertEquals(DataType.IntDataType, actualFromEmptyIndexed.dtype)
 
-        val actualFromEmptyMultiIndexed = emptyData.flatMapMultiIndexed { i, v -> listOf(v.toDouble()) }
+        val actualFromEmptyMultiIndexed = emptyData.flatMapMultiIndexed { _, v -> listOf(v.toDouble()) }
         assertEquals(0, actualFromEmptyMultiIndexed.size)
         assertEquals(DataType.DoubleDataType, actualFromEmptyMultiIndexed.dtype)
     }
 
     @Test
-    fun `test_flatMapMultiIndexed`() {
+    fun testFlatMapMultiIndexed() {
         val list = listOf(1, 2, 3, 4)
         val ndarray = mk.ndarray(list, 2, 2)
         val actual = ndarray.flatMapMultiIndexed { index, element -> listOf(element, index[0] + index[1]) }
@@ -439,6 +454,34 @@ class IterableNDArrayTest {
 
         val expected2 = mapOf(0 to mk.ndarrayOf(0f, 2f, 4f, 6f), 1 to mk.ndarrayOf(1f, 3f, 5f, 7f))
         assertEquals(expected2, data.groupNDArrayBy({ it % 2 }, { it.toFloat() }))
+    }
+
+    @Test
+    fun testGroupNDArrayByValueTransformDtype() {
+        val data = mk.ndarray(mk[1, 2, 3, 4])
+
+        // Whole-valued doubles: on JS the runtime class of 1.0 is Int, so the dtype must come from the static type.
+        val doubles = data.groupNDArrayBy({ it % 2 }, { it.toDouble() })
+        assertEquals(mk.ndarray(mk[1.0, 3.0]), doubles.getValue(1))
+        assertEquals(DataType.DoubleDataType, doubles.getValue(1).dtype)
+
+        val bytes = data.groupNDArrayBy({ it % 2 }, { it.toByte() })
+        assertEquals(DataType.ByteDataType, bytes.getValue(0).dtype)
+
+        val complex = data.groupNDArrayByTo(LinkedHashMap<Int, D1Array<ComplexDouble>>(), { it % 2 }) {
+            ComplexDouble(it.toDouble(), 0.0)
+        }
+        assertEquals(DataType.ComplexDoubleDataType, complex.getValue(0).dtype)
+    }
+
+    @Test
+    fun testAbstractValueTypeFallsBackToRuntimeClass() {
+        val data = mk.ndarray(mk[1, 2, 3])
+        val toNumber: (Int) -> Number = { it }
+
+        assertEquals(DataType.IntDataType, data.groupNDArrayBy({ it % 2 }, toNumber).getValue(1).dtype)
+        assertTrue(mk.zeros<Int>(0).groupNDArrayBy({ it % 2 }, toNumber).isEmpty())
+        assertEquals(DataType.IntDataType, data.flatMap { listOf<Number>(it) }.dtype)
     }
 
     @Test

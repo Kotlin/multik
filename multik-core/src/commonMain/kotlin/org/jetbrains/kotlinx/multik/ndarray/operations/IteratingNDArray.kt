@@ -486,8 +486,7 @@ public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.flatMap(t
         val list = transform(element)
         destination.addAll(list)
     }
-    val dtype = DataType.ofKClass(R::class)
-    return destination.toCommonNDArray(dtype)
+    return destination.toCommonNDArray(inferDataType(destination))
 }
 
 /**
@@ -502,8 +501,7 @@ public inline fun <T, reified R : Any> MultiArray<T, D1>.flatMapIndexed(transfor
         val list = transform(checkIndexOverflow(index++), element)
         destination.addAll(list)
     }
-    val dtype = DataType.ofKClass(R::class)
-    return destination.toCommonNDArray(dtype)
+    return destination.toCommonNDArray(inferDataType(destination))
 }
 
 /**
@@ -522,8 +520,7 @@ public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.flatMapMu
             throw ArithmeticException("Index overflow has happened.")
         }
     }
-    val dtype = DataType.ofKClass(R::class)
-    return destination.toCommonNDArray(dtype)
+    return destination.toCommonNDArray(inferDataType(destination))
 }
 
 
@@ -622,7 +619,7 @@ public inline fun <T, D : Dimension, K> MultiArray<T, D>.groupNDArrayBy(keySelec
  * and returns a map where each group key is associated with an ndarray of matching values.
  */
 // TODO: complex number
-public inline fun <T, D : Dimension, K, V : Number> MultiArray<T, D>.groupNDArrayBy(
+public inline fun <T, D : Dimension, K, reified V : Number> MultiArray<T, D>.groupNDArrayBy(
     keySelector: (T) -> K, valueTransform: (T) -> V
 ): Map<K, NDArray<V, D1>> {
     return groupNDArrayByTo(LinkedHashMap(), keySelector, valueTransform)
@@ -652,7 +649,7 @@ public inline fun <T, D : Dimension, K, M : MutableMap<in K, NDArray<T, D1>>> Mu
  * returned by [keySelector] function applied to the element and puts to the destination map each group key
  * associated with an ndarray of corresponding values.
  */
-public inline fun <T, D : Dimension, K, V, M : MutableMap<in K, NDArray<V, D1>>> MultiArray<T, D>.groupNDArrayByTo(
+public inline fun <T, D : Dimension, K, reified V : Any, M : MutableMap<in K, NDArray<V, D1>>> MultiArray<T, D>.groupNDArrayByTo(
     destination: M, keySelector: (T) -> K, valueTransform: (T) -> V
 ): M {
     val map = LinkedHashMap<K, MutableList<V>>()
@@ -662,8 +659,7 @@ public inline fun <T, D : Dimension, K, V, M : MutableMap<in K, NDArray<V, D1>>>
         list.add(valueTransform(element))
     }
     for (item in map) {
-        val dtype = DataType.of(item.value.first())
-        destination.put(item.key, item.value.toCommonNDArray(dtype = dtype))
+        destination.put(item.key, item.value.toCommonNDArray(dtype = inferDataType(item.value)))
     }
     return destination
 }
@@ -1095,6 +1091,8 @@ public fun <T, D : Dimension> MultiArray<T, D>.windowed(
     }
 
     val thisSize = this.size
+    // No windows; the width is clamped to the number of elements, as it is for short arrays.
+    if (thisSize == 0) return D2Array(initMemoryView<T>(0, this.dtype), 0, intArrayOf(0, 0), dim = D2)
     val rSize = min(thisSize, size)
     val rStep = min(thisSize, step)
     val resultCapacity = when {
@@ -1865,4 +1863,14 @@ internal inline fun checkIndexOverflow(index: Int): Int {
     if (index < 0) throw ArithmeticException("Index overflow has happened.")
     return index
 }
+
+/**
+ * Returns the dtype for [elements] of type [T]. A [T] that names an element type wins, because on JS a whole-valued
+ * `Double` is an `Int` at runtime; an abstract [T] such as `Number` falls back to the runtime class of the first element.
+ */
+@PublishedApi
+internal inline fun <reified T : Any> inferDataType(elements: List<T>): DataType =
+    DataType.entries.firstOrNull { it.clazz == T::class }
+        ?: elements.firstOrNull()?.let { DataType.of(it) }
+        ?: DataType.ofKClass(T::class)
 
