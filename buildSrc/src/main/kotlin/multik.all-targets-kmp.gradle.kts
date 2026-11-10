@@ -1,5 +1,7 @@
 @file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
 
+import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+
 plugins {
     id("multik.base")
 }
@@ -31,5 +33,12 @@ kotlin {
             testTask { enabled = false }
         }
         binaries.library()
+    }
+
+    sourceSets {
+        val compilerVersion = project.getKotlinPluginVersion()
+        jsMain.dependencies { implementation(kotlin("stdlib", compilerVersion)) }
+        wasmJsMain.dependencies { implementation(kotlin("stdlib", compilerVersion)) }
+        webTest.dependencies { implementation(kotlin("test", compilerVersion)) }
     }
 }

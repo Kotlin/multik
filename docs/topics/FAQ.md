@@ -100,6 +100,18 @@ It is **not** available on iOS, JS, or WASM.
 > throw exceptions.
 > {style="warning"}
 
+### Which Kotlin version do I need? {id="kotlin-version"}
+
+Multik is built with Kotlin 2.4, but it doesn't require it everywhere:
+
+- **JVM and Android:** Kotlin **2.2** or newer.
+- **JS, WasmJS, and Native:** Kotlin **2.4** or newer. On these platforms, a project can't use libraries built with
+  a newer Kotlin than its own.
+
+With an older Kotlin, the compiler ignores Multik on JS, WasmJS, and Native, so the build fails, usually with
+`Unresolved reference` errors for Multik declarations.
+**Fix:** update the Kotlin Gradle plugin of that project to 2.4 or newer.
+
 ## Common pitfalls
 
 ### Reshaping a sliced array returns a view, not a copy
