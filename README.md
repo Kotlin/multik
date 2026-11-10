@@ -106,6 +106,9 @@ Import stable `multik` version into notebook:
 | **iosSimulatorArm64** |       ✅       |        ✅        |         —         |        ✅         |
 
 > [!IMPORTANT]
+> - Multik needs **Kotlin 2.2** or newer on JVM and Android, and **Kotlin 2.4** or newer on JS, WasmJS, and Native.
+> Multik is built with Kotlin 2.4, and on these platforms a project can't use libraries built with a newer Kotlin
+> than its own.
 > - On Linux distributions with **glibc** older than 2.31, `multik-openblas` doesn't work.
 > - `multik-openblas` for desktop native targets (_linuxX64_, _mingwX64_, _macosArm64_) is experimental and
 > unstable.

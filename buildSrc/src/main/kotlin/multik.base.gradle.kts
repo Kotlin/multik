@@ -3,6 +3,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
@@ -11,14 +12,20 @@ plugins {
     id("com.android.kotlin.multiplatform.library")
 }
 
+val minSupportedKotlin = KotlinVersion.KOTLIN_2_2
+
 kotlin {
     explicitApi = ExplicitApiMode.Strict
+
+    coreLibrariesVersion = "${minSupportedKotlin.version}.0"
 
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
 
     compilerOptions {
+        languageVersion = minSupportedKotlin
+        apiVersion = minSupportedKotlin
         freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 

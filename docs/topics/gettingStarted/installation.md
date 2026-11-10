@@ -92,6 +92,10 @@ kotlin {
 }
 ```
 
+> Multik needs Kotlin **2.2** or newer on JVM and Android, and Kotlin **2.4** or newer on JS, WasmJS, and Native.
+> See [Which Kotlin version do I need?](FAQ.md#kotlin-version)
+> {style="note"}
+
 ## Kotlin-Notebook, Jupyter, Datalore
 
 Multik can also be used in interactive environments such
