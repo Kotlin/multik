@@ -374,6 +374,7 @@ println(d)  // 15
 > <a href="map.md">mapIndexed</a>
 > <a href="map.md">mapMultiIndexed</a>
 > <a href="map.md">mapIndexedNotNull</a>
+> <a href="map.md">mapMultiIndexedNotNull</a>
 > <a href="map.md">mapNotNull</a>
 > <a href="minimum.md">minimum</a>
 > <a href="maximum.md">maximum</a>
