@@ -17,7 +17,8 @@ map() — element-wise transformation preserving shape.
 
 Applies a transformation function to each element and returns a new array of the same shape.
 Indexed variants provide the element's flat index (`mapIndexed`, 1D only) or multi-dimensional
-index (`mapMultiIndexed`). The result element type `R` must be a supported `DataType`.
+index (`mapMultiIndexed`). The `NotNull` variants drop `null` results and, like `filter`, return
+a 1D array. The result element type `R` must be a supported `DataType`.
 
 ## Signatures
 
@@ -36,18 +37,28 @@ inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapMultiIndexed(
 
 inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapNotNull(
     transform: (T) -> R?
-): NDArray<R, D>
+): D1Array<R>
+
+inline fun <T, reified R : Any> MultiArray<T, D1>.mapIndexedNotNull(
+    transform: (index: Int, T) -> R?
+): D1Array<R>
+
+inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapMultiIndexedNotNull(
+    transform: (index: IntArray, T) -> R?
+): D1Array<R>
 ```
 
 ## Parameters
 
-| Parameter   | Type                        | Description                       |
-|-------------|-----------------------------|-----------------------------------|
-| `transform` | `(T) -> R`                  | Maps each element to a new value. |
-| `transform` | `(index: Int, T) -> R`      | With flat index (1D arrays only). |
-| `transform` | `(index: IntArray, T) -> R` | With multi-dimensional index.     |
+| Parameter   | Type                        | Description                                           |
+|-------------|-----------------------------|-------------------------------------------------------|
+| `transform` | `(T) -> R`                  | Maps each element to a new value.                     |
+| `transform` | `(index: Int, T) -> R`      | With flat index (1D arrays only).                     |
+| `transform` | `(index: IntArray, T) -> R` | With multi-dimensional index.                         |
+| `transform` | `(T) -> R?`                 | `NotNull` variants: return `null` to drop an element. |
 
-**Returns:** `NDArray<R, D>` — a new array with the same shape and transformed elements.
+**Returns:** `NDArray<R, D>` — a new array with the same shape and transformed elements. The `NotNull`
+variants return a new `D1Array<R>` of the non-null results in row-major order.
 
 ## Example
 
@@ -67,11 +78,15 @@ b.mapIndexed { i, v -> v + i }
 a.mapMultiIndexed { idx, v -> idx.sum() + v }
 // [[1, 3],
 //  [4, 6]]
+
+a.mapNotNull { if (it % 2 == 0) it * 10 else null }
+// [20, 40]
 ```
 
 <!---END-->
 
-> `map` preserves the **shape** of the original array. Use `flatMap` if you need to change the shape.
+> `map` preserves the **shape** of the original array; the `NotNull` variants always return a **1D** array.
+> Use `flatMap` if you need to change the shape.
 > {style="note"}
 
 <seealso style="cards">

@@ -43,7 +43,10 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.intersect
 import org.jetbrains.kotlinx.multik.ndarray.operations.last
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
 import org.jetbrains.kotlinx.multik.ndarray.operations.mapIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.mapIndexedNotNull
 import org.jetbrains.kotlinx.multik.ndarray.operations.mapMultiIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.mapMultiIndexedNotNull
+import org.jetbrains.kotlinx.multik.ndarray.operations.mapNotNull
 import org.jetbrains.kotlinx.multik.ndarray.operations.max
 import org.jetbrains.kotlinx.multik.ndarray.operations.maxBy
 import org.jetbrains.kotlinx.multik.ndarray.operations.maximum
@@ -526,6 +529,60 @@ class IterableNDArrayTest {
         assertEquals(mk.ndarrayOf(0, 2, 6, 12), data.mapIndexed { idx: Int, value -> value * idx })
         val ndarray = mk.ndarrayOf(1, 2, 3, 4).reshape(2, 2)
         ndarray.mapMultiIndexed { idx: IntArray, value -> value * (idx[0] xor idx[1]) }
+    }
+
+    @Test
+    fun testMapNotNull() {
+        val a = mk.ndarray(mk[1, 2, 3, 4])
+        val actual = a.mapNotNull { if (it == 2) null else it }
+        assertEquals(mk.ndarray(mk[1, 3, 4]), actual)
+        assertTrue(actual.consistent)
+
+        // The source shape can't be kept for D > 1, so the result is 1D, as with filter.
+        val b = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+        assertEquals(mk.ndarray(mk[1, 3, 4]), b.mapNotNull { if (it == 2) null else it })
+        assertEquals(mk.ndarray(mk[1, 2, 3, 4]), b.mapNotNull { it })
+        // A transposed view is visited in its own row-major order: 1, 3, 2, 4.
+        assertEquals(mk.ndarray(mk[1.0, 3.0, 4.0]), b.transpose().mapNotNull { if (it == 2) null else it.toDouble() })
+    }
+
+    @Test
+    fun testMapNotNullEmptyResult() {
+        val allNull = mk.ndarray(mk[mk[1, 2], mk[3, 4]]).mapNotNull { if (it > 10) it.toDouble() else null }
+        assertContentEquals(intArrayOf(0), allNull.shape)
+        assertEquals(DataType.DoubleDataType, allNull.dtype)
+
+        val fromEmpty = mk.zeros<Int>(0).mapNotNull { it.toFloat() }
+        assertContentEquals(intArrayOf(0), fromEmpty.shape)
+        assertEquals(DataType.FloatDataType, fromEmpty.dtype)
+    }
+
+    @Test
+    fun testMapIndexedNotNull() {
+        val data = mk.ndarray(mk[10, 20, 30, 40])
+        val actual = data.mapIndexedNotNull { i, v -> if (i % 2 == 0) v + i else null }
+        assertEquals(mk.ndarray(mk[10, 32]), actual)
+        assertTrue(actual.consistent)
+
+        val empty = data.mapIndexedNotNull { i, v -> if (i > 10) v.toLong() else null }
+        assertContentEquals(intArrayOf(0), empty.shape)
+        assertEquals(DataType.LongDataType, empty.dtype)
+    }
+
+    @Test
+    fun testMapMultiIndexedNotNull() {
+        val data = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+        val actual = data.mapMultiIndexedNotNull { idx, v -> if (idx[0] == idx[1]) v else null }
+        assertEquals(mk.ndarray(mk[1, 4]), actual)
+        assertTrue(actual.consistent)
+
+        val complex = data.mapMultiIndexedNotNull { idx, v -> if (idx[1] == 0) ComplexDouble(v.toDouble(), 1.0) else null }
+        assertEquals(mk.ndarray(mk[ComplexDouble(1.0, 1.0), ComplexDouble(3.0, 1.0)]), complex)
+        assertTrue(complex.consistent)
+
+        val empty = data.mapMultiIndexedNotNull { idx, v -> if (idx[0] > 10) v.toShort() else null }
+        assertContentEquals(intArrayOf(0), empty.shape)
+        assertEquals(DataType.ShortDataType, empty.dtype)
     }
 
     @Test
