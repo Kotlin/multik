@@ -66,6 +66,8 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.reduceIndexed
 import org.jetbrains.kotlinx.multik.ndarray.operations.repeat
 import org.jetbrains.kotlinx.multik.ndarray.operations.reversed
 import org.jetbrains.kotlinx.multik.ndarray.operations.scan
+import org.jetbrains.kotlinx.multik.ndarray.operations.scanIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.scanMultiIndexed
 import org.jetbrains.kotlinx.multik.ndarray.operations.sorted
 import org.jetbrains.kotlinx.multik.ndarray.operations.times
 import org.jetbrains.kotlinx.multik.ndarray.operations.timesAssign
@@ -304,6 +306,17 @@ class ArrayOperations {
 
         a.scan(0) { acc, v -> acc + v }
         // [0, 1, 3, 6, 10]  — cumulative sum with initial 0
+
+        a.scanIndexed(0) { i, acc, v -> acc + i * v }
+        // [0, 0, 2, 8, 20]  — indices start at 0
+
+        val b = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+
+        b.scan(0) { acc, v -> acc + v }
+        // [0, 1, 3, 6, 10]  — always 1D, in row-major order
+
+        b.scanMultiIndexed(0) { idx, acc, v -> if (idx[0] == idx[1]) acc + v else acc }
+        // [0, 1, 1, 1, 5]  — running sum of the diagonal
         // SampleEnd
     }
 
