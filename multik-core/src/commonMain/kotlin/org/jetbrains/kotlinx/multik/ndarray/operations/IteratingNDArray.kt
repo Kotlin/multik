@@ -915,7 +915,16 @@ public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapMultiI
 }
 
 /**
- * Return a new array contains elements after applying [transform].
+ * Returns a new 1D array with only the non-null results of applying [transform] to each element and its index.
+ *
+ * ```
+ * val a = mk.ndarray(mk[10, 20, 30, 40])
+ * a.mapIndexedNotNull { i, v -> if (i % 2 == 0) v + i else null } // [10, 32]
+ * ```
+ *
+ * @param transform maps an index and an element to a value of a supported element type [R], or to `null` to drop it.
+ * @return a new [D1Array] of the non-null results in index order; empty if there are none.
+ * @see [mapIndexed]
  */
 @JvmName("mapD1IndexedNotNull")
 public inline fun <T, reified R : Any> MultiArray<T, D1>.mapIndexedNotNull(transform: (index: Int, T) -> R?): D1Array<R> {
@@ -923,30 +932,59 @@ public inline fun <T, reified R : Any> MultiArray<T, D1>.mapIndexedNotNull(trans
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
     forEachIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
-    return D1Array(data, shape = shape, dim = D1)
+    val result = if (count == size) data else data.copyInto(initMemoryView(count, newDtype), endIndex = count)
+    return D1Array(result, shape = intArrayOf(count), dim = D1)
 }
 
 /**
- * Return a new array contains elements after applying [transform].
+ * Returns a new 1D array with only the non-null results of applying [transform] to each element and its
+ * multi-dimensional index.
+ *
+ * Elements are visited in row-major order, and the result is 1D whatever the dimension of this array.
+ *
+ * ```
+ * val a = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+ * a.mapMultiIndexedNotNull { idx, v -> if (idx[0] == idx[1]) v else null } // [1, 4]
+ * ```
+ *
+ * @param transform maps a multi-dimensional index and an element to a value of a supported element type [R],
+ * or to `null` to drop it.
+ * @return a new [D1Array] of the non-null results; empty if there are none.
+ * @see [mapMultiIndexed]
  */
 @JvmName("mapDNIndexedNotNull")
-public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapMultiIndexedNotNull(transform: (index: IntArray, T) -> R?): NDArray<R, D> {
+public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapMultiIndexedNotNull(transform: (index: IntArray, T) -> R?): D1Array<R> {
     val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
     var count = 0
     forEachMultiIndexed { index, element -> transform(index, element)?.let { data[count++] = it } }
-    return NDArray(data, shape = shape.copyOf(), dim = dim)
+    val result = if (count == size) data else data.copyInto(initMemoryView(count, newDtype), endIndex = count)
+    return D1Array(result, shape = intArrayOf(count), dim = D1)
 }
 
 /**
- * Return a new array contains elements after applying [transform].
+ * Returns a new 1D array with only the non-null results of applying [transform] to each element.
+ *
+ * Elements are visited in row-major order, and the result is 1D whatever the dimension of this array,
+ * as with [filter].
+ *
+ * ```
+ * val a = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+ * a.mapNotNull { if (it % 2 == 0) it * 10 else null } // [20, 40]
+ * ```
+ *
+ * @param transform maps an element to a value of a supported element type [R], or to `null` to drop it.
+ * @return a new [D1Array] of the non-null results; empty if there are none.
+ * @see [map]
+ * @see [filter]
  */
-public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapNotNull(transform: (T) -> R?): NDArray<R, D> {
+public inline fun <T, D : Dimension, reified R : Any> MultiArray<T, D>.mapNotNull(transform: (T) -> R?): D1Array<R> {
     val newDtype = DataType.ofKClass(R::class)
     val data = initMemoryView<R>(size, newDtype)
-    var index = 0
-    forEach { element -> transform(element)?.let { data[index++] = it } }
-    return NDArray(data, shape = shape, dim = dim)
+    var count = 0
+    forEach { element -> transform(element)?.let { data[count++] = it } }
+    val result = if (count == size) data else data.copyInto(initMemoryView(count, newDtype), endIndex = count)
+    return D1Array(result, shape = intArrayOf(count), dim = D1)
 }
 
 /**

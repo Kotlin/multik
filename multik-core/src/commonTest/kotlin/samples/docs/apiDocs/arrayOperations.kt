@@ -46,6 +46,7 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.lastOrNull
 import org.jetbrains.kotlinx.multik.ndarray.operations.map
 import org.jetbrains.kotlinx.multik.ndarray.operations.mapIndexed
 import org.jetbrains.kotlinx.multik.ndarray.operations.mapMultiIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.mapNotNull
 import org.jetbrains.kotlinx.multik.ndarray.operations.max
 import org.jetbrains.kotlinx.multik.ndarray.operations.maxBy
 import org.jetbrains.kotlinx.multik.ndarray.operations.maxWith
@@ -282,6 +283,9 @@ class ArrayOperations {
         a.mapMultiIndexed { idx, v -> idx.sum() + v }
         // [[1, 3],
         //  [4, 6]]
+
+        a.mapNotNull { if (it % 2 == 0) it * 10 else null }
+        // [20, 40]
         // SampleEnd
     }
 
