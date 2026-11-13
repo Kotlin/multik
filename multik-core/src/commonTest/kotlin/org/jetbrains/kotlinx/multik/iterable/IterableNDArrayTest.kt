@@ -54,6 +54,8 @@ import org.jetbrains.kotlinx.multik.ndarray.operations.partition
 import org.jetbrains.kotlinx.multik.ndarray.operations.reduce
 import org.jetbrains.kotlinx.multik.ndarray.operations.reversed
 import org.jetbrains.kotlinx.multik.ndarray.operations.scan
+import org.jetbrains.kotlinx.multik.ndarray.operations.scanIndexed
+import org.jetbrains.kotlinx.multik.ndarray.operations.scanMultiIndexed
 import org.jetbrains.kotlinx.multik.ndarray.operations.sorted
 import org.jetbrains.kotlinx.multik.ndarray.operations.windowed
 import kotlin.test.Test
@@ -595,9 +597,48 @@ class IterableNDArrayTest {
     }
 
     @Test
-    fun `test_scan`() {
-        val ndarray = mk.ndarray(mk[1, 2, 3, 4, 5, 6])
-        println(ndarray.scan(10) { acc: Int, i: Int -> acc + i })
+    fun testScan() {
+        val a = mk.ndarray(mk[1, 2, 3, 4])
+        val actual = a.scan(0) { acc, v -> acc + v }
+        assertEquals(mk.ndarray(mk[0, 1, 3, 6, 10]), actual)
+        assertTrue(actual.consistent)
+
+        // The size + 1 values don't fit the source shape for D > 1, so the result is 1D.
+        val b = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+        assertEquals(mk.ndarray(mk[0, 1, 3, 6, 10]), b.scan(0) { acc, v -> acc + v })
+        // A transposed view is visited in its own row-major order: 1, 3, 2, 4.
+        assertEquals(mk.ndarray(mk[0.0, 1.0, 4.0, 6.0, 10.0]), b.transpose().scan(0.0) { acc, v -> acc + v })
+    }
+
+    @Test
+    fun testScanIndexed() {
+        val a = mk.ndarray(mk[10, 20, 30])
+        // Indices start at 0, as in Iterable.scanIndexed.
+        assertEquals(mk.ndarray(mk[-1, 0, 1, 2]), a.scanIndexed(-1) { i, _, _ -> i })
+
+        val actual = a.scanIndexed(0L) { i, acc, v -> acc + i * v }
+        assertEquals(mk.ndarray(mk[0L, 0L, 20L, 80L]), actual)
+        assertTrue(actual.consistent)
+    }
+
+    @Test
+    fun testScanMultiIndexed() {
+        val a = mk.ndarray(mk[mk[1, 2], mk[3, 4]])
+        val actual = a.scanMultiIndexed(0) { idx, acc, v -> if (idx[0] == idx[1]) acc + v else acc }
+        assertEquals(mk.ndarray(mk[0, 1, 1, 1, 5]), actual)
+        assertTrue(actual.consistent)
+
+        // Index sums in row-major order: 0, 1, 1, 2, 1, 2, 2, 3.
+        val b = mk.arange<Int>(8).reshape(2, 2, 2)
+        assertEquals(mk.ndarray(mk[0, 0, 1, 2, 4, 5, 7, 9, 12]), b.scanMultiIndexed(0) { idx, acc, _ -> acc + idx.sum() })
+    }
+
+    @Test
+    fun testScanEmpty() {
+        val empty = mk.zeros<Int>(0)
+        assertEquals(mk.ndarray(mk[5L]), empty.scan(5L) { acc, v -> acc + v })
+        assertEquals(mk.ndarray(mk[5.0]), empty.scanIndexed(5.0) { i, acc, v -> acc + i + v })
+        assertEquals(mk.ndarray(mk[5f]), mk.zeros<Int>(0, 3).scanMultiIndexed(5f) { _, acc, v -> acc + v })
     }
 
     @Test
